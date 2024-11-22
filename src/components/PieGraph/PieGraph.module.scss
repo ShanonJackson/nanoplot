@@ -1,0 +1,32 @@
+
+
+.label {
+	font-size: 75px;
+	font-weight: 700;
+}
+
+.rotate {
+	transform: rotate(180deg);
+	transform-origin: center;
+}
+
+.label-path {
+	stroke-width: 10;
+	fill: transparent;
+	stroke: rgb(45, 45, 45);;
+	transform: rotate(180deg);
+	transform-origin: center;
+}
+
+.segment {
+	transition: all 0.2s ease-in-out;
+	transform: scale(1) rotate(270deg);
+	transform-origin: 50% 50%;
+	&--hoverable {
+		&:hover {
+			filter: drop-shadow(0 0 50px rgba(0, 0, 0, .5)) brightness(110%);
+			transform: scale(1.02) rotate(270deg);
+		}
+	}
+}
+

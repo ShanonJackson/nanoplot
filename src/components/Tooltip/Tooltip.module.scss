@@ -1,0 +1,277 @@
+@import "src/styles/variables";
+
+$triangle-height: 10px;
+$triangle-width: 20px;
+$antialiasing: 1px; /* without this certain zoom amounts can introduce whitespace */
+$radius: 5px;
+
+@mixin shape($rotation) {
+	/* To edit triangle shape, just paste the SVG portion of this into JSFiddle */
+	$point-up: url('data:image/svg+xml;utf8,<svg width="#{$triangle-width}" height="#{$triangle-height}" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><path d="M 0 30 L 30 0 L 60 30 Z" /></svg>');
+	$point-down: url('data:image/svg+xml;utf8,<svg width="#{$triangle-width}" height="#{$triangle-height}" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><path d="M 0 0 L 60 0 L 30 30 Z"/></svg>');
+	$point-left: url('data:image/svg+xml;utf8,<svg width="#{$triangle-height}" height="#{$triangle-width}" viewBox="0 0 30 60" xmlns="http://www.w3.org/2000/svg"><path d="M 30 0 L 30 60 L 0 30 Z" /></svg>');
+	$point-right: url('data:image/svg+xml;utf8,<svg width="#{$triangle-height}" height="#{$triangle-width}" viewBox="0 0 30 60" xmlns="http://www.w3.org/2000/svg"><path d="M 0 0 L 0 60 L 30 30 Z" /></svg>');
+
+	/* https://css-tricks.com/perfect-tooltips-with-css-clipping-and-masking   - modified from this. */
+	-webkit-mask-image: radial-gradient(#fff ($radius - 0.5), #fff0 $radius),
+	radial-gradient(#fff ($radius - 0.5), #fff0 $radius),
+	radial-gradient(#fff ($radius - 0.5), #fff0 $radius),
+	radial-gradient(#fff ($radius - 0.5), #fff0 $radius),
+	linear-gradient(#fff, #fff),
+	linear-gradient(#fff, #fff),
+	if($rotation == 0, $point-up, if($rotation == 180, $point-down, if($rotation == 90, $point-right, $point-left)));
+	-webkit-mask-repeat: no-repeat;
+}
+
+.base {
+	border-radius: $radius;
+	position: absolute;
+	width: auto;
+}
+
+.inner {
+	display: inline-block;
+	position: relative;
+	z-index: $zindex-tooltip;
+	color: white;
+	min-width: 48px;
+	max-width: 28rem;
+	padding: 8px;
+	background-color: rgb(15, 15, 15);
+
+	&--center-top {
+		@include shape(0);
+
+		-webkit-mask-position:
+				0 $triangle-height, // Top left corner
+				100% $triangle-height, // Top right corner
+				0 100%, // Bottom left corner
+				100% 100%, // Bottom right corner
+				0 $radius + $triangle-height, // Horizontal gradient
+				$radius $triangle-height, // Vertical gradient
+				50% 0; // Triangle
+
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - calc($triangle-height + $radius * 2)), // Horizontal gradient
+				calc(100% - #{$radius * 2}) 100%, // Vertical gradient
+				$triangle-width $triangle-height; // triangle
+	}
+
+	&--left-top {
+		// configure mask-position and mask-size so that triangle is 10px away from left and side of top
+		@include shape(0);
+		-webkit-mask-position:
+				0 $triangle-height, // Top left corner
+				100% $triangle-height, // Top right corner
+				0 100%, // Bottom left corner
+				100% 100%, // Bottom right corner
+				0 $radius + $triangle-height, // Horizontal gradient
+				$radius $triangle-height, // Vertical gradient
+				calc(10% - ($triangle-width / 2)) 0; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - calc($triangle-height + $radius * 2)), // Horizontal gradient
+				calc(100% - #{$radius * 2}) 100%, // Vertical gradient
+				$triangle-width $triangle-height; // triangle
+	}
+
+	&--right-top {
+		@include shape(0);
+		-webkit-mask-position:
+				0 $triangle-height, // Top left corner
+				100% $triangle-height, // Top right corner
+				0 100%, // Bottom left corner
+				100% 100%, // Bottom right corner
+				0 $radius + $triangle-height, // Horizontal gradient
+				$radius $triangle-height, // Vertical gradient
+				calc(90% + ($triangle-width / 2)) 0; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - calc($triangle-height + $radius * 2)), // Horizontal gradient
+				calc(100% - #{$radius * 2}) 100%, // Vertical gradient
+				$triangle-width $triangle-height; // triangle
+	}
+
+	&--left-middle {
+		@include shape(270);
+		-webkit-mask-position:
+				$triangle-height 0, // Top left corner
+				100% 0, // Top right corner
+				$triangle-height 100%, // Bottom left corner
+				100% 100%, // Bottom right corner
+				$triangle-height $radius, // Horizontal gradient
+				$radius + $triangle-height 0, // Vertical gradient
+				0 50%; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - #{$radius * 2}),  // Horizontal gradient
+				calc(100% - #{$triangle-height + $radius * 2}) 100%,  // Vertical gradient
+				$triangle-height $triangle-width; // triangle
+	}
+
+	&--left-bottom {
+		@include shape(180);
+		-webkit-mask-position:
+				0 0, // Top left corner
+				100% 0, // Top right corner
+				0 calc(100% - $triangle-height), // Bottom left corner
+				100% calc(100% - $triangle-height), // Bottom right corner
+				0 $radius, // Horizontal gradient
+				$radius 0, // Vertical gradient
+				calc(10% - ($triangle-width / 2)) 100%; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - #{$triangle-height + $radius * 2}),  // Horizontal gradient
+				calc(100% - #{$radius * 2}) calc(100% - #{$triangle-height}),  // Vertical gradient
+				$triangle-width   $triangle-height; // triangle
+	}
+
+	&--right-bottom {
+		@include shape(180);
+		-webkit-mask-position:
+				0 0, // Top left corner
+				100% 0, // Top right corner
+				0 calc(100% - $triangle-height), // Bottom left corner
+				100% calc(100% - $triangle-height), // Bottom right corner
+				0 $radius, // Horizontal gradient
+				$radius 0, // Vertical gradient
+				calc(90% + ($triangle-width / 2)) 100%; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				100% calc(100% - #{$triangle-height + $radius * 2}),  // Horizontal gradient
+				calc(100% - #{$radius * 2}) calc(100% - #{$triangle-height}),  // Vertical gradient
+				$triangle-width $triangle-height; // triangle
+	}
+
+	&--bottom-center {
+		@include shape(180);
+		-webkit-mask-position:
+				0 0, // Top left corner
+				100% 0, // Top right corner
+				100% calc(100% - $triangle-height + $antialiasing), // Bottom right corner
+				0 calc(100% - $triangle-height + $antialiasing), // Bottom left corner
+				0 $radius, // Horizontal gradient
+				$radius 0, // Vertical gradient
+				50% 100%; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+				100% calc(100% - #{$triangle-height + $radius * 2}),  // Horizontal gradient
+				calc(100% - #{$radius * 2}) calc(100% - #{$triangle-height} + $antialiasing),  // Vertical gradient
+				$triangle-width $triangle-height; // triangle
+	}
+
+	&--right-middle {
+		@include shape(90);
+		-webkit-mask-position:
+				0 0, // Top left corner
+				calc(100% - $triangle-height) 0, // Top right corner
+				0 100%, // Bottom left corner
+				calc(100% - $triangle-height) 100%, // Bottom right corner
+				0 $radius, // Horizontal gradient
+				$radius 0, // Vertical gradient
+				100% 50%; // Triangle
+		-webkit-mask-size:
+						($radius * 2) ($radius * 2),  // Top left corner
+						($radius * 2) ($radius * 2),  // Top right corner
+						($radius * 2) ($radius * 2),  // Bottom left corner
+						($radius * 2) ($radius * 2),  // Bottom right corner
+				calc(100% - $triangle-height) calc(100% - #{$radius * 2}),  // Horizontal gradient
+				calc(100% - #{$triangle-height + $radius * 2}) 100%,  // Vertical gradient
+				$triangle-height $triangle-width; // triangle
+	}
+
+	&--top {
+		padding-top: calc(8px + $triangle-height);
+	}
+
+	&--bottom {
+		padding-bottom: calc(8px + $triangle-height);
+	}
+
+	&--left {
+		padding-left: calc(8px + $triangle-height);
+	}
+
+	&--right {
+		padding-right: calc(8px + $triangle-height);
+	}
+}
+
+.title {
+	font-size: $font-size-s;
+	font-weight: 700;
+	line-height: $font-size-ml;
+	color: $dark-priority-3;
+	text-transform: uppercase;
+	margin-bottom: 12px;
+}
+
+.description {
+	color: $system-white;
+	font-size: $font-size-s;
+	font-weight: 400;
+	line-height: $font-size-l;
+}
+
+.triangle {
+	display: none;
+	position: absolute;
+	height: 10px;
+	width: 20px;
+	stroke-width: 5;
+	fill: transparent;
+	&--top-left {
+		top: 0;
+		left: 10%;
+		transform: translate(calc(-50% - 2px), 0);
+	}
+	&--top-right {
+		top: 0;
+		left: 90%;
+		transform: translate(calc(-50% - -2px), 0);
+	}
+	&--top-center {
+		top: 0;
+		left: 50%;
+		stroke-width: 3;
+		transform: translate(-50%, 0);
+	}
+	&--bottom-left {
+		top: 100%;
+		left: 10%;
+		transform: translate(calc(-50% - 2px), -100%);
+	}
+	&--bottom-right {
+		top: 100%;
+		left: 90%;
+		transform: translate(calc(-50% - -2px), -100%);
+	}
+	&--bottom-center {
+		top: 100%;
+		left: 50%;
+		stroke-width: 2;
+		transform: translate(calc(-50%), -100%) scale(0.9);
+	}
+}
