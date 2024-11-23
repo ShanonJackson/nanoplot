@@ -23,7 +23,6 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 	const PIE_RADIUS = (X_SCALE / (donut ? 2 : 3)) * PADDING_PERCENT;
 	const isSinglePie = data.length === 1;
 	const total = data.reduce((sum, { value }) => sum + Number(value), 0);
-
 	const dataset = data
 		.map((d) => ({ ...d, id: d.name ?? d.name, value: Number(d.value) }))
 		.sort((a, b) => b.value - a.value)
@@ -159,10 +158,10 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 		})
 	return (
 		<div className={styles.base}>
-			{paths.map((p) => {
+			{paths.map((p, index) => {
 				// each path is it's own SVG because access to z-index is required to put someone above everyone else when hovered.
 				return (
-					<svg viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} height={"100%"} width="100%" className={styles.svg}>
+					<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} height={"100%"} width="100%" className={styles.svg}>
 						<filter id={shadowId + p.name} filterUnits="userSpaceOnUse">
 							<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000"
 										  floodOpacity="0.4" />
