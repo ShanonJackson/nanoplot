@@ -1,8 +1,14 @@
+.base {
+	display: grid;
+	grid-template-columns: [graph] 1fr;
+	grid-template-rows: [graph] 1fr;
+}
 
 
 .label {
 	font-size: 75px;
 	font-weight: 700;
+	pointer-events: all;
 }
 
 .rotate {
@@ -13,20 +19,30 @@
 .label-path {
 	stroke-width: 10;
 	fill: transparent;
-	stroke: rgb(45, 45, 45);;
+	stroke: #2D2D2D;
 	transform: rotate(180deg);
 	transform-origin: center;
 }
 
+.svg {
+	grid-area: graph;
+	pointer-events: none;
+	&:has(path:hover) {
+		z-index: 1;
+		.label-path {
+			stroke: currentColor;
+		}
+	}
+}
+
 .segment {
 	transition: all 0.2s ease-in-out;
-	transform: scale(1) rotate(270deg);
+	transform: scale(1);
 	transform-origin: 50% 50%;
-	&--hoverable {
-		&:hover {
-			filter: drop-shadow(0 0 50px rgba(0, 0, 0, .5)) brightness(110%);
-			transform: scale(1.02) rotate(270deg);
-		}
+	pointer-events: auto;
+	&:hover {
+		filter: drop-shadow(0 0 50px rgba(0, 0, 0, .5)) brightness(110%);
+		transform: scale(1.02);
 	}
 }
 

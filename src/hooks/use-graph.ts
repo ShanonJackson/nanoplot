@@ -1,4 +1,4 @@
-import { createContext, RefObject, use } from "react";
+import { createContext, use } from "react";
 
 export type XYDataset = Array<{
 	id?: string /* name is id, if undefined */;

@@ -12,6 +12,7 @@ export default function Page() {
 							fill: dp.color,
 						};
 					})}
+					loading={false}
 					donut={false}
 				/>
 			</div>
