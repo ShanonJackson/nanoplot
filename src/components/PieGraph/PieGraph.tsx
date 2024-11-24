@@ -25,7 +25,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 
 	if (loading) {
 		return (
-			<svg viewBox={`0 0 3000 3000`}>
+			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading}>
 				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
 					<animate
 						attributeName="fill"
@@ -148,6 +148,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 							) + ` L ${X_SCALE / 2} ${X_SCALE / 2} Z`
 						}
 						fill={segment.fill}
+						data-degrees={segment.degrees}
 					/>
 				</g>
 			);
