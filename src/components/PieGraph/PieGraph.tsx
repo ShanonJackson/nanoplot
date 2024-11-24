@@ -40,7 +40,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 
 	if (loading) {
 		return (
-			<svg viewBox={`0 0 3000 3000`}>
+			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading}>
 				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
 					<animate
 						attributeName="fill"
@@ -147,7 +147,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 						// onMouseEnter={() => setHovered(d)}
 						id={d.name}
 						// onMouseLeave={() => setHovered(undefined)}
-						aria-label={`${d.name}-segment`}
+						data-degrees={d.degrees}
 					/>
 				</g>
 			);
