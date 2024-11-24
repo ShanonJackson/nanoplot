@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from "react";
+import { ReactNode } from "react";
 import styles from "./LineGraph.module.scss";
 import { cx } from "@/utils/cx/cx";
 import { XYDataset } from "@/hooks/use-graph";
@@ -9,7 +9,6 @@ type Props = {
 };
 
 export const LineGraph = ({ children }: Props) => {
-	const ref = useRef<HTMLDivElement>(null);
 	// const context: GraphContext = {
 	// 	ref,
 	// 	layout: { rows: "", columns: "" },
@@ -17,7 +16,7 @@ export const LineGraph = ({ children }: Props) => {
 	// 	dataset: [],
 	// };
 	return (
-		<div className={cx("relative", "w-full", "h-full", "flex", "flex-col", styles.base)} ref={ref}>
+		<div className={cx("relative", "w-full", "h-full", "flex", "flex-col", "text-[white]", styles.base)}>
 			<div className={"flex-shrink-0 height-[80px] border-solid border-[red] border-[1px]"}>PLACEHOLDER LEGEND</div>
 			<div className={"flex flex-grow-1 min-h-0 width-[auto]"}>
 				<div>PLACEHOLDER LEGEND</div>
@@ -34,5 +33,25 @@ export const LineGraph = ({ children }: Props) => {
 		</div>
 	);
 };
+/*
+// graphs render top/bottom left/right
+
+
+// legned above.
+<Graph>
+	<Legend layout="row"/> // renders 1row.
+	<YAxis/> // adds/renders 1 column
+	<LineGraph/>
+	<XAxis/>
+</Graph>
+
+
+// legend right.
+<Graph>
+	<YAxis/>
+	<LineGraph/>
+	<Legend layout="column"/>
+	<XAxis/>
+ */
 
 LineGraph.layout = "row";

@@ -1,7 +1,10 @@
 .base {
+	/* 1x1 grid to abuse grid-area css to stack segment svg's in same 'boundingBox' without position: absolute */
 	display: grid;
-	grid-template-columns: [graph] 1fr;
-	grid-template-rows: [graph] 1fr;
+	grid-template-columns: [graph] auto;
+	grid-template-rows: [graph] auto;
+	height: 100%;
+	width: 100%;
 }
 
 
@@ -27,6 +30,8 @@
 .svg {
 	grid-area: graph;
 	pointer-events: none;
+	height: 100%;
+	width: 100%;
 	&:has(path:hover) {
 		z-index: 1;
 		.label-path {

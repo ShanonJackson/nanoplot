@@ -8,7 +8,7 @@ import { SegmentDataset } from "@/hooks/use-graph";
 
 type Props = {
 	data: SegmentDataset;
-	tooltips?: Record<string, ReactNode>;
+	tooltips?: Record<string, ReactNode>; // can't be a function because RSC doesn't support functions as props.
 	children?: ReactNode;
 };
 
@@ -19,7 +19,7 @@ export const Worldmap = ({ data, tooltips, children }: Props) => {
 
 	return (
 		<div className={"relative w-full h-auto" + " " + styles.base}>
-			<svg viewBox={"0 0 1090 539"} id={id} className={"w-full h-auto " + styles.svg} preserveAspectRatio={"none"}>
+			<svg id={id} viewBox={"0 0 1090 539"} className={"w-full h-auto " + styles.svg} preserveAspectRatio={"none"}>
 				{Object.entries(countries).map(([iso, path], i) => {
 					const color = "#2c2c2c";
 					return (

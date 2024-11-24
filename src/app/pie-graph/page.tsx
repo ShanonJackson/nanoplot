@@ -9,7 +9,6 @@ export default function Page() {
 						return {
 							name: dp.label,
 							value: dp.value,
-							fill: dp.color,
 						};
 					})}
 					loading={false}
@@ -23,7 +22,7 @@ export default function Page() {
 const MOCK_DATA = [
 	{
 		id: "python",
-		label: "python",
+		label: "python python python python python",
 		value: 283,
 		color: "hsl(359, 70%, 50%)",
 	},
@@ -35,7 +34,7 @@ const MOCK_DATA = [
 	},
 	{
 		id: "stylus",
-		label: "stylus",
+		label: "stylus stylus stylus stylus stylus stylus",
 		value: 257,
 		color: "hsl(352, 70%, 50%)",
 	},

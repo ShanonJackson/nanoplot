@@ -12,28 +12,3 @@ export default function Page() {
 		</div>
 	);
 }
-
-// Line.Monotone
-// Line.StepAfter
-// Line.StepBefore
-// Line.Linear
-
-/*
-	const { styles } = useLayoutFrom(children)
-	<LinesGraph>
-		<LinesGraph.Legend position={"top"}/>
-		<LinesGraph.Tooltip/>
-		<Axis.Numerical/>
-		<Axis.Categorical/>
-		<Axis.Time />
-	</LineGraph>
-
-
-	<Graph>
-		<Legend layout={"row"}/>
-		<YAxis/>
-		<LineGraph/>
-		<XAxis/>
-		<Legend layout={"row"}/>
-	</Graph>
- */
