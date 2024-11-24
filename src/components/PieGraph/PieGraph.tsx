@@ -40,7 +40,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 
 	if (loading) {
 		return (
-			<svg viewBox={`0 0 3000 3000`}>
+			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading}>
 				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
 					<animate
 						attributeName="fill"
@@ -147,7 +147,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 						// onMouseEnter={() => setHovered(d)}
 						id={d.name}
 						// onMouseLeave={() => setHovered(undefined)}
-						aria-label={`${d.name}-segment`}
+						data-degrees={d.degrees}
 					/>
 				</g>
 			);
@@ -161,7 +161,7 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 			{paths.map((p, index) => {
 				// each path is it's own SVG because access to z-index is required to put someone above everyone else when hovered.
 				return (
-					<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} height={"100%"} width="100%" className={styles.svg}>
+					<svg aria-busy={loading} key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} height={"100%"} width="100%" className={styles.svg}>
 						<filter id={shadowId + p.name} filterUnits="userSpaceOnUse">
 							<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000"
 										  floodOpacity="0.4" />
