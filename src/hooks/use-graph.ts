@@ -25,6 +25,7 @@ export type SegmentDataset = Array<{
 
 export type GraphContext = {
 	id: string;
+	viewbox: { x: number; y: number };
 	dataset: XYDataset | SegmentDataset;
 	layout: { rows: string; columns: string };
 	domain: {
