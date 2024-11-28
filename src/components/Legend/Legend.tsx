@@ -6,8 +6,8 @@ type Props = {
 	context?: GraphContext;
 };
 
-export const Legend = ({ context }: Props) => {
-	console.log("INSIDE?", context);
+export const Legend = ({ context, position = "top" }: Props) => {
+	if (position === "left" || position === "right") return <Graph.Column>placeholder</Graph.Column>;
 	return <Graph.Row>placeholder</Graph.Row>;
 };
 
