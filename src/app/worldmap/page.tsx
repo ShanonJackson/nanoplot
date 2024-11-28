@@ -1,12 +1,15 @@
+"use client";
 import { Worldmap } from "@/components/Worldmap/Worldmap";
 import Image from "next/image";
 import { ColorUtils } from "@/utils/color/color";
+import React from "react";
+import { Graph } from "@/components/Graph/Graph";
 
 export default function Page() {
 	return (
 		<div style={{ display: "flex", justifyContent: "center", marginTop: "10rem" }}>
 			<div style={{ width: 1090, height: 539, resize: "both", overflow: "hidden", border: "1px dotted black" }}>
-				<Worldmap
+				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {
 							name: market,
@@ -14,26 +17,29 @@ export default function Page() {
 							fill: ColorUtils.between("rgb(255, 0, 0)", "rgb(0, 0, 255)", average_demand_multiplier / 50),
 						};
 					})}
-					tooltips={Object.fromEntries(
-						MOCK_DATA.map((data, i) => {
-							return [
-								data.market,
-								<div className={"flex items-center"}>
-									<div>{i + 1}</div>
-									<Image
-										src={`https://cdn-fastly.parrotanalytics.com/flags/${data.market.toLowerCase()}.png?quality=85&width=32`}
-										alt={""}
-										unoptimized={true}
-										height={14}
-										width={20}
-									/>
-									{data.market}
-									<div>{data.average_demand_multiplier.toFixed(2)}</div>
-								</div>,
-							];
-						}),
-					)}
-				/>
+				>
+					<Worldmap
+						tooltips={Object.fromEntries(
+							MOCK_DATA.map((data, i) => {
+								return [
+									data.market,
+									<div className={"flex items-center"}>
+										<div>{i + 1}</div>
+										<Image
+											src={`https://cdn-fastly.parrotanalytics.com/flags/${data.market.toLowerCase()}.png?quality=85&width=32`}
+											alt={""}
+											unoptimized={true}
+											height={14}
+											width={20}
+										/>
+										{data.market}
+										<div>{data.average_demand_multiplier.toFixed(2)}</div>
+									</div>,
+								];
+							}),
+						)}
+					/>
+				</Graph>
 			</div>
 		</div>
 	);
@@ -490,13 +496,3 @@ const MOCK_DATA = [
 		market: "PY",
 	},
 ];
-
-/* WorldmapStatic
- * 	- Tooltip on each country, -> Tooltip content control via some methodology.
- *   -
- *  */
-
-/* WorldmapInteractive
-	- Tooltip moves on mouse -> Tooltip content control via callback that gives access to data/country
-	-
- */

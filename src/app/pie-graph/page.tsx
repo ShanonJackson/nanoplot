@@ -1,19 +1,13 @@
 import { PieGraph } from "@/components/PieGraph/PieGraph";
+import { Graph } from "@/components/Graph/Graph";
 
 export default function Page() {
 	return (
 		<div style={{ display: "flex", justifyContent: "center", marginTop: "10rem" }}>
 			<div style={{ width: 800, height: 800, resize: "both", overflow: "hidden", border: "1px dotted black" }}>
-				<PieGraph
-					data={MOCK_DATA.map((dp) => {
-						return {
-							name: dp.label,
-							value: dp.value,
-						};
-					})}
-					loading={false}
-					donut={false}
-				/>
+				<Graph data={MOCK_DATA}>
+					<PieGraph loading={false} donut={false} />
+				</Graph>
 			</div>
 		</div>
 	);
@@ -21,33 +15,23 @@ export default function Page() {
 
 const MOCK_DATA = [
 	{
-		id: "python",
-		label: "python python python python python",
+		name: "python python python python python",
 		value: 283,
-		color: "hsl(359, 70%, 50%)",
 	},
 	{
-		id: "elixir",
-		label: "elixir",
+		name: "elixir",
 		value: 333,
-		color: "hsl(253, 70%, 50%)",
 	},
 	{
-		id: "stylus",
-		label: "stylus stylus stylus stylus stylus stylus",
+		name: "stylus stylus stylus stylus stylus stylus",
 		value: 257,
-		color: "hsl(352, 70%, 50%)",
 	},
 	{
-		id: "css",
-		label: "css",
+		name: "css",
 		value: 30,
-		color: "hsl(31, 70%, 50%)",
 	},
 	{
-		id: "haskell",
-		label: "haskell",
+		name: "haskell",
 		value: 192,
-		color: "hsl(209, 70%, 50%)",
 	},
 ];

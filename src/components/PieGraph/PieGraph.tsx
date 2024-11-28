@@ -1,23 +1,27 @@
 import { useId } from "react";
-import { SegmentDataset } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
 import styles from "./PieGraph.module.scss";
 import { cx } from "@/utils/cx/cx";
 import { ColorUtils } from "@/utils/color/color";
+import { GraphUtils } from "@/utils/graph/graph";
 
 type Props = {
-	data: SegmentDataset;
 	loading?: boolean;
 	donut?: boolean;
+	context?: GraphContext;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, data, loading }: Props) => {
+export const PieGraph = ({ donut, context, loading }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
+
+	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
+	const { data } = context;
 
 	const PIE_RADIUS = (X_SCALE / (donut ? 2 : 3)) * PADDING_PERCENT;
 	const isSinglePie = data.length === 1;
@@ -158,21 +162,17 @@ export const PieGraph = ({ donut, data, loading }: Props) => {
 			};
 		});
 
-	return (
-		<div className={styles.base}>
-			{paths.map(({ path, id }, index) => {
-				/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
-				return (
-					<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={styles.svg}>
-						<filter id={shadowId + id} filterUnits="userSpaceOnUse">
-							<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
-							<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
-						</filter>
-						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-						<g id={glowId + id}>{path}</g>
-					</svg>
-				);
-			})}
-		</div>
-	);
+	return paths.map(({ path, id }, index) => {
+		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
+		return (
+			<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={styles.svg}>
+				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
+					<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
+					<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
+				</filter>
+				<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
+				<g id={glowId + id}>{path}</g>
+			</svg>
+		);
+	});
 };

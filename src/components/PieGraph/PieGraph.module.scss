@@ -1,13 +1,3 @@
-.base {
-	/* 1x1 grid to abuse grid-area css to stack segment svg's in same 'boundingBox' without position: absolute */
-	display: grid;
-	grid-template-columns: [graph] auto;
-	grid-template-rows: [graph] auto;
-	height: 100%;
-	width: 100%;
-}
-
-
 .label {
 	font-size: 75px;
 	font-weight: 700;

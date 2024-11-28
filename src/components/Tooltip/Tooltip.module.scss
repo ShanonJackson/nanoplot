@@ -32,7 +32,7 @@ $radius: 5px;
 .inner {
 	display: inline-block;
 	position: relative;
-	z-index: $zindex-tooltip;
+	z-index: 20;
 	color: white;
 	min-width: 48px;
 	max-width: 28rem;
@@ -220,19 +220,19 @@ $radius: 5px;
 }
 
 .title {
-	font-size: $font-size-s;
+	font-size: 0.875rem;
 	font-weight: 700;
-	line-height: $font-size-ml;
-	color: $dark-priority-3;
+	line-height: 1.125rem;
+	color: hsl(0, 0%, 76.4705882353%);
 	text-transform: uppercase;
 	margin-bottom: 12px;
 }
 
 .description {
-	color: $system-white;
-	font-size: $font-size-s;
+	color: white;
+	font-size: 0.875rem;
 	font-weight: 400;
-	line-height: $font-size-l;
+	line-height: 1.25rem;
 }
 
 .triangle {

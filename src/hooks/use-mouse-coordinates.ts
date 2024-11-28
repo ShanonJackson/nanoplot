@@ -9,6 +9,7 @@ export const useMouseCoordinates = (ref: RefObject<SVGSVGElement>) => {
 		const onMouseMove = (e: MouseEvent) => {
 			const rect = svg.getBoundingClientRect();
 			const point = svg.createSVGPoint();
+			/* Immutably not possible on SVGPoint, Ignore the Typescript types they're wrong. */
 			point.x = MathUtils.scale(e.clientX - rect.left, rect.width, svg.viewBox.baseVal.width);
 			point.y = MathUtils.scale(e.clientY - rect.top, rect.height, svg.viewBox.baseVal.height);
 			setPoint(point);

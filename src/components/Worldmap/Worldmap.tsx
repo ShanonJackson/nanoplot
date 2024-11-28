@@ -1,24 +1,24 @@
 import React, { ReactNode, useId } from "react";
-import { WorldmapProvider } from "@/components/Worldmap/WorldmapContext";
 import styles from "./Worldmap.module.scss";
 import { PathUtils } from "@/utils/path/path";
 import { MathUtils } from "@/utils/math/math";
 import { Popup } from "@/components/Tooltip/Popup";
-import { SegmentDataset } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph";
+import { cx } from "@/utils/cx/cx";
 
 type Props = {
-	data: SegmentDataset;
-	tooltips?: Record<string, ReactNode>; // can't be a function because RSC doesn't support functions as props.
+	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
 	children?: ReactNode;
+	context?: GraphContext;
 };
 
-export const Worldmap = ({ data, tooltips, children }: Props) => {
+export const Worldmap = ({ tooltips, context, children }: Props) => {
 	const id = useId();
-	// O(1) lookup for datapoint from iso code.
+	if (!context) return null;
+	const { data } = context;
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
-
 	return (
-		<div className={"relative w-full h-auto" + " " + styles.base}>
+		<>
 			<svg id={id} viewBox={"0 0 1090 539"} className={"w-full h-auto " + styles.svg} preserveAspectRatio={"none"}>
 				{Object.entries(countries).map(([iso, path], i) => {
 					const color = "#2c2c2c";
@@ -41,22 +41,25 @@ export const Worldmap = ({ data, tooltips, children }: Props) => {
 					<Popup
 						key={i}
 						target={{ side: "bottom", alignment: "center" }}
-						style={{ color: "white", left: MathUtils.scale(x, 1090, 100) + "%", top: MathUtils.scale(y, 539, 100) + "%" }}
+						style={{ left: MathUtils.scale(x, 1090, 100) + "%", top: MathUtils.scale(y, 539, 100) + "%" }}
 						border={"rgb(45, 45, 45)"}
 						className={styles.tooltip}
 						data-iso={iso}
 					>
-						<div style={{ color: "white" }}>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
+						<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
 					</Popup>
 				);
 			})}
-			<WorldmapProvider id={id}>{children}</WorldmapProvider>
-		</div>
+			{children}
+		</>
 	);
 };
 
-Worldmap.context = () => {
-	return "";
+Worldmap.context = (ctx: GraphContext, props: Props) => {
+	return {
+		...ctx,
+		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, styles.base) },
+	};
 };
 
 const countries = {
