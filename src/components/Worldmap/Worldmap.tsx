@@ -7,19 +7,26 @@ import { GraphContext } from "@/hooks/use-graph";
 import { cx } from "@/utils/cx/cx";
 
 type Props = {
+	translate?: { x: number; y: number; scale: number };
 	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
 	children?: ReactNode;
 	context?: GraphContext;
 };
 
-export const Worldmap = ({ tooltips, context, children }: Props) => {
+export const Worldmap = ({ tooltips, translate, context, children }: Props) => {
 	const id = useId();
 	if (!context) return null;
 	const { data } = context;
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
 	return (
 		<>
-			<svg id={id} viewBox={"0 0 1090 539"} className={"w-full h-auto " + styles.svg} preserveAspectRatio={"none"}>
+			<svg
+				id={id}
+				viewBox={"0 0 1090 539"}
+				className={"w-auto h-full " + styles.svg}
+				preserveAspectRatio={"none"}
+				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
+			>
 				{Object.entries(countries).map(([iso, path], i) => {
 					const color = "#2c2c2c";
 					return (
