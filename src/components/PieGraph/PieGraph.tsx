@@ -23,13 +23,13 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
 	const { data } = context;
 
-	const PIE_RADIUS = (X_SCALE / (donut ? 2 : 3)) * PADDING_PERCENT;
+	const PIE_RADIUS = (X_SCALE / 3) * PADDING_PERCENT;
 	const isSinglePie = data.length === 1;
 	const total = data.reduce((sum, { value }) => sum + Number(value), 0);
 
 	if (loading) {
 		return (
-			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading}>
+			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading} className={"h-full w-full"}>
 				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
 					<animate
 						attributeName="fill"
@@ -47,12 +47,13 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 	}
 
 	const paths = data
-		.map((segment, i) => ({
+		.map((segment, i, segments) => ({
 			...segment,
 			id: segment.name ?? segment.name,
 			value: Number(segment.value),
-			stroke: segment.stroke ?? ColorUtils.colorFor(i),
-			fill: typeof segment.fill === "string" ? segment.fill : ColorUtils.colorFor(i) /* boolean fill not supported */,
+			stroke: segment.stroke ?? ColorUtils.colorFor(i, segments.length),
+			fill:
+				typeof segment.fill === "string" ? segment.fill : ColorUtils.colorFor(i, segments.length) /* boolean fill not supported */,
 		}))
 		.sort((a, b) => b.value - a.value)
 		.map((segment, i, segments) => {
@@ -109,39 +110,36 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, X_SCALE, 100) > 50;
 
 			const path = (
-				<g className={cx(!donut && styles.rotate)} key={i}>
-					{!donut && (
-						<path
-							className={styles.labelPath}
-							key={segment.name}
-							d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
-								isRightAligned ? "l 100 0" : "l -100 0"
-							}`}
-							style={{
-								color: segment.fill,
-							}}
-						/>
-					)}
-					{!donut && (
-						<g className={cx(styles.label, styles.rotate)}>
-							<text
-								aria-label={`${segment.name}-label`}
-								y={endLabelLine.y}
-								x={endLabelLine.x}
-								stroke={segment.stroke}
-								fill={segment.fill}
-								dx={isRightAligned ? 140 : -140}
-								style={{ textAnchor: isRightAligned ? "start" : "end" }}
-							>
-								<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
-								<tspan className={styles.percent} dx={25}>
-									{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%
-								</tspan>
-							</text>
-						</g>
-					)}
+				<g className={styles.rotate} key={i}>
 					<path
-						className={cx(!donut && styles.segment)}
+						className={styles.labelPath}
+						key={segment.name}
+						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
+							isRightAligned ? "l 100 0" : "l -100 0"
+						}`}
+						style={{
+							color: segment.fill,
+						}}
+					/>
+
+					<g className={cx(styles.label, styles.rotate)}>
+						<text
+							aria-label={`${segment.name}-label`}
+							y={endLabelLine.y}
+							x={endLabelLine.x}
+							stroke={segment.stroke}
+							fill={segment.fill}
+							dx={isRightAligned ? 140 : -140}
+							style={{ textAnchor: isRightAligned ? "start" : "end" }}
+						>
+							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+							<tspan className={styles.percent} dx={25}>
+								{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%
+							</tspan>
+						</text>
+					</g>
+					<path
+						className={styles.segment}
 						d={
 							PathUtils.describeArc(
 								X_SCALE / 2,
@@ -165,7 +163,7 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 	return paths.map(({ path, id }, index) => {
 		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 		return (
-			<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={styles.svg}>
+			<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={cx(styles.svg, donut && styles.svgDonut)}>
 				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
 					<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
 					<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />

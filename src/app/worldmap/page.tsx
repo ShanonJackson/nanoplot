@@ -7,8 +7,9 @@ import { Graph } from "@/components/Graph/Graph";
 
 export default function Page() {
 	return (
-		<div style={{ display: "flex", justifyContent: "center", marginTop: "10rem" }}>
-			<div style={{ width: 1090, height: 539, resize: "both", overflow: "hidden", border: "1px dotted black" }}>
+		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>CONTROLS</div>
+			<div className={"border-[1px] h-full border-dotted border-white"}>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {
@@ -41,6 +42,7 @@ export default function Page() {
 					/>
 				</Graph>
 			</div>
+			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>
 	);
 }

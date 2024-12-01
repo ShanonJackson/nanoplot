@@ -1,8 +1,10 @@
 import { GraphContext } from "@/hooks/use-graph";
 import { Graph } from "../Graph/Graph";
+import { ReactNode } from "react";
 
 type Props = {
 	position?: "top" | "bottom" | "left" | "right";
+	children?: ReactNode;
 	context?: GraphContext;
 };
 

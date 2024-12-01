@@ -28,6 +28,11 @@
 			stroke: currentColor;
 		}
 	}
+	&--donut {
+		mask-image: radial-gradient(circle, transparent 14%, black 14.1%);
+		mask-position: 50% 50%;
+		mask-repeat: no-repeat;
+	}
 }
 
 .segment {
