@@ -13,7 +13,7 @@ export const ChildrenUtils = {
 			return acc;
 		}, {});
 	},
-	context: (children: ReactNode, initial: GraphContext): GraphContext | undefined => {
+	context: (children: ReactNode, initial: GraphContext): GraphContext => {
 		/* if the child has a static method .context(graphcontext, props) execute it and return the context */
 		return React.Children.toArray(children).reduce<GraphContext>((acc, child) => {
 			if (

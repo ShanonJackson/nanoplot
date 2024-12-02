@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Navigation } from "@/components/Docs/Navigation/Navigation";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body className={"overflow-hidden"}>
+				<div className={"grid grid-cols-[min-content_minmax(0,1fr)] min-h-screen"}>
+					<Navigation />
+					<div>{children}</div>
+				</div>
+			</body>
 		</html>
 	);
 }

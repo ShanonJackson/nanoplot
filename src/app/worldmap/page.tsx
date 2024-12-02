@@ -1,12 +1,40 @@
+"use client";
 import { Worldmap } from "@/components/Worldmap/Worldmap";
 import Image from "next/image";
 import { ColorUtils } from "@/utils/color/color";
+import React, { ComponentProps, useState } from "react";
+import { Graph } from "@/components/Graph/Graph";
+import { Control } from "@/components/Docs/Control/Control";
+import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
 
 export default function Page() {
+	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
+		translate: { x: 0, y: 0, scale: 0 },
+	});
+	const setPiePartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
-		<div style={{ display: "flex", justifyContent: "center", marginTop: "10rem" }}>
-			<div style={{ width: 1090, height: 539, resize: "both", overflow: "hidden", border: "1px dotted black" }}>
-				<Worldmap
+		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>
+				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
+					<SliderControl
+						value={map.translate?.x ?? 0}
+						onChange={(value) => setPiePartial({ translate: { y: 0, scale: 0, ...map.translate, x: value } })}
+						description={`${map.translate?.x} x`}
+					/>
+					<SliderControl
+						value={map.translate?.y ?? 0}
+						onChange={(value) => setPiePartial({ translate: { x: 0, scale: 0, ...map.translate, y: value } })}
+						description={`${map.translate?.y} y`}
+					/>
+					<SliderControl
+						value={map.translate?.scale ?? 0}
+						onChange={(value) => setPiePartial({ translate: { y: 0, x: 0, ...map.translate, scale: value } })}
+						description={`${map.translate?.scale} scale`}
+					/>
+				</Control>
+			</div>
+			<div className={"border-[1px] h-full border-dotted border-white"}>
+				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {
 							name: market,
@@ -14,27 +42,32 @@ export default function Page() {
 							fill: ColorUtils.between("rgb(255, 0, 0)", "rgb(0, 0, 255)", average_demand_multiplier / 50),
 						};
 					})}
-					tooltips={Object.fromEntries(
-						MOCK_DATA.map((data, i) => {
-							return [
-								data.market,
-								<div className={"flex items-center"}>
-									<div>{i + 1}</div>
-									<Image
-										src={`https://cdn-fastly.parrotanalytics.com/flags/${data.market.toLowerCase()}.png?quality=85&width=32`}
-										alt={""}
-										unoptimized={true}
-										height={14}
-										width={20}
-									/>
-									{data.market}
-									<div>{data.average_demand_multiplier.toFixed(2)}</div>
-								</div>,
-							];
-						}),
-					)}
-				/>
+				>
+					<Worldmap
+						tooltips={Object.fromEntries(
+							MOCK_DATA.map((data, i) => {
+								return [
+									data.market,
+									<div className={"flex items-center"}>
+										<div>{i + 1}</div>
+										<Image
+											src={`https://cdn-fastly.parrotanalytics.com/flags/${data.market.toLowerCase()}.png?quality=85&width=32`}
+											alt={""}
+											unoptimized={true}
+											height={14}
+											width={20}
+										/>
+										{data.market}
+										<div>{data.average_demand_multiplier.toFixed(2)}</div>
+									</div>,
+								];
+							}),
+						)}
+						{...map}
+					/>
+				</Graph>
 			</div>
+			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>
 	);
 }
@@ -490,13 +523,3 @@ const MOCK_DATA = [
 		market: "PY",
 	},
 ];
-
-/* WorldmapStatic
- * 	- Tooltip on each country, -> Tooltip content control via some methodology.
- *   -
- *  */
-
-/* WorldmapInteractive
-	- Tooltip moves on mouse -> Tooltip content control via callback that gives access to data/country
-	-
- */

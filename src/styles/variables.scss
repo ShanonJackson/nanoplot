@@ -1,67 +1,3 @@
-$primary-p-black: hsl(0, 0%, 4.7058823529%);
-$primary-p-red: hsl(348.449197861, 76.9547325103%, 52.3529411765%);
-$primary-p-red-light: hsl(348.7719298246, 89.5287958115%, 62.5490196078%);
-$primary-p-red-light-2: hsl(352.2580645161, 100%, 69.6078431373%);
-$primary-p-red-dark: hsl(347.2941176471, 100%, 33.3333333333%);
-$primary-p-yellow: hsl(42.4752475248, 92.6605504587%, 57.2549019608%);
-$primary-p-yellow-light: hsl(48.8311688312, 100%, 54.7058823529%);
-$primary-p-yellow-light-2: hsl(53.5031847134, 100%, 69.2156862745%);
-$primary-p-yellow-dark: hsl(42.5925925926, 69.2307692308%, 45.8823529412%);
-$primary-p-purple: hsl(265.5172413793, 50.289017341%, 33.9215686275%);
-$primary-p-purple-light: hsl(265.2631578947, 50%, 44.7058823529%);
-$primary-p-purple-dark: hsl(265.0746268657, 50.3759398496%, 26.0784313725%);
-$primary-p-purple-dark-2: hsl(270, 60%, 15.6862745098%);
-$system-black: hsl(0, 0%, 0%);
-$system-grey-dark-1: hsl(0, 0%, 5.8823529412%);
-$system-grey-dark-2: hsl(0, 0%, 11.7647058824%);
-$system-grey-dark-3: hsl(0, 0%, 17.6470588235%);
-$system-grey-dark-4: hsl(0, 0%, 23.5294117647%);
-$system-grey-dark-5: hsl(0, 0%, 29.4117647059%);
-$system-grey-dark-6: hsl(0, 0%, 35.2941176471%);
-$system-grey-dark-7: hsl(0, 0%, 41.1764705882%);
-$system-grey-dark-8: hsl(0, 0%, 47.0588235294%);
-$system-grey-med-1: hsl(0, 0%, 52.9411764706%);
-$system-grey-med-2: hsl(0, 0%, 58.8235294118%);
-$system-grey-med-3: hsl(0, 0%, 64.7058823529%);
-$system-grey-med-4: hsl(0, 0%, 70.5882352941%);
-$system-grey-med-5: hsl(0, 0%, 76.4705882353%);
-$system-grey-light-1: hsl(0, 0%, 82.3529411765%);
-$system-grey-light-2: hsl(0, 0%, 88.2352941176%);
-$system-grey-light-3: hsl(0, 0%, 94.1176470588%);
-$system-white: hsl(0, 0%, 100%);
-$system-blue: hsl(210.1621621622, 73.7051792829%, 49.2156862745%);
-$system-blue-dark: hsl(210.1570680628, 100%, 37.4509803922%);
-
-$secondary-green-acc: hsl(152.2807017544, 100%, 33.5294117647%);
-$secondary-green: hsl(151.875, 95.0495049505%, 39.6078431373%);
-$secondary-green-light: hsl(143.3333333333, 91.1392405063%, 69.0196078431%);
-$secondary-green-dark: hsl(145.306122449, 100%, 28.8235294118%);
-
-$secondary-orange-acc: hsl(15.7894736842, 75.3303964758%, 55.4901960784%);
-$secondary-orange: hsl(16.9060773481, 90.0497512438%, 60.5882352941%);
-$secondary-orange-light: hsl(22.602739726, 100%, 71.3725490196%);
-$secondary-orange-dark: hsl(17.0414201183, 81.6425120773%, 40.5882352941%);
-
-$secondary-purple-acc: hsl(266.017699115, 48.4978540773%, 45.6862745098%);
-$secondary-purple:  hsl(265.5223880597, 55.3719008264%, 52.5490196078%);
-$secondary-purple-light: hsl(267.2340425532, 97.2413793103%, 71.568627451%);
-$secondary-purple-dark: hsl(264.0909090909, 77.6470588235%, 33.3333333333%);
-
-$secondary-teal-acc: hsl(176.6129032258, 50%, 48.6274509804%);;
-$secondary-teal: hsl(176.4179104478, 55.3719008264%, 52.5490196078%);
-$secondary-teal-light: hsl(175.8139534884, 96.992481203%, 73.9215686275%);
-$secondary-teal-dark: hsl(177.2368421053, 100%, 29.8039215686%);;
-
-$secondary-blue-acc: hsl(203.8410596026, 69.5852534562%, 42.5490196078%);
-$secondary-blue: hsl(204.0718562874, 69.8744769874%, 53.137254902%);
-$secondary-blue-light: hsl(203.1428571429, 100%, 72.5490196078%);
-$secondary-blue-dark: hsl(202.3668639053, 100%, 33.137254902%);
-
-$secondary-red: hsl(5.5609756098, 81.0276679842%, 50.3921568627%);
-$secondary-red-light: hsl(4.4680851064, 100%, 63.137254902%);
-$secondary-red-dark: hsl(10, 95.7446808511%, 36.862745098%);
-$secondary-red-acc: hsl(9.8550724638, 93.665158371%, 43.3333333333%);
-
 $data-full-sp-1: hsl(267.3913043478, 96.8421052632%, 62.7450980392%);
 $data-full-sp-2: hsl(297.3913043478, 70.3056768559%, 55.0980392157%);
 $data-full-sp-3: hsl(351.4285714286, 100%, 65.6862745098%);
@@ -90,50 +26,7 @@ $data-distr-sp-3: hsl(194.3661971831, 98.1566820276%, 42.5490196078%);
 $data-distr-sp-4: hsl(266.5648854962, 74.8571428571%, 65.6862745098%);
 $data-distr-sp-5: hsl(5.9668508287, 100%, 64.5098039216%);
 
-$dark-priority-2: hsl(0, 0%, 76.4705882353%);
-$dark-priority-3: hsl(0, 0%, 52.9411764706%);
-$dark-priority-disabled: hsl(0, 0%, 23.5294117647%);
 
-
-$system-hover-on-grey-dark-1: hsl(0, 0%, 15.2941176471%);
-$system-hover-on-grey-dark-3: hsl(0, 0%, 25.8823529412%);
-
-$dark-container: hsl(0, 0%, 17.6470588235%);
-
-$spacing-xxs-4: 2px;
-$spacing-xxs-3: 4px;
-$spacing-xxs-2: 6px;
-$spacing-xxs: 8px;
-$spacing-xs: 10px;
-$spacing-s: 12px;
-$spacing-m: 16px;
-$spacing-l: 20px;
-$spacing-xl: 24px;
-$spacing-xxl: 28px;
-$spacing-xxl-2: 32px;
-$spacing-xxl-3: 36px;
-$spacing-xxl-4: 48px;
-$spacing-xxl-5: 60px;
-$spacing-xxl-6: 70px;
-
-
-$font-size-t: 0.5rem; //8px
-$font-size-xxs: 0.625rem; //10px
-$font-size-xs: 0.75rem; //12px
-$font-size-s: 0.875rem; //14px
-$font-size-m: 1rem; //16px
-$font-size-ml: 1.125rem; // 18px
-$font-size-l: 1.25rem; //20px
-$font-size-h3: 1.625rem; //26px
-$font-size-h2: 2.25rem; //36px
-$font-size-h1: 2.75rem; //44px
-
-// https://stackoverflow.com/questions/5687035/css-bolding-some-text-without-changing-its-containers-size
-$text-shadow-700: -0.03ex 0 0 currentColor, 0.03ex 0 0 currentColor; // font-weight 700
-
-
-$scrollbar-width: 8px;
-$scrollbar-color: #acacac;
 
 
 $zindex-base: 0;
@@ -143,10 +36,8 @@ $zindex-tooltip: 20;
 $zindex-sticky: 50;
 $zindex-dropdown: 60;
 $zindex-overlay: 80;
-$zindex-modal: 200; // twice as large as it should be (100 * 2) because TV-360 has z-index issues that precede this system
-$zindex-toasters: 250;  // same as above.
+$zindex-modal: 100;
+$zindex-toasters: 120;
 
-
-$border-radius-s: 5px;
 
 

@@ -1,4 +1,4 @@
-import { createContext, use } from "react";
+import { HTMLAttributes } from "react";
 
 export type XYDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -25,17 +25,12 @@ export type SegmentDataset = Array<{
 
 export type GraphContext = {
 	id: string;
-	dataset: XYDataset | SegmentDataset;
+	attributes: HTMLAttributes<HTMLDivElement>;
+	viewbox: { x: number; y: number };
+	data: XYDataset | SegmentDataset;
 	layout: { rows: string; columns: string };
 	domain: {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;
 		y: Array<{ coordinate: number; tick: string | number | Date }>;
 	};
-};
-
-export const GraphContext = createContext<GraphContext | undefined>(undefined);
-export const useGraph = () => {
-	const ctx = use(GraphContext);
-	if (!ctx) throw Error("useGraph must be used within a GraphProvider");
-	return ctx;
 };
