@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "bun test --watch"
+    "test": "bun test --watch",
+    "cypress": "cypress open"
   },
   "dependencies": {
     "next": "15.0.3",
