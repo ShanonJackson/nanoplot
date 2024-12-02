@@ -2,6 +2,8 @@
 import { Graph } from "@/components/Graph/Graph";
 import { ComponentProps, useState } from "react";
 import { ScatterGraph } from "@/components/ScatterGraph/ScatterGraph";
+import { XAxis } from "@/components/Axis/XAxis/XAxis";
+import { YAxis } from "@/components/Axis/YAxis/YAxis";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
@@ -19,7 +21,9 @@ export default function Page() {
 						};
 					})}
 				>
+					<YAxis />
 					<ScatterGraph />
+					<XAxis />
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
