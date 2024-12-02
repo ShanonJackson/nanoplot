@@ -1,7 +1,9 @@
 {
-  "name": "nanoplotx",
-  "version": "0.1.0",
-  "private": true,
+  "name": "nanoplot",
+  "version": "0.0.2",
+  "private": false,
+  "types": "dist/export/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
