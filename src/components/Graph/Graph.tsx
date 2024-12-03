@@ -3,6 +3,7 @@ import { GraphContext } from "@/hooks/use-graph";
 import { ChildrenUtils } from "@/utils/children/children";
 import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
+
 type Props = {
 	data: GraphContext["data"];
 	children: ReactNode;
@@ -23,8 +24,8 @@ export const Graph = ({ data, children }: Props) => {
 	const xMin = GraphUtils.isXYData(data) ? Math.min(...data.flatMap((line) => line.data.map((d) => +d.x))) : 0;
 	// generate 10 ticks between xmin and xmax
 	const xDomain = Array.from({ length: 10 }, (_, i) => ({
-		tick: MathUtils.scale(i, [0, 10], [xMin, xMax]),
-		coordinate: MathUtils.scale(i, [0, 10], [0, X_SCALE]),
+		tick: MathUtils.scale(i, [0, 9], [xMin, xMax]),
+		coordinate: MathUtils.scale(i, [0, 9], [0, X_SCALE]),
 	}));
 	console.log({ xMin, xMax, yMax });
 

@@ -2,20 +2,26 @@ import { Graph } from "@/components/Graph/Graph";
 import { GraphContext } from "@/hooks/use-graph";
 import styles from "./XAxis.module.scss";
 import { MathUtils } from "@/utils/math/math";
+import React from "react";
 
 type Props = {
 	context?: GraphContext;
 };
 
 export const XAxis = ({ context }: Props) => {
-	return <Graph.Row>
+	return <Graph.Row className={styles.base}>
 		{context?.domain.x.map((dp, i) => {
 			const left = MathUtils.scale(dp.coordinate, 3000, 100)
 			return (
-				<div className={styles.tick} key={i} style={{left: `${left}%`}}>
-					{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
-				</div>
-			)
+				<React.Fragment key={i}>
+					<div className={styles.tick} style={{left: `${left}%`}}>
+						{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
+					</div>
+					<div className={styles.tickOpacity}>
+						{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
+					</div>
+				</React.Fragment>
+			);
 		})}
 	</Graph.Row>;
 };
