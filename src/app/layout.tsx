@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Navigation } from "@/components/Docs/Navigation/Navigation";
+import HeaderPage from "@/components/layout/Header-page";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,11 +14,14 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={"overflow-hidden"}>
+		<html lang="en" data-theme="light">
+			<body>
 				<div className={"grid grid-cols-[min-content_minmax(0,1fr)] min-h-screen"}>
 					<Navigation />
-					<div>{children}</div>
+					<div className="flex flex-col gap-4">
+						<HeaderPage />
+						{children}
+					</div>
 				</div>
 			</body>
 		</html>

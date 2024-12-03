@@ -2,7 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background: black;
-    color: white;
+
+@layer base {
+  :root {
+    --background: 0deg 0% 100%;
+    --background-foreground: 200deg 27.27% 97.84%;
+    --foreground: 0deg 0% 0%;
+    --primary: 347.29deg 47.58% 51.37%;
+    --primary-foreground: 14.2deg 70.71% 53.14%;
+    --border: 100deg 0% 0%;
+  }
+  :root[data-theme="dark"] {
+    --background: 210deg 22.22% 10.59%;
+    --background-foreground: 205.71deg 18.92% 14.51%;
+    --foreground: 0deg 0% 100%;
+    --primary: 209.65deg 52.15% 31.96%;
+    --primary-foreground: 209.68deg 64.63% 28.82%;
+    --border: 0deg 0% 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer base {
+
+  * {
+    @apply box-border no-underline;
+  }
+
+  body {
+    @apply h-full w-full overflow-hidden bg-background text-foreground transition-colors duration-200;
+  }
+
 }
