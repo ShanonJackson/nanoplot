@@ -53,7 +53,6 @@ export const CoordinatesUtils = {
 					const next = domain.y[i + 1]; // no need to check for undefined because it can't be past max.
 					if (!next) return coord;
 					const { coordinate: nextCoordinate, tick: nextTick } = next;
-					// console.log({ tick, nextTick, value }, MathUtils.isBetween(+value, +tick, +nextTick));
 					if (MathUtils.isBetween(+value, +tick, +nextTick)) {
 						return MathUtils.scale(value, [+tick, +nextTick], [coordinate, nextCoordinate]);
 					}

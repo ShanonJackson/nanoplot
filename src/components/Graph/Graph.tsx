@@ -27,7 +27,6 @@ export const Graph = ({ data, children }: Props) => {
 		tick: MathUtils.scale(i, [0, 9], [xMin, xMax]),
 		coordinate: MathUtils.scale(i, [0, 9], [0, X_SCALE]),
 	}));
-	console.log({ xMin, xMax, yMax });
 
 	const ctx: GraphContext = ChildrenUtils.context(children, {
 		id,
@@ -38,11 +37,6 @@ export const Graph = ({ data, children }: Props) => {
 		attributes: {
 			className: "relative grid h-full w-full",
 		},
-	});
-
-	console.log({
-		xDomain,
-		yDomain,
 	});
 
 	return (
