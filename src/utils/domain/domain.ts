@@ -5,8 +5,8 @@
 	{from: 0, to: 100, jumps: 10, format: (x) => x.toFixed(2)}
 	{from: "min", to: "max", jumps: 5}
 	{from: "min", to: "max+10%", jumps: 5, rounding: "whole"}
-	{from: "min", to: "max - 35", jumps: "1 month"}
-	{from: "min - 10%", to: "max + 10%" jumps: "1 month", }
+	{from: "min", to: "max", jumps: "1 month"}
+	{from: "min - 10%", to: "max + 10%" jumps: "1 month"}
  */
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { ComponentProps } from "react";

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Navigation } from "@/components/Docs/Navigation/Navigation";
+import { Navigation } from "@/components/layout/Navigation";
 import HeaderPage from "@/components/layout/Header-page";
 import "./globals.css";
 
