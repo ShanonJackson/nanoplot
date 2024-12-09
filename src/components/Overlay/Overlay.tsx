@@ -11,7 +11,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 };
 const Overlay = ({ children, context, ...rest }: Props) => {
 	return (
-		<div {...rest} className={cx("absolute", styles.base, rest.className)}>
+		<div {...rest} className={cx("absolute top-0 left-0 col-[1/-1] row-[1/-1]", rest.className)}>
 			{children}
 		</div>
 	);
