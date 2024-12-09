@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 export function ThemeToggle() {
-	const [theme, setTheme] = useState<string>("light");
+	// get current theme from local storage
+	const [theme, setTheme] = useState<string>(localStorage.getItem("nano-theme") || "light");
+
 	const toggleTheme = () => {
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
+		localStorage.setItem("nano-theme", newTheme);
 		document.documentElement.setAttribute("data-theme", newTheme);
 	};
+
+	useLayoutEffect(() => {
+		document.documentElement.setAttribute("data-theme", theme);
+	}, [theme]);
 
 	return (
 		<button
