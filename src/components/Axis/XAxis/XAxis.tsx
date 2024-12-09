@@ -3,7 +3,13 @@ import { GraphContext } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
 
+type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
+type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
+type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
+type Jumps = `every ${number} ${interval}` | number;
+
 type Props = {
+	ticks: { from: From; to: To; jumps: Jumps };
 	context?: GraphContext;
 };
 
