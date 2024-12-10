@@ -8,6 +8,7 @@ import { DomainUtils } from "@/utils/domain/domain";
 type Props = {
 	data: GraphContext["data"];
 	gap?: { top?: number; right?: number; bottom?: number; left?: number };
+	interactions?: { hovered?: string[]; pinned?: string[] } /* array of names or ids */;
 	children: ReactNode;
 };
 

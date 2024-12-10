@@ -4,11 +4,13 @@ import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { Control } from "@/components/Docs/Control/Control";
 import { ComponentProps, useState } from "react";
+import { Legend } from "@/components/Legend/Legend";
 
 export default function Page() {
 	const [pie, setPie] = useState<ComponentProps<typeof PieGraph>>({
 		loading: false,
 		donut: false,
+		labels: true,
 	});
 	const setPiePartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
@@ -28,9 +30,17 @@ export default function Page() {
 						description={"Renders a donut chart instead of a pie chart"}
 					/>
 				</Control>
+				<Control name={"labels"} type={"boolean"}>
+					<BooleanControl
+						value={Boolean(pie.labels)}
+						onChange={(labels) => setPiePartial({ labels })}
+						description={"Renders labels on the pie chart"}
+					/>
+				</Control>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph data={MOCK_DATA}>
+					<Legend position={"top"} alignment={"center"} />
 					<PieGraph {...pie} />
 				</Graph>
 			</div>
