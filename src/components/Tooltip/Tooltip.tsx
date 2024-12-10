@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RefObject, useRef, useState } from "react";
+import { JSX, RefObject, useRef, useState } from "react";
 import { cx } from "../../utils/cx/cx";
 import styles from "./Tooltip.module.scss";
 import { Position, useTether } from "../../hooks/use-tether";

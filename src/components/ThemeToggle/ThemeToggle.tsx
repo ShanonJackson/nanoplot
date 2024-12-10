@@ -7,7 +7,7 @@ export function ThemeToggle() {
 	const toggleTheme = () => {
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
+		document.body.classList.toggle(newTheme);
 	};
 
 	return (

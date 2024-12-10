@@ -1,6 +1,5 @@
 import { Graph } from "@/components/Graph/Graph";
-import { GraphContext } from "@/hooks/use-graph";
-import styles from "./XAxis.module.scss";
+import { GraphContext, useGraphColumn } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
 
@@ -10,21 +9,23 @@ type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | 
 type Jumps = `every ${number} ${interval}` | number;
 
 type Props = {
-	ticks: { from: From; to: To; jumps: Jumps };
+	ticks?: { from: From; to: To; jumps: Jumps };
 	context?: GraphContext;
 };
 
 export const XAxis = ({ context }: Props) => {
+	if (!context) return null;
+	const column = useGraphColumn(context);
 	return (
-		<Graph.Row className={"flex pt-2"}>
+		<Graph.Row className={"flex relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			{context?.domain.x.map((dp, i) => {
 				const left = MathUtils.scale(dp.coordinate, 3000, 100);
 				return (
 					<React.Fragment key={i}>
-						<div className={styles.tick} style={{ left: `${left}%` }}>
+						<div className={"absolute -translate-x-1/2 size-1 dark:text-white"} style={{ left: `${left}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
-						<div className={styles.tickOpacity}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
+						<div className={"opacity-0"}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
 					</React.Fragment>
 				);
 			})}
@@ -40,5 +41,6 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 			rows: ctx.layout.rows + " min-content",
 			columns: ctx.layout.columns,
 		},
+		gap: {},
 	};
 };

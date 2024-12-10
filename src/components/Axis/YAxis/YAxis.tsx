@@ -10,9 +10,9 @@ type Props = {
 
 export const YAxis = ({ context }: Props) => {
 	return (
-		<Graph.Column className={"relative"} style={{ border: "1px solid pink" }}>
+		<Graph.Column className={"relative text-xs font-normal select-none dark:text-white"}>
 			{context?.domain.y.map((dp, i) => {
-				const top = 100 - MathUtils.scale(dp.coordinate, 3000, 100);
+				const top = MathUtils.scale(dp.coordinate, 3000, 100);
 				return (
 					<React.Fragment key={i}>
 						<div className={styles.tick} style={{ top: `${top}%` }}>

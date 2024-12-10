@@ -160,6 +160,7 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 			};
 		});
 
+
 	return paths.map(({ path, id }, index) => {
 		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 		return (

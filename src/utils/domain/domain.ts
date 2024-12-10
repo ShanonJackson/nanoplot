@@ -5,8 +5,8 @@
 	{from: 0, to: 100, jumps: 10, format: (x) => x.toFixed(2)}
 	{from: "min", to: "max", jumps: 5}
 	{from: "min", to: "max+10%", jumps: 5, rounding: "whole"}
-	{from: "min", to: "max", jumps: "1 month"}
-	{from: "min - 10%", to: "max + 10%" jumps: "1 month"}
+	{from: "min", to: "max - 35", jumps: "1 month"}
+	{from: "min - 10%", to: "max + 10%" jumps: "1 month", }
  */
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { ComponentProps } from "react";
@@ -57,7 +57,7 @@ export const DomainUtils = {
 	y: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min - 10%", to: "max - 10%", jumps: 5 },
+			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min - 10%", to: "max + 10%", jumps: 5 },
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.y)));
@@ -89,7 +89,7 @@ export const DomainUtils = {
 			})();
 			return Array.from({ length: jumps }, (_, i) => ({
 				tick: MathUtils.scale(i, [0, jumps - 1], [MIN, MAX]),
-				coordinate: MathUtils.scale(i, [0, jumps - 1], [0, viewbox.y]),
+				coordinate: MathUtils.scale(i, [0, jumps - 1], [viewbox.y, 0]),
 			}));
 		},
 	},

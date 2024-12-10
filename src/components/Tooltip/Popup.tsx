@@ -1,15 +1,16 @@
 import { cx } from "@/utils/cx/cx";
 import styles from "@/components/Tooltip/Tooltip.module.scss";
 import * as React from "react";
-import { HTMLAttributes, RefObject } from "react";
+import { HTMLAttributes, JSX, Ref, RefObject } from "react";
 import { Position } from "@/hooks/use-tether";
 
 type Props = HTMLAttributes<HTMLDivElement> & {
 	target: Position;
 	border?: string /* border color */;
+	ref?: Ref<HTMLDivElement>;
 };
 
-export const Popup = ({ target: { side, alignment }, border, children, ...rest }: Props, ref: RefObject<HTMLDivElement>) => {
+export const Popup = ({ ref, target: { side, alignment }, border, children, ...rest }: Props) => {
 	const transform = (() => {
 		if (alignment === "left") return "translate(-10%, 0)";
 		if (alignment === "right") return "translate(10%, 0)";
