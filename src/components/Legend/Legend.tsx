@@ -16,9 +16,13 @@ export const Legend = ({ context, position = "top", alignment = "left" }: Props)
 	return (
 		<Element
 			className={cx(
+				"absolute",
 				"flex",
 				"gap-2",
-				(position === "left" || position === "right") && "flex-col",
+				position === "right" && "flex-col top-0 bottom-0 right-0",
+				position === "left" && "flex-col top-0 bottom-0 left-0",
+				position === "bottom" && "bottom-0 left-0 right-0",
+				position === "top" && "top-0 left-0 right-0",
 				alignment === "left" && "justify-start",
 				alignment === "right" && "justify-end",
 				alignment === "center" && "justify-center",

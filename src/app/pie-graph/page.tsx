@@ -41,7 +41,9 @@ export default function Page() {
 			<div className={"border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
-					<PieGraph {...pie} />
+					<PieGraph {...pie} >
+						
+						</PieGraph>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
@@ -51,7 +53,7 @@ export default function Page() {
 
 const MOCK_DATA = [
 	{
-		name: "python python python python python",
+		name: "python",
 		value: 283,
 	},
 	{
@@ -59,7 +61,7 @@ const MOCK_DATA = [
 		value: 333,
 	},
 	{
-		name: "stylus stylus stylus stylus stylus stylus",
+		name: "stylus",
 		value: 257,
 	},
 	{

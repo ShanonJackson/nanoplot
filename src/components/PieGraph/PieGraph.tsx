@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, ReactNode } from "react";
 import { GraphContext } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
@@ -6,18 +6,19 @@ import styles from "./PieGraph.module.scss";
 import { cx } from "@/utils/cx/cx";
 import { ColorUtils } from "@/utils/color/color";
 import { GraphUtils } from "@/utils/graph/graph";
-
+import { overlay } from "../Overlay/Overlay";
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
 	context?: GraphContext;
+	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
+export const PieGraph = ({ donut, context, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 
@@ -115,7 +116,7 @@ export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 					{labels && (
 						<>
 							<path
-								className={styles.labelPath}
+								className={`${styles.labelPath} "Szymon"`}
 								key={segment.name}
 								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 									isRightAligned ? "l 100 0" : "l -100 0"
@@ -164,17 +165,23 @@ export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 			};
 		});
 
-	return paths.map(({ path, id }, index) => {
-		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
-		return (
-			<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={cx(styles.svg, donut && styles.svgDonut)}>
-				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
-					<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
-					<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
-				</filter>
-				<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-				<g id={glowId + id}>{path}</g>
-			</svg>
-		);
-	});
+		return <>
+		{donut && 
+		<overlay.div className="inset-0 flex items-center justify-center" >
+			{children}
+		</overlay.div>
+		}
+			{paths.map(({ path, id }, index) => {
+			/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
+			return (
+				<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={cx(styles.svg, donut && styles.svgDonut)}>
+					<filter id={shadowId + id} filterUnits="userSpaceOnUse">
+						<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
+						<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
+					</filter>
+					<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
+					<g id={glowId + id}>{path}</g>
+				</svg>
+			);
+		})}</>;
 };
