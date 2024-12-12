@@ -39,7 +39,7 @@ export const DropDown = ({ label, items, arrow = true, className = "", children 
 
 			<div
 				className={cx(
-					"absolute z-10 left-0 w-screen lg:w-fit mt-2 min-w-32 origin-top-right rounded-md shadow-lg ring-opacity-5 bg-primary-foreground invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200",
+					"absolute z-10 left-0 w-screen lg:w-fit mt-2 min-w-32 origin-top-right rounded-md shadow-lg ring-opacity-5 bg-primary invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200",
 					className,
 				)}
 			>
@@ -48,7 +48,7 @@ export const DropDown = ({ label, items, arrow = true, className = "", children 
 						<Link
 							href={item.value}
 							key={item.value}
-							className="flex items-center w-full px-4 py-2 text-sm cursor-pointer hover:bg-primary/10"
+							className="flex items-center w-full px-4 py-2 text-sm cursor-pointer hover:bg-primary-foreground"
 						>
 							{item.icon && <span className="mr-3">{item.icon}</span>}
 							{item.label}

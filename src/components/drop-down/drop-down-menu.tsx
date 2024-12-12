@@ -29,9 +29,9 @@ const DropdownMenu = ({ items }: IProp) => {
 
 			{isOpen && (
 				<div className="absolute z-10 top-16 left-0 w-screen h-screen bg-background shadow-md p-4" onClick={handleToggle}>
-					<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-						<div className="col-span-full grid grid-cols-2 md:col-span-2 lg:col-span-3 gap-6">
-							<h1 className="font-semibold text-sm text-primary-foreground col-span-full py-1 -mb-3 border-b border-primary-foreground/40">
+					<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 px-3 md:mx-6">
+						<div className="col-span-full grid grid-cols-2 md:grid-cols-3 md:col-span-2 lg:col-span-3 gap-6">
+							<h1 className="font-semibold text-sm text-primary-foreground col-span-full py-1 my-2 border-b border-primary-foreground/40">
 								COMPONENTS
 							</h1>
 							{Routes.map((route) => (
