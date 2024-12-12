@@ -7,7 +7,7 @@ export default function Home() {
 	const router = useRouter();
 	useEffect(() => {
 		/* Homepage pending, so just redirect so dev experience is better. */
-		router.push(Routes.PIE_GRAPH);
+		router.push(Routes?.[0].href);
 	}, []);
 	return <div />;
 }
