@@ -30,7 +30,7 @@ export default function Page() {
 						description={"Renders a donut chart instead of a pie chart"}
 					/>
 				</Control>
-				<Control name={"labels"} type={"boolean"}>
+				<Control name={"labels"} type={"boolean"} default={"true"}>
 					<BooleanControl
 						value={Boolean(pie.labels)}
 						onChange={(labels) => setPiePartial({ labels })}
@@ -51,7 +51,7 @@ export default function Page() {
 
 const MOCK_DATA = [
 	{
-		name: "python python python python python",
+		name: "python",
 		value: 283,
 	},
 	{
@@ -59,7 +59,7 @@ const MOCK_DATA = [
 		value: 333,
 	},
 	{
-		name: "stylus stylus stylus stylus stylus stylus",
+		name: "stylus",
 		value: 257,
 	},
 	{

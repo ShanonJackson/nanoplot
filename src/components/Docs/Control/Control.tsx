@@ -13,8 +13,8 @@ export const Control = ({ name, type, required, default: def, children }: Props)
 		<div className={"m-3"}>
 			<div className={"flex items-center dark:text-white"}>
 				<div className={"mr-1.5"}>{name}</div>
+				{def && <div className={"mr-1.5 text-gray-500"}>default: '{def}'</div>}
 				<div className={"mr-1.5 text-gray-400"}>{type}</div>
-				{def && <div>default: '{def}'</div>}
 				{required && <div className={"accent-red-500"}>Required</div>}
 			</div>
 			{children}
