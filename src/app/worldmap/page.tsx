@@ -33,7 +33,7 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-black dark:border-white"}>
+			<div className={"relative overflow-hidden border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {

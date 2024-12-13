@@ -16,6 +16,12 @@ export default {
 				foreground: "hsl(var(--foreground))",
 				border: "hsl(var(--border))",
 			},
+			scale: {
+				"102": "1.02",
+			},
+			maskImage: {
+				radial: "radial-gradient(circle, transparent 14%, black 14.1%)",
+			},
 		},
 	},
 	plugins: [],

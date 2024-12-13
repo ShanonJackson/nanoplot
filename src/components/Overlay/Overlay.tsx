@@ -12,7 +12,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 export const Overlay = ({ children, context, tag, ...rest }: Props) => {
 	return (
-		<div {...rest} className={cx("absolute", styles.base, rest.className)}>
+		<div {...rest} className={cx("[grid-area: graph]", rest.className)}>
 			{children}
 		</div>
 	);

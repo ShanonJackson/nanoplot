@@ -12,7 +12,10 @@ export function ThemeToggle() {
 		setTheme(newTheme);
 		localStorage.setItem("nano-theme", newTheme);
 	};
-	useLayoutEffect(() => void document.body.classList.toggle(theme), [theme]);
+	useLayoutEffect(() => {
+		document.body.classList.add(theme);
+		return () => document.body.classList.remove(theme);
+	}, [theme]);
 	if (!mounted) return null; /* fixes hydration error */
 	return (
 		<button
