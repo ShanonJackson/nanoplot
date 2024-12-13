@@ -10,13 +10,14 @@ import { GraphUtils } from "@/utils/graph/graph";
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
+	labels?: boolean;
 	context?: GraphContext;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, loading }: Props) => {
+export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 
@@ -111,33 +112,36 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 
 			const path = (
 				<g className={styles.rotate} key={i}>
-					<path
-						className={styles.labelPath}
-						key={segment.name}
-						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
-							isRightAligned ? "l 100 0" : "l -100 0"
-						}`}
-						style={{
-							color: segment.fill,
-						}}
-					/>
-
-					<g className={cx(styles.label, styles.rotate)}>
-						<text
-							aria-label={`${segment.name}-label`}
-							y={endLabelLine.y}
-							x={endLabelLine.x}
-							stroke={segment.stroke}
-							fill={segment.fill}
-							dx={isRightAligned ? 140 : -140}
-							style={{ textAnchor: isRightAligned ? "start" : "end" }}
-						>
-							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
-							<tspan className={styles.percent} dx={25}>
-								{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%
-							</tspan>
-						</text>
-					</g>
+					{labels && (
+						<>
+							<path
+								className={styles.labelPath}
+								key={segment.name}
+								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
+									isRightAligned ? "l 100 0" : "l -100 0"
+								}`}
+								style={{
+									color: segment.fill,
+								}}
+							/>
+							<g className={cx(styles.label, styles.rotate)}>
+								<text
+									aria-label={`${segment.name}-label`}
+									y={endLabelLine.y}
+									x={endLabelLine.x}
+									stroke={segment.stroke}
+									fill={segment.fill}
+									dx={isRightAligned ? 140 : -140}
+									style={{ textAnchor: isRightAligned ? "start" : "end" }}
+								>
+									<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+									<tspan className={styles.percent} dx={25}>
+										{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%
+									</tspan>
+								</text>
+							</g>
+						</>
+					)}
 					<path
 						className={styles.segment}
 						d={

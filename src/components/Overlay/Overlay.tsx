@@ -9,7 +9,8 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 	context?: GraphContext;
 	tag: HTMLElements;
 };
-const Overlay = ({ children, context, ...rest }: Props) => {
+
+export const Overlay = ({ children, context, tag, ...rest }: Props) => {
 	return (
 		<div {...rest} className={cx("absolute", styles.base, rest.className)}>
 			{children}

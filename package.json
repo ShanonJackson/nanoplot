@@ -12,18 +12,17 @@
     "cypress": "cypress open"
   },
   "dependencies": {
-  
   },
   "devDependencies": {
     "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "@happy-dom/global-registrator": "^15.11.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.2",
     "bun-types": "^1.1.36",
     "cypress": "^13.16.0",
     "postcss": "^8",

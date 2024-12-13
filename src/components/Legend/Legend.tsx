@@ -1,16 +1,39 @@
 import { GraphContext } from "@/hooks/use-graph";
 import { Graph } from "../Graph/Graph";
 import { ReactNode } from "react";
+import { ColorUtils } from "@/utils/color/color";
+import { cx } from "@/utils/cx/cx";
 
 type Props = {
 	position?: "top" | "bottom" | "left" | "right";
+	alignment?: "center" | "left" | "right";
 	children?: ReactNode;
 	context?: GraphContext;
 };
 
-export const Legend = ({ context, position = "top" }: Props) => {
-	if (position === "left" || position === "right") return <Graph.Column>placeholder</Graph.Column>;
-	return <Graph.Row>placeholder</Graph.Row>;
+export const Legend = ({ context, position = "top", alignment = "left" }: Props) => {
+	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
+	return (
+		<Element
+			className={cx(
+				"flex",
+				"gap-2",
+				(position === "left" || position === "right") && "flex-col",
+				alignment === "left" && "justify-start",
+				alignment === "right" && "justify-end",
+				alignment === "center" && "justify-center",
+			)}
+		>
+			{context?.data?.map(({ name, stroke }, i, dps) => {
+				return (
+					<div key={i} className={"flex items-center"}>
+						<div className={"size-4 mr-1 rounded-full"} style={{ background: stroke ?? ColorUtils.colorFor(i, dps.length) }} />
+						<div>{name}</div>
+					</div>
+				);
+			})}
+		</Element>
+	);
 };
 
 Legend.context = (ctx: GraphContext, props: Props) => {

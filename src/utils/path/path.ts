@@ -1,4 +1,41 @@
 export const PathUtils = {
+	trend: (data: Array<{ x: number; y: number }>, viewbox: { x: number; y: number }) => {
+		const n = data.length;
+		const meanX = data.reduce((sum, point) => sum + point.x, 0) / n;
+		const meanY = data.reduce((sum, point) => sum + point.y, 0) / n;
+
+		// Calculate the slope (m) and y-intercept (b)
+		const { numerator, denominator } = data.reduce(
+			(acc, point) => {
+				acc.numerator += (point.x - meanX) * (point.y - meanY);
+				acc.denominator += (point.x - meanX) ** 2;
+				return acc;
+			},
+			{ numerator: 0, denominator: 0 },
+		);
+		const m = numerator / denominator;
+		const b = meanY - m * meanX;
+
+		// Define the start and end points of the trendline
+		const xValues = data.map((point) => point.x);
+		const minX = Math.min(...xValues);
+		const maxX = Math.max(...xValues);
+		const startY = m * minX + b;
+		const endY = m * maxX + b;
+
+		// Map the data coordinates to the SVG coordinate system
+		const xRange = maxX - minX;
+		const yRange = Math.max(...data.map((point) => point.y)) - Math.min(...data.map((point) => point.y));
+		const scaleX = viewbox.x / xRange;
+		const scaleY = viewbox.y / yRange;
+
+		// Convert coordinates to SVG space (flip the Y axis)
+		const svgStartX = (minX - minX) * scaleX;
+		const svgStartY = viewbox.y - (startY - Math.min(...data.map((point) => point.y))) * scaleY;
+		const svgEndX = (maxX - minX) * scaleX;
+		const svgEndY = viewbox.y - (endY - Math.min(...data.map((point) => point.y))) * scaleY;
+		return `M ${svgStartX} ${viewbox.y - svgStartY} L ${svgEndX} ${viewbox.y - svgEndY}`;
+	},
 	polarToCartesian: (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
 		const angleRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 		return {
