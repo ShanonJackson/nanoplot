@@ -4,14 +4,24 @@ import { ComponentProps, useState } from "react";
 import { ScatterGraph } from "@/components/ScatterGraph/ScatterGraph";
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { YAxis } from "@/components/Axis/YAxis/YAxis";
+import { Control } from "@/components/Docs/Control/Control";
+import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
-	const setPiePartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const setScatterPartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>PLACEHOLDER</div>
-			<div className={"border-[1px] h-full border-dotted border-white"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white"}>
+				<Control name={"trendline"} type={"boolean"}>
+					<BooleanControl
+						value={scatter.trendline}
+						onChange={(checked) => setScatterPartial({ trendline: checked })}
+						description={"Adds trendline to graph"}
+					/>
+				</Control>
+			</div>
+			<div className={"border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
 						return {
@@ -22,11 +32,11 @@ export default function Page() {
 					})}
 				>
 					<YAxis />
-					<ScatterGraph />
+					<ScatterGraph {...scatter} />
 					<XAxis />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
 		</div>
 	);
 }

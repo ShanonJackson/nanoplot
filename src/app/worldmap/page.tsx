@@ -14,7 +14,7 @@ export default function Page() {
 	const setPiePartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white"}>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
 					<SliderControl
 						value={map.translate?.x ?? 0}
@@ -33,7 +33,7 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-			<div className={"relative overflow-hidden border-[1px] h-full border-dotted border-white"}>
+			<div className={"relative overflow-hidden border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {
@@ -67,7 +67,7 @@ export default function Page() {
 					/>
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
 		</div>
 	);
 }

@@ -9,9 +9,10 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 	context?: GraphContext;
 	tag: HTMLElements;
 };
-const Overlay = ({ children, context, ...rest }: Props) => {
+
+export const Overlay = ({ children, context, tag, ...rest }: Props) => {
 	return (
-		<div {...rest} className={cx("absolute top-0 left-0 col-[1/-1] row-[1/-1]", rest.className)}>
+		<div {...rest} className={cx("[grid-area: graph]", rest.className)}>
 			{children}
 		</div>
 	);

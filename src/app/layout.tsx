@@ -16,7 +16,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" data-theme="light">
 			<body>
-				<div className={"grid grid-cols-[min-content_minmax(0,1fr)] min-h-screen"}>
+				<div className={"grid grid-cols-[min-content_minmax(0,1fr)] min-h-screen dark:bg-black"}>
 					<Navigation />
 					<div className="flex flex-col gap-4">
 						<HeaderPage />

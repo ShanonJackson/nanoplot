@@ -4,16 +4,18 @@ import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { Control } from "@/components/Docs/Control/Control";
 import { ComponentProps, useState } from "react";
+import { Legend } from "@/components/Legend/Legend";
 
 export default function Page() {
 	const [pie, setPie] = useState<ComponentProps<typeof PieGraph>>({
 		loading: false,
 		donut: false,
+		labels: true,
 	});
 	const setPiePartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white"}>
 				<Control name={"loading"} type={"boolean"}>
 					<BooleanControl
 						value={pie.loading}
@@ -28,20 +30,28 @@ export default function Page() {
 						description={"Renders a donut chart instead of a pie chart"}
 					/>
 				</Control>
+				<Control name={"labels"} type={"boolean"} default={"true"}>
+					<BooleanControl
+						value={Boolean(pie.labels)}
+						onChange={(labels) => setPiePartial({ labels })}
+						description={"Renders labels on the pie chart"}
+					/>
+				</Control>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-white"}>
+			<div className={"border-[1px] h-full border-dotted border-black dark:border-white"}>
 				<Graph data={MOCK_DATA}>
+					<Legend position={"top"} alignment={"center"} />
 					<PieGraph {...pie} />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
 		</div>
 	);
 }
 
 const MOCK_DATA = [
 	{
-		name: "python python python python python",
+		name: "python",
 		value: 283,
 	},
 	{
@@ -49,7 +59,7 @@ const MOCK_DATA = [
 		value: 333,
 	},
 	{
-		name: "stylus stylus stylus stylus stylus stylus",
+		name: "stylus",
 		value: 257,
 	},
 	{

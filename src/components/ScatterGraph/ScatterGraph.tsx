@@ -2,12 +2,14 @@ import { GraphContext } from "@/hooks/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
+import { PathUtils } from "@/utils/path/path";
 
 type Props = {
 	context?: GraphContext;
+	trendline?: boolean;
 };
 
-export const ScatterGraph = ({ context }: Props) => {
+export const ScatterGraph = ({ trendline, context }: Props) => {
 	if (!context) return null;
 	const { viewbox } = context;
 
@@ -29,12 +31,12 @@ export const ScatterGraph = ({ context }: Props) => {
 	});
 
 	return (
-		<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={"h-full w-full"}>
+		<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={"h-full w-full"} preserveAspectRatio={"none"}>
 			{dataset.map((d, i) => {
 				return (
 					<path
 						key={i}
-						d={d.data.map(({ x, y }, i) => `M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`).join(" ")}
+						d={d.data.map(({ x, y }) => `M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`).join(" ")}
 						strokeWidth={10}
 						stroke={d.stroke}
 						strokeLinecap={"round"}
@@ -43,6 +45,18 @@ export const ScatterGraph = ({ context }: Props) => {
 					/>
 				);
 			})}
+			{trendline && (
+				<path
+					vectorEffect={"non-scaling-stroke"}
+					strokeWidth={3}
+					strokeDasharray={"4,4"}
+					className={"stroke-black dark:stroke-white"}
+					d={PathUtils.trend(
+						dataset.flatMap(({ data }) => data),
+						context.viewbox,
+					)}
+				/>
+			)}
 		</svg>
 	);
 };

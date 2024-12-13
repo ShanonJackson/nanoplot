@@ -9,9 +9,9 @@ type Props = {
 
 export const YAxis = ({ context }: Props) => {
 	return (
-		<Graph.Column className={"relative"}>
+		<Graph.Column className={"relative text-xs font-normal select-none dark:text-white"}>
 			{context?.domain.y.map((dp, i) => {
-				const top = 100 - MathUtils.scale(dp.coordinate, 3000, 95);
+				const top = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
 						<div className={`absolute pl-1`} style={{ top: `${top - 5}%` }}>

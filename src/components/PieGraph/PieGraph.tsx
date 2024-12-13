@@ -9,13 +9,14 @@ import { GraphUtils } from "@/utils/graph/graph";
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
+	labels?: boolean;
 	context?: GraphContext;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, loading }: Props) => {
+export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 
@@ -110,29 +111,32 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 
 			const path = (
 				<g className={"transform origin-center rotate-180 group"} key={i}>
-					<path
-						className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180`}
-						key={segment.name}
-						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
-							isRightAligned ? "l 100 0" : "l -100 0"
-						}`}
-						stroke={segment.stroke}
-					/>
-
-					<g className={cx("text-7xl group-hover:text-9xl font-bold pointer-events-auto transform origin-center rotate-180")}>
-						<text
-							aria-label={`${segment.name}-label`}
-							y={endLabelLine.y}
-							x={endLabelLine.x}
-							stroke={segment.stroke}
-							fill={segment.fill}
-							dx={isRightAligned ? 140 : -140}
-							style={{ textAnchor: isRightAligned ? "start" : "end" }}
-						>
-							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
-							<tspan dx={25}>{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%</tspan>
-						</text>
-					</g>
+					{labels && (
+						<>
+							<path
+								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180`}
+								key={segment.name}
+								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
+									isRightAligned ? "l 100 0" : "l -100 0"
+								}`}
+								stroke={segment.stroke}
+							/>
+							<g className={cx("text-7xl font-bold pointer-events-auto transform origin-center rotate-180")}>
+								<text
+									aria-label={`${segment.name}-label`}
+									y={endLabelLine.y}
+									x={endLabelLine.x}
+									stroke={segment.stroke}
+									fill={segment.fill}
+									dx={isRightAligned ? 140 : -140}
+									style={{ textAnchor: isRightAligned ? "start" : "end" }}
+								>
+									<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+									<tspan dx={25}>{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%</tspan>
+								</text>
+							</g>
+						</>
+					)}
 					<path
 						className={
 							"transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto gorup-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:brightness-110 hover:scale-102"
@@ -166,7 +170,8 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 				role={"img"}
 				className={cx(
 					"[grid-area:graph] pointer-events-none h-full w-full has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current",
-					donut && "mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat]",
+					donut &&
+						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_14%,black_14.1%)]",
 				)}
 			>
 				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
