@@ -116,7 +116,7 @@ export const PieGraph = ({ donut, context, labels = true, loading, children }: P
 					{labels && (
 						<>
 							<path
-								className={`${styles.labelPath} "Szymon"`}
+								className={`${styles.labelPath}`}
 								key={segment.name}
 								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 									isRightAligned ? "l 100 0" : "l -100 0"
