@@ -11,12 +11,16 @@ export function ThemeToggle() {
 		const newTheme = theme === "light" ? "dark" : "light";
 		setTheme(newTheme);
 		localStorage.setItem("nano-theme", newTheme);
+		document.documentElement.setAttribute("data-theme", newTheme);
 	};
+
 	useLayoutEffect(() => {
-		document.body.classList.add(theme);
-		return () => document.body.classList.remove(theme);
+		document.documentElement.setAttribute("data-theme", theme);
+		return () => document.documentElement.setAttribute("data-theme", theme);
 	}, [theme]);
+
 	if (!mounted) return null; /* fixes hydration error */
+
 	return (
 		<button
 			onClick={onClick}
