@@ -1,22 +1,23 @@
-import { useId } from "react";
+import { useId, ReactNode } from "react";
 import { GraphContext } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
 import { cx } from "@/utils/cx/cx";
 import { ColorUtils } from "@/utils/color/color";
 import { GraphUtils } from "@/utils/graph/graph";
-
+import { overlay } from "../Overlay/Overlay";
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
 	context?: GraphContext;
+	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
+export const PieGraph = ({ donut, context, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 
@@ -161,7 +162,12 @@ export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 			};
 		});
 
-	return paths.map(({ path, id }, index) => {
+	return <>
+	{donut && 
+	<overlay.div className="absolute inset-0 flex items-center justify-center">
+		{children}
+	</overlay.div>}
+	{paths.map(({ path, id }, index) => {
 		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 		return (
 			<svg
@@ -183,5 +189,5 @@ export const PieGraph = ({ donut, context, labels = true, loading }: Props) => {
 				{donut && <path className="" d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
 			</svg>
 		);
-	});
+	})}</>;
 };

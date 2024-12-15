@@ -41,7 +41,8 @@ export default function Page() {
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
-					<PieGraph {...pie} />
+					<PieGraph {...pie} >
+						</PieGraph>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
