@@ -17,9 +17,9 @@ export const XAxis = ({ context }: Props) => {
 	if (!context) return null;
 	const column = useGraphColumn(context);
 	return (
-		<Graph.Row className={"flex relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
+		<Graph.Row className={"flex items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			{context?.domain.x.map((dp, i) => {
-				const left = MathUtils.scale(dp.coordinate, 3000, 100);
+				const left = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
 						<div className={"absolute -translate-x-1/2 size-1 dark:text-white"} style={{ left: `${left}%` }}>

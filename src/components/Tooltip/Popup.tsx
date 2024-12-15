@@ -79,7 +79,6 @@ export const Popup = ({ ref, target: { side, alignment }, border, children, ...r
 				transform,
 				...rest.style,
 				border: `1px solid ${border}`,
-				backgroundColor: border,
 			}}
 			className={cx(styles.base, tooltipPositionStyles, rest.className)}
 		>
