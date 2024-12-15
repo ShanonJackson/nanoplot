@@ -60,7 +60,6 @@ it("Should render children in pieGraph", () => {
 				{ name: "female", value: 50 },
 			]}
 		>
-			
 			<PieGraph donut={true}>
 				<ChildrenElement />
 			</PieGraph>

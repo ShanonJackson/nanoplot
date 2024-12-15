@@ -42,7 +42,6 @@ export default function Page() {
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
 					<PieGraph {...pie} >
-						
 						</PieGraph>
 				</Graph>
 			</div>

@@ -162,7 +162,12 @@ export const PieGraph = ({ donut, context, labels = true, loading, children }: P
 			};
 		});
 
-	return paths.map(({ path, id }, index) => {
+	return <>
+	{donut && 
+	<overlay.div className="absolute inset-0 flex items-center justify-center">
+		{children}
+	</overlay.div>}
+	{paths.map(({ path, id }, index) => {
 		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 		return (
 			<svg
@@ -184,5 +189,5 @@ export const PieGraph = ({ donut, context, labels = true, loading, children }: P
 				{donut && <path className="" d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
 			</svg>
 		);
-	});
+	})}</>;
 };
