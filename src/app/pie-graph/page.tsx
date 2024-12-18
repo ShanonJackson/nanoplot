@@ -39,7 +39,7 @@ export default function Page() {
 						description={"Renders labels on the pie chart"}
 					/>
 				</Control>
-				<Control name="HTML" type="text">
+				<Control name="children" type="ReactNode">
 					<HTMLControl 
 						html={pie.children?.toString() ?? ""} 
 						onChange={(children) => setPiePartial({ children })} />
