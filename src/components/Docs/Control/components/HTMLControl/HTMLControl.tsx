@@ -6,7 +6,7 @@ type Props = {
 export const HTMLControl = ({ html, onChange = Object }: Props) => {
 	return (
 		<label className={"flex items-center cursor-pointer"}>
-            <textarea value={html} onChange={(e) => onChange(e.target.value)}></textarea>
+            <textarea className={"[resize:both]"} value={html} onChange={(e) => onChange(e.target.value)}></textarea>
 		</label>
 	);
 };
