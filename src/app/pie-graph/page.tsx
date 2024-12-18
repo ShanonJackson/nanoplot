@@ -2,6 +2,7 @@
 import { PieGraph } from "@/components/PieGraph/PieGraph";
 import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
 import { Control } from "@/components/Docs/Control/Control";
 import { ComponentProps, useState } from "react";
 import { Legend } from "@/components/Legend/Legend";
@@ -11,6 +12,7 @@ export default function Page() {
 		loading: false,
 		donut: false,
 		labels: true,
+		children: ""
 	});
 	const setPiePartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
@@ -37,12 +39,18 @@ export default function Page() {
 						description={"Renders labels on the pie chart"}
 					/>
 				</Control>
+				<Control name="HTML" type="text">
+					<HTMLControl 
+						html={pie.children?.toString() ?? ""} 
+						onChange={(children) => setPiePartial({ children })} />
+				</Control>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
-					<PieGraph {...pie} >
-						</PieGraph>
+					<PieGraph {...pie}> 
+						{pie.children && <div dangerouslySetInnerHTML={{__html: pie.children.toString() ?? ""}}/>}
+					</PieGraph>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
