@@ -10,8 +10,9 @@ Step 2: Clone your Forked Repository
  3. Open Your Terminal: Open a terminal or command prompt on your local machine.
  4. Run the Clone Command: Use the git clone https//xxxx.git command to clone your forked repository:
 
-Step 3:  Navigate into Your Cloned Repository and install bun packages
-    cd nanoplot
+Step 3:  Navigate into Your Cloned Repository and install bun packages:
+    1. cd nanoplot.
+    2. 
 
     ```bash
     bun i
