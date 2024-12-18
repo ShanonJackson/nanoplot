@@ -28,7 +28,7 @@ export function ThemeToggle() {
 			aria-label="Toggle theme"
 		>
 			<span className="sr-only">Toggle theme</span>
-			{theme === "light" ? "🌙" : "☀️"}
+			{theme === "light" ? "☀️" : "🌙"}
 			{/* Debug display */}
 			<span className="ml-2 text-xs">{theme} mode</span>
 		</button>
