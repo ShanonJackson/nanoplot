@@ -6,6 +6,8 @@ import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { YAxis } from "@/components/Axis/YAxis/YAxis";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import GridLines from "@/components/GridLines/GridLines";
+import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
@@ -13,14 +15,44 @@ export default function Page() {
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
-				<Control name={"trendline"} type={"boolean"}>
+				<Control name={"Trend Line"} type={"boolean"}>
 					<BooleanControl
 						value={scatter.trendline}
 						onChange={(checked) => setScatterPartial({ trendline: checked })}
-						description={"Adds trendline to graph"}
+						description={"Adds Trendline To Graph"}
+					/>
+				</Control>
+				<Control name={"Border"} type={"boolean"}>
+					<BooleanControl
+						value={scatter.border}
+						onChange={(checked) => setScatterPartial({ border: checked })}
+						description={"Adds Border To Graph"}
+					/>
+				</Control>
+				<Control name={"Horizontal"} type={"boolean"}>
+					<BooleanControl
+						value={scatter.horizontal}
+						onChange={(checked) => setScatterPartial({ horizontal: checked })}
+						description={"Adds Horizontal Grid Lines"}
+					/>
+				</Control>
+				<Control name={"Vertical"} type={"boolean"}>
+					<BooleanControl
+						value={scatter.vertical}
+						onChange={(checked) => setScatterPartial({ vertical: checked })}
+						description={"Adds Vertical Grid Lines"}
+					/>
+				</Control>
+				<Control name={"Stroke Width"} type={"range"}>
+					<SliderControl
+						value={scatter.strokeWidth}
+						defaultValue={25}
+						onChange={(value) => setScatterPartial({ strokeWidth: value as number })}
+						description={"Adjust Stroke Width To Grid Lines"}
 					/>
 				</Control>
 			</div>
+
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
@@ -33,6 +65,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<ScatterGraph {...scatter} />
+					{/* <GridLines border></GridLines> */}
 					<XAxis />
 				</Graph>
 			</div>
