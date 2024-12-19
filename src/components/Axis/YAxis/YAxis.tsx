@@ -14,7 +14,7 @@ export const YAxis = ({ context }: Props) => {
 				const top = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
-						<div className={`absolute pl-1`} style={{ top: `${top - 5}%` }}>
+						<div className={`absolute pl-1`} style={{ top: `${top}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
 						<div className={`opacity-0 top-[${top}%]`}>

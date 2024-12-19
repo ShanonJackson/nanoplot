@@ -22,7 +22,7 @@ export const XAxis = ({ context }: Props) => {
 				const left = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
-						<div className={"absolute -translate-x-1/2 size-1 dark:text-white"} style={{ left: `${left}%` }}>
+						<div className={"absolute -translate-x-1/2 top-1 size-1 dark:text-white"} style={{ left: `${left}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
 						<div className={"opacity-0"}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
