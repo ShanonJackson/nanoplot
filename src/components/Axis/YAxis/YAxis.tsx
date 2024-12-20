@@ -20,6 +20,7 @@ export const YAxis = ({ context }: Props) => {
 						<div className={`opacity-0 top-[${top}%]`}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
+						<div className={`opacity-0`}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
 					</React.Fragment>
 				);
 			})}

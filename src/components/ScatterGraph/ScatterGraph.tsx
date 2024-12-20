@@ -31,7 +31,7 @@ export const ScatterGraph = ({ trendline, context }: Props) => {
 	});
 
 	return (
-		<svg viewBox={`0 0 ${x} ${y}`} className={"h-full w-full"} preserveAspectRatio={"none"}>
+		<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full"} preserveAspectRatio={"none"}>
 			{dataset.map((d, i) => {
 				return (
 					<path
