@@ -6,21 +6,48 @@ import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { YAxis } from "@/components/Axis/YAxis/YAxis";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import GridLines from "@/components/GridLines/GridLines";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+
 	const setScatterPartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
+
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
-				<Control name={"trendline"} type={"boolean"}>
+				<Control name={"Trend Line"} type={"boolean"}>
 					<BooleanControl
 						value={scatter.trendline}
 						onChange={(checked) => setScatterPartial({ trendline: checked })}
-						description={"Adds trendline to graph"}
+						description={"Adds Trendline To Graph"}
+					/>
+				</Control>
+				<Control name={"Border"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.border}
+						onChange={(checked) => setGridPartial({ border: checked })}
+						description={"Adds Border To Graph"}
+					/>
+				</Control>
+				<Control name={"Horizontal"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.horizontal}
+						onChange={(checked) => setGridPartial({ horizontal: checked })}
+						description={"Adds Horizontal Grid Lines"}
+					/>
+				</Control>
+				<Control name={"Vertical"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.vertical}
+						onChange={(checked) => setGridPartial({ vertical: checked })}
+						description={"Adds Vertical Grid Lines"}
 					/>
 				</Control>
 			</div>
+
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
@@ -33,6 +60,7 @@ export default function Page() {
 					gap={{ top: 50 }}
 				>
 					<YAxis />
+					<GridLines {...gridline} />
 					<ScatterGraph {...scatter} />
 					<XAxis />
 				</Graph>
