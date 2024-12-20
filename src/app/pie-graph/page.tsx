@@ -59,24 +59,24 @@ export default function Page() {
 }
 
 const MOCK_DATA = [
-	{
-		name: "python",
-		value: 283,
-	},
-	{
-		name: "elixir",
-		value: 333,
-	},
-	{
-		name: "stylus",
-		value: 257,
-	},
-	{
-		name: "css",
-		value: 30,
-	},
-	{
-		name: "haskell",
-		value: 192,
-	},
+	// {
+	// 	name: "python",
+	// 	value: 283,
+	// },
+	// {
+	// 	name: "elixir",
+	// 	value: 333,
+	// },
+	// {
+	// 	name: "stylus",
+	// 	value: 257,
+	// },
+	// {
+	// 	name: "css",
+	// 	value: 30,
+	// },
+	// {
+	// 	name: "haskell",
+	// 	value: 192,
+	// },
 ];

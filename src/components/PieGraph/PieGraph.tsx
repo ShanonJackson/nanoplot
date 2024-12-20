@@ -20,6 +20,7 @@ const PADDING_PERCENT = 0.8;
 export const PieGraph = ({ donut, context, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
+	const emptyId = useId();
 
 	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
 	const { data } = context;
@@ -43,6 +44,21 @@ export const PieGraph = ({ donut, context, labels = true, loading, children }: P
 					/>
 				</path>
 				{donut && <path className={""} d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
+			</svg>
+		);
+	}
+
+	if (!context.data.length) {
+		return (
+			<svg data-testid="pie-empty-state" role="img" viewBox="0 0 3000 3000" height="100%" width="100%">
+				<path
+					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
+					fill={`url(#${emptyId})`}
+				/>
+				<linearGradient id={emptyId} gradientTransform="rotate(90)">
+					<stop offset="0%" stop-color="#3c3c3c"></stop>
+					<stop offset="100%" stop-color="#3c3c3c" stop-opacity="0"></stop>
+				</linearGradient>
 			</svg>
 		);
 	}
@@ -162,32 +178,32 @@ export const PieGraph = ({ donut, context, labels = true, loading, children }: P
 			};
 		});
 
-	return <>
-	{donut && 
-	<overlay.div className="absolute inset-0 flex items-center justify-center">
-		{children}
-	</overlay.div>}
-	{paths.map(({ path, id }, index) => {
-		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
-		return (
-			<svg
-				key={index}
-				viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`}
-				role={"img"}
-				className={cx(
-					"[grid-area:graph] pointer-events-none h-full w-full has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current",
-					donut &&
-						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_14%,black_14.1%)]",
-				)}
-			>
-				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
-					<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
-					<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
-				</filter>
-				<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-				<g id={glowId + id}>{path}</g>
-				{donut && <path className="" d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
-			</svg>
-		);
-	})}</>;
+	return (
+		<>
+			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
+			{paths.map(({ path, id }, index) => {
+				/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
+				return (
+					<svg
+						key={index}
+						viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`}
+						role={"img"}
+						className={cx(
+							"[grid-area:graph] pointer-events-none h-full w-full has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current",
+							donut &&
+								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_14%,black_14.1%)]",
+						)}
+					>
+						<filter id={shadowId + id} filterUnits="userSpaceOnUse">
+							<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
+							<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
+						</filter>
+						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
+						<g id={glowId + id}>{path}</g>
+						{donut && <path className="" d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
+					</svg>
+				);
+			})}
+		</>
+	);
 };
