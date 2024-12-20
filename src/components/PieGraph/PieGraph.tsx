@@ -1,24 +1,26 @@
-import { useId } from "react";
+import { useId, ReactNode } from "react";
 import { GraphContext } from "@/hooks/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
-import styles from "./PieGraph.module.scss";
 import { cx } from "@/utils/cx/cx";
 import { ColorUtils } from "@/utils/color/color";
 import { GraphUtils } from "@/utils/graph/graph";
-
+import { overlay } from "../Overlay/Overlay";
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
+	labels?: boolean;
 	context?: GraphContext;
+	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, loading }: Props) => {
+export const PieGraph = ({ donut, context, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
+	const emptyId = useId();
 
 	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
 	const { data } = context;
@@ -41,7 +43,22 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 						keySplines="0.15 0.25 0.25 0.15; 0.15 0.25 0.25 0.15; 0 0 0 0"
 					/>
 				</path>
-				{donut && <path className={styles.center} d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
+				{donut && <path className={""} d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
+			</svg>
+		);
+	}
+
+	if (!context.data.length) {
+		return (
+			<svg data-testid="pie-empty-state" role="img" viewBox="0 0 3000 3000" height="100%" width="100%">
+				<path
+					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
+					fill={`url(#${emptyId})`}
+				/>
+				<linearGradient id={emptyId} gradientTransform="rotate(90)">
+					<stop offset="0%" stop-color="#3c3c3c"></stop>
+					<stop offset="100%" stop-color="#3c3c3c" stop-opacity="0"></stop>
+				</linearGradient>
 			</svg>
 		);
 	}
@@ -110,36 +127,37 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, X_SCALE, 100) > 50;
 
 			const path = (
-				<g className={styles.rotate} key={i}>
+				<g className={"transform origin-center rotate-180 group"} key={i}>
+					{labels && (
+						<>
+							<path
+								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180`}
+								key={segment.name}
+								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
+									isRightAligned ? "l 100 0" : "l -100 0"
+								}`}
+								stroke={segment.stroke}
+							/>
+							<g className={cx("text-7xl font-bold pointer-events-auto transform origin-center rotate-180")}>
+								<text
+									aria-label={`${segment.name}-label`}
+									y={endLabelLine.y}
+									x={endLabelLine.x}
+									stroke={segment.stroke}
+									fill={segment.fill}
+									dx={isRightAligned ? 140 : -140}
+									style={{ textAnchor: isRightAligned ? "start" : "end" }}
+								>
+									<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+									<tspan dx={25}>{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%</tspan>
+								</text>
+							</g>
+						</>
+					)}
 					<path
-						className={styles.labelPath}
-						key={segment.name}
-						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
-							isRightAligned ? "l 100 0" : "l -100 0"
-						}`}
-						style={{
-							color: segment.fill,
-						}}
-					/>
-
-					<g className={cx(styles.label, styles.rotate)}>
-						<text
-							aria-label={`${segment.name}-label`}
-							y={endLabelLine.y}
-							x={endLabelLine.x}
-							stroke={segment.stroke}
-							fill={segment.fill}
-							dx={isRightAligned ? 140 : -140}
-							style={{ textAnchor: isRightAligned ? "start" : "end" }}
-						>
-							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
-							<tspan className={styles.percent} dx={25}>
-								{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%
-							</tspan>
-						</text>
-					</g>
-					<path
-						className={styles.segment}
+						className={
+							"transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto gorup-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:brightness-110 hover:scale-102"
+						}
 						d={
 							PathUtils.describeArc(
 								X_SCALE / 2,
@@ -160,17 +178,32 @@ export const PieGraph = ({ donut, context, loading }: Props) => {
 			};
 		});
 
-	return paths.map(({ path, id }, index) => {
-		/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
-		return (
-			<svg key={index} viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`} role={"img"} className={cx(styles.svg, donut && styles.svgDonut)}>
-				<filter id={shadowId + id} filterUnits="userSpaceOnUse">
-					<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
-					<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
-				</filter>
-				<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-				<g id={glowId + id}>{path}</g>
-			</svg>
-		);
-	});
+	return (
+		<>
+			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
+			{paths.map(({ path, id }, index) => {
+				/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
+				return (
+					<svg
+						key={index}
+						viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`}
+						role={"img"}
+						className={cx(
+							"[grid-area:graph] pointer-events-none h-full w-full has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current",
+							donut &&
+								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_14%,black_14.1%)]",
+						)}
+					>
+						<filter id={shadowId + id} filterUnits="userSpaceOnUse">
+							<feDropShadow dx="0" dy="-150" stdDeviation="100" floodColor="#000000" floodOpacity="0.4" />
+							<feDropShadow dx="0" dy="200" stdDeviation="100" floodColor="#000000" floodOpacity="0.5" />
+						</filter>
+						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
+						<g id={glowId + id}>{path}</g>
+						{donut && <path className="" d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
+					</svg>
+				);
+			})}
+		</>
+	);
 };

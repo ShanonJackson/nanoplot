@@ -1,7 +1,12 @@
 import type { Config } from "tailwindcss";
 
 export default {
-	content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+	content: [
+		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	theme: {
 		extend: {
 			colors: {
@@ -16,8 +21,14 @@ export default {
 				foreground: "hsl(var(--foreground))",
 				border: "hsl(var(--border))",
 			},
+			scale: {
+				"102": "1.02",
+			},
+			maskImage: {
+				radial: "radial-gradient(circle, transparent 14%, black 14.1%)",
+			},
 		},
 	},
 	plugins: [],
 	darkMode: "class",
-} satisfies Config;
+};

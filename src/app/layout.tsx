@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Navigation } from "@/components/Docs/Navigation/Navigation";
+import { Navigation } from "@/components/layout/Navigation";
 import HeaderPage from "@/components/layout/Header-page";
 import "./globals.css";
 
@@ -16,9 +16,9 @@ export default function RootLayout({
 	return (
 		<html lang="en" data-theme="light">
 			<body>
-				<div className={"grid grid-cols-[min-content_minmax(0,1fr)] min-h-screen"}>
+				<div className={"flex w-screen h-screen overflow-hidden"}>
 					<Navigation />
-					<div className="flex flex-col gap-4">
+					<div className="flex-1 flex flex-col gap-4 overflow-hidden">
 						<HeaderPage />
 						{children}
 					</div>

@@ -57,7 +57,7 @@ export const DomainUtils = {
 	y: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min - 10%", to: "max - 10%", jumps: 5 },
+			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min - 10%", to: "max + 10%", jumps: 5 },
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.y)));
@@ -89,7 +89,7 @@ export const DomainUtils = {
 			})();
 			return Array.from({ length: jumps }, (_, i) => ({
 				tick: MathUtils.scale(i, [0, jumps - 1], [MIN, MAX]),
-				coordinate: MathUtils.scale(i, [0, jumps - 1], [0, viewbox.y]),
+				coordinate: MathUtils.scale(i, [0, jumps - 1], [viewbox.y, 0]),
 			}));
 		},
 	},
