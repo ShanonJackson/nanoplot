@@ -47,10 +47,9 @@ export const ScatterGraph = ({ trendline, context }: Props) => {
 			})}
 			{trendline && (
 				<path
-					vectorEffect={"non-scaling-stroke"}
 					strokeWidth={3}
 					strokeDasharray={"4,4"}
-					className={"stroke-black dark:stroke-white"}
+					className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
 					d={PathUtils.trend(
 						dataset.flatMap(({ data }) => data),
 						context.viewbox,

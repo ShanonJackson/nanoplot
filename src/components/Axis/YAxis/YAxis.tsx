@@ -11,13 +11,10 @@ export const YAxis = ({ context }: Props) => {
 	return (
 		<Graph.Column className={"relative text-xs font-normal select-none dark:text-white"}>
 			{context?.domain.y.map((dp, i) => {
-				const top = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
-						<div className={`absolute pl-1`} style={{ top: `${top}%` }}>
-							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
-						</div>
-						<div className={`opacity-0 top-[${top}%]`}>
+
+						<div className={`absolute -translate-y-1/2`} style={{ top: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
 						<div className={`opacity-0`}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>

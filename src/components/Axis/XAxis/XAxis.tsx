@@ -19,10 +19,13 @@ export const XAxis = ({ context }: Props) => {
 	return (
 		<Graph.Row className={"flex items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			{context?.domain.x.map((dp, i) => {
-				const left = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
-						<div className={"absolute -translate-x-1/2 top-1 size-1 dark:text-white"} style={{ left: `${left}%` }}>
+
+						<div
+							className={"absolute -translate-x-1/2 dark:text-white"}
+							style={{ left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}
+						>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>
 						<div className={"opacity-0"}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
@@ -41,6 +44,5 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 			rows: ctx.layout.rows + " min-content",
 			columns: ctx.layout.columns,
 		},
-		gap: {},
 	};
 };
