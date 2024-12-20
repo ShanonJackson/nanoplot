@@ -13,6 +13,7 @@ export const YAxis = ({ context }: Props) => {
 			{context?.domain.y.map((dp, i) => {
 				return (
 					<React.Fragment key={i}>
+
 						<div className={`absolute -translate-y-1/2`} style={{ top: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>

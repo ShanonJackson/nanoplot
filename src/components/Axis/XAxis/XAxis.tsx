@@ -21,6 +21,7 @@ export const XAxis = ({ context }: Props) => {
 			{context?.domain.x.map((dp, i) => {
 				return (
 					<React.Fragment key={i}>
+
 						<div
 							className={"absolute -translate-x-1/2 dark:text-white"}
 							style={{ left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}
