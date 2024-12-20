@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GraphContext, XYDataset } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
