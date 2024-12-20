@@ -9,8 +9,6 @@ type Props = {};
 
 export const Navigation = ({}: Props) => {
 	const path = usePathname();
-	console.log("path", path);
-
 	return (
 		<aside className={"h-screen min-w-[4.5rem] overflow-y-auto p-2 hidden lg:flex flex-col items-center gap-6"}>
 			<Link

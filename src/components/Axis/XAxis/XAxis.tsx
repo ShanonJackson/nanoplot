@@ -2,6 +2,7 @@ import { Graph } from "@/components/Graph/Graph";
 import { GraphContext, useGraph, useGraphColumn } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
+import { DomainUtils } from "@/utils/domain/domain";
 
 type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
 type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
@@ -9,7 +10,7 @@ type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | 
 type Jumps = `every ${number} ${interval}` | number;
 
 type Props = {
-	ticks?: { from: From; to: To; jumps: Jumps };
+	ticks?: { from?: From; to?: To; jumps?: Jumps };
 };
 
 export const XAxis = ({}: Props) => {
@@ -41,6 +42,11 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 			...ctx.layout,
 			rows: ctx.layout.rows + " min-content",
 			columns: ctx.layout.columns,
+		},
+		domain: {
+			...ctx.domain,
+			y: ctx.domain.y,
+			x: DomainUtils.x.ticks(ctx, props.ticks),
 		},
 	};
 };

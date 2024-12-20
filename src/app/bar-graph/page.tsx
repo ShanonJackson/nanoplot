@@ -9,7 +9,7 @@ export default function Page() {
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>PLACEHOLDER</div>
 			<div className={"border-[1px] h-full border-dotted border-white"}>
 				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
-					<YAxis />
+					<YAxis ticks={{ from: 0 }} />
 					<XAxis />
 				</Graph>
 			</div>

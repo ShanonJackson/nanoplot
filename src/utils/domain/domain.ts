@@ -18,7 +18,7 @@ export const DomainUtils = {
 	x: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min", to: "max", jumps: 10 },
+			{ from = "min", to = "max", jumps = 10 }: ComponentProps<typeof XAxis>["ticks"] = { from: "min", to: "max", jumps: 10 },
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */) {
@@ -65,7 +65,11 @@ export const DomainUtils = {
 	y: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min - 10%", to: "max + 10%", jumps: 5 },
+			{ from = "min - 10%", to = "max + 10%", jumps = 5 }: ComponentProps<typeof XAxis>["ticks"] = {
+				from: "min - 10%",
+				to: "max + 10%",
+				jumps: 5,
+			},
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.y)));

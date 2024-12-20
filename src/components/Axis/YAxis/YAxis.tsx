@@ -2,8 +2,16 @@ import { Graph } from "@/components/Graph/Graph";
 import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
+import { DomainUtils } from "@/utils/domain/domain";
 
-type Props = {};
+type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
+type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
+type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
+type Jumps = `every ${number} ${interval}` | number;
+
+type Props = {
+	ticks?: { from?: From; to?: To; jumps?: Jumps };
+};
 
 export const YAxis = ({}: Props) => {
 	const context = useGraph();
@@ -30,6 +38,11 @@ YAxis.context = (ctx: GraphContext, props: Props) => {
 			...ctx.layout,
 			rows: ctx.layout.rows,
 			columns: "max-content " + ctx.layout.columns,
+		},
+		domain: {
+			...ctx.domain,
+			x: ctx.domain.x,
+			y: DomainUtils.y.ticks(ctx, props.ticks),
 		},
 	};
 };

@@ -12,8 +12,6 @@ type Props = {
 
 export const Legend = ({ position = "top", alignment = "left" }: Props) => {
 	const context = useGraph();
-	console.log(useGraph);
-	console.log({ context });
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	return (
 		<Element
