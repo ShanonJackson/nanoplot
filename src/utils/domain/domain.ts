@@ -21,6 +21,14 @@ export const DomainUtils = {
 			{ from, to, jumps }: ComponentProps<typeof XAxis>["ticks"] = { from: "min", to: "max", jumps: 10 },
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
+			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */) {
+				const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d.x))));
+				return xValues.map((tick, i) => ({
+					tick,
+					coordinate: MathUtils.scale(i, xValues.length - 1, viewbox.x),
+				}));
+			}
+
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			if (min === max) return [{ tick: min, coordinate: viewbox.x }];

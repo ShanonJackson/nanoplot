@@ -15,7 +15,7 @@ export default function Page() {
 			<div className={"border-[1px] h-full border-dotted border-white"}>
 				<Graph
 					data={[
-						{name: "Hours Gamed", data: MOCK_DATA}
+						{name: "Hours Gamed", data: MOCK_DATA_CATEGORICAL}
 					]}
 					gap={{top: 15, left: 15, right: 36, bottom: 15}}
 				>
@@ -37,3 +37,13 @@ const MOCK_DATA = [
 	{ "x": 5, "y": 36 },
 	{ "x": 6, "y": 60 }
 ];
+
+
+const MOCK_DATA_CATEGORICAL = [
+	{ "x": "January", "y": 20 },
+	{ "x": "February", "y": 40 },
+	{ "x": "March", "y": 30 },
+	{ "x": "April", "y": 50 },
+	{ "x": "May", "y": 36 },
+	{ "x": "June", "y": 60 }
+]
