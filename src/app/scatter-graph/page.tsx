@@ -7,11 +7,14 @@ import { YAxis } from "@/components/Axis/YAxis/YAxis";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import GridLines from "@/components/GridLines/GridLines";
-import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+
 	const setScatterPartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
+
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
@@ -24,31 +27,23 @@ export default function Page() {
 				</Control>
 				<Control name={"Border"} type={"boolean"}>
 					<BooleanControl
-						value={scatter.border}
-						onChange={(checked) => setScatterPartial({ border: checked })}
+						value={gridline.border}
+						onChange={(checked) => setGridPartial({ border: checked })}
 						description={"Adds Border To Graph"}
 					/>
 				</Control>
 				<Control name={"Horizontal"} type={"boolean"}>
 					<BooleanControl
-						value={scatter.horizontal}
-						onChange={(checked) => setScatterPartial({ horizontal: checked })}
+						value={gridline.horizontal}
+						onChange={(checked) => setGridPartial({ horizontal: checked })}
 						description={"Adds Horizontal Grid Lines"}
 					/>
 				</Control>
 				<Control name={"Vertical"} type={"boolean"}>
 					<BooleanControl
-						value={scatter.vertical}
-						onChange={(checked) => setScatterPartial({ vertical: checked })}
+						value={gridline.vertical}
+						onChange={(checked) => setGridPartial({ vertical: checked })}
 						description={"Adds Vertical Grid Lines"}
-					/>
-				</Control>
-				<Control name={"Stroke Width"} type={"range"}>
-					<SliderControl
-						value={scatter.strokeWidth}
-						defaultValue={25}
-						onChange={(value) => setScatterPartial({ strokeWidth: value as number })}
-						description={"Adjust Stroke Width To Grid Lines"}
 					/>
 				</Control>
 			</div>
@@ -64,8 +59,8 @@ export default function Page() {
 					})}
 				>
 					<YAxis />
+					<GridLines {...gridline} />
 					<ScatterGraph {...scatter} />
-					{/* <GridLines border></GridLines> */}
 					<XAxis />
 				</Graph>
 			</div>
