@@ -1,16 +1,15 @@
 import React, { ReactNode } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { useGraph } from "@/hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 
 type Props = {
 	children?: ReactNode;
-	context?: GraphContext;
 };
 
-export const LineGraph = ({ children, context }: Props) => {
-	if (!context) return null;
+export const LineGraph = ({ children }: Props) => {
+	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
@@ -38,4 +37,3 @@ export const LineGraph = ({ children, context }: Props) => {
 		</svg>
 	);
 };
-

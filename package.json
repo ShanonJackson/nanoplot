@@ -12,6 +12,7 @@
     "cypress": "cypress open"
   },
   "dependencies": {
+    "server-only-context": "^0.1.0"
   },
   "devDependencies": {
     "next": "15.0.3",

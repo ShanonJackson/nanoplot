@@ -1,5 +1,5 @@
 import { Graph } from "@/components/Graph/Graph";
-import { GraphContext, useGraphColumn } from "@/hooks/use-graph";
+import { GraphContext, useGraph, useGraphColumn } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
 
@@ -10,18 +10,16 @@ type Jumps = `every ${number} ${interval}` | number;
 
 type Props = {
 	ticks?: { from: From; to: To; jumps: Jumps };
-	context?: GraphContext;
 };
 
-export const XAxis = ({ context }: Props) => {
-	if (!context) return null;
+export const XAxis = ({ ticks }: Props) => {
+	const context = useGraph();
 	const column = useGraphColumn(context);
 	return (
 		<Graph.Row className={"flex items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
-			{context?.domain.x.map((dp, i) => {
+			{context.domain.x.map((dp, i) => {
 				return (
 					<React.Fragment key={i}>
-
 						<div
 							className={"absolute -translate-x-1/2 dark:text-white"}
 							style={{ left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}

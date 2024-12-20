@@ -1,18 +1,16 @@
-import { GraphContext } from "@/export";
 import { cx } from "@/utils/cx/cx";
 import React from "react";
+import { useGraph } from "@/hooks/use-graph/use-graph";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
-	context?: GraphContext;
 	trendline?: boolean;
 	border?: boolean;
 	horizontal?: boolean;
 	vertical?: boolean;
 }
 
-export default function GridLines({ context, border, horizontal, vertical, className }: Props) {
-	if (!context) return null;
-
+export default function GridLines({ border, horizontal, vertical, className }: Props) {
+	const context = useGraph();
 	const { x, y } = context.viewbox;
 	const { domain } = context;
 	return (

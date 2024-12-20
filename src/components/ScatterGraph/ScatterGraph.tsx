@@ -1,16 +1,15 @@
-import { GraphContext } from "@/hooks/use-graph";
+import { useGraph } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { PathUtils } from "@/utils/path/path";
 
 type Props = {
-	context?: GraphContext;
 	trendline?: boolean;
 };
 
-export const ScatterGraph = ({ trendline, context }: Props) => {
-	if (!context) return null;
+export const ScatterGraph = ({ trendline }: Props) => {
+	const context = useGraph();
 	const { x, y } = context.viewbox;
 
 	if (!GraphUtils.isXYData(context.data)) return null;

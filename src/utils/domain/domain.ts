@@ -10,7 +10,7 @@
  */
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { ComponentProps } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 

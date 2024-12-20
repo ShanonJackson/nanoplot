@@ -1,19 +1,17 @@
 import { Graph } from "@/components/Graph/Graph";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import React from "react";
 
-type Props = {
-	context?: GraphContext;
-};
+type Props = {};
 
-export const YAxis = ({ context }: Props) => {
+export const YAxis = ({}: Props) => {
+	const context = useGraph();
 	return (
 		<Graph.Column className={"relative text-xs font-normal select-none dark:text-white"}>
-			{context?.domain.y.map((dp, i) => {
+			{context.domain.y.map((dp, i) => {
 				return (
 					<React.Fragment key={i}>
-
 						<div className={`absolute -translate-y-1/2`} style={{ top: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}>
 							{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 						</div>

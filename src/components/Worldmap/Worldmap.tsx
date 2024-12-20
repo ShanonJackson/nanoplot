@@ -2,7 +2,7 @@ import React, { ReactNode, useId } from "react";
 import { PathUtils } from "@/utils/path/path";
 import { MathUtils } from "@/utils/math/math";
 import { Popup } from "@/components/Tooltip/Popup";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { cx } from "@/utils/cx/cx";
 import { countries } from "@/utils/countries";
 
@@ -10,16 +10,12 @@ type Props = {
 	translate?: { x: number; y: number; scale: number };
 	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
 	children?: ReactNode;
-	context?: GraphContext;
 };
 
-export const Worldmap = ({ tooltips, translate, context, children }: Props) => {
+export const Worldmap = ({ tooltips, translate, children }: Props) => {
+	const { data } = useGraph();
 	const id = useId();
-
 	const [hovered, setHovered] = React.useState<string | null>(null);
-
-	if (!context) return null;
-	const { data } = context;
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
 
 	return (

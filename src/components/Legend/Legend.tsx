@@ -1,4 +1,4 @@
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { ReactNode } from "react";
 import { ColorUtils } from "@/utils/color/color";
@@ -8,10 +8,12 @@ type Props = {
 	position?: "top" | "bottom" | "left" | "right";
 	alignment?: "center" | "left" | "right";
 	children?: ReactNode;
-	context?: GraphContext;
 };
 
-export const Legend = ({ context, position = "top", alignment = "left" }: Props) => {
+export const Legend = ({ position = "top", alignment = "left" }: Props) => {
+	const context = useGraph();
+	console.log(useGraph);
+	console.log({ context });
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	return (
 		<Element
@@ -24,7 +26,7 @@ export const Legend = ({ context, position = "top", alignment = "left" }: Props)
 				alignment === "center" && "justify-center",
 			)}
 		>
-			{context?.data?.map(({ name, stroke }, i, dps) => {
+			{context.data?.map(({ name, stroke }, i, dps) => {
 				return (
 					<div key={i} className={"flex items-center"}>
 						<div className={"size-4 mr-1 rounded-full"} style={{ background: stroke ?? ColorUtils.colorFor(i, dps.length) }} />

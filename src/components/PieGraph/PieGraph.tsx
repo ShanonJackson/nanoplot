@@ -1,5 +1,5 @@
 import { useId, ReactNode } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
 import { cx } from "@/utils/cx/cx";
@@ -10,17 +10,17 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
-	context?: GraphContext;
 	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, context, labels = true, loading, children }: Props) => {
+export const PieGraph = ({ donut, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 	const emptyId = useId();
+	const context = useGraph();
 
 	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
 	const { data } = context;

@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
@@ -10,14 +10,14 @@ const PADDING_PERCENT = 0.8;
 const MIN_THRESHOLD = 4; // distance from center to render on graph when value is 0
 
 type Props = {
-	context?: GraphContext;
 	loading?: boolean;
 	scalars?: number[];
 	className?: string;
 };
 
-export const Radar = ({ context, scalars = [0, 20, 40, 60, 80, 100], loading, className }: Props) => {
-	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
+export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }: Props) => {
+	const context = useGraph();
+	if (!GraphUtils.isSegmentData(context.data)) return null;
 	const { data, viewbox } = context;
 	const isEmpty = !loading && context.data.length == 0;
 	const radius = (viewbox.x / 2) * PADDING_PERCENT;

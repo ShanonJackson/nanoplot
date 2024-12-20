@@ -1,4 +1,5 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, ReactNode, useContext } from "react";
+import { GraphContextClient } from "@/hooks/use-graph/use-client-graph";
 
 export type XYDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -34,11 +35,15 @@ export type GraphContext = {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;
 		y: Array<{ coordinate: number; tick: string | number | Date }>;
 	};
+	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
 };
 
 export const useGraphColumn = (ctx: GraphContext) => {
 	// parse grid-template-columns finding the column index + 1 with the name [graph]
 	// return the column index + 1
-
 	return ctx.layout.columns.split(" ").findIndex((col) => col.includes("[graph]")) + 1;
 };
+export const GraphContextProvider =
+	typeof window === "undefined" ? require("./use-server-graph").GraphContextServer : require("./use-client-graph").GraphContextClient;
+export const useGraph: () => GraphContext =
+	typeof window === "undefined" ? require("./use-server-graph").useGraphServer : require("./use-client-graph").useGraphClient;

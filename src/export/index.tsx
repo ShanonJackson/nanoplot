@@ -2,7 +2,7 @@
 	Everything exported here it's bundled into the final package.
  */
 export { Graph } from "../components/Graph/Graph";
-export type { GraphContext, XYDataset, SegmentDataset } from "../hooks/use-graph";
+export type { GraphContext, XYDataset, SegmentDataset } from "../hooks/use-graph/use-graph";
 export { XAxis } from "../components/Axis/XAxis/XAxis";
 export { YAxis } from "../components/Axis/YAxis/YAxis";
 

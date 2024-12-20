@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph/use-graph";
 
 export const ChildrenUtils = {
 	context: (children: ReactNode, initial: GraphContext): GraphContext => {
