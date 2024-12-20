@@ -30,6 +30,7 @@ export default function Page() {
 							data: [{ x: d.hours_studied, y: d.test_score }],
 						};
 					})}
+					gap={{ top: 50 }}
 				>
 					<YAxis />
 					<ScatterGraph {...scatter} />

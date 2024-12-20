@@ -44,7 +44,7 @@ export default function Page() {
 				</Control>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
-				<Graph data={MOCK_DATA}>
+				<Graph data={MOCK_DATA} gap={{ top: 30 }}>
 					<Legend position={"top"} alignment={"center"} />
 					<PieGraph {...pie}>
 						{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}

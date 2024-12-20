@@ -41,6 +41,5 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 			rows: ctx.layout.rows + " min-content",
 			columns: ctx.layout.columns,
 		},
-		gap: {},
 	};
 };
