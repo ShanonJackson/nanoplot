@@ -118,3 +118,19 @@ export const LineGraphIcon = ({ className }: IProps) => (
 		</g>
 	</svg>
 );
+
+export const BarGraphIcon = ({ className }: IProps) => (
+	<svg
+		className={cx("fill-primary-foreground stroke-background w-8 h-8", className)}
+		strokeWidth="2"
+		stroke="currentColor"
+		viewBox="3 2 20 20"
+		data-route="bar-graph"
+	>
+		<g id="SVGRepo_iconCarrier">
+			<rect x="6.28" y="11.98" width="4.78" height="10.52"></rect>
+			<rect x="15.85" y="8.15" width="4.78" height="14.35"></rect>
+			<rect x="11.07" y="3.37" width="4.78" height="19.13"></rect>
+		</g>
+	</svg>
+);
