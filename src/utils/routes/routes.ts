@@ -21,4 +21,9 @@ export const Routes = [
 		href: "/line-graph",
 		icon: LineGraphIcon,
 	},
+	{
+		name: "Radar Graph",
+		href: "/radar-graph",
+		icon: LineGraphIcon,
+	}
 ];
