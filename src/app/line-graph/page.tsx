@@ -17,6 +17,7 @@ export default function Page() {
 					data={[
 						{name: "Hours Gamed", data: MOCK_DATA}
 					]}
+					gap={{top: 15, left: 15, right: 36, bottom: 15}}
 				>
 					<YAxis />
 					<LineGraph />

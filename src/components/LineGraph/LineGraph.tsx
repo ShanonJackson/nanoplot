@@ -39,4 +39,3 @@ export const LineGraph = ({ children, context }: Props) => {
 	);
 };
 
-LineGraph.layout = "row";
