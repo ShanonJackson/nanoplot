@@ -12,7 +12,7 @@ type Props = {
 	ticks?: { from: From; to: To; jumps: Jumps };
 };
 
-export const XAxis = ({ ticks }: Props) => {
+export const XAxis = ({}: Props) => {
 	const context = useGraph();
 	const column = useGraphColumn(context);
 	return (
