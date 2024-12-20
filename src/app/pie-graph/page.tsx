@@ -12,7 +12,7 @@ export default function Page() {
 		loading: false,
 		donut: false,
 		labels: true,
-		children: ""
+		children: "",
 	});
 	const setPiePartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
@@ -40,16 +40,14 @@ export default function Page() {
 					/>
 				</Control>
 				<Control name="children" type="ReactNode">
-					<HTMLControl 
-						html={pie.children?.toString() ?? ""} 
-						onChange={(children) => setPiePartial({ children })} />
+					<HTMLControl html={pie.children?.toString() ?? ""} onChange={(children) => setPiePartial({ children })} />
 				</Control>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
-					<PieGraph {...pie}> 
-						{pie.children && <div dangerouslySetInnerHTML={{__html: pie.children.toString() ?? ""}}/>}
+					<PieGraph {...pie}>
+						{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}
 					</PieGraph>
 				</Graph>
 			</div>
