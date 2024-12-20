@@ -19,7 +19,7 @@ export const XAxis = ({ context }: Props) => {
 	return (
 		<Graph.Row className={"flex items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			{context?.domain.x.map((dp, i) => {
-				const left = MathUtils.scale(dp.coordinate, 3000, 95);
+        const left = MathUtils.scale(dp.coordinate, 3000, 95);
 				return (
 					<React.Fragment key={i}>
 						<div className={"absolute -translate-x-1/2 top-1 size-1 dark:text-white"} style={{ left: `${left}%` }}>
@@ -41,6 +41,6 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 			rows: ctx.layout.rows + " min-content",
 			columns: ctx.layout.columns,
 		},
-		gap: {},
+    gap: {},
 	};
 };
