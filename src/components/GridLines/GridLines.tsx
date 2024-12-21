@@ -21,7 +21,7 @@ export default function GridLines({ border, horizontal, vertical, className }: P
 					strokeWidth={3}
 					vectorEffect={"non-scaling-stroke"}
 					fill={"transparent"}
-					className={cx("stroke-foreground grid-line__border")}
+					className={cx("stroke-foreground grid-lines__border")}
 				/>
 			)}
 			{horizontal && (
@@ -30,7 +30,7 @@ export default function GridLines({ border, horizontal, vertical, className }: P
 					strokeWidth={3}
 					vectorEffect={"non-scaling-stroke"}
 					strokeDasharray="4, 7"
-					className={cx("stroke-foreground grid-line__horizontal")}
+					className={cx("stroke-foreground grid-lines__horizontal")}
 				/>
 			)}
 			{vertical && (
@@ -39,7 +39,7 @@ export default function GridLines({ border, horizontal, vertical, className }: P
 					strokeWidth={3}
 					vectorEffect={"non-scaling-stroke"}
 					strokeDasharray="4, 10"
-					className={cx("stroke-foreground grid-line__vertical")}
+					className={cx("stroke-foreground grid-lines__vertical")}
 				/>
 			)}
 		</svg>
