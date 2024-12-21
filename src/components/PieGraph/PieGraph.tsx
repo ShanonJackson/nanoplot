@@ -32,7 +32,7 @@ export const PieGraph = ({ donut, labels = true, loading, children }: Props) => 
 	if (loading) {
 		return (
 			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading} className={"h-full w-full"}>
-				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
+				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)} className={"[filter:brightness(300%)] dark:[filter:brightness(100%)]"}>
 					<animate
 						attributeName="fill"
 						values="#2d2d2d; #3c3c3c; #2d2d2d; #2d2d2d;"
