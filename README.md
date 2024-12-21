@@ -17,7 +17,9 @@ The world's smallest companies use our software to plot their data.
 
 ## Usage
 ```javascript
-import { Graph, Pie } from 'nanoplot';
+import "nanoplot/styles.css";
+import { Graph } from "nanoplot/graph";
+import { Pie } from "nanoplot/pie";
 
 <Graph data={[{name: "Male", value: 50}, {name: "Female", value: 50}]}>
     <Pie />
