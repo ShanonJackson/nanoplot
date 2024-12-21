@@ -1,18 +1,69 @@
 {
   "name": "nanoplot",
-  "version": "0.0.2",
+  "version": "0.0.9",
   "private": false,
-  "types": "dist/export/index.d.ts",
-  "main": "dist/index.js",
+  "exports": {
+    "./styles.css": "./dist/index.css",
+    "./sunburst": {
+      "import": "./dist/Sunburst/Sunburst.js",
+      "types": "./dist/Sunburst/Sunburst.d.ts"
+    },
+    "./bars": {
+      "import": "./dist/Bars/Bars.js",
+      "types": "./dist/Bars/Bars.d.ts"
+    },
+    "./lines": {
+      "import": "./dist/Lines/Lines.js",
+      "types": "./dist/Lines/Lines.d.ts"
+    },
+    "./pie": {
+      "import": "./dist/Pie/Pie.js",
+      "types": "./dist/Pie/Pie.d.ts"
+    },
+    "./scatter": {
+      "import": "./dist/Scatter/Scatter.js",
+      "types": "./dist/Scatter/Scatter.d.ts"
+    },
+    "./worldmap": {
+      "import": "./dist/Worldmap/Worldmap.js",
+      "types": "./dist/Worldmap/Worldmap.d.ts"
+    },
+    "./xaxis": {
+      "import": "./dist/XAxis/XAxis.js",
+      "types": "./dist/XAxis/XAxis.d.ts"
+    },
+    "./yaxis": {
+      "import": "./dist/YAxis/YAxis.js",
+      "types": "./dist/YAxis/YAxis.d.ts"
+    },
+    "./grid-lines": {
+      "import": "./dist/GridLines/GridLines.js",
+      "types": "./dist/GridLines/GridLines.d.ts"
+    },
+    "./radar": {
+      "import": "./dist/Radar/Radar.js",
+      "types": "./dist/Radar/Radar.d.ts"
+    },
+    "./legend": {
+      "import": "./dist/Legend/Legend.js",
+      "types": "./dist/Legend/Legend.d.ts"
+    },
+    "./graph": {
+      "import": "./dist/Graph/Graph.js",
+      "types": "./dist/Graph/Graph.d.ts"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:library": "tsc --p ./tsconfig.typings.json && bun run esbuild.js",
     "start": "next start",
     "test": "bun test --watch",
     "cypress": "cypress open"
   },
   "dependencies": {},
   "devDependencies": {
+    "@deanc/esbuild-plugin-postcss": "^1.0.2",
     "@happy-dom/global-registrator": "^15.11.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.0.1",
@@ -23,6 +74,9 @@
     "bun-css-loader": "^1.4.2",
     "bun-types": "^1.1.36",
     "cypress": "^13.16.0",
+    "esbuild": "^0.24.2",
+    "esbuild-plugin-sass": "^1.0.1",
+    "esbuild-sass-plugin": "^3.3.1",
     "next": "15.0.3",
     "postcss": "^8",
     "prettier": "^3.3.3",

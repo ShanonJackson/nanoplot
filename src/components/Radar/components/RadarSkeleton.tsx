@@ -1,7 +1,6 @@
-type Props = {
-
-}
+import React from "react";
+type Props = {};
 
 export const RadarSkeleton = ({}: Props) => {
-    return <div>placeholder</div>
-}
+	return <div>placeholder</div>;
+};

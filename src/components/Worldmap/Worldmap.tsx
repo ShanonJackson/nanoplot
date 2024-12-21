@@ -5,6 +5,7 @@ import { Popup } from "@/components/Tooltip/Popup";
 import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
 import { cx } from "@/utils/cx/cx";
 import { countries } from "@/utils/countries";
+import styles from "./Worldmap.module.scss";
 
 type Props = {
 	translate?: { x: number; y: number; scale: number };
@@ -15,7 +16,6 @@ type Props = {
 export const Worldmap = ({ tooltips, translate, children }: Props) => {
 	const { data } = useGraph();
 	const id = useId();
-	const [hovered, setHovered] = React.useState<string | null>(null);
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
 
 	return (
@@ -33,13 +33,11 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 						<path
 							key={i}
 							d={path}
-							fill={typeof dataset[iso]?.fill === "string" ? (dataset[iso].fill as string) : color}
+							fill={typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color}
 							stroke={dataset[iso]?.stroke ?? "white"}
 							strokeWidth={0.5}
 							data-iso={iso}
 							className={"hover:stroke-white hover:stroke-[1.5]"}
-							onMouseEnter={() => setHovered(iso)}
-							onMouseLeave={() => setHovered(null)}
 						/>
 					);
 				})}
@@ -52,7 +50,7 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 						target={{ side: "bottom", alignment: "center" }}
 						style={{ left: MathUtils.scale(x, 1090, 100) + "%", top: MathUtils.scale(y, 539, 100) + "%" }}
 						border={"rgb(45, 45, 45)"}
-						className={`!bg-gradient-to-r !from-[#015dc6] !to-[#a00766] pointer-events-none ${hovered === iso ? "block" : "hidden"}`}
+						className={cx(`!bg-gradient-to-r !from-[#015dc6] !to-[#a00766] pointer-events-none`, styles.tooltip)}
 						data-iso={iso}
 					>
 						<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
@@ -67,6 +65,6 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 Worldmap.context = (ctx: GraphContext, props: Props) => {
 	return {
 		...ctx,
-		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539]") },
+		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539]", styles.base) },
 	};
 };

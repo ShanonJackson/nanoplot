@@ -8,7 +8,7 @@
 	{from: "min", to: "max", jumps: "1 month"}
 	{from: "min - 10%", to: "max + 10%" jumps: "1 month"}
  */
-import { XAxis } from "@/components/Axis/XAxis/XAxis";
+import { XAxis } from "@/components/XAxis/XAxis";
 import { ComponentProps } from "react";
 import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";

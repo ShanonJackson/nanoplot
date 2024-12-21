@@ -1,14 +1,14 @@
 "use client";
 import { Graph } from "@/components/Graph/Graph";
 import { ComponentProps, useState } from "react";
-import { XAxis } from "@/components/Axis/XAxis/XAxis";
-import { YAxis } from "@/components/Axis/YAxis/YAxis";
-import { LineGraph } from "@/components/LineGraph/LineGraph";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
+import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof LineGraph>>({});
-	const setLinePartial = (partial: Partial<ComponentProps<typeof LineGraph>>) => setLine((prev) => ({ ...prev, ...partial }));
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
+	const setLinePartial = (partial: Partial<ComponentProps<typeof Lines>>) => setLine((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>PLACEHOLDER</div>
@@ -42,7 +42,7 @@ export default function Page() {
 				>
 					<Legend position={"top"} alignment={"center"} />
 					<YAxis />
-					<LineGraph />
+					<Lines />
 					<XAxis />
 				</Graph>
 			</div>

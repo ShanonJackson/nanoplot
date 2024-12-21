@@ -1,3 +1,4 @@
+import React from "react";
 import { useGraph } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
@@ -8,7 +9,7 @@ type Props = {
 	trendline?: boolean;
 };
 
-export const ScatterGraph = ({ trendline }: Props) => {
+export const Scatter = ({ trendline }: Props) => {
 	const context = useGraph();
 	const { x, y } = context.viewbox;
 

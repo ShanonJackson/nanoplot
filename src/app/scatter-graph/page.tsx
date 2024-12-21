@@ -1,18 +1,18 @@
 "use client";
 import { Graph } from "@/components/Graph/Graph";
 import { ComponentProps, useState } from "react";
-import { ScatterGraph } from "@/components/ScatterGraph/ScatterGraph";
-import { XAxis } from "@/components/Axis/XAxis/XAxis";
-import { YAxis } from "@/components/Axis/YAxis/YAxis";
+import { Scatter } from "@/components/Scatter/Scatter";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
-import GridLines from "@/components/GridLines/GridLines";
+import { GridLines } from "@/components/GridLines/GridLines";
 
 export default function Page() {
-	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
+	const [scatter, setScatter] = useState<ComponentProps<typeof Scatter>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 
-	const setScatterPartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const setScatterPartial = (partial: Partial<ComponentProps<typeof Scatter>>) => setScatter((prev) => ({ ...prev, ...partial }));
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 
 	return (
@@ -61,7 +61,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<ScatterGraph {...scatter} />
+					<Scatter {...scatter} />
 					<XAxis />
 				</Graph>
 			</div>

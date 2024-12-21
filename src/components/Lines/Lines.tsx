@@ -8,7 +8,7 @@ type Props = {
 	children?: ReactNode;
 };
 
-export const LineGraph = ({ children }: Props) => {
+export const Lines = ({ children }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);

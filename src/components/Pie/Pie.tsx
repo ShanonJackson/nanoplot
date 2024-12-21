@@ -1,11 +1,13 @@
-import { useId, ReactNode } from "react";
-import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
+import React from "react";
+import { ReactNode, useId } from "react";
+import { useGraph } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";
 import { cx } from "@/utils/cx/cx";
 import { ColorUtils } from "@/utils/color/color";
 import { GraphUtils } from "@/utils/graph/graph";
 import { overlay } from "../Overlay/Overlay";
+
 type Props = {
 	loading?: boolean;
 	donut?: boolean;
@@ -16,7 +18,7 @@ type Props = {
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const PieGraph = ({ donut, labels = true, loading, children }: Props) => {
+export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 	const shadowId = useId();
 	const glowId = useId();
 	const emptyId = useId();
@@ -32,7 +34,10 @@ export const PieGraph = ({ donut, labels = true, loading, children }: Props) => 
 	if (loading) {
 		return (
 			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading} className={"h-full w-full"}>
-				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)} className={"[filter:brightness(300%)] dark:[filter:brightness(100%)]"}>
+				<path
+					d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}
+					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)]"}
+				>
 					<animate
 						attributeName="fill"
 						values="#2d2d2d; #3c3c3c; #2d2d2d; #2d2d2d;"

@@ -17,10 +17,10 @@ The world's smallest companies use our software to plot their data.
 
 ## Usage
 ```javascript
-import { Graph, PieGraph } from 'nanoplot';
+import { Graph, Pie } from 'nanoplot';
 
 <Graph data={[{name: "Male", value: 50}, {name: "Female", value: 50}]}>
-    <PieGraph />
+    <Pie />
 </Graph>
 ```
 

@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
+import { useGraph } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 import { PathUtils } from "@/utils/path/path";

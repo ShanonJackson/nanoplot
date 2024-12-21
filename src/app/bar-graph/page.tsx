@@ -1,9 +1,9 @@
 "use client";
 import { Graph } from "@/components/Graph/Graph";
-import { XAxis } from "@/components/Axis/XAxis/XAxis";
-import { YAxis } from "@/components/Axis/YAxis/YAxis";
-import { VerticalBars } from "@/components/Bars/components/VerticalBars";
-import GridLines from "@/components/GridLines/GridLines";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
+import { GridLines } from "@/components/GridLines/GridLines";
+import { Bars } from "@/components/Bars/Bars";
 
 export default function Page() {
 	return (
@@ -13,7 +13,7 @@ export default function Page() {
 				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 30, bottom: 15 }}>
 					<YAxis ticks={{ from: 0 }} />
 					<GridLines border />
-					<VerticalBars />
+					<Bars />
 					<XAxis />
 				</Graph>
 			</div>

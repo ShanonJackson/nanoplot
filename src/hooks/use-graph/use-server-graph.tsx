@@ -1,3 +1,4 @@
+import React from "react";
 import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { cache, ReactNode } from "react";
 

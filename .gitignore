@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 /.idea
+/dist
 
 # testing
 /coverage

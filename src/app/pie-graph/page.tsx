@@ -1,5 +1,5 @@
 "use client";
-import { PieGraph } from "@/components/PieGraph/PieGraph";
+import { Pie } from "@/components/Pie/Pie";
 import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
@@ -8,13 +8,13 @@ import { ComponentProps, useState } from "react";
 import { Legend } from "@/components/Legend/Legend";
 
 export default function Page() {
-	const [pie, setPie] = useState<ComponentProps<typeof PieGraph>>({
+	const [pie, setPie] = useState<ComponentProps<typeof Pie>>({
 		loading: false,
 		donut: false,
 		labels: true,
 		children: "",
 	});
-	const setPiePartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setPie((prev) => ({ ...prev, ...partial }));
+	const setPiePartial = (partial: Partial<ComponentProps<typeof Pie>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
@@ -46,9 +46,7 @@ export default function Page() {
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
 				<Graph data={MOCK_DATA} gap={{ top: 30 }}>
 					<Legend position={"top"} alignment={"center"} />
-					<PieGraph {...pie}>
-						{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}
-					</PieGraph>
+					<Pie {...pie}>{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
