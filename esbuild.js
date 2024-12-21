@@ -35,13 +35,11 @@ await esbuild
 				transform: postcssModules({
 					filter: /\.module\.scss$/,
 					basedir: __dirname,
+					localsConvention: "camelCaseOnly",
 				}),
 			}), // Process SCSS
 			postCssPlugin({
 				plugins: [require("tailwindcss")(path.resolve(__dirname, "tailwind.config.ts")), require("autoprefixer")()],
-				modules: {
-					generateScopedName: "[name]__[local]___[hash:base64:5]", // Scoped class names for CSS Modules
-				},
 			}),
 		],
 	})

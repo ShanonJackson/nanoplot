@@ -50,7 +50,7 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 						target={{ side: "bottom", alignment: "center" }}
 						style={{ left: MathUtils.scale(x, 1090, 100) + "%", top: MathUtils.scale(y, 539, 100) + "%" }}
 						border={"rgb(45, 45, 45)"}
-						className={cx(`!bg-gradient-to-r !from-[#015dc6] !to-[#a00766] pointer-events-none`, styles.tooltip)}
+						className={cx(`bg-black pointer-events-none`, styles.tooltip)}
 						data-iso={iso}
 					>
 						<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
