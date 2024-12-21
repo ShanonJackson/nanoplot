@@ -7,7 +7,7 @@ export const WorldmapIcon = ({ className }: IProps) => (
 	<svg
 		viewBox="0 0 68 68"
 		enableBackground="new 0 0 64 64"
-		className={cx("[&_g>*]:fill-primary-foreground [&_g>_path]:fill-primary-foreground w-8 h-8", className)}
+		className={cx("[&_g>*]:fill-[hsl(14.2deg,70.71%,53.14%)] [&_g>*]:dark:fill-[hsl(210.5deg,68.97%,65.88%)] [&_g>_path]:fill-[hsl(14.2deg,70.71%,53.14%)] [&_g>_path]:dark:fill-[hsl(210.5deg,68.97%,65.88%)] w-8 h-8", className)}
 		strokeWidth="1.5"
 		data-route="worldmap"
 	>
@@ -56,7 +56,7 @@ export const WorldmapIcon = ({ className }: IProps) => (
 
 export const PieGraphIcon = ({ className }: IProps) => (
 	<svg
-		className={cx("fill-primary-foreground stroke-background w-8 h-8", className)}
+		className={cx("fill-[hsl(14.2deg,70.71%,53.14%)] dark:fill-[hsl(210.5deg,68.97%,65.88%)] stroke-[hsl(0deg,0%,100%)] dark:stroke-[hsl(210deg,22.22%,10.59%)] w-8 h-8", className)}
 		strokeWidth="2"
 		stroke="currentColor"
 		viewBox="3 2 28 28"
@@ -73,7 +73,7 @@ export const ScatterGraphIcon = ({ className }: IProps) => (
 	<svg
 		viewBox="0 0 16 16"
 		className={cx(
-			"[&_g>*]:fill-primary-foreground [&_g>*]:stroke-primary-foreground [&_g>_path]:stroke-primary-foreground w-8 h-8",
+			"[&_g>*]:fill-[hsl(14.2deg,70.71%,53.14%)] [&_g>*]:dark:fill-[hsl(210.5deg,68.97%,65.88%)] [&_g>*]:stroke-[hsl(14.2deg,70.71%,53.14%)] [&_g>*]:dark:stroke-[hsl(210.5deg,68.97%,65.88%)] [&_g>_path]:stroke-[hsl(14.2deg,70.71%,53.14%)] [&_g>_path]:dark:stroke-[hsl(210.5deg,68.97%,65.88%)] w-8 h-8",
 			className,
 		)}
 		data-route="scatter-graph"
@@ -90,7 +90,7 @@ export const ScatterGraphIcon = ({ className }: IProps) => (
 );
 
 export const LineGraphIcon = ({ className }: IProps) => (
-	<svg className={cx("fill-primary-foreground w-8 h-8", className)} viewBox="0 0 500 500" strokeWidth="1">
+	<svg className={cx("fill-[hsl(14.2deg,70.71%,53.14%)] dark:fill-[hsl(210.5deg,68.97%,65.88%)] w-8 h-8", className)} viewBox="0 0 500 500" strokeWidth="1">
 		<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
 		<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="10.24">
 			<g>
@@ -121,7 +121,7 @@ export const LineGraphIcon = ({ className }: IProps) => (
 
 export const BarGraphIcon = ({ className }: IProps) => (
 	<svg
-		className={cx("fill-primary-foreground stroke-background w-8 h-8", className)}
+		className={cx("fill-[hsl(14.2deg,70.71%,53.14%)] dark:fill-[hsl(210.5deg,68.97%,65.88%)] stroke-[hsl(0deg,0%,100%)] dark:stroke-[hsl(210deg,22.22%,10.59%)] w-8 h-8", className)}
 		strokeWidth="2"
 		stroke="currentColor"
 		viewBox="3 2 20 20"
