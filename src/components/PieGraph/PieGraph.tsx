@@ -50,16 +50,19 @@ export const PieGraph = ({ donut, labels = true, loading, children }: Props) => 
 
 	if (!context.data.length) {
 		return (
-			<svg data-testid="pie-empty-state" role="img" viewBox="0 0 3000 3000" height="100%" width="100%">
-				<path
-					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
-					fill={`url(#${emptyId})`}
-				/>
-				<linearGradient id={emptyId} gradientTransform="rotate(90)">
-					<stop offset="0%" stop-color="#3c3c3c"></stop>
-					<stop offset="100%" stop-color="#3c3c3c" stop-opacity="0"></stop>
-				</linearGradient>
-			</svg>
+			<>
+				<svg data-testid="pie-empty-state" role="img" viewBox="0 0 3000 3000" height="100%" width="100%">
+					<path
+						d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
+						fill={`url(#${emptyId})`}
+						className={"[filter:invert(1)] dark:[filter:invert(0)]"}
+					/>
+					<linearGradient id={emptyId} gradientTransform="rotate(90)">
+						<stop offset="0%" stop-color="#3c3c3c"></stop>
+						<stop offset="100%" stop-color="#3c3c3c" stop-opacity="0.2"></stop>
+					</linearGradient>
+				</svg>
+			</>
 		);
 	}
 
