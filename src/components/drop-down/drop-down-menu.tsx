@@ -28,34 +28,34 @@ const DropdownMenu = ({ items }: IProp) => {
 			</button>
 
 			{isOpen && (
-				<div className="absolute z-10 top-16 left-0 w-screen h-screen bg-background shadow-md p-4" onClick={handleToggle}>
+				<div className="absolute z-10 top-16 left-0 w-screen h-screen bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] shadow-md p-4" onClick={handleToggle}>
 					<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 px-3 md:mx-6">
 						<div className="col-span-full grid grid-cols-2 md:grid-cols-3 md:col-span-2 lg:col-span-3 gap-6">
-							<h1 className="font-semibold text-sm text-primary-foreground col-span-full py-1 my-2 border-b border-primary-foreground/40">
+							<h1 className="font-semibold text-sm text-[hsl(14.2deg,70.71%,53.14%)] dark:text-[hsl(210.5deg,68.97%,65.88%)] col-span-full py-1 my-2 border-b border-[hsl(14.2deg,70.71%,53.14%)] dark:border-[hsl(210.5deg,68.97%,65.88%)]/40">
 								COMPONENTS
 							</h1>
 							{Routes.map((route) => (
-								<Link key={route.name} href={route.href} className="text-foreground text-sm flex items-start gap-2">
+								<Link key={route.name} href={route.href} className="text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] text-sm flex items-start gap-2">
 									<route.icon className="w-14 h-14" />
 									<div>
 										<h2 className="font-semibold ">{route.name}</h2>
-										<div className="bg-primary text-xs text-white p-1 rounded-md w-fit">SVG</div>
+										<div className="bg-[hsl(347.29deg,47.58%,51.37%)] dark:bg-[hsl(209.65deg,52.15%,31.96%)] text-xs text-white p-1 rounded-md w-fit">SVG</div>
 									</div>
 								</Link>
 							))}
 						</div>
 
-						<div className="col-span-full md:col-span-1 grid grid-cols-2 md:grid-cols-1 gap-4 font-semibold text-sm text-primary">
-							<div className="flex flex-col text-primary-foreground">
-								<h2 className="border-b border-primary-foreground/40 py-1 mb-2">GUIDES</h2>
+						<div className="col-span-full md:col-span-1 grid grid-cols-2 md:grid-cols-1 gap-4 font-semibold text-sm text-[hsl(347.29deg,47.58%,51.37%)] dark:text-[hsl(209.65deg,52.15%,31.96%)]">
+							<div className="flex flex-col text-[hsl(14.2deg,70.71%,53.14%)] dark:text-[hsl(210.5deg,68.97%,65.88%)]">
+								<h2 className="border-b border-[hsl(14.2deg,70.71%,53.14%)] dark:border-[hsl(210.5deg,68.97%,65.88%)]/40 py-1 mb-2">GUIDES</h2>
 								{guideItems.map((guide) => (
 									<Link key={guide.label} href={guide.value} className="py-1 text-xs">
 										{guide.label}
 									</Link>
 								))}
 							</div>
-							<div className="flex flex-col text-primary-foreground">
-								<h2 className="border-b border-primary-foreground/40 py-1 mb-2">OTHER</h2>
+							<div className="flex flex-col text-[hsl(14.2deg,70.71%,53.14%)] dark:text-[hsl(210.5deg,68.97%,65.88%)]">
+								<h2 className="border-b border-[hsl(14.2deg,70.71%,53.14%)] dark:border-[hsl(210.5deg,68.97%,65.88%)]/40 py-1 mb-2">OTHER</h2>
 								{nanoplotItems.map((guide) => (
 									<Link key={guide.label} href={guide.value} className="py-1 text-xs">
 										{guide.label}

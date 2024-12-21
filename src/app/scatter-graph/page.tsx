@@ -17,7 +17,7 @@ export default function Page() {
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Control name={"Trend Line"} type={"boolean"}>
 					<BooleanControl
 						value={scatter.trendline}
@@ -48,7 +48,7 @@ export default function Page() {
 				</Control>
 			</div>
 
-			<div className={"border-[1px] h-full border-dotted border-foreground"}>
+			<div className={"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
 						return {
@@ -65,7 +65,7 @@ export default function Page() {
 					<XAxis />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
 		</div>
 	);
 }

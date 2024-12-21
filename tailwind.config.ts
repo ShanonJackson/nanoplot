@@ -8,26 +8,7 @@ export default {
 		"./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
-		extend: {
-			colors: {
-				background: {
-					DEFAULT: "hsl(var(--background))",
-					foreground: "hsl(var(--foreground))",
-				},
-				primary: {
-					DEFAULT: "hsl(var(--primary))",
-					foreground: "hsl(var(--primary-foreground))",
-				},
-				foreground: "hsl(var(--foreground))",
-				border: "hsl(var(--border))",
-			},
-			scale: {
-				"102": "1.02",
-			},
-			maskImage: {
-				radial: "radial-gradient(circle, transparent 14%, black 14.1%)",
-			},
-		},
+
 	},
 	plugins: [],
 	darkMode: "selector",
