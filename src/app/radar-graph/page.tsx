@@ -13,7 +13,7 @@ export default function Page() {
 	const setRadarPartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setRadar((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Control name={"loading"} type={"boolean"}>
 					<BooleanControl
 						value={radar.loading}
@@ -22,7 +22,7 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-foreground"}>
+			<div className={"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Graph
 					gap={{ top: 30 }}
 					data={[
@@ -37,7 +37,7 @@ export default function Page() {
 					<Radar {...radar} />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
 		</div>
 	);
 }
