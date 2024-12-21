@@ -62,7 +62,6 @@ await esbuild
 			}),
 		],
 		minify: true, // Minify the CSS output
-		sourcemap: true, // Include source maps
 	})
 	.catch(() => process.exit(1));
 
@@ -78,3 +77,7 @@ components.forEach((component) => {
 	fs.renameSync(`./dist/components/${component}/${component}.d.ts`, `./dist/${component}/${component}.d.ts`);
 	fs.rmdirSync(`./dist/components/${component}`, { recursive: true });
 });
+
+// merge contents of ./dist/Worldmap/Worldmap.css and ./dist/index.css into ./dist/index.css
+fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Worldmap/Worldmap.css", "utf-8"));
+fs.unlinkSync("./dist/Worldmap/Worldmap.css");
