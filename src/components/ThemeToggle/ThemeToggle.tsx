@@ -16,7 +16,11 @@ export function ThemeToggle() {
 
 	useLayoutEffect(() => {
 		document.documentElement.setAttribute("data-theme", theme);
-		return () => document.documentElement.setAttribute("data-theme", theme);
+		document.body.classList.add(theme);
+		return () => {
+			document.documentElement.setAttribute("data-theme", theme);
+			document.body.classList.remove(theme);
+		};
 	}, [theme]);
 
 	if (!mounted) return null; /* fixes hydration error */
