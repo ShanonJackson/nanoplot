@@ -44,7 +44,7 @@ export const VerticalBars = ({ children, className }: Props) => {
 				return (
 					<path
 						key={index}
-						d={`M ${bar.x} ${context.viewbox.y} l${0} ${-bar.y} l${barWidth} 0 l0 ${bar.y} Z`}
+						d={`M ${bar.x - barWidth / 2} ${context.viewbox.y} l${0} ${-bar.y} l${barWidth} 0 l0 ${bar.y} Z`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}
