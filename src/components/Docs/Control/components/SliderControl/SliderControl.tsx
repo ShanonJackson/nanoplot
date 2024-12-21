@@ -1,4 +1,4 @@
-type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+type Props = Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> & {
 	value?: number;
 	onChange?: (value: number) => void;
 	description?: string;

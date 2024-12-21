@@ -37,7 +37,7 @@ YAxis.context = (ctx: GraphContext, props: Props) => {
 		layout: {
 			...ctx.layout,
 			rows: ctx.layout.rows,
-			columns: "max-content " + ctx.layout.columns,
+			columns: "min-content " + ctx.layout.columns,
 		},
 		domain: {
 			...ctx.domain,

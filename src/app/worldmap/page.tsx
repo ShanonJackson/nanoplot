@@ -11,24 +11,24 @@ export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
 		translate: { x: 0, y: 0, scale: 0 },
 	});
-	const setPiePartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
+	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
 					<SliderControl
 						value={map.translate?.x ?? 0}
-						onChange={(value) => setPiePartial({ translate: { y: 0, scale: 0, ...map.translate, x: value } })}
+						onChange={(value) => setMapPartial({ translate: { y: 0, scale: 0, ...map.translate, x: value } })}
 						description={`${map.translate?.x} x`}
 					/>
 					<SliderControl
 						value={map.translate?.y ?? 0}
-						onChange={(value) => setPiePartial({ translate: { x: 0, scale: 0, ...map.translate, y: value } })}
+						onChange={(value) => setMapPartial({ translate: { x: 0, scale: 0, ...map.translate, y: value } })}
 						description={`${map.translate?.y} y`}
 					/>
 					<SliderControl
 						value={map.translate?.scale ?? 0}
-						onChange={(value) => setPiePartial({ translate: { y: 0, x: 0, ...map.translate, scale: value } })}
+						onChange={(value) => setMapPartial({ translate: { y: 0, x: 0, ...map.translate, scale: value } })}
 						description={`${map.translate?.scale} scale`}
 					/>
 				</Control>
