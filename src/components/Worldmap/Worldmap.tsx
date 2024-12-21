@@ -28,16 +28,16 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
 			>
 				{Object.entries(countries).map(([iso, path], i) => {
-					const color = "#2c2c2c";
+					const color = iso === "??" ? "red": "#2c2c2c";
 					return (
 						<path
 							key={i}
 							d={path}
-							fill={typeof dataset[iso]?.fill === "string" ? (dataset[iso].fill as string) : color}
+							fill={color}
 							stroke={dataset[iso]?.stroke ?? "white"}
 							strokeWidth={0.5}
 							data-iso={iso}
-							className={"hover:stroke-white hover:stroke-[1.5]"}
+							className={(iso === "??" ? "animate-pulse" : "") + " hover:stroke-white hover:stroke-[1.5]"}
 							onMouseEnter={() => setHovered(iso)}
 							onMouseLeave={() => setHovered(null)}
 						/>
