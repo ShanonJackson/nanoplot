@@ -1,5 +1,4 @@
 "use client";
-import { PieGraph } from "@/components/PieGraph/PieGraph";
 import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { Control } from "@/components/Docs/Control/Control";
@@ -10,7 +9,7 @@ export default function Page() {
 	const [radar, setRadar] = useState<ComponentProps<typeof Radar>>({
 		loading: false,
 	});
-	const setRadarPartial = (partial: Partial<ComponentProps<typeof PieGraph>>) => setRadar((prev) => ({ ...prev, ...partial }));
+	const setRadarPartial = (partial: Partial<ComponentProps<typeof Radar>>) => setRadar((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
