@@ -4,6 +4,7 @@ import { cx } from "@/utils/cx/cx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Routes } from "@/utils/routes/routes";
+import Image from "next/image";
 
 type Props = {};
 
@@ -11,11 +12,8 @@ export const Navigation = ({}: Props) => {
 	const path = usePathname();
 	return (
 		<aside className={"h-screen min-w-[4.5rem] overflow-y-auto p-2 hidden lg:flex flex-col items-center gap-6"}>
-			<Link
-				href={"/"}
-				className="w-fit h-fit p-2 mb-2 text-xl font-serif rounded-full border-4 border-l-pink-500 border-t-red-500 border-r-blue-500 border-b-green-500"
-			>
-				NP
+			<Link href={"/"}>
+				<Image src={"/nanoplot_logo.jpg"} height={36} width={36} alt={"Logo"} className={"rounded-full"} />
 			</Link>
 
 			{Routes.map((route) => (
