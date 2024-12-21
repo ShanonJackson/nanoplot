@@ -23,9 +23,10 @@ export const DomainUtils = {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */) {
 				const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d.x))));
+				const tickWidth = viewbox.x / xValues.length;
 				return xValues.map((tick, i) => ({
 					tick,
-					coordinate: MathUtils.scale(i, xValues.length - 1, viewbox.x),
+					coordinate: i * tickWidth + tickWidth / 2,
 				}));
 			}
 
