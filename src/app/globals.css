@@ -38,3 +38,18 @@
   }
 
 }
+
+
+@keyframes pie-graph-loading {
+	0% { fill: #a7a7a7; }
+	30% { fill: #cdcdcd; }
+	60% { fill: #a7a7a7; }
+	100% { fill: #a7a7a7; }
+}
+
+@keyframes dark-pie-graph-loading {
+	0% { fill: #2d2d2d; }
+	30% { fill: #3c3c3c; }
+	60% { fill: #2d2d2d; }
+	100% { fill: #2d2d2d; }
+}

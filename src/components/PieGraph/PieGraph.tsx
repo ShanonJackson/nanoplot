@@ -32,17 +32,11 @@ export const PieGraph = ({ donut, labels = true, loading, children }: Props) => 
 	if (loading) {
 		return (
 			<svg viewBox={`0 0 3000 3000`} role="status" aria-busy={loading} className={"h-full w-full"}>
-				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}>
-					<animate
-						attributeName="fill"
-						values="#2d2d2d; #3c3c3c; #2d2d2d; #2d2d2d;"
-						dur="2s"
-						repeatCount="indefinite"
-						calcMode="spline"
-						keyTimes="0; 0.3; 0.6; 1"
-						keySplines="0.15 0.25 0.25 0.15; 0.15 0.25 0.25 0.15; 0 0 0 0"
-					/>
-				</path>
+				<path d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)} 
+					className="animate-[pie-graph-loading_ease-in-out_2s_infinite]
+							dark:animate-[dark-pie-graph-loading_ease-in-out_2s_infinite]">
+				</path> 
+
 				{donut && <path className={""} d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS * 0.65)} />}
 			</svg>
 		);

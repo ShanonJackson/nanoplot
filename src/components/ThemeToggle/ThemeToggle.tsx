@@ -12,6 +12,7 @@ export function ThemeToggle() {
 		setTheme(newTheme);
 		localStorage.setItem("nano-theme", newTheme);
 		document.documentElement.setAttribute("data-theme", newTheme);
+		document.documentElement.classList.toggle('dark', newTheme == "dark")
 	};
 
 	useLayoutEffect(() => {
