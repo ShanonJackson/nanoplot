@@ -5,6 +5,7 @@ import { ScatterGraph } from "@/components/ScatterGraph/ScatterGraph";
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { YAxis } from "@/components/Axis/YAxis/YAxis";
 import { LineGraph } from "@/components/LineGraph/LineGraph";
+import { Legend } from "@/components/Legend/Legend";
 
 export default function Page() {
 	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
@@ -15,10 +16,32 @@ export default function Page() {
 			<div className={"border-[1px] h-full border-dotted border-white"}>
 				<Graph
 					data={[
-						{name: "Hours Gamed", data: MOCK_DATA_CATEGORICAL}
+						{
+							name: "Josh - Hours gamed",
+							data: [
+								{ x: 1, y: 20 },
+								{ x: 2, y: 40 },
+								{ x: 3, y: 30 },
+								{ x: 4, y: 50 },
+								{ x: 5, y: 36 },
+								{ x: 6, y: 60 },
+							],
+						},
+						{
+							name: "Sally - Hours gamed",
+							data: [
+								{ x: 1, y: 5.25 },
+								{ x: 2, y: 10 },
+								{ x: 3, y: 25.4 },
+								{ x: 4, y: 36 },
+								{ x: 5, y: 40 },
+								{ x: 6, y: 35 },
+							],
+						},
 					]}
-					gap={{top: 15, left: 15, right: 36, bottom: 15}}
+					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
+					<Legend position={"top"} alignment={"center"} />
 					<YAxis />
 					<LineGraph />
 					<XAxis />
@@ -30,20 +53,10 @@ export default function Page() {
 }
 
 const MOCK_DATA = [
-	{ "x": 1, "y": 20 },
-	{ "x": 2, "y": 40 },
-	{ "x": 3, "y": 30 },
-	{ "x": 4, "y": 50 },
-	{ "x": 5, "y": 36 },
-	{ "x": 6, "y": 60 }
+	{ x: 1, y: 20 },
+	{ x: 2, y: 40 },
+	{ x: 3, y: 30 },
+	{ x: 4, y: 50 },
+	{ x: 5, y: 36 },
+	{ x: 6, y: 60 },
 ];
-
-
-const MOCK_DATA_CATEGORICAL = [
-	{ "x": "January", "y": 20 },
-	{ "x": "February", "y": 40 },
-	{ "x": "March", "y": 30 },
-	{ "x": "April", "y": 50 },
-	{ "x": "May", "y": 36 },
-	{ "x": "June", "y": 60 }
-]
