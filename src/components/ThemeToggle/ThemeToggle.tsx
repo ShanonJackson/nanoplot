@@ -1,26 +1,32 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
 import { useMounted } from "@/hooks/use-mounted";
+import { useRouter } from "next/navigation";
 
 export function ThemeToggle() {
 	const mounted = useMounted();
-	const [theme, setTheme] = useState<string>(typeof window !== "undefined" ? (localStorage.getItem("nano-theme") ?? "light") : "light");
+	const router = useRouter();
+
+	if (!mounted) return null; /* Hydration issue. */
+  
+	const theme =
+		document.cookie
+			.split(";")
+			.find((c) => c.includes("theme"))
+			?.split("=")[1] ?? "light";
 
 	const onClick = () => {
-		const newTheme = theme === "light" ? "dark" : "light";
-		setTheme(newTheme);
-		localStorage.setItem("nano-theme", newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-		document.documentElement.classList.toggle('dark', newTheme == "dark")
+		// parse cookie extract theme
+		document.cookie = `theme=${
+			document.cookie
+				.split(";")
+				.find((c) => c.includes("theme"))
+				?.split("=")[1] === "light"
+				? "dark"
+				: "light"
+		}; path=/;`;
+		router.refresh();
 	};
-
-	useLayoutEffect(() => {
-		document.documentElement.setAttribute("data-theme", theme);
-		return () => document.documentElement.setAttribute("data-theme", theme);
-	}, [theme]);
-
-	if (!mounted) return null; /* fixes hydration error */
 
 	return (
 		<button

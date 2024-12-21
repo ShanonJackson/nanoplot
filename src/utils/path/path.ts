@@ -36,6 +36,28 @@ export const PathUtils = {
 		const svgEndY = viewbox.y - (endY - Math.min(...data.map((point) => point.y))) * scaleY;
 		return `M ${svgStartX} ${viewbox.y - svgStartY} L ${svgEndX} ${viewbox.y - svgEndY}`;
 	},
+	annularArc: (x: number, y: number, startAngle: number, endAngle: number, innerRadius: number, outerRadius: number) => {
+		if (endAngle - startAngle >= 360) {
+			console.log("FULL");
+			return `M ${x - outerRadius} ${y} A ${outerRadius} ${outerRadius} 0 1 1 ${
+				x + outerRadius
+			} ${y} A ${outerRadius} ${outerRadius} 1 1 1 ${x - outerRadius} ${y} M ${
+				x - innerRadius
+			} ${y} A ${innerRadius} ${innerRadius} 0 1 1 ${x + innerRadius} ${y} A ${innerRadius} ${innerRadius} 1 1 1 ${
+				x - innerRadius
+			} ${y} Z`;
+		}
+		const [START, end] = [startAngle % 360, endAngle % 360];
+		const END = START > end ? end + 360 : end;
+		const point = (x: number, y: number, r: number, angle: number) => [
+			(x + Math.sin(angle) * r).toFixed(2),
+			(y - Math.cos(angle) * r).toFixed(2),
+		];
+		const [s, e] = [(START / 360) * 2 * Math.PI, (END / 360) * 2 * Math.PI];
+		const P = [point(x, y, innerRadius, s), point(x, y, outerRadius, s), point(x, y, outerRadius, e), point(x, y, innerRadius, e)];
+		const flag = e - s > Math.PI ? "1" : "0";
+		return `M ${P[0][0]} ${P[0][1]} L ${P[1][0]} ${P[1][1]} A ${outerRadius} ${outerRadius} 0 ${flag} 1 ${P[2][0]} ${P[2][1]} L ${P[3][0]} ${P[3][1]} A ${innerRadius} ${innerRadius}  0 ${flag} 0 ${P[0][0]} ${P[0][1]} Z`;
+	},
 	polarToCartesian: (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
 		const angleRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 		return {

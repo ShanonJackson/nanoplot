@@ -31,4 +31,9 @@ export const Routes = [
 		href: "/bar-graph",
 		icon: BarGraphIcon,
 	},
+	{
+		name: "Sunburst",
+		href: "/sunburst-graph",
+		icon: LineGraphIcon,
+	},
 ];
