@@ -23,14 +23,17 @@ export default function Page() {
 				</Control>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-foreground"}>
-				<Graph  gap={{ top: 30 }} data={[
-					{ name: "Demand", value: 70 },
-					{ name: "Travelability", value: 8 },
-					{ name: "Franchisability", value: 300 },
-					{ name: "Momentum", value: 90 },
-					{ name: "Longevity", value: 60 },
-					{ name: "Reach", value: 65 },
-				]}>
+				<Graph
+					gap={{ top: 30 }}
+					data={[
+						{ name: "Demand", value: 70 },
+						{ name: "Travelability", value: 8 },
+						{ name: "Franchisability", value: 300 },
+						{ name: "Momentum", value: 90 },
+						{ name: "Longevity", value: 60 },
+						{ name: "Reach", value: 65 },
+					]}
+				>
 					<Radar {...radar} />
 				</Graph>
 			</div>
@@ -38,26 +41,3 @@ export default function Page() {
 		</div>
 	);
 }
-
-const MOCK_DATA = [
-	{
-		name: "python",
-		value: 283,
-	},
-	{
-		name: "elixir",
-		value: 333,
-	},
-	{
-		name: "stylus",
-		value: 257,
-	},
-	{
-		name: "css",
-		value: 30,
-	},
-	{
-		name: "haskell",
-		value: 192,
-	},
-];

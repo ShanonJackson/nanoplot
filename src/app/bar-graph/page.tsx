@@ -3,6 +3,7 @@ import { Graph } from "@/components/Graph/Graph";
 import { XAxis } from "@/components/Axis/XAxis/XAxis";
 import { YAxis } from "@/components/Axis/YAxis/YAxis";
 import { VerticalBars } from "@/components/Bars/components/VerticalBars";
+import GridLines from "@/components/GridLines/GridLines";
 
 export default function Page() {
 	return (
@@ -10,8 +11,8 @@ export default function Page() {
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>PLACEHOLDER</div>
 			<div className={"border-[1px] h-full border-dotted border-white"}>
 				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 30, bottom: 15 }}>
-					<YAxis />
-					<YAxis />
+					<YAxis ticks={{ from: 0 }} />
+					<GridLines border />
 					<VerticalBars />
 					<XAxis />
 				</Graph>
