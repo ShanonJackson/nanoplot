@@ -4,8 +4,8 @@ import { MathUtils } from "@/utils/math/math";
 import React from "react";
 import { DomainUtils } from "@/utils/domain/domain";
 
-type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
-type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
+type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
+type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
 type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
 type Jumps = `every ${number} ${interval}` | number;
 
