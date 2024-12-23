@@ -13,9 +13,10 @@ type Props = {
 	ticks?: { from?: From; to?: To; jumps?: Jumps };
 	title?: ReactNode;
 	description?: ReactNode;
+	horizontal?: boolean;
 };
 
-export const YAxis = ({ title, description }: Props) => {
+export const YAxis = ({ title, description, horizontal }: Props) => {
 	const context = useGraph();
 	return (
 		<Graph.Column className={"flex relative text-xs font-normal select-none"}>
@@ -26,7 +27,7 @@ export const YAxis = ({ title, description }: Props) => {
 				</div>
 			)}
 			<div>
-				{context.domain.y.map((dp, i) => {
+				{context.domain?.[horizontal ? "x" : "y"].map((dp, i) => {
 					return (
 						<React.Fragment key={i}>
 							<div
