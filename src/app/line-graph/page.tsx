@@ -41,9 +41,9 @@ export default function Page() {
 					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
 					<Legend position={"top"} alignment={"center"} />
-					<YAxis />
+					<YAxis title={"title y axis"} description={"description y axis"} />
 					<Lines />
-					<XAxis />
+					<XAxis title={"title x axis"} description={"description x axis"} />
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
