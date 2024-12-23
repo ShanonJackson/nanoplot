@@ -57,7 +57,7 @@ export default function Page() {
 							data: [{ x: d.hours_studied, y: d.test_score }],
 						};
 					})}
-					gap={{ top: 50 }}
+					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
 					<YAxis title={"title y axis"} description={"description y axis"} />
 					<GridLines {...gridline} />
