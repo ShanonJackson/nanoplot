@@ -59,10 +59,10 @@ export default function Page() {
 					})}
 					gap={{ top: 50 }}
 				>
-					<YAxis />
+					<YAxis title={"title y axis"} description={"description y axis"} />
 					<GridLines {...gridline} />
 					<Scatter {...scatter} />
-					<XAxis />
+					<XAxis title={"title x axis"} description={"description x axis"} />
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
