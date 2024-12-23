@@ -32,7 +32,7 @@ export const VerticalBars = ({ children, className }: Props) => {
 		};
 	})[0];
 
-	const barWidth = bars.data[1].x - bars.data[1].x / 2;
+	const barWidth = context.viewbox.x / bars.data.length - 80;
 
 	return (
 		<svg
