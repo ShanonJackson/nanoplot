@@ -57,16 +57,16 @@ export default function Page() {
 }
 
 const MOCK_DATA = [
-	{ x: 57, y: "Jan" },
-	{ x: 91, y: "Feb" },
-	{ x: 83, y: "Mar" },
-	{ x: 74, y: "Apr" },
-	{ x: 51, y: "May" },
-	{ x: 63, y: "Jun" },
-	{ x: 71, y: "Jul" },
-	{ x: 73, y: "Aug" },
-	{ x: 68, y: "Sep" },
-	{ x: 93, y: "Oct" },
-	{ x: 84, y: "Nov" },
-	{ x: 48, y: "Dec" },
+	{ x: "Jan", y: 57 },
+	{ x: "Feb", y: 91 },
+	{ x: "Mar", y: 83 },
+	{ x: "Apr", y: 74 },
+	{ x: "May", y: 51 },
+	{ x: "Jun", y: 63 },
+	{ x: "Jul", y: 71 },
+	{ x: "Aug", y: 73 },
+	{ x: "Sep", y: 68 },
+	{ x: "Oct", y: 93 },
+	{ x: "Nov", y: 84 },
+	{ x: "Dec", y: 48 },
 ];
