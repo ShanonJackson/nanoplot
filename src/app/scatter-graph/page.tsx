@@ -47,7 +47,6 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-
 			<div className={"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
