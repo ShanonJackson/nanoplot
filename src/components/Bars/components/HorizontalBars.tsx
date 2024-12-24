@@ -43,7 +43,7 @@ export const HorizontalBars = ({ children, className }: Props) => {
 				return (
 					<path
 						key={index}
-						d={`M 0 ${bar.x - barHeight / 2} l${bar.y} 0 l0 ${barHeight} l${-bar.y} 0 Z`}
+						d={`M 0 ${bar.x - barHeight / 2} l${bar.y} 0 l0 ${barHeight} l${-bar.y} 0`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}
