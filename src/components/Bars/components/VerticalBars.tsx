@@ -11,7 +11,6 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 
 export const VerticalBars = ({ children, className }: Props) => {
 	const context = useGraph();
-
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);

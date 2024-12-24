@@ -11,7 +11,6 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 
 export const HorizontalBars = ({ children, className }: Props) => {
 	const context = useGraph();
-
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
@@ -31,7 +30,7 @@ export const HorizontalBars = ({ children, className }: Props) => {
 		};
 	})[0];
 
-	const barHeight = context.viewbox.y / bars.data.length - 100;
+	const barHeight = context.viewbox.y / bars.data.length - 80;
 
 	return (
 		<svg
@@ -40,10 +39,11 @@ export const HorizontalBars = ({ children, className }: Props) => {
 			preserveAspectRatio={"none"}
 		>
 			{bars.data.map((bar, index) => {
+				console.log("bar", bar);
 				return (
 					<path
 						key={index}
-						d={`M 0 ${bar.x - barHeight / 2} l${bar.y} 0 l0 ${barHeight} l${-bar.y} 0`}
+						d={`M ${bar.x} ${bar.y} l${bar.x} 0 l0 ${barHeight} l${-bar.y} 0`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}

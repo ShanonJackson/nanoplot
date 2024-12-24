@@ -14,28 +14,20 @@ type Props = {
 	ticks?: { from?: From; to?: To; jumps?: Jumps };
 	title?: ReactNode;
 	description?: ReactNode;
-	horizontal?: boolean;
 };
 
-export const XAxis = ({ title, description, horizontal }: Props) => {
+export const XAxis = ({ title, description }: Props) => {
 	const context = useGraph();
 	const column = useGraphColumn(context);
 	return (
 		<Graph.Row className={"items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			<div className={"flex"}>
-				{context.domain?.[horizontal ? "y" : "x"].map((dp, i) => {
+				{context.domain.x.map((dp, i) => {
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={cx(
-									"absolute -translate-x-1/2 text-gray-700 dark:text-gray-300",
-									horizontal && "translate-x-1/2",
-								)}
-								style={
-									horizontal
-										? { right: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }
-										: { left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }
-								}
+								className={cx("absolute -translate-x-1/2 text-gray-700 dark:text-gray-300")}
+								style={{ left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}
 							>
 								{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
 							</div>
