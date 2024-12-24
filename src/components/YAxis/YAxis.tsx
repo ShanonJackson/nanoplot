@@ -33,7 +33,7 @@ export const YAxis = ({ title, description }: Props) => {
 								className={`absolute -translate-y-1/2 text-gray-700 dark:text-gray-300`}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
-								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+3")) + "e-3") : tick.toString()}
+								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+2")) + "e-2") : tick.toString()}
 							</div>
 							<div className={`opacity-0`}>{typeof tick === "number" ? tick.toFixed(2) : tick.toString()}</div>
 						</React.Fragment>

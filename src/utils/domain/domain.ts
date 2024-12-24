@@ -34,12 +34,12 @@ export const DomainUtils = {
 				// increase is too large from original number.
 				return parseInt("1" + "0".repeat(Math.max(0, digits - 2)));
 			}
+			if (suggested === value) return value + parseInt("1" + "0".repeat(Math.max(0, digits - 2)));
 			return suggested;
 		})();
 		const yMax = roundUp(roundUp(value, max), parseInt("2" + "0".repeat(Math.max(0, digits - 2)))); /* Prime number avoider */
-		const hops = [6, 7, 8, 9, 5, 4, 10, 11].find((jump) => yMax % jump === 0) ?? 9;
-		const jumps = hops + 1;
-		return Array.from({ length: jumps }, (_, i) => MathUtils.scale(i, [0, jumps - 1], [0, yMax]));
+		const jumps = [6, 7, 8, 9, 5, 4, 10, 11].find((jump) => yMax % jump === 0) ?? 9;
+		return Array.from({ length: jumps + 1 }, (_, i) => MathUtils.scale(i, [0, jumps], [0, yMax]));
 	},
 	x: {
 		ticks: (

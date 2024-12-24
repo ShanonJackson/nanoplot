@@ -38,7 +38,6 @@ export const PathUtils = {
 	},
 	annularArc: (x: number, y: number, startAngle: number, endAngle: number, innerRadius: number, outerRadius: number) => {
 		if (endAngle - startAngle >= 360) {
-			console.log("FULL");
 			return `M ${x - outerRadius} ${y} A ${outerRadius} ${outerRadius} 0 1 1 ${
 				x + outerRadius
 			} ${y} A ${outerRadius} ${outerRadius} 1 1 1 ${x - outerRadius} ${y} M ${
