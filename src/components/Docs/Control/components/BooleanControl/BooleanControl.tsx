@@ -7,7 +7,7 @@ type Props = {
 export const BooleanControl = ({ value, description, onChange = Object }: Props) => {
 	return (
 		<label className={"flex items-center cursor-pointer"}>
-			<input type={"checkbox"} checked={value} onChange={(e) => onChange(e.target.checked)} />
+			<input type={"checkbox"} checked={value} value={value ? "on" : "off"} onChange={(e) => onChange(e.target.checked)} />
 			<span className={"ml-2 dark:text-white"}>{description}</span>
 		</label>
 	);

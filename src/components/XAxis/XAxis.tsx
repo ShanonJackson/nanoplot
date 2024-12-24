@@ -5,8 +5,8 @@ import React, { ReactNode } from "react";
 import { DomainUtils } from "@/utils/domain/domain";
 import { cx } from "@/utils/cx/cx";
 
-type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
-type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
+type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
+type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
 type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
 type Jumps = `every ${number} ${interval}` | number;
 
@@ -22,16 +22,19 @@ export const XAxis = ({ title, description }: Props) => {
 	return (
 		<Graph.Row className={"items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
 			<div className={"flex"}>
-				{context.domain.x.map((dp, i) => {
+				{context.domain.x.map(({ tick, coordinate }, i) => {
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={cx("absolute -translate-x-1/2 text-gray-700 dark:text-gray-300")}
-								style={{ left: `${MathUtils.scale(dp.coordinate, 3000, 100)}%` }}
+
+								className={"absolute -translate-x-1/2 text-gray-700 dark:text-gray-300"}
+								style={{ left: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
-								{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}
+								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+2")) + "e-2") : tick.toString()}
 							</div>
-							<div className={"opacity-0"}>{typeof dp.tick === "number" ? dp.tick.toFixed(2) : dp.tick.toString()}</div>
+							<div className={"opacity-0"}>
+								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+2")) + "e-2") : tick.toString()}
+							</div>
 						</React.Fragment>
 					);
 				})}
