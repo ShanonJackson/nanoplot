@@ -28,9 +28,9 @@ export const HorizontalBars = ({ children, className }: Props) => {
 				y: yForValue(xy.y),
 			})),
 		};
-	})[0];
+	});
 
-	const barHeight = context.viewbox.y / bars.data.length - 80;
+	const barHeight = context.viewbox.y / bars[0].data.length - 80;
 
 	return (
 		<svg
@@ -38,20 +38,22 @@ export const HorizontalBars = ({ children, className }: Props) => {
 			className={cx("[grid-area:graph] h-full w-full", className)}
 			preserveAspectRatio={"none"}
 		>
-			{bars.data.map((bar, index) => {
-				const y1 = bar.y - barHeight / 2;
-				const y2 = bar.y + barHeight / 2;
-				return (
-					<path
-						key={index}
-						d={`M 0 ${y1} L ${bar.x} ${y1} L ${bar.x} ${y2} L 0 ${y2}`}
-						fill={"transparent"}
-						stroke={bars.stroke}
-						vectorEffect={"non-scaling-stroke"}
-						strokeWidth={1.5}
-					/>
-				);
-			})}
+			{bars.map((bar, index) =>
+				bar.data.map((xy, idx) => {
+					const y1 = index === 0 ? xy.y - barHeight / 2 : xy.y;
+					const y2 = index === 0 ? xy.y : xy.y + barHeight / 2;
+					return (
+						<path
+							key={idx}
+							d={`M 0 ${y1} L ${xy.x} ${y1} L ${xy.x} ${y2} L 0 ${y2}`}
+							fill={bar.stroke}
+							stroke={bar.stroke}
+							vectorEffect={"non-scaling-stroke"}
+							strokeWidth={1.5}
+						/>
+					);
+				}),
+			)}
 			{children}
 		</svg>
 	);
