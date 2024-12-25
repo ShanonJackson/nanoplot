@@ -3,6 +3,7 @@ import { GraphContext, useGraph, useGraphColumn } from "@/hooks/use-graph/use-gr
 import { MathUtils } from "@/utils/math/math";
 import React, { ReactNode } from "react";
 import { DomainUtils } from "@/utils/domain/domain";
+import { cx } from "@/utils/cx/cx";
 
 type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
 type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
@@ -25,6 +26,7 @@ export const XAxis = ({ title, description }: Props) => {
 					return (
 						<React.Fragment key={i}>
 							<div
+
 								className={"absolute -translate-x-1/2 text-gray-700 dark:text-gray-300"}
 								style={{ left: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
