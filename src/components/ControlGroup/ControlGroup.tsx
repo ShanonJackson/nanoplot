@@ -36,7 +36,7 @@ const ControlGroup: FC<Props> = ({ title, open, children }) => {
 					className={`grid overflow-hidden transition-all duration-300 ease-in-out 
                         ${accordionOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
 				>
-					<div className={`overflow-hidden`} data-testid={`hidden-element`} style={{ opacity: `${!accordionOpen ? 0 : 1}` }}>
+					<div className={`overflow-hidden`} style={{ opacity: `${!accordionOpen ? 0 : 1}` }}>
 						{children}
 					</div>
 				</div>

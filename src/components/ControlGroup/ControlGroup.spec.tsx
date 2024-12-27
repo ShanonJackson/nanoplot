@@ -6,13 +6,15 @@ import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 
 describe("Control Group", () => {
-	it("Open Close Accordion", async () => {
+	it("Should show element when close and clicked", async () => {
 		const open = false;
 		render(
 			<ControlGroup title={"Test"} open={open}>
+				<div data-testid={"hidden-element"}>
 				<Control name={""} type={""}>
 					<BooleanControl value={true} onChange={() => {}} description={"Boolean Control"} />
 				</Control>
+				</div>
 			</ControlGroup>,
 		);
 
