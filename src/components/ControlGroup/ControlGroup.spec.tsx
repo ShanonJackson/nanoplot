@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { render, screen } from "@testing-library/react";
 import { fireEvent } from "@testing-library/react";
-import ControlGroup from "./ControlGroup";
+import { ControlGroup } from "./ControlGroup";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 

@@ -5,7 +5,7 @@ type Props = {
     open: boolean;
 	children?: ReactNode;
 };
-const ControlGroup: FC<Props> = ({ title, open, children }) => {
+export const ControlGroup: FC<Props> = ({ title, open, children }) => {
 	const [accordionOpen, setAccordionOpen] = useState(open);
 	return (
 		<>
@@ -44,5 +44,3 @@ const ControlGroup: FC<Props> = ({ title, open, children }) => {
 		</>
 	);
 };
-
-export default ControlGroup;
