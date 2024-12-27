@@ -110,10 +110,18 @@ export default function Page() {
 					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
 					<Legend position={"top"} alignment={"center"} />
-					<YAxis {...yaxis} />
+					<YAxis
+						{...yaxis}
+						title={<div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
+						description={<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />}
+					/>
 					<GridLines {...gridline} />
 					<Lines />
-					<XAxis {...xaxis} />
+					<XAxis
+						{...xaxis}
+						title={<div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
+						description={<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />}
+					/>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
