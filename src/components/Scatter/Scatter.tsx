@@ -4,12 +4,14 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { PathUtils } from "@/utils/path/path";
+import { ScatterLabels } from "@/components/Scatter/components/ScatterLabels";
 
 type Props = {
 	trendline?: boolean;
+	labels?: { wPixelLength: 10; wPixelHeight: 10 };
 };
 
-export const Scatter = ({ trendline }: Props) => {
+export const Scatter = ({ trendline, labels }: Props) => {
 	const context = useGraph();
 	const { x, y } = context.viewbox;
 
@@ -31,31 +33,34 @@ export const Scatter = ({ trendline }: Props) => {
 	});
 
 	return (
-		<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full"} preserveAspectRatio={"none"}>
-			{dataset.map((d, i) => {
-				return (
+		<>
+			<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full"} preserveAspectRatio={"none"}>
+				{dataset.map((d, i) => {
+					return (
+						<path
+							key={i}
+							d={d.data.map(({ x, y }) => `M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`).join(" ")}
+							strokeWidth={10}
+							stroke={d.stroke}
+							strokeLinecap={"round"}
+							strokeLinejoin={"round"}
+							vectorEffect={"non-scaling-stroke"}
+						/>
+					);
+				})}
+				{trendline && (
 					<path
-						key={i}
-						d={d.data.map(({ x, y }) => `M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`).join(" ")}
-						strokeWidth={10}
-						stroke={d.stroke}
-						strokeLinecap={"round"}
-						strokeLinejoin={"round"}
-						vectorEffect={"non-scaling-stroke"}
+						strokeWidth={3}
+						strokeDasharray={"4,4"}
+						className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
+						d={PathUtils.trend(
+							dataset.flatMap(({ data }) => data),
+							context.viewbox,
+						)}
 					/>
-				);
-			})}
-			{trendline && (
-				<path
-					strokeWidth={3}
-					strokeDasharray={"4,4"}
-					className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
-					d={PathUtils.trend(
-						dataset.flatMap(({ data }) => data),
-						context.viewbox,
-					)}
-				/>
-			)}
-		</svg>
+				)}
+			</svg>
+			{/*{labels && <ScatterLabels />}*/}
+		</>
 	);
 };

@@ -89,7 +89,7 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 	const paths = data
 		.map((segment, i, segments) => ({
 			...segment,
-			id: segment.name ?? segment.name,
+			id: segment.id ?? segment.name,
 			value: Number(segment.value),
 			stroke: segment.stroke ?? ColorUtils.colorFor(i, segments.length),
 			fill:

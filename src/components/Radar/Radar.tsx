@@ -16,23 +16,23 @@ type Props = {
 };
 
 export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }: Props) => {
-	const context = useGraph();
-	if (!GraphUtils.isSegmentData(context.data)) return null;
-	const { data, viewbox } = context;
-	const isEmpty = !loading && context.data.length == 0;
+	const { data, viewbox } = useGraph();
+	const radarDotId = useId();
+	const radarShapeId = useId();
+	const radarGlowId = useId();
+
+	if (!GraphUtils.isSegmentData(data)) return null;
+
+	const isEmpty = !loading && data.length == 0;
 	const radius = (viewbox.x / 2) * PADDING_PERCENT;
 	const MAX_SCALE = Math.max(...scalars);
 	const axis = data.length;
 	const angles = Array.from({ length: axis }, (_, index) => (index * 360) / axis);
 	const rings = Array.from({ length: scalars.length }, (_, index) => 1 - index * (1 / (scalars.length - 1)));
 	const edges = rings.toReversed();
-	const dotColor = "white";
 	const arcDegrees = 360 / axis;
 	const proportion = MAX_SCALE / (scalars.length - 1);
-	const allZero = data.every(({ value }) => !Boolean(value));
-
-	if (loading) return <RadarSkeleton />;
-
+	const isAllZero = data.every(({ value }) => !Boolean(value));
 	const scale = (value: number) => {
 		if (value === 0) return MIN_THRESHOLD;
 		if (value >= MAX_SCALE) return MAX_SCALE;
@@ -44,39 +44,10 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 		return MathUtils.scale(value, [scalars[index], scalars[index + 1] || scalars[index]], output);
 	};
 
-	const scaledData = data.map((item) => ({ ...item, scaled: allZero ? 0 : scale(+item.value) }));
+	if (loading) return <RadarSkeleton />;
 
-	const path = scaledData
-		.map(({ scaled }, index) =>
-			PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, (scaled * radius) / MAX_SCALE, index * arcDegrees),
-		)
-		.map(({ x, y }, i) => (i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`))
-		.join(" ")
-		.concat(" Z");
-
-	const anglesPath = angles
-		.map((angle) => {
-			const { x, y } = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle);
-			return `M ${viewbox.x / 2} ${viewbox.y / 2} L ${x} ${y}`;
-		})
-		.join(" ");
-
-	const markersPath = rings
-		.map((ring) => {
-			const xPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
-			const yPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
-
-			return `M ${xPosition} ${yPosition} 
-				L ${xPosition} ${yPosition + viewbox.y / 100}`;
-		})
-		.join(" ");
-
-	const ringData = rings
-		.slice(0, isEmpty ? 2 : Infinity)
-		.map((ring) => PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius * ring))
-		.join(" ");
-
-	const glowData = scaledData
+	const scaled = data.map((item) => ({ ...item, scaled: isAllZero ? 0 : scale(+item.value) }));
+	const glow = scaled
 		.filter(({ scaled }) => Boolean(scaled))
 		.map(({ scaled }, index) => {
 			const { x: cx, y: cy } = PathUtils.polarToCartesian(
@@ -86,27 +57,24 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 				index * arcDegrees,
 			);
 			const r = viewbox.x / 100;
-
 			return `M ${cx - r} ${cy} A ${r} ${r} 0 1 1 ${cx + r} ${cy} A ${r} ${r} 0 1 1 ${cx - r} ${cy} Z`;
 		})
 		.join(" ");
 
-	const radarDotId = useId();
-	const radarShapeId = useId();
 	const fill = "#11ACAE";
 	return (
 		<svg className={cx("h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
 			<defs>
-				<filter id={`radarPointGlow`} filterUnits="userSpaceOnUse">
+				<filter id={radarGlowId} filterUnits="userSpaceOnUse">
 					<feDropShadow dx="0" dy="0" stdDeviation="20" floodColor="white" floodOpacity="1" />
 				</filter>
 				<radialGradient id={radarDotId}>
-					<stop offset="30%" stopColor={dotColor} stopOpacity={0.3} />
-					<stop offset="50%" stopColor={dotColor} stopOpacity={0.2} />
-					<stop offset="60%" stopColor={dotColor} stopOpacity={0.15} />
-					<stop offset="70%" stopColor={dotColor} stopOpacity={0.08} />
-					<stop offset="80%" stopColor={dotColor} stopOpacity={0.06} />
-					<stop offset="100%" stopColor={dotColor} stopOpacity={0.03} />
+					<stop offset="30%" stopColor={"white"} stopOpacity={0.3} />
+					<stop offset="50%" stopColor={"white"} stopOpacity={0.2} />
+					<stop offset="60%" stopColor={"white"} stopOpacity={0.15} />
+					<stop offset="70%" stopColor={"white"} stopOpacity={0.08} />
+					<stop offset="80%" stopColor={"white"} stopOpacity={0.06} />
+					<stop offset="100%" stopColor={"white"} stopOpacity={0.03} />
 				</radialGradient>
 				<radialGradient id={radarShapeId} cx={viewbox.x / 2} cy={viewbox.y / 2} gradientUnits="userSpaceOnUse">
 					<stop offset="30%" stopColor={fill} />
@@ -119,7 +87,10 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 			</defs>
 			<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} fill="#111111" />
 			<path
-				d={ringData}
+				d={rings
+					.slice(0, isEmpty ? 2 : Infinity)
+					.map((ring) => PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius * ring))
+					.join(" ")}
 				fillRule="evenodd"
 				fill="#1b1b1b"
 				className={"[vector-effect:non-scaling-stroke] stroke-1 stroke-[#2D2D2D]"}
@@ -130,8 +101,25 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 				</text>
 			) : (
 				<>
-					<path d={anglesPath} />
-					<path d={markersPath} />
+					<path
+						d={angles
+							.map((angle) => {
+								const { x, y } = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle);
+								return `M ${viewbox.x / 2} ${viewbox.y / 2} L ${x} ${y}`;
+							})
+							.join(" ")}
+					/>
+					<path
+						d={rings
+							.map((ring) => {
+								const xPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
+								const yPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
+
+								return `M ${xPosition} ${yPosition} 
+				L ${xPosition} ${yPosition + viewbox.y / 100}`;
+							})
+							.join(" ")}
+					/>
 					{scalars
 						.map((scalar, index) => {
 							if (scalar === 0) return "0";
@@ -149,7 +137,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 						))}
 				</>
 			)}
-			<path d={glowData} strokeOpacity="0" fillOpacity={0.5} filter={`url(#radarPointGlow)`} />
+			<path d={glow} strokeOpacity="0" fillOpacity={0.5} filter={`url(#${radarGlowId})`} />
 			{!isEmpty &&
 				angles.map((angle, index) => (
 					<circle
@@ -160,7 +148,18 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 						fill="white"
 					/>
 				))}
-			<path stroke={fill} d={path} fill={`url(#${radarShapeId}`} className={"stroke-[10] [fill-opacity:0.7]"} />
+			<path
+				stroke={fill}
+				d={scaled
+					.map(({ scaled }, index) =>
+						PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, (scaled * radius) / MAX_SCALE, index * arcDegrees),
+					)
+					.map(({ x, y }, i) => (i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`))
+					.join(" ")
+					.concat(" Z")}
+				fill={`url(#${radarShapeId}`}
+				className={"stroke-[10] [fill-opacity:0.7]"}
+			/>
 			{angles.map((point, index) => {
 				return (
 					<path
