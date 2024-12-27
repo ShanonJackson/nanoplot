@@ -1,34 +1,39 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
 import { useMounted } from "@/hooks/use-mounted";
+import { useRouter } from "next/navigation";
 
 export function ThemeToggle() {
 	const mounted = useMounted();
-	const [theme, setTheme] = useState<string>(typeof window !== "undefined" ? (localStorage.getItem("nano-theme") ?? "light") : "light");
+	const router = useRouter();
 
-	const onClick = () => {
-		const newTheme = theme === "light" ? "dark" : "light";
-		setTheme(newTheme);
-		localStorage.setItem("nano-theme", newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-	};
-
-	useLayoutEffect(() => {
-		document.documentElement.setAttribute("data-theme", theme);
-		return () => document.documentElement.setAttribute("data-theme", theme);
-	}, [theme]);
-
-	if (!mounted) return null; /* fixes hydration error */
+	if (!mounted) return null; /* Hydration issue. */
+  
+	const theme =
+		document.cookie
+			.split(";")
+			.find((c) => c.includes("theme"))
+			?.split("=")[1] ?? "light";
 
 	return (
 		<button
-			onClick={onClick}
+			onClick={() => {
+				// parse cookie extract theme
+				document.cookie = `theme=${
+					document.cookie
+						.split(";")
+						.find((c) => c.includes("theme"))
+						?.split("=")[1] === "light"
+						? "dark"
+						: "light"
+				}; path=/;`;
+				router.refresh();
+			}}
 			className="flex items-center p-2 rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground"
 			aria-label="Toggle theme"
 		>
 			<span className="sr-only">Toggle theme</span>
-			{theme === "light" ? "🌙" : "☀️"}
+			{theme === "light" ? "☀️" : "🌙"}
 			{/* Debug display */}
 			<span className="ml-2 text-xs">{theme} mode</span>
 		</button>

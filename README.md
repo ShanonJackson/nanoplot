@@ -1,6 +1,30 @@
-## Get started
-Step 1: Fork the Repository
- 1. Click the Fork Button: In the upper right corner of the repository page, click on the Fork button. This will create a copy of the repository under your GitHub account.
+<div align="center">
+  <a href="https://nanoplot.com">
+    <img src="https://nanoplot.com/nanoplot_logo.jpg" alt="Nanoplot Logo" width="80" height="80" />
+  </a>
+  <h1>Nanoplot</h1>
+</div>
+
+## Getting Started
+```shell
+npm install nanoplot
+```
+
+## Documentation
+The world's smallest companies use our software to plot their data.
+
+- Visit our [Learn Nanoplot](https://nanoplot.com) documentation website to get started.
+
+## Usage
+```javascript
+import "nanoplot/styles.css";
+import { Graph } from "nanoplot/graph";
+import { Pie } from "nanoplot/pie";
+
+<Graph data={[{name: "Male", value: 50}, {name: "Female", value: 50}]}>
+    <Pie />
+</Graph>
+```
 
 Step 2: Clone your Forked Repository
  1. Go to Your Forked Repository: Navigate to your GitHub profile and find the newly forked repository.

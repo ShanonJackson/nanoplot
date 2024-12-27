@@ -1,18 +1,17 @@
 import React, { HTMLAttributes, ReactNode, useId } from "react";
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext, GraphContextProvider } from "@/hooks/use-graph/use-graph";
 import { ChildrenUtils } from "@/utils/children/children";
-import { GraphUtils } from "@/utils/graph/graph";
-import { MathUtils } from "@/utils/math/math";
 import { DomainUtils } from "@/utils/domain/domain";
+import { cx } from "@/utils/cx/cx";
 
 type Props = {
 	data: GraphContext["data"];
 	gap?: { top?: number; right?: number; bottom?: number; left?: number };
-	interactions?: { hovered?: string[]; pinned?: string[] } /* array of names or ids */;
+	interactions?: { hovered?: string[]; pinned?: string[] } /* array of ids */;
 	children: ReactNode;
 };
 
-export const Graph = ({ data, gap, children }: Props) => {
+export const Graph = ({ data, gap, children, interactions }: Props) => {
 	const id = useId();
 	const X_SCALE = 3000;
 	const Y_SCALE = 3000;
@@ -30,8 +29,8 @@ export const Graph = ({ data, gap, children }: Props) => {
 			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 			y: DomainUtils.y.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 		},
+		interactions: { hovered: interactions?.hovered ?? [], pinned: interactions?.pinned ?? [] },
 	});
-
 	return (
 		<div
 			id={id}
@@ -40,24 +39,17 @@ export const Graph = ({ data, gap, children }: Props) => {
 				...ctx.attributes.style,
 				gridTemplateColumns: ctx.layout.columns,
 				gridTemplateRows: ctx.layout.rows,
-				padding: `${ctx.gap.top}px ${ctx.gap.right}px ${ctx.gap.bottom}px : ${ctx.gap.top}`,
+				padding: `${ctx.gap.top}px ${ctx.gap.right}px ${ctx.gap.bottom}px ${ctx.gap.left}px`,
 			}}
 		>
-			{React.Children.toArray(children).map((child) => {
-				/*
-					React.createContext but for server components via prop injecting works both server and client side.
-					React's 'cache' API which can perform similar functionality only works server side.
-				*/
-				if (!React.isValidElement(child)) return child;
-				return React.cloneElement(child, { context: ctx } as never);
-			})}
+			<GraphContextProvider value={ctx}>{children}</GraphContextProvider>
 		</div>
 	);
 };
 
 Graph.Row = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
 	return (
-		<div {...rest} style={{ gridColumn: "1 / -1", ...rest.style }}>
+		<div {...rest} className={cx("col-span-full", rest.className)}>
 			{children}
 		</div>
 	);

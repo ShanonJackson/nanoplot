@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "module": "preserve",
+    "outDir": "./dist/",
+    "allowJs": false,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "./src/export/index.tsx",
+  ],
+  "exclude": []
+}

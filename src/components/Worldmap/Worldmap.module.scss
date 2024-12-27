@@ -1,0 +1,24 @@
+.tooltip {
+	display: none;
+}
+// Object.values on countries in Worldmap.tsx
+// more countries coming as haven't properly labelled everything.
+$iso-codes: (
+		"GF", "MT", "??", "???", "BN", "PR", "LU", "BW", "CF", "DE", "YE", "OM", "CG",
+		"PL", "EH", "GR", "KG", "RO", "GN", "GY", "IS", "SY", "TN", "GH", "UY", "BD", "SN",
+		"HR", "AT", "NI", "HU", "HN", "BG", "JO", "AZ", "LV", "SR", "PT", "AE", "IE", "GT",
+		"RS", "CZ", "KR", "PA", "LT", "EE", "DK", "NL", "SK", "CR", "BA", "MD", "CH", "TG",
+		"LK", "DO", "BE", "IL", "FJ", "TW", "HT", "AL", "LS", "SI", "BI", "MK", "ME", "KW",
+		"GQ", "LB", "CY", "QA", "JM", "GM", "RU", "US", "CA", "CN", "BR", "GL", "AU", "IN",
+		"ID", "AR", "KZ", "MX", "DZ", "CD", "NO", "MN", "SA", "CL", "ES", "IR", "ML", "PE",
+		"JP", "PK", "SD", "LY", "ZA", "CO", "NE", "SE", "MM", "BO", "VE", "MR", "UA", "SO",
+		"FR", "NZ", "AF", "IT", "PG", "PH", "TZ", "TH", "EG", "TR", "NG", "ZM", "MY", "FI",
+		"VN", "TM", "EC", "MA", "MG", "KE", "IQ", "PY", "GB"
+);
+
+/* When a path is hovered, disply: block it's matching tooltip where data-iso iso code matches. */
+@each $iso-code in $iso-codes {
+	.base:has(svg path[data-iso="#{$iso-code}"]:hover) > .tooltip[data-iso="#{$iso-code}"] {
+		display: block;
+	}
+}

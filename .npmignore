@@ -8,6 +8,8 @@ jest/
 build_scripts/
 .storybook/
 .idea/
+.vercel/
+.idea/
 
 build-storybook.log
 happydom.ts
