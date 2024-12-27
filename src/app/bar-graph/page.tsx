@@ -10,11 +10,12 @@ import { BooleanControl } from "@/components/Docs/Control/components/BooleanCont
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+	const [bars, setBars] = useState<boolean>(false);
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 bg-gray-100 dark:bg-gray-800"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white p-4 bg-gray-100 dark:bg-gray-800"}>
 				<h1 className={"text-2xl"}>Bar Graph</h1>
 				<Control name={"Border"} type={"boolean"}>
 					<BooleanControl
@@ -23,31 +24,45 @@ export default function Page() {
 						description={"Adds Border To Graph"}
 					/>
 				</Control>
-				<Control name={"Horizontal"} type={"boolean"}>
+				<Control name={"Horizontal Grid"} type={"boolean"}>
 					<BooleanControl
 						value={gridline.horizontal}
 						onChange={(checked) => setGridPartial({ horizontal: checked })}
 						description={"Adds Horizontal Grid Lines"}
 					/>
 				</Control>
-				<Control name={"Vertical"} type={"boolean"}>
+				<Control name={"Vertical Grid"} type={"boolean"}>
 					<BooleanControl
 						value={gridline.vertical}
 						onChange={(checked) => setGridPartial({ vertical: checked })}
 						description={"Adds Vertical Grid Lines"}
 					/>
 				</Control>
+				<Control name={"Horizontal Bras"} type={"boolean"}>
+					<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
+				</Control>
 			</div>
 
-			<div className={"border-[1px] h-full border-dotted border-white"}>
-				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 30, bottom: 15 }}>
-					<YAxis ticks={{ from: 0 }} />
+			<div className={"h-full border-dotted border border-black dark:border-white"}>
+				<Graph
+					data={[
+						{
+							name: "My First Dataset",
+							data: MOCK_DATA.map(({ x, y }) => {
+								if (bars) return { x: y, y: x };
+								return { x, y };
+							}),
+						},
+					]}
+					gap={{ top: 15, left: 15, right: 30, bottom: 15 }}
+				>
+					<YAxis />
 					<GridLines {...gridline} />
-					<Bars />
-					<XAxis />
+					<Bars horizontal={bars} />
+					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
 		</div>
 	);
 }

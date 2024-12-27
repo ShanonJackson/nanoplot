@@ -14,7 +14,6 @@ export default function Page() {
 
 	const setScatterPartial = (partial: Partial<ComponentProps<typeof Scatter>>) => setScatter((prev) => ({ ...prev, ...partial }));
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
-
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
@@ -47,7 +46,6 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-
 			<div className={"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {

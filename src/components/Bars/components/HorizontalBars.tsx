@@ -1,15 +1,15 @@
-import React, { ReactNode } from "react";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { GraphUtils } from "@/utils/graph/graph";
-import { ColorUtils } from "@/utils/color/color";
-import { cx } from "@/utils/cx/cx";
+import { ColorUtils } from "@/export";
 import { useGraph } from "@/hooks/use-graph/use-graph";
+import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
+import { cx } from "@/utils/cx/cx";
+import { GraphUtils } from "@/utils/graph/graph";
+import React from "react";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
-	children?: ReactNode;
+	children?: React.ReactNode;
 };
 
-export const VerticalBars = ({ children, className }: Props) => {
+export const HorizontalBars = ({ children, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -29,7 +29,8 @@ export const VerticalBars = ({ children, className }: Props) => {
 			})),
 		};
 	})[0];
-	const barWidth = context.viewbox.x / bars.data.length - 80;
+
+	const barHeight = context.viewbox.y / bars.data.length - 80;
 
 	return (
 		<svg
@@ -38,12 +39,12 @@ export const VerticalBars = ({ children, className }: Props) => {
 			preserveAspectRatio={"none"}
 		>
 			{bars.data.map((bar, index) => {
-				const x1 = bar.x - barWidth / 2;
-				const x2 = bar.x + barWidth / 2;
+				const y1 = bar.y - barHeight / 2;
+				const y2 = bar.y + barHeight / 2;
 				return (
 					<path
 						key={index}
-						d={`M ${x1} ${context.viewbox.y} L ${x1} ${bar.y} L ${x2} ${bar.y} L ${x2} ${context.viewbox.y}`}
+						d={`M 0 ${y1} L ${bar.x} ${y1} L ${bar.x} ${y2} L 0 ${y2}`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}
