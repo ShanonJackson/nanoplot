@@ -1,27 +1,52 @@
 "use client";
 import { Graph } from "@/components/Graph/Graph";
 import { ComponentProps, useState } from "react";
-import { ScatterGraph } from "@/components/ScatterGraph/ScatterGraph";
-import { XAxis } from "@/components/Axis/XAxis/XAxis";
-import { YAxis } from "@/components/Axis/YAxis/YAxis";
+import { Scatter } from "@/components/Scatter/Scatter";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { GridLines } from "@/components/GridLines/GridLines";
 
 export default function Page() {
-	const [scatter, setScatter] = useState<ComponentProps<typeof ScatterGraph>>({});
-	const setScatterPartial = (partial: Partial<ComponentProps<typeof ScatterGraph>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const [scatter, setScatter] = useState<ComponentProps<typeof Scatter>>({});
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+
+	const setScatterPartial = (partial: Partial<ComponentProps<typeof Scatter>>) => setScatter((prev) => ({ ...prev, ...partial }));
+	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-foreground"}>
-				<Control name={"trendline"} type={"boolean"}>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
+				<Control name={"Trend Line"} type={"boolean"}>
 					<BooleanControl
 						value={scatter.trendline}
 						onChange={(checked) => setScatterPartial({ trendline: checked })}
-						description={"Adds trendline to graph"}
+						description={"Adds Trendline To Graph"}
+					/>
+				</Control>
+				<Control name={"Border"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.border}
+						onChange={(checked) => setGridPartial({ border: checked })}
+						description={"Adds Border To Graph"}
+					/>
+				</Control>
+				<Control name={"Horizontal"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.horizontal}
+						onChange={(checked) => setGridPartial({ horizontal: checked })}
+						description={"Adds Horizontal Grid Lines"}
+					/>
+				</Control>
+				<Control name={"Vertical"} type={"boolean"}>
+					<BooleanControl
+						value={gridline.vertical}
+						onChange={(checked) => setGridPartial({ vertical: checked })}
+						description={"Adds Vertical Grid Lines"}
 					/>
 				</Control>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-foreground"}>
+			<div className={"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
 				<Graph
 					data={MOCK_DATA.map((d, i) => {
 						return {
@@ -30,13 +55,15 @@ export default function Page() {
 							data: [{ x: d.hours_studied, y: d.test_score }],
 						};
 					})}
+					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
-					<YAxis />
-					<ScatterGraph {...scatter} />
-					<XAxis />
+					<YAxis title={"title y axis"} description={"description y axis"} />
+					<GridLines {...gridline} />
+					<Scatter {...scatter} />
+					<XAxis title={"title x axis"} description={"description x axis"} />
 				</Graph>
 			</div>
-			<div className={"border-[1px] border-dotted border-foreground"}>EXAMPLES</div>
+			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
 		</div>
 	);
 }

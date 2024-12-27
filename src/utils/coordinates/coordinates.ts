@@ -1,4 +1,4 @@
-import { GraphContext } from "@/hooks/use-graph";
+import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 
 export const CoordinatesUtils = {

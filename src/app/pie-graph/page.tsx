@@ -1,7 +1,8 @@
 "use client";
-import { PieGraph } from "@/components/PieGraph/PieGraph";
+import { Pie } from "@/components/Pie/Pie";
 import { Graph } from "@/components/Graph/Graph";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
 import { Control } from "@/components/Docs/Control/Control";
 import { ComponentProps, useState } from "react";
 import { Legend } from "@/components/Legend/Legend";

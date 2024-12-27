@@ -18,7 +18,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 export const DropDown = ({ label, items, arrow = true, className = "", children }: Props) => {
 	return (
 		<div className="relative inline-block text-left group">
-			<button className="inline-flex items-center justify-center w-full h-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-primary">
+			<button className="inline-flex items-center justify-center w-full h-full px-4 py-2 text-sm font-medium focus:outline-none focus:ring-[hsl(347.29deg,47.58%,51.37%)] dark:ring-[hsl(209.65deg,52.15%,31.96%)]">
 				{label}
 				{arrow && (
 					<svg
@@ -39,7 +39,7 @@ export const DropDown = ({ label, items, arrow = true, className = "", children 
 
 			<div
 				className={cx(
-					"absolute z-10 left-0 w-screen lg:w-fit mt-2 min-w-32 origin-top-right rounded-md shadow-lg ring-opacity-5 bg-primary invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200",
+					"absolute z-10 left-0 w-screen lg:w-fit mt-2 min-w-32 origin-top-right rounded-md shadow-lg ring-opacity-5 bg-[hsl(347.29deg,47.58%,51.37%)] dark:bg-[hsl(209.65deg,52.15%,31.96%)] invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200",
 					className,
 				)}
 			>
@@ -48,7 +48,7 @@ export const DropDown = ({ label, items, arrow = true, className = "", children 
 						<Link
 							href={item.value}
 							key={item.value}
-							className="flex items-center w-full px-4 py-2 text-sm cursor-pointer hover:bg-primary-foreground"
+							className="flex items-center w-full px-4 py-2 text-sm cursor-pointer hover:bg-[hsl(14.2deg,70.71%,53.14%)] hover:dark:bg-[hsl(210.5deg,68.97%,65.88%)]"
 						>
 							{item.icon && <span className="mr-3">{item.icon}</span>}
 							{item.label}
