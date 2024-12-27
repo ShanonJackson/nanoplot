@@ -4,13 +4,13 @@ import { MathUtils } from "@/utils/math/math";
 import React, { JSX, ReactNode } from "react";
 import { DomainUtils } from "@/utils/domain/domain";
 
-type From = "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
-type To = "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
+type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
+type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
 type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
-type Jumps = `every ${number} ${interval}` | number;
+type Jumps = "auto" | `every ${number} ${interval}` | number;
 
 type Props = {
-	ticks?: { from?: From; to?: To; jumps?: Jumps } | "auto";
+	ticks?: { from?: From; to?: To; jumps?: Jumps };
 	title?: ReactNode;
 	description?: ReactNode;
 };
@@ -30,7 +30,7 @@ export const YAxis = ({ title, description }: Props) => {
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={`absolute -translate-y-1/2 text-gray-700 dark:text-gray-300`}
+								className={`absolute right-2 -translate-y-1/2 text-gray-700 dark:text-gray-300`}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
 								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+2")) + "e-2") : tick.toString()}

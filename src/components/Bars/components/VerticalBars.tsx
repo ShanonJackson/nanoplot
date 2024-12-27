@@ -29,7 +29,6 @@ export const VerticalBars = ({ children, className }: Props) => {
 			})),
 		};
 	})[0];
-
 	const barWidth = context.viewbox.x / bars.data.length - 80;
 
 	return (
@@ -39,10 +38,12 @@ export const VerticalBars = ({ children, className }: Props) => {
 			preserveAspectRatio={"none"}
 		>
 			{bars.data.map((bar, index) => {
+				const x1 = bar.x - barWidth / 2;
+				const x2 = bar.x + barWidth / 2;
 				return (
 					<path
 						key={index}
-						d={`M ${bar.x - barWidth / 2} ${context.viewbox.y} l${0} ${-bar.y} l${barWidth} 0 l0 ${bar.y}`}
+						d={`M ${x1} ${context.viewbox.y} L ${x1} ${bar.y} L ${x2} ${bar.y} L ${x2} ${context.viewbox.y}`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}

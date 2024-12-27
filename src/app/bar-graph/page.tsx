@@ -44,11 +44,22 @@ export default function Page() {
 			</div>
 
 			<div className={"h-full border-dotted border border-black dark:border-white"}>
-				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 30, bottom: 15 }}>
-					<YAxis ticks={{ from: 0 }} />
+				<Graph
+					data={[
+						{
+							name: "My First Dataset",
+							data: MOCK_DATA.map(({ x, y }) => {
+								if (bars) return { x: y, y: x };
+								return { x, y };
+							}),
+						},
+					]}
+					gap={{ top: 15, left: 15, right: 30, bottom: 15 }}
+				>
+					<YAxis />
 					<GridLines {...gridline} />
 					<Bars horizontal={bars} />
-					<XAxis />
+					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>

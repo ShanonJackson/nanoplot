@@ -39,10 +39,12 @@ export const HorizontalBars = ({ children, className }: Props) => {
 			preserveAspectRatio={"none"}
 		>
 			{bars.data.map((bar, index) => {
+				const y1 = bar.y - barHeight / 2;
+				const y2 = bar.y + barHeight / 2;
 				return (
 					<path
 						key={index}
-						d={`M 0 ${bar.x - barHeight / 2} l${bar.y} 0 l0 ${barHeight} l${-bar.y} 0`}
+						d={`M 0 ${y1} L ${bar.x} ${y1} L ${bar.x} ${y2} L 0 ${y2}`}
 						fill={"transparent"}
 						stroke={bars.stroke}
 						vectorEffect={"non-scaling-stroke"}
