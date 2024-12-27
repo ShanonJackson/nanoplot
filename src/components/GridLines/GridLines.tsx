@@ -29,7 +29,6 @@ export const GridLines = ({ border, horizontal, vertical, className }: Props) =>
 					d={domain.y.map(({ coordinate }) => `M 0 ${coordinate} L ${x} ${coordinate}`).join(" ")}
 					strokeWidth={1}
 					vectorEffect={"non-scaling-stroke"}
-					//strokeDasharray="4, 7"
 					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__horizontal")}
 				/>
 			)}
@@ -38,7 +37,6 @@ export const GridLines = ({ border, horizontal, vertical, className }: Props) =>
 					d={domain.x.map(({ coordinate }) => `M ${coordinate} 0 L ${coordinate} ${y}`).join(" ")}
 					strokeWidth={1}
 					vectorEffect={"non-scaling-stroke"}
-					//strokeDasharray="4, 10"
 					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__vertical")}
 				/>
 			)}
