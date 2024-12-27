@@ -11,28 +11,17 @@ Step 2: Clone your Forked Repository
  4. Run the Clone Command: Use the git clone https//xxxx.git command to clone your forked repository:
 
 Step 3:  Navigate into Your Cloned Repository and install bun packages:
-    1. cd nanoplot.
-    2. 
-
+   
     ```bash
-    bun i
+    cd nanoplot
+    bun install
     bun run dev
     ```
+
     The application should run locally on your machine on port: 3000
 
 Step 4:  Start Implementing
 
-### Contributing Guide [Placeholder]
 
-### Worldmap
 
-- Make sure countries -> paths on map are mapped correctly.
-- Make sure PathUtils.center is more accurate. (gpt generated and inaccurate)
-- Use flag images for every country, and find CDN that's not what it's set to currently.
-- Potential gradient helpers.
-- Ensure tooltips have progressive enhancement from server->client, by adding ability to position tooltip to mouse via client only code.
 
-### LineGraph
-
-- Ensure tooltips have progressive enhancement from server->client
-- 
