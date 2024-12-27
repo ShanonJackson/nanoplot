@@ -2,10 +2,10 @@ import { ReactNode, FC, useState } from "react";
 
 type Props = {
 	title: string;
-    open: boolean;
+	open?: boolean;
 	children?: ReactNode;
 };
-export const ControlGroup: FC<Props> = ({ title, open, children }) => {
+export const ControlGroup: FC<Props> = ({ title, open = true, children }) => {
 	const [accordionOpen, setAccordionOpen] = useState(open);
 	return (
 		<>
@@ -18,8 +18,8 @@ export const ControlGroup: FC<Props> = ({ title, open, children }) => {
 			dark:from-[hsl(209.65deg,52.15%,31.96%)] dark:to-[hsl(210.5deg,68.97%,65.88%)"
 				>
 					<span className="uppercase font-bold">{title}</span>
-                    <svg
-						className={`w-5 h-5 ml-1 transform transition-transform ${!accordionOpen ? '' : 'rotate-180'}`}
+					<svg
+						className={`w-5 h-5 ml-1 transform transition-transform ${!accordionOpen ? "" : "rotate-180"}`}
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 20 20"
 						fill="currentColor"
