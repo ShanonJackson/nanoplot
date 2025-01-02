@@ -12,13 +12,16 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
+	loadingClassName?: string;
+	emptyClassName?: string;
+	segmentClassName?: string;
 	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const Pie = ({ donut, labels = true, loading, children }: Props) => {
+export const Pie = ({ donut, labels = true, loading, loadingClassName, emptyClassName, segmentClassName, children }: Props) => {
 	const glowId = useId();
 	const emptyId = useId();
 	const context = useGraph();
@@ -40,11 +43,12 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 					"h-full w-full",
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
+					loadingClassName,
 				)}
 			>
 				<path
 					d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}
-					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)]"}
+					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)] pie__loading"}
 				>
 					<animate
 						attributeName="fill"
@@ -71,12 +75,13 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 				className={cx(
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%",
+					emptyClassName,
 				)}
 			>
 				<path
 					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
 					fill={`url(#${emptyId})`}
-					className={"[filter:invert(1)] dark:[filter:invert(0)]"}
+					className={"[filter:invert(1)] dark:[filter:invert(0)] pie__empty"}
 				/>
 				<linearGradient id={emptyId} gradientTransform="rotate(90)">
 					<stop offset="0%" stop-color="#3c3c3c"></stop>
@@ -154,14 +159,18 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 					{labels && (
 						<>
 							<path
-								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180`}
+								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
 								key={segment.name}
 								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 									isRightAligned ? "l 100 0" : "l -100 0"
 								}`}
 								stroke={segment.stroke}
 							/>
-							<g className={cx("text-7xl font-bold pointer-events-auto transform origin-center rotate-180")}>
+							<g
+								className={cx(
+									`text-7xl font-bold pointer-events-auto transform origin-center rotate-180 pie__segment-${segment.name}-label`,
+								)}
+							>
 								<text
 									aria-label={`${segment.name}-label`}
 									y={endLabelLine.y}
@@ -179,7 +188,7 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 					)}
 					<path
 						className={cx(
-							"transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto",
+							`transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto pie__segment-${segment.name}-path`,
 							!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:scale-[1.02]`,
 						)}
 						d={
@@ -216,10 +225,13 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
 							donut &&
 								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
+							segmentClassName,
 						)}
 					>
 						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-						<g id={glowId + id}>{path}</g>
+						<g className={`pie__segment-${id}`} id={glowId + id}>
+							{path}
+						</g>
 					</svg>
 				);
 			})}

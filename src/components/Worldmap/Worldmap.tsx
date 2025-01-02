@@ -10,10 +10,11 @@ import styles from "./Worldmap.module.scss";
 type Props = {
 	translate?: { x: number; y: number; scale: number };
 	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
+	className?: string;
 	children?: ReactNode;
 };
 
-export const Worldmap = ({ tooltips, translate, children }: Props) => {
+export const Worldmap = ({ tooltips, translate, className, children }: Props) => {
 	const { data } = useGraph();
 	const id = useId();
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
@@ -23,7 +24,7 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 			<svg
 				id={id}
 				viewBox={"0 0 1090 539"}
-				className={"w-auto h-full aspect-[1090/539] group"}
+				className={cx("w-auto h-full aspect-[1090/539] group", className)}
 				preserveAspectRatio={"none"}
 				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
 			>
@@ -37,7 +38,7 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 							stroke={dataset[iso]?.stroke ?? "white"}
 							strokeWidth={0.5}
 							data-iso={iso}
-							className={"hover:stroke-white hover:stroke-[1.5]"}
+							className={`hover:stroke-white hover:stroke-[1.5] worldmapcountry${iso} worldmap__country`}
 						/>
 					);
 				})}
