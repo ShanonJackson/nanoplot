@@ -29,7 +29,13 @@ export const Lines = ({ children }: Props) => {
 	const { pinned, hovered } = context.interactions;
 	const { viewbox } = context;
 	return (
-		<svg viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`} height={"100%"} width={"100%"} preserveAspectRatio={"none"}>
+		<svg
+			viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+			height={"100%"}
+			width={"100%"}
+			preserveAspectRatio={"none"}
+			className={"[grid-area:graph]"}
+		>
 			{lines.map(({ id, stroke, data, fill }, i) => {
 				const path = data.map((xy, index) => `${index === 0 ? "M" : "L"} ${xy.x} ${xy.y}`).join(" ");
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);

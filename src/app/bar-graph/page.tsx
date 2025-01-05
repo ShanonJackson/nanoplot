@@ -44,11 +44,22 @@ export default function Page() {
 			</div>
 
 			<div className={"h-full border-dotted border border-black dark:border-white"}>
-				<Graph data={[{ name: "My First Dataset", data: MOCK_DATA }]} gap={{ top: 15, left: 15, right: 30, bottom: 15 }}>
-					<YAxis ticks={{ from: 0 }} />
+				<Graph
+					data={MOCK_DATA.map((bar) => {
+						return {
+							...bar,
+							data: bar.data.map(({ x, y }) => {
+								if (bars) return { x: y, y: x };
+								return { x, y };
+							}),
+						};
+					})}
+					gap={{ top: 15, left: 15, right: 30, bottom: 15 }}
+				>
+					<YAxis />
 					<GridLines {...gridline} />
 					<Bars horizontal={bars} />
-					<XAxis />
+					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
@@ -57,16 +68,48 @@ export default function Page() {
 }
 
 const MOCK_DATA = [
-	{ x: 57, y: "Jan" },
-	{ x: 91, y: "Feb" },
-	{ x: 83, y: "Mar" },
-	{ x: 74, y: "Apr" },
-	{ x: 51, y: "May" },
-	{ x: 63, y: "Jun" },
-	{ x: 71, y: "Jul" },
-	{ x: 73, y: "Aug" },
-	{ x: 68, y: "Sep" },
-	{ x: 93, y: "Oct" },
-	{ x: 84, y: "Nov" },
-	{ x: 48, y: "Dec" },
+	{
+		name: "Sally hours gamed",
+		data: [
+			{ x: "Jan", y: 67 },
+			{ x: "Feb", y: 51 },
+			{ x: "Mar", y: 53 },
+			{ x: "Apr", y: 84 },
+			{ x: "May", y: 31 },
+			{ x: "Jun", y: 43 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		data: [
+			{ x: "Jan", y: 57 },
+			{ x: "Feb", y: 91 },
+			{ x: "Mar", y: 83 },
+			{ x: "Apr", y: 74 },
+			{ x: "May", y: 51 },
+			{ x: "Jun", y: 63 },
+		],
+	},
+	{
+		name: "Hicham hours gamed",
+		data: [
+			{ x: "Jan", y: 37 },
+			{ x: "Feb", y: 41 },
+			{ x: "Mar", y: 13 },
+			{ x: "Apr", y: 24 },
+			{ x: "May", y: 31 },
+			{ x: "Jun", y: 53 },
+		],
+	},
+	{
+		name: "Assari hours gamed",
+		data: [
+			{ x: "Jan", y: 67 },
+			{ x: "Feb", y: 71 },
+			{ x: "Mar", y: 53 },
+			{ x: "Apr", y: 74 },
+			{ x: "May", y: 71 },
+			{ x: "Jun", y: 53 },
+		],
+	},
 ];
