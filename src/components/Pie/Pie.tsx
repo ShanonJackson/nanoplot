@@ -12,16 +12,14 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
-	loadingClassName?: string;
-	emptyClassName?: string;
-	segmentClassName?: string;
+	className?: string;
 	children?: ReactNode;
 };
 
 const X_SCALE = 3000;
 const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
-export const Pie = ({ donut, labels = true, loading, loadingClassName, emptyClassName, segmentClassName, children }: Props) => {
+export const Pie = ({ donut, labels = true, loading, className, children }: Props) => {
 	const glowId = useId();
 	const emptyId = useId();
 	const context = useGraph();
@@ -43,7 +41,6 @@ export const Pie = ({ donut, labels = true, loading, loadingClassName, emptyClas
 					"h-full w-full",
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
-					loadingClassName,
 				)}
 			>
 				<path
@@ -75,7 +72,6 @@ export const Pie = ({ donut, labels = true, loading, loadingClassName, emptyClas
 				className={cx(
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%",
-					emptyClassName,
 				)}
 			>
 				<path
@@ -225,7 +221,7 @@ export const Pie = ({ donut, labels = true, loading, loadingClassName, emptyClas
 							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
 							donut &&
 								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
-							segmentClassName,
+							className,
 						)}
 					>
 						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
