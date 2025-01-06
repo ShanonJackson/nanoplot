@@ -38,14 +38,15 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 				role="status"
 				aria-busy={loading}
 				className={cx(
-					"h-full w-full",
+					"h-full w-full pie__loading",
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
+					className,
 				)}
 			>
 				<path
 					d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}
-					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)] pie__loading"}
+					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)] pie__loading-path"}
 				>
 					<animate
 						attributeName="fill"
@@ -72,12 +73,14 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 				className={cx(
 					donut &&
 						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%",
+					className,
+					"pie__empty",
 				)}
 			>
 				<path
 					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
 					fill={`url(#${emptyId})`}
-					className={"[filter:invert(1)] dark:[filter:invert(0)] pie__empty"}
+					className={"[filter:invert(1)] dark:[filter:invert(0)] pie__empty-path"}
 				/>
 				<linearGradient id={emptyId} gradientTransform="rotate(90)">
 					<stop offset="0%" stop-color="#3c3c3c"></stop>
@@ -218,7 +221,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`}
 						role={"img"}
 						className={cx(
-							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
+							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110 pie__segment",
 							donut &&
 								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
 							className,
