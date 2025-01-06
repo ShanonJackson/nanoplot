@@ -28,8 +28,10 @@ export const VerticalBars = ({ children, className }: Props) => {
 				y: yForValue(xy.y),
 			})),
 		};
-	})[0];
-	const barWidth = context.viewbox.x / bars.data.length - 80;
+	});
+	const gap = context.viewbox.x * 0.16; // 16% gap
+	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.x)));
+	const barWidth = Math.floor((context.viewbox.x - gap) / categories.size / bars.length);
 
 	return (
 		<svg
@@ -37,20 +39,22 @@ export const VerticalBars = ({ children, className }: Props) => {
 			className={cx("[grid-area:graph] h-full w-full", className)}
 			preserveAspectRatio={"none"}
 		>
-			{bars.data.map((bar, index) => {
-				const x1 = bar.x - barWidth / 2;
-				const x2 = bar.x + barWidth / 2;
-				return (
-					<path
-						key={index}
-						d={`M ${x1} ${context.viewbox.y} L ${x1} ${bar.y} L ${x2} ${bar.y} L ${x2} ${context.viewbox.y}`}
-						fill={"transparent"}
-						stroke={bars.stroke}
-						vectorEffect={"non-scaling-stroke"}
-						strokeWidth={1.5}
-					/>
-				);
-			})}
+			{bars.map((bar, index) =>
+				bar.data.map((xy, idx) => {
+					const x1 = xy.x - barWidth * (bars.length / 2) + barWidth * index;
+					const x2 = x1 + barWidth;
+					return (
+						<path
+							key={idx}
+							d={`M ${x1} ${context.viewbox.y} L ${x1} ${xy.y} L ${x2} ${xy.y} L ${x2} ${context.viewbox.y}`}
+							fill={bar.stroke}
+							stroke={bar.stroke}
+							vectorEffect={"non-scaling-stroke"}
+							strokeWidth={1.5}
+						/>
+					);
+				}),
+			)}
 			{children}
 		</svg>
 	);
