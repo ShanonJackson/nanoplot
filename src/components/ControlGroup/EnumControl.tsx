@@ -1,16 +1,16 @@
 type Props = {
 	options: Array<string>;
-	description?: string;
-	setPosition: (position: string) => void;
+	description: string;
+	onChange: (position: string) => void;
 };
 
-const EnumControl = ({ description, options, setPosition }: Props) => {
+export const EnumControl = ({ description, options, onChange }: Props) => {
 	return (
 		<>
 			<div role="list">
 				{options.map((position, index) => {
 					return (
-						<label role="listitem" onClick={() => setPosition(position)} key={index}>
+						<label role="listitem" onClick={() => onChange(position)} key={index}>
 							{position}
 						</label>
 					);
@@ -20,5 +20,3 @@ const EnumControl = ({ description, options, setPosition }: Props) => {
 		</>
 	);
 };
-
-export { EnumControl };
