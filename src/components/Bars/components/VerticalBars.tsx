@@ -29,7 +29,9 @@ export const VerticalBars = ({ children, className }: Props) => {
 			})),
 		};
 	});
-	const barWidth = context.viewbox.x / bars[0].data.length - 80;
+	const gap = context.viewbox.x * 0.16; // 16% gap
+	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.x)));
+	const barWidth = Math.floor((context.viewbox.x - gap) / categories.size / bars.length);
 
 	return (
 		<svg
@@ -39,8 +41,8 @@ export const VerticalBars = ({ children, className }: Props) => {
 		>
 			{bars.map((bar, index) =>
 				bar.data.map((xy, idx) => {
-					const x1 = index === 0 ? xy.x - barWidth / 2 : xy.x;
-					const x2 = index === 0 ? xy.x : xy.x + barWidth / 2;
+					const x1 = xy.x - barWidth * (bars.length / 2) + barWidth * index;
+					const x2 = x1 + barWidth;
 					return (
 						<path
 							key={idx}
