@@ -14,8 +14,12 @@ export default function Page() {
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] dark:bg-gray-800 p-4"}>
-				<h1 className={'text-2xl'}>World Map</h1>
+			<div
+				className={
+					"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] dark:bg-gray-800 p-4"
+				}
+			>
+				<h1 className={"text-2xl"}>World Map</h1>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
 					<SliderControl
 						value={map.translate?.x ?? 0}
@@ -34,7 +38,11 @@ export default function Page() {
 					/>
 				</Control>
 			</div>
-			<div className={"relative overflow-hidden border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
+			<div
+				className={
+					"relative overflow-hidden border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] overflow-hidden resize"
+				}
+			>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {

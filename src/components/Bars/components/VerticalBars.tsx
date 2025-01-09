@@ -20,6 +20,7 @@ export const VerticalBars = ({ children, className }: Props) => {
 		return {
 			...bar,
 			id: bar.id ?? bar.name,
+			group: bar.group ?? bar.id ?? bar.name,
 			stroke: bar.stroke ?? ColorUtils.colorFor(i, bars.length),
 			fill: bar.fill === true ? (bar.stroke ?? ColorUtils.colorFor(i, bars.length)) : bar.fill,
 			bar: bar.group ?? bar.name,
@@ -29,6 +30,10 @@ export const VerticalBars = ({ children, className }: Props) => {
 			})),
 		};
 	});
+	// stacked AND unstacked bars is the same code path.
+	// always setting a group (which is how you stack).
+	// and because group is defaulted to id or name stacks will be commonly 1/1
+	// if consumers of the library use 'group' it will be stacked for members of that group.
 	const gap = context.viewbox.x * 0.16; // 16% gap
 	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.x)));
 	const barWidth = Math.floor((context.viewbox.x - gap) / categories.size / bars.length);

@@ -10,11 +10,16 @@ type Props = {
 };
 
 export const Lines = ({ children }: Props) => {
-	const context = useGraph();
-	if (!GraphUtils.isXYData(context.data)) return null;
-	const xForValue = CoordinatesUtils.xCoordinateFor(context);
-	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-	const lines = context.data.map((line, i, lines) => {
+	const {
+		interactions: { pinned, hovered },
+		data,
+		viewbox,
+		domain,
+	} = useGraph();
+	if (!GraphUtils.isXYData(data)) return null;
+	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
+	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
+	const lines = data.map((line, i, lines) => {
 		return {
 			...line,
 			id: line.id ?? line.name,
@@ -26,11 +31,9 @@ export const Lines = ({ children }: Props) => {
 			})),
 		};
 	});
-	const { pinned, hovered } = context.interactions;
-	const { viewbox } = context;
 	return (
 		<svg
-			viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			height={"100%"}
 			width={"100%"}
 			preserveAspectRatio={"none"}
@@ -73,7 +76,6 @@ export const Lines = ({ children }: Props) => {
 					</React.Fragment>
 				);
 			})}
-
 			{children}
 		</svg>
 	);
