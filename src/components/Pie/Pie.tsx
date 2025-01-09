@@ -16,37 +16,34 @@ type Props = {
 	children?: ReactNode;
 };
 
-const X_SCALE = 3000;
-const Y_SCALE = 3000;
 const PADDING_PERCENT = 0.8;
 export const Pie = ({ donut, labels = true, loading, className, children }: Props) => {
 	const glowId = useId();
+	const maskId = useId();
 	const emptyId = useId();
-	const context = useGraph();
+	const { data, viewbox } = useGraph();
 
-	if (!context || !GraphUtils.isSegmentData(context.data)) return null;
-	const { data } = context;
+	if (!GraphUtils.isSegmentData(data)) return null;
 
-	const PIE_RADIUS = (X_SCALE / 3) * PADDING_PERCENT;
+	const PIE_RADIUS = (viewbox.x / 3) * PADDING_PERCENT;
+	const CX = viewbox.x / 2;
+	const CY = viewbox.y / 2;
+	const DONUT_RADIUS = viewbox.x * 0.16; /* 16% */
 	const isSinglePie = data.length === 1;
 	const total = data.reduce((sum, { value }) => sum + Number(value), 0);
 
 	if (loading) {
 		return (
 			<svg
-				viewBox={`0 0 3000 3000`}
+				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				role="status"
 				aria-busy={loading}
-				className={cx(
-					"h-full w-full pie__loading",
-					donut &&
-						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
-					className,
-				)}
+				className={(cx("h-full w-full pie__loading"), className)}
 			>
 				<path
-					d={PathUtils.circleArc(X_SCALE / 2, Y_SCALE / 2, PIE_RADIUS)}
+					d={PathUtils.circleArc(CX, CX, PIE_RADIUS)}
 					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)] pie__loading-path"}
+					mask={donut ? `url(#${maskId})` : undefined}
 				>
 					<animate
 						attributeName="fill"
@@ -58,34 +55,40 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						keySplines="0.15 0.25 0.25 0.15; 0.15 0.25 0.25 0.15; 0 0 0 0"
 					/>
 				</path>
+				{donut && (
+					<mask id={`${maskId}`}>
+						<rect width="100%" height="100%" fill="white" />
+						<circle cx="1500" cy="1500" r={DONUT_RADIUS} fill="black" />
+					</mask>
+				)}
 			</svg>
 		);
 	}
 
-	if (!context.data.length) {
+	if (!data.length) {
 		return (
 			<svg
 				data-testid="pie-empty-state"
 				role="img"
-				viewBox="0 0 3000 3000"
-				height="100%"
-				width="100%"
-				className={cx(
-					donut &&
-						"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%",
-					className,
-					"pie__empty",
-				)}
+				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
+				className={cx("h-full w-full pie__empty", className)}
 			>
 				<path
 					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
 					fill={`url(#${emptyId})`}
+					mask={donut ? `url(#${maskId})` : undefined}
 					className={"[filter:invert(1)] dark:[filter:invert(0)] pie__empty-path"}
 				/>
 				<linearGradient id={emptyId} gradientTransform="rotate(90)">
 					<stop offset="0%" stop-color="#3c3c3c"></stop>
 					<stop offset="100%" stop-color="#3c3c3c" stop-opacity="0.2"></stop>
 				</linearGradient>
+				{donut && (
+					<mask id={`${maskId}`}>
+						<rect width="100%" height="100%" fill="white" />
+						<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
+					</mask>
+				)}
 			</svg>
 		);
 	}
@@ -112,8 +115,8 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 		})
 		.map((segment, i, dataset) => {
 			const startLabelLine = PathUtils.polarToCartesian(
-				X_SCALE / 2,
-				Y_SCALE / 2,
+				CX,
+				CX,
 				PIE_RADIUS,
 				segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 			);
@@ -124,8 +127,8 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 					return {
 						name: segment.name,
 						position: PathUtils.polarToCartesian(
-							X_SCALE / 2,
-							Y_SCALE / 2,
+							CX,
+							CX,
 							PIE_RADIUS * 1.2,
 							segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 						),
@@ -146,12 +149,12 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 
 			const isCollisionFlipped = collisionPosition > 4;
 			const endLabelLine = PathUtils.polarToCartesian(
-				X_SCALE / 2,
-				Y_SCALE / 2,
+				CX,
+				CX,
 				PIE_RADIUS * (1.2 + 0.1 * ((isCollisionFlipped ? collisionPosition - 4 : collisionPosition) + 1)),
 				segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 			);
-			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, X_SCALE, 100) > 50;
+			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, viewbox.x, 100) > 50;
 
 			const path = (
 				<g className={"transform origin-center rotate-180 group"} key={i}>
@@ -192,12 +195,12 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						)}
 						d={
 							PathUtils.describeArc(
-								X_SCALE / 2,
-								Y_SCALE / 2,
+								CX,
+								CX,
 								PIE_RADIUS,
 								segment.previousTotalDegrees,
 								segment.previousTotalDegrees + segment.degrees,
-							) + ` L ${X_SCALE / 2} ${X_SCALE / 2} Z`
+							) + ` L ${CX} ${CX} Z`
 						}
 						fill={segment.fill}
 						data-degrees={segment.degrees}
@@ -218,19 +221,25 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 				return (
 					<svg
 						key={index}
-						viewBox={`0 0 ${X_SCALE} ${Y_SCALE}`}
+						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 						role={"img"}
 						className={cx(
 							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110 pie__segment",
-							donut &&
-								"mask-radial [mask-position:50%_50%] [mask-repeat:no-repeat] [mask-image:radial-gradient(circle,transparent_11%,black_11.1%)]",
 							className,
 						)}
 					>
 						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-						<g className={`pie__segment-${id}`} id={glowId + id}>
+						<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
+							
 							{path}
+						
 						</g>
+						{donut && (
+							<mask id={`${maskId}`}>
+								<rect width="100%" height="100%" fill="white" />
+								<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
+							</mask>
+						)}
 					</svg>
 				);
 			})}

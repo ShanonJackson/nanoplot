@@ -66,6 +66,6 @@ export const Worldmap = ({ tooltips, translate, className, children }: Props) =>
 Worldmap.context = (ctx: GraphContext, props: Props) => {
 	return {
 		...ctx,
-		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539]", styles.base) },
+		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-max", styles.base) },
 	};
 };

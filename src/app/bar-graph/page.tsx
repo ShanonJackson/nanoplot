@@ -43,7 +43,7 @@ export default function Page() {
 				</Control>
 			</div>
 
-			<div className={"h-full border-dotted border border-black dark:border-white"}>
+			<div className={"h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
 				<Graph
 					data={MOCK_DATA.map((bar) => {
 						return {
@@ -87,6 +87,23 @@ const MOCK_DATA = [
 	},
 	{
 		name: "Joe hours gamed",
+		data: [
+			{ x: "Jan", y: 57 },
+			{ x: "Feb", y: 91 },
+			{ x: "Mar", y: 83 },
+			{ x: "Apr", y: 74 },
+			{ x: "May", y: 51 },
+			{ x: "Jun", y: 63 },
+			{ x: "Jul", y: 71 },
+			{ x: "Aug", y: 73 },
+			{ x: "Sep", y: 68 },
+			{ x: "Oct", y: 93 },
+			{ x: "Nov", y: 84 },
+			{ x: "Dec", y: 48 },
+		],
+	},
+	{
+		name: "Shanon hours gamed",
 		data: [
 			{ x: "Jan", y: 57 },
 			{ x: "Feb", y: 91 },
