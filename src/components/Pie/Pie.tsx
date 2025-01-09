@@ -12,11 +12,12 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean;
 	labels?: boolean;
+	className?: string;
 	children?: ReactNode;
 };
 
 const PADDING_PERCENT = 0.8;
-export const Pie = ({ donut, labels = true, loading, children }: Props) => {
+export const Pie = ({ donut, labels = true, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
 	const emptyId = useId();
@@ -33,10 +34,15 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 
 	if (loading) {
 		return (
-			<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} role="status" aria-busy={loading} className={"h-full w-full"}>
+			<svg
+				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
+				role="status"
+				aria-busy={loading}
+				className={(cx("h-full w-full pie__loading"), className)}
+			>
 				<path
 					d={PathUtils.circleArc(CX, CX, PIE_RADIUS)}
-					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)]"}
+					className={"[filter:brightness(300%)] dark:[filter:brightness(100%)] pie__loading-path"}
 					mask={donut ? `url(#${maskId})` : undefined}
 				>
 					<animate
@@ -61,12 +67,17 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 
 	if (!data.length) {
 		return (
-			<svg data-testid="pie-empty-state" role="img" viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={"h-full w-full"}>
+			<svg
+				data-testid="pie-empty-state"
+				role="img"
+				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
+				className={cx("h-full w-full pie__empty", className)}
+			>
 				<path
 					d="M 1500 1500 m 800, 1.9594348786357651e-13 a 800, 800 0 1,0 -1600, -3.9188697572715303e-13 a 800, 800 0 1,0 1600, 3.9188697572715303e-13"
 					fill={`url(#${emptyId})`}
 					mask={donut ? `url(#${maskId})` : undefined}
-					className={"[filter:invert(1)] dark:[filter:invert(0)]"}
+					className={"[filter:invert(1)] dark:[filter:invert(0)] pie__empty-path"}
 				/>
 				<linearGradient id={emptyId} gradientTransform="rotate(90)">
 					<stop offset="0%" stop-color="#3c3c3c"></stop>
@@ -150,14 +161,18 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 					{labels && (
 						<>
 							<path
-								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180`}
+								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
 								key={segment.name}
 								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 									isRightAligned ? "l 100 0" : "l -100 0"
 								}`}
 								stroke={segment.stroke}
 							/>
-							<g className={cx("text-7xl font-bold pointer-events-auto transform origin-center rotate-180")}>
+							<g
+								className={cx(
+									`text-7xl font-bold pointer-events-auto transform origin-center rotate-180 pie__segment-${segment.name}-label`,
+								)}
+							>
 								<text
 									aria-label={`${segment.name}-label`}
 									y={endLabelLine.y}
@@ -175,7 +190,7 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 					)}
 					<path
 						className={cx(
-							"transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto",
+							`transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto pie__segment-${segment.name}-path`,
 							!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:scale-[1.02]`,
 						)}
 						d={
@@ -208,13 +223,16 @@ export const Pie = ({ donut, labels = true, loading, children }: Props) => {
 						key={index}
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 						role={"img"}
-						className={
-							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110"
-						}
+						className={cx(
+							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110 pie__segment",
+							className,
+						)}
 					>
 						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-						<g id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
+						<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
+							
 							{path}
+						
 						</g>
 						{donut && (
 							<mask id={`${maskId}`}>

@@ -5,11 +5,11 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 
-type Props = {
+interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
-};
+}
 
-export const Lines = ({ children }: Props) => {
+export const Lines = ({ className, children }: Props) => {
 	const {
 		interactions: { pinned, hovered },
 		data,
@@ -37,7 +37,7 @@ export const Lines = ({ children }: Props) => {
 			height={"100%"}
 			width={"100%"}
 			preserveAspectRatio={"none"}
-			className={"[grid-area:graph]"}
+			className={cx("[grid-area:graph]", className)}
 		>
 			{lines.map(({ id, stroke, data, fill }, i) => {
 				const path = data.map((xy, index) => `${index === 0 ? "M" : "L"} ${xy.x} ${xy.y}`).join(" ");
@@ -57,7 +57,7 @@ export const Lines = ({ children }: Props) => {
 							d={path}
 							fill={"transparent"}
 							stroke={stroke}
-							className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
+							className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1] lines__outlined")}
 							vectorEffect={"non-scaling-stroke"}
 							strokeWidth={1.5}
 						/>
@@ -71,6 +71,7 @@ export const Lines = ({ children }: Props) => {
 									return undefined;
 								})()}
 								strokeOpacity={0}
+								className="lines__filled"
 							/>
 						)}
 					</React.Fragment>
