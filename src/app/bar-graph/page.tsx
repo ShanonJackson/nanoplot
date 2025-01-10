@@ -7,7 +7,6 @@ import { Bars } from "@/components/Bars/Bars";
 import { ComponentProps, useState } from "react";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
-import { group } from "console";
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
