@@ -11,7 +11,6 @@ import { BooleanControl } from "@/components/Docs/Control/components/BooleanCont
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [bars, setBars] = useState<boolean>(false);
-	const [stackedBars, setStackedBars] = useState<boolean>(false);
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 
 	return (
@@ -39,13 +38,6 @@ export default function Page() {
 						description={"Adds Vertical Grid Lines"}
 					/>
 				</Control>
-				<Control name={"Stacked Bras"} type={"boolean"}>
-					<BooleanControl
-						value={stackedBars}
-						onChange={() => setStackedBars(!stackedBars)}
-						description={"Display Bras stacked"}
-					/>
-				</Control>
 				<Control name={"Horizontal Bras"} type={"boolean"}>
 					<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
 				</Control>
@@ -66,7 +58,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<Bars horizontal={bars} stacked={stackedBars} />
+					<Bars horizontal={bars} />
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
@@ -161,20 +153,15 @@ const MOCK_DATA = [
 		],
 	},
 	{
-		name: "Shanon hours gamed",
+		name: "Joe hours gamed",
+		group: "visitors",
 		data: [
-			{ x: "Jan", y: 57 },
-			{ x: "Feb", y: 91 },
-			{ x: "Mar", y: 83 },
-			{ x: "Apr", y: 74 },
-			{ x: "May", y: 51 },
-			{ x: "Jun", y: 63 },
-			{ x: "Jul", y: 71 },
-			{ x: "Aug", y: 73 },
-			{ x: "Sep", y: 68 },
-			{ x: "Oct", y: 93 },
-			{ x: "Nov", y: 84 },
-			{ x: "Dec", y: 48 },
+			{ x: "Jan", y: 10 },
+			{ x: "Feb", y: 21 },
+			{ x: "Mar", y: 13 },
+			{ x: "Apr", y: 22 },
+			{ x: "May", y: 11 },
+			{ x: "Jun", y: 13 },
 		],
 	},
 ];

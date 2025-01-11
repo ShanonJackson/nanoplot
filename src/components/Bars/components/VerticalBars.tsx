@@ -6,11 +6,10 @@ import { cx } from "@/utils/cx/cx";
 import { useGraph } from "@/hooks/use-graph/use-graph";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
-	stacked?: boolean;
 	children?: ReactNode;
 };
 
-export const VerticalBars = ({ stacked, children, className }: Props) => {
+export const VerticalBars = ({ children, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -46,53 +45,35 @@ export const VerticalBars = ({ stacked, children, className }: Props) => {
 			className={cx("[grid-area:graph] h-full w-full", className)}
 			preserveAspectRatio={"none"}
 		>
-			{stacked
-				? groups?.map((group, g) => {
-						const groupBars = bars.filter((b) => b.group === group);
-						console.log("groupBars", groupBars);
-						let coordinate: number[] = [];
-						const paths: ReactNode[] = [];
+			{groups?.map((group, g) => {
+				const groupBars = bars.filter((b) => b.group === group);
+				let coordinate: number[] = [];
+				const paths: ReactNode[] = [];
 
-						groupBars.map((bar, index) => {
-							bar.group === group &&
-								bar.data?.map((xy, idx) => {
-									const x1 = xy.x - barWidth + (barWidth + 30) * g;
-									const x2 = x1 + barWidth;
-									const y1 = index === 0 ? context.viewbox.y : coordinate[idx];
-									const y2 = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
-
-									// recorde the combined y coordinate (use for next stacked bar)
-									coordinate[idx] = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
-									paths.push(
-										<path
-											key={idx + index + xy.y + xy.x}
-											d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
-											fill={bar.stroke}
-											stroke={bar.stroke}
-											vectorEffect={"non-scaling-stroke"}
-											strokeWidth={1.5}
-										/>,
-									);
-								});
-						});
-						return paths.map((path) => path);
-					})
-				: bars.map((bar, index) =>
+				groupBars.map((bar, index) => {
+					bar.group === group &&
 						bar.data?.map((xy, idx) => {
-							const x1 = xy.x - barWidth * (bars.length / 2) + barWidth * index;
+							const x1 = xy.x + barWidth * g - barWidth * (groups.length / 2);
 							const x2 = x1 + barWidth;
-							return (
+							const y1 = index === 0 ? context.viewbox.y : coordinate[idx];
+							const y2 = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
+
+							// recorde the combined y coordinate (use for next stacked bar)
+							coordinate[idx] = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
+							paths.push(
 								<path
-									key={idx}
-									d={`M ${x1} ${context.viewbox.y} L ${x1} ${xy.y} L ${x2} ${xy.y} L ${x2} ${context.viewbox.y}`}
+									key={idx + index + xy.y + xy.x}
+									d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
 									fill={bar.stroke}
 									stroke={bar.stroke}
 									vectorEffect={"non-scaling-stroke"}
 									strokeWidth={1.5}
-								/>
+								/>,
 							);
-						}),
-					)}
+						});
+				});
+				return paths.map((path) => path);
+			})}
 			{children}
 		</svg>
 	);
