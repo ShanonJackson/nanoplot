@@ -6,12 +6,23 @@ import React, { ComponentProps, useState } from "react";
 import { Graph } from "@/components/Graph/Graph";
 import { Control } from "@/components/Docs/Control/Control";
 import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
+import { NavControls } from "@/components/Controls/NavControls";
+import { usePan } from "@/hooks/use-pan";
+
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
 		translate: { x: 0, y: 0, scale: 0 },
 	});
+
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
+	const pan = usePan({
+		translate: map.translate,
+		setTranslatePartial: (partial: ComponentProps<typeof Worldmap>['translate']) => setMapPartial({ 
+			translate: { x:0, y:0, scale:0, ...map.translate, ...partial }
+		})
+	})
+
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>
@@ -42,6 +53,7 @@ export default function Page() {
 							fill: ColorUtils.between("rgb(255, 0, 0)", "rgb(0, 0, 255)", average_demand_multiplier / 50),
 						};
 					})}
+					pan = {pan}
 				>
 					<Worldmap
 						tooltips={Object.fromEntries(
@@ -64,7 +76,15 @@ export default function Page() {
 							}),
 						)}
 						{...map}
-					/>
+					>
+						<NavControls
+							translate={map.translate}
+							setTranslate={(translate: ComponentProps<typeof Worldmap>['translate']) : void => {
+									setMapPartial({translate})
+								}
+							}
+						/>
+					</Worldmap>
 				</Graph>
 			</div>
 			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>

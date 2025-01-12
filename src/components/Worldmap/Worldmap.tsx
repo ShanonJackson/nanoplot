@@ -1,4 +1,4 @@
-import React, { ReactNode, useId } from "react";
+import React, { ReactNode, useId, memo } from "react";
 import { PathUtils } from "@/utils/path/path";
 import { MathUtils } from "@/utils/math/math";
 import { Popup } from "@/components/Tooltip/Popup";
@@ -13,36 +13,35 @@ type Props = {
 	children?: ReactNode;
 };
 
-export const Worldmap = ({ tooltips, translate, children }: Props) => {
+const SvgMemo = memo(({}) => {
 	const { data } = useGraph();
 	const id = useId();
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
 
 	return (
-		<>
-			<svg
-				id={id}
-				viewBox={"0 0 1090 539"}
-				className={"w-auto h-full aspect-[1090/539] group"}
-				preserveAspectRatio={"none"}
-				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
-			>
-				{Object.entries(countries).map(([iso, path], i) => {
-					const color = "#2c2c2c";
-					return (
-						<path
-							key={i}
-							d={path}
-							fill={typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color}
-							stroke={dataset[iso]?.stroke ?? "white"}
-							strokeWidth={0.5}
-							data-iso={iso}
-							className={"hover:stroke-white hover:stroke-[1.5]"}
-						/>
-					);
-				})}
-			</svg>
-			{Object.entries(countries).map(([iso, path], i) => {
+		<svg
+			id={id}
+		>{Object.entries(countries).map(([iso, path], i) => {
+			const color = "#2c2c2c";
+			return (
+				<path
+					key={i}
+					d={path}
+					fill={typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color}
+					stroke={dataset[iso]?.stroke ?? "white"}
+					strokeWidth={0.5}
+					data-iso={iso}
+					className={"hover:stroke-white hover:stroke-[1.5]"}
+				/>
+			);
+		})}</svg>
+	)
+}, () => true)
+
+const TooltipsMemo = memo(({tooltips}: Partial<Props>) => {
+	return <>
+		{
+			Object.entries(countries).map(([iso, path], i) => {
 				const { x, y } = PathUtils.center(path);
 				return (
 					<Popup
@@ -56,9 +55,30 @@ export const Worldmap = ({ tooltips, translate, children }: Props) => {
 						<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
 					</Popup>
 				);
-			})}
+			})
+		}
+	</>
+},()=>true)
+
+export const Worldmap = ({ tooltips, translate, children }: Props) => {
+	const id = useId()
+	return (
+		<div 
+			className="hover:cursor-move active:cursor-grabbing"
+		>
+			<svg
+				//className={`translate-x-${translate?.x ?? 0} translate-y-${translate?.y ?? 0}`}
+				id={id}
+				viewBox={"0 0 1090 539"}
+				className={"w-auto h-full aspect-[1090/539] group"}
+				preserveAspectRatio={"none"}
+				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
+			>
+				<SvgMemo ></SvgMemo>
+			</svg>
+			<TooltipsMemo tooltips={tooltips}/>
 			{children}
-		</>
+		</div>
 	);
 };
 
