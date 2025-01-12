@@ -31,4 +31,3 @@ export const usePan = ({translate = { x: 0 , y: 0 , scale: 0 } , setTranslatePar
     })
 
 }
-document.addEventListener('scroll',()=>{console.log('scroll listener')})
