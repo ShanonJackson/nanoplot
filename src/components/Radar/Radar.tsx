@@ -117,12 +117,13 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 					<stop offset="100%" stopColor={fill} stopOpacity={0.2} />
 				</radialGradient>
 			</defs>
-			<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} fill="#111111" />
+			<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} className={"fill-[#efefef] dark:fill-[#111111]"} />
 			<path
 				d={ringData}
 				fillRule="evenodd"
-				fill="#1b1b1b"
-				className={"[vector-effect:non-scaling-stroke] stroke-1 stroke-[#2D2D2D]"}
+				className={
+					"fill-[#dfdfdf] dark:fill-[#1b1b1b] [vector-effect:non-scaling-stroke] stroke-1 stroke-gray-300 dark:stroke-[#2d2d2d]"
+				}
 			/>
 			{isEmpty ? (
 				<text x={viewbox.x / 2} y={viewbox.y / 2}>
@@ -157,7 +158,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 						cx={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).x}
 						cy={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).y}
 						r={viewbox.x / 150}
-						fill="white"
+						className={"fill-gray-500 dark:fill-white"}
 					/>
 				))}
 			<path stroke={fill} d={path} fill={`url(#${radarShapeId}`} className={"stroke-[10] [fill-opacity:0.7]"} />
