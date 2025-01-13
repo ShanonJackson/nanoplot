@@ -11,9 +11,10 @@ type Props = {
 	gap?: { top?: number; right?: number; bottom?: number; left?: number };
 	interactions?: { hovered?: string[]; pinned?: string[] } /* array of ids */;
 	children: ReactNode;
+	pan?: Object;
 };
 
-export const Graph = ({ data, gap, children, interactions }: Props) => {
+export const Graph = ({ data, gap, children, interactions, pan={} }: Props) => {
 	const id = useId();
 	const X_SCALE = 3000;
 	const Y_SCALE = 3000;
@@ -59,6 +60,7 @@ export const Graph = ({ data, gap, children, interactions }: Props) => {
 				gridTemplateRows: ctx.layout.rows,
 				padding: `${ctx.gap.top}px ${ctx.gap.right}px ${ctx.gap.bottom}px ${ctx.gap.left}px`,
 			}}
+			{ ...pan }
 		>
 			<GraphContextProvider value={ctx}>{children}</GraphContextProvider>
 		</div>
