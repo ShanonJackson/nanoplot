@@ -9,7 +9,6 @@ import { SliderControl } from "@/components/Docs/Control/components/SliderContro
 import { NavControls } from "@/components/Controls/NavControls";
 import { usePan } from "@/hooks/use-pan";
 
-
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
 		translate: { x: 0, y: 0, scale: 0 },
@@ -31,7 +30,7 @@ export default function Page() {
 				}
 			>
 				<h1 className={"text-2xl"}>World Map</h1>
-				{<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
+				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
 					<SliderControl
 						value={map.translate?.x ?? 0}
 						onChange={(value) => setMapPartial({ translate: { y: 0, scale: 0, ...map.translate, x: value } })}
@@ -47,7 +46,7 @@ export default function Page() {
 						onChange={(value) => setMapPartial({ translate: { y: 0, x: 0, ...map.translate, scale: value } })}
 						description={`${map.translate?.scale} scale`}
 					/>
-				</Control>}
+				</Control>
 			</div>
 			<div
 				className={
