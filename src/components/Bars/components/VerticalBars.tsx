@@ -4,6 +4,8 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { useGraph } from "@/hooks/use-graph/use-graph";
+import { Popup } from "../../Tooltip/Popup";
+import { MathUtils } from "../../../utils/math/math";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: ReactNode;
@@ -47,12 +49,11 @@ export const VerticalBars = ({ children, className }: Props) => {
 		>
 			{groups?.map((group, g) => {
 				const groupBars = bars.filter((b) => b.group === group);
-				let coordinate: number[] = [];
-				const paths: ReactNode[] = [];
+				const coordinate: number[] = [];
 
-				groupBars.map((bar, index) => {
-					bar.group === group &&
-						bar.data?.map((xy, idx) => {
+				return groupBars.map((bar, index) => {
+					if (bar.group === group)
+						return bar.data?.map((xy, idx) => {
 							const x1 = xy.x + barWidth * g - barWidth * (groups.length / 2);
 							const x2 = x1 + barWidth;
 							const y1 = index === 0 ? context.viewbox.y : coordinate[idx];
@@ -60,19 +61,19 @@ export const VerticalBars = ({ children, className }: Props) => {
 
 							// recorde the combined y coordinate (use for next stacked bar)
 							coordinate[idx] = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
-							paths.push(
+							return (
 								<path
 									key={idx + index + xy.y + xy.x}
+									className={cx("z-50 group")}
 									d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
 									fill={bar.stroke}
 									stroke={bar.stroke}
 									vectorEffect={"non-scaling-stroke"}
 									strokeWidth={1.5}
-								/>,
+								/>
 							);
 						});
 				});
-				return paths.map((path) => path);
 			})}
 			{children}
 		</svg>

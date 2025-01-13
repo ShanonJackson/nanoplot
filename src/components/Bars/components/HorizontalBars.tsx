@@ -43,20 +43,18 @@ export const HorizontalBars = ({ children, className }: Props) => {
 		>
 			{groups?.map((group, g) => {
 				const groupBars = bars.filter((b) => b.group === group);
-				console.log("groupBars", groupBars);
-				let coordinate: number[] = [];
-				const paths: ReactNode[] = [];
+				const coordinate: number[] = [];
 
-				groupBars.map((bar, index) => {
-					bar.group === group &&
-						bar.data?.map((xy, idx) => {
+				return groupBars.map((bar, index) => {
+					if (bar.group === group)
+						return bar.data?.map((xy, idx) => {
 							const y1 = xy.y + barHeight * g - barHeight * (groups.length / 2);
 							const y2 = y1 + barHeight;
 							const x1 = index === 0 ? 0 : coordinate[idx];
 							const x2 = index === 0 ? xy.x : coordinate[idx] + (0 + xy.x);
 							// recorde the combined x coordinate (use for next stacked bar)
 							coordinate[idx] = index === 0 ? xy.x : coordinate[idx] + xy.x;
-							paths.push(
+							return (
 								<path
 									key={idx + index + xy.y + xy.x}
 									d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
@@ -64,11 +62,10 @@ export const HorizontalBars = ({ children, className }: Props) => {
 									stroke={bar.stroke}
 									vectorEffect={"non-scaling-stroke"}
 									strokeWidth={1.5}
-								/>,
+								/>
 							);
 						});
 				});
-				return paths.map((path) => path);
 			})}
 			{children}
 		</svg>
