@@ -6,4 +6,5 @@ export const MathUtils = {
 		const [newMin, newMax] = typeof newminMax === "number" ? [0, newminMax] : newminMax;
 		return ((value - min) / (max - min)) * (newMax - newMin) + newMin;
 	},
+	clamp: (value: number, min: number, max: number) => Math.min(Math.max(value, min), max),
 };

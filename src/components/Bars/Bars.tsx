@@ -1,7 +1,11 @@
 import React from "react";
 import { VerticalBars } from "@/components/Bars/components/VerticalBars";
-import { ComponentProps } from "react";
+import { HorizontalBars } from "./components/HorizontalBars";
 
-export const Bars = (props: ComponentProps<typeof VerticalBars>) => {
-	return <VerticalBars {...props} />;
+type ComponentProps = {
+	horizontal?: boolean;
+};
+
+export const Bars = ({ horizontal, ...props }: ComponentProps) => {
+	return horizontal ? <HorizontalBars {...props} /> : <VerticalBars {...props} />;
 };

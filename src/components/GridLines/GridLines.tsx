@@ -18,28 +18,26 @@ export const GridLines = ({ border, horizontal, vertical, className }: Props) =>
 			{border && (
 				<path
 					d={`M 0 0 l${x} 0 l0 ${y} l${-x} 0 Z`}
-					strokeWidth={3}
+					strokeWidth={1}
 					vectorEffect={"non-scaling-stroke"}
 					fill={"transparent"}
-					className={cx("stroke-[hsl(0deg,0%,0%)] dark:stroke-[hsl(0deg,0%,100%)] grid-lines__border")}
+					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__border")}
 				/>
 			)}
 			{horizontal && (
 				<path
 					d={domain.y.map(({ coordinate }) => `M 0 ${coordinate} L ${x} ${coordinate}`).join(" ")}
-					strokeWidth={3}
+					strokeWidth={1}
 					vectorEffect={"non-scaling-stroke"}
-					strokeDasharray="4, 7"
-					className={cx("stroke-[hsl(0deg,0%,0%)] dark:stroke-[hsl(0deg,0%,100%)] grid-lines__horizontal")}
+					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__horizontal")}
 				/>
 			)}
 			{vertical && (
 				<path
 					d={domain.x.map(({ coordinate }) => `M ${coordinate} 0 L ${coordinate} ${y}`).join(" ")}
-					strokeWidth={3}
+					strokeWidth={1}
 					vectorEffect={"non-scaling-stroke"}
-					strokeDasharray="4, 10"
-					className={cx("stroke-[hsl(0deg,0%,0%)] dark:stroke-[hsl(0deg,0%,100%)] grid-lines__vertical")}
+					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__vertical")}
 				/>
 			)}
 		</svg>

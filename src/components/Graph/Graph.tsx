@@ -3,6 +3,8 @@ import { GraphContext, GraphContextProvider } from "@/hooks/use-graph/use-graph"
 import { ChildrenUtils } from "@/utils/children/children";
 import { DomainUtils } from "@/utils/domain/domain";
 import { cx } from "@/utils/cx/cx";
+import { ColorUtils } from "@/utils/color/color";
+import { GraphUtils } from "@/utils/graph/graph";
 
 type Props = {
 	data: GraphContext["data"];
@@ -21,10 +23,26 @@ export const Graph = ({ data, gap, children, interactions, pan={} }: Props) => {
 		id,
 		layout: { rows: "[graph] auto", columns: "[graph] auto" },
 		viewbox: { x: X_SCALE, y: Y_SCALE },
-		data,
+		data: GraphUtils.isXYData(data)
+			? data.map((dp, i, dps) => {
+					return {
+						id: dp.id ?? dp.name,
+						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
+						fill: dp.fill === true ? (dp.stroke ?? ColorUtils.colorFor(i, dps.length)) : dp.fill,
+						...dp,
+					};
+				})
+			: data.map((dp, i, dps) => {
+					return {
+						id: dp.id ?? dp.name,
+						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
+						fill: dp.fill === true ? (dp.stroke ?? ColorUtils.colorFor(i, dps.length)) : dp.fill,
+						...dp,
+					};
+				}),
 		gap: { top: gap?.top ?? 0, left: gap?.left ?? 0, right: gap?.right ?? 0, bottom: gap?.bottom ?? 0 },
 		attributes: {
-			className: "relative grid h-full w-full",
+			className: "relative grid h-full w-full isolate",
 		},
 		domain: {
 			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),

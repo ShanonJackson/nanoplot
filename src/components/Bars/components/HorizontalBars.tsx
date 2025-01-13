@@ -1,15 +1,15 @@
-import React, { ReactNode } from "react";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { GraphUtils } from "@/utils/graph/graph";
-import { ColorUtils } from "@/utils/color/color";
-import { cx } from "@/utils/cx/cx";
+import { ColorUtils } from "@/export";
 import { useGraph } from "@/hooks/use-graph/use-graph";
+import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
+import { cx } from "@/utils/cx/cx";
+import { GraphUtils } from "@/utils/graph/graph";
+import React from "react";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
-	children?: ReactNode;
+	children?: React.ReactNode;
 };
 
-export const VerticalBars = ({ children, className }: Props) => {
+export const HorizontalBars = ({ children, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -20,7 +20,6 @@ export const VerticalBars = ({ children, className }: Props) => {
 		return {
 			...bar,
 			id: bar.id ?? bar.name,
-			group: bar.group ?? bar.id ?? bar.name,
 			stroke: bar.stroke ?? ColorUtils.colorFor(i, bars.length),
 			fill: bar.fill === true ? (bar.stroke ?? ColorUtils.colorFor(i, bars.length)) : bar.fill,
 			bar: bar.group ?? bar.name,
@@ -30,13 +29,10 @@ export const VerticalBars = ({ children, className }: Props) => {
 			})),
 		};
 	});
-	// stacked AND unstacked bars is the same code path.
-	// always setting a group (which is how you stack).
-	// and because group is defaulted to id or name stacks will be commonly 1/1
-	// if consumers of the library use 'group' it will be stacked for members of that group.
+
 	const gap = context.viewbox.x * 0.16; // 16% gap
-	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.x)));
-	const barWidth = Math.floor((context.viewbox.x - gap) / categories.size / bars.length);
+	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.y)));
+	const barHeight = Math.floor((context.viewbox.y - gap) / categories.size / bars.length);
 
 	return (
 		<svg
@@ -46,12 +42,12 @@ export const VerticalBars = ({ children, className }: Props) => {
 		>
 			{bars.map((bar, index) =>
 				bar.data.map((xy, idx) => {
-					const x1 = xy.x - barWidth * (bars.length / 2) + barWidth * index;
-					const x2 = x1 + barWidth;
+					const y1 = xy.y - barHeight * (bars.length / 2) + barHeight * index;
+					const y2 = y1 + barHeight;
 					return (
 						<path
 							key={idx}
-							d={`M ${x1} ${context.viewbox.y} L ${x1} ${xy.y} L ${x2} ${xy.y} L ${x2} ${context.viewbox.y}`}
+							d={`M 0 ${y1} L ${xy.x} ${y1} L ${xy.x} ${y2} L 0 ${y2}`}
 							fill={bar.stroke}
 							stroke={bar.stroke}
 							vectorEffect={"non-scaling-stroke"}
