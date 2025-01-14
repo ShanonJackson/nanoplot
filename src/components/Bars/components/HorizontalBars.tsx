@@ -7,9 +7,11 @@ import React, { ReactNode } from "react";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
+	gap?: number;
+	size?: number;
 };
 
-export const HorizontalBars = ({ children, className }: Props) => {
+export const HorizontalBars = ({ children, gap = 1, size = 30, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -30,9 +32,8 @@ export const HorizontalBars = ({ children, className }: Props) => {
 		};
 	});
 
-	const gap = context.viewbox.x * 0.16; // 16% gap
-	const categories = new Set(bars.flatMap((bar) => bar.data.map((xy) => xy.y)));
-	const barHeight = Math.floor((context.viewbox.y - gap) / categories.size / bars.length);
+	const barGap = (context.viewbox.x * gap) / 100; // 16% gap
+	const barHeight = Math.floor(((context.viewbox.y - barGap) * size) / 1000);
 	const groups = [...new Set(bars.map((bar) => bar.group))];
 
 	return (
