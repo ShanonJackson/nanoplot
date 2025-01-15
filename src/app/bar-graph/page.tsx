@@ -7,40 +7,64 @@ import { Bars } from "@/components/Bars/Bars";
 import { ComponentProps, useState } from "react";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { ControlGroup } from "../../components/ControlGroup/ControlGroup";
+import { SliderControl } from "../../components/Docs/Control/components/SliderControl/SliderControl";
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+	const [barsBase, setBarsBase] = useState<ComponentProps<typeof Bars>>({});
 	const [bars, setBars] = useState<boolean>(false);
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
+	const setBarsBAse = (partial: Partial<ComponentProps<typeof Bars>>) => setBarsBase((prev) => ({ ...prev, ...partial }));
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white p-4 bg-gray-100 dark:bg-gray-800"}>
 				<h1 className={"text-2xl"}>Bar Graph</h1>
-				<Control name={"Border"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.border}
-						onChange={(checked) => setGridPartial({ border: checked })}
-						description={"Adds Border To Graph"}
-					/>
-				</Control>
-				<Control name={"Horizontal Grid"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.horizontal}
-						onChange={(checked) => setGridPartial({ horizontal: checked })}
-						description={"Adds Horizontal Grid Lines"}
-					/>
-				</Control>
-				<Control name={"Vertical Grid"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.vertical}
-						onChange={(checked) => setGridPartial({ vertical: checked })}
-						description={"Adds Vertical Grid Lines"}
-					/>
-				</Control>
-				<Control name={"Horizontal Bras"} type={"boolean"}>
-					<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
-				</Control>
+				<ControlGroup title={"Base"}>
+					<Control name={"Horizontal Bras"} type={"boolean"}>
+						<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
+					</Control>
+					<Control name="Bars Gap" type="number">
+						<SliderControl
+							value={barsBase.gap}
+							onChange={(value) => setBarsBAse({ gap: value })}
+							min={0}
+							description={"Gap between bars"}
+						/>
+					</Control>
+					<Control name="Bars Size" type="number">
+						<SliderControl
+							value={barsBase.size}
+							onChange={(value) => setBarsBAse({ size: value })}
+							min={15}
+							description={"Size Of Bars"}
+						/>
+					</Control>
+				</ControlGroup>
+				<ControlGroup title={"GridLines"}>
+					<Control name={"Border"} type={"boolean"}>
+						<BooleanControl
+							value={gridline.border}
+							onChange={(checked) => setGridPartial({ border: checked })}
+							description={"Adds Border To Graph"}
+						/>
+					</Control>
+					<Control name={"Horizontal Grid"} type={"boolean"}>
+						<BooleanControl
+							value={gridline.horizontal}
+							onChange={(checked) => setGridPartial({ horizontal: checked })}
+							description={"Adds Horizontal Grid Lines"}
+						/>
+					</Control>
+					<Control name={"Vertical Grid"} type={"boolean"}>
+						<BooleanControl
+							value={gridline.vertical}
+							onChange={(checked) => setGridPartial({ vertical: checked })}
+							description={"Adds Vertical Grid Lines"}
+						/>
+					</Control>
+				</ControlGroup>
 			</div>
 
 			<div className={"h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
@@ -58,7 +82,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<Bars horizontal={bars} />
+					<Bars horizontal={bars} gap={barsBase.gap} size={barsBase.size} />
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>

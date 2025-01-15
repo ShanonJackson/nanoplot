@@ -4,6 +4,8 @@ import { HorizontalBars } from "./components/HorizontalBars";
 
 type ComponentProps = {
 	horizontal?: boolean;
+	gap?: number;
+	size?: number;
 };
 
 export const Bars = ({ horizontal, ...props }: ComponentProps) => {
