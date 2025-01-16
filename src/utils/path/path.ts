@@ -160,4 +160,14 @@ export const PathUtils = {
 		const centerY = parsed.reduce((acc, { coords }) => acc + (coords[1] ?? 0), 0) / parsed.length;
 		return { x: centerX, y: centerY };
 	},
+	borderRadius: (xy1: { x: number; y: number }, xy2: { x: number; y: number }, radius: number) => {
+		const middle = xy2.x - xy1.x;
+		return `
+			M ${xy1.x} ${xy1.y} V ${xy2.y + radius}
+			Q ${xy1.x} ${xy2.y} ${xy1.x + (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
+			L ${xy2.x - (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
+			Q ${xy2.x} ${xy2.y} ${xy2.x} ${xy2.y + radius}
+			V ${xy1.y}
+		`;
+	},
 };

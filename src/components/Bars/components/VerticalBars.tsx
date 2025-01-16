@@ -4,16 +4,16 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { useGraph } from "@/hooks/use-graph/use-graph";
-import { Popup } from "../../Tooltip/Popup";
-import { MathUtils } from "../../../utils/math/math";
+import { PathUtils } from "@/utils/path/path";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: ReactNode;
 	gap?: number;
 	size?: number;
+	radius?: number;
 };
 
-export const VerticalBars = ({ children, gap = 1, size = 30, className }: Props) => {
+export const VerticalBars = ({ children, gap = 1, size = 30, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -60,13 +60,18 @@ export const VerticalBars = ({ children, gap = 1, size = 30, className }: Props)
 							const y1 = index === 0 ? context.viewbox.y : coordinate[idx];
 							const y2 = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
 
+							const candleRadius =
+								groupBars.length === index + 1
+									? PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius)
+									: `M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`;
+
 							// recorde the combined y coordinate (use for next stacked bar)
 							coordinate[idx] = index === 0 ? xy.y : coordinate[idx] - (context.viewbox.y - xy.y);
 							return (
 								<path
 									key={idx + index + xy.y + xy.x}
 									className={cx("z-50 group")}
-									d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
+									d={candleRadius}
 									fill={bar.stroke}
 									stroke={bar.stroke}
 									vectorEffect={"non-scaling-stroke"}

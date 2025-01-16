@@ -7,8 +7,8 @@ import { Bars } from "@/components/Bars/Bars";
 import { ComponentProps, useState } from "react";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
-import { ControlGroup } from "../../components/ControlGroup/ControlGroup";
-import { SliderControl } from "../../components/Docs/Control/components/SliderControl/SliderControl";
+import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
+import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
@@ -39,6 +39,15 @@ export default function Page() {
 							onChange={(value) => setBarsBAse({ size: value })}
 							min={15}
 							description={"Size Of Bars"}
+						/>
+					</Control>
+					<Control name="Bar Radius" type="number">
+						<SliderControl
+							value={barsBase.radius}
+							onChange={(value) => setBarsBAse({ radius: value })}
+							min={0}
+							max={360}
+							description={"Bar Radius"}
 						/>
 					</Control>
 				</ControlGroup>
@@ -82,7 +91,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<Bars horizontal={bars} gap={barsBase.gap} size={barsBase.size} />
+					<Bars horizontal={bars} gap={barsBase.gap} size={barsBase.size} radius={barsBase.radius} />
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
