@@ -6,6 +6,7 @@ type ComponentProps = {
 	horizontal?: boolean;
 	gap?: number;
 	size?: number;
+	radius?: number;
 };
 
 export const Bars = ({ horizontal, ...props }: ComponentProps) => {
