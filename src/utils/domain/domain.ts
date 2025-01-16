@@ -14,6 +14,7 @@ import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 import { YAxis } from "@/components/YAxis/YAxis";
+import { ObjectUtils } from "@/utils/object/object";
 
 const roundUp = (num: number, nearest: number) => Math.ceil(num / nearest) * nearest;
 const roundDown = (num: number, nearest: number) => Math.floor(num / nearest) * nearest;
@@ -130,7 +131,24 @@ export const DomainUtils = {
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.y)));
-			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.y)));
+			const max = (() => {
+				const grouped = data.some((d) => Boolean(d.group));
+				if (!grouped) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.y)));
+				/*
+					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
+					This is the case for stacked-bars.
+				*/
+				return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, values]) => {
+					const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], ({ x }) => x.toString());
+					const maxForDataset = Object.entries(dataset).reduce((max2, [, values2]) => {
+						return Math.max(
+							max2,
+							(values2 ?? []).reduce((total, { y }) => total + +y, 0),
+						);
+					}, 0);
+					return Math.max(max1, maxForDataset);
+				}, 0);
+			})();
 			if (min === max) return [{ tick: min, coordinate: viewbox.y / 2 }];
 
 			if (typeof data[0]?.data?.[0].y === "string" /* categorical dataset */) {
