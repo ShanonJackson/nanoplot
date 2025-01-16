@@ -172,11 +172,18 @@ export const PathUtils = {
 			`;
 		}
 		return `
-			M ${xy1.x} ${xy1.y} V ${xy2.y + radius}
+			M ${xy1.x} ${xy1.y} V ${xy2.y + radius + radius}
 			Q ${xy1.x} ${xy2.y} ${xy1.x + (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
 			L ${xy2.x - (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
-			Q ${xy2.x} ${xy2.y} ${xy2.x} ${xy2.y + radius}
+			Q ${xy2.x} ${xy2.y}
+				${xy2.x} ${xy2.y + radius + radius}
 			V ${xy1.y}
 		`;
 	},
+	// H ${xy1.x - middle / 2}
+	// H ${xy1.x}
+	// Q ${xy1.x} ${xy2.y}
+	// 	${xy1.x + radius} ${xy2.y}
+	// V ${xy2.y - middle / 2}
+	// V ${xy2.y}
 };
