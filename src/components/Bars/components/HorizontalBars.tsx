@@ -4,14 +4,16 @@ import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { cx } from "@/utils/cx/cx";
 import { GraphUtils } from "@/utils/graph/graph";
 import React, { ReactNode } from "react";
+import { PathUtils } from "@/utils/path/path";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
 	gap?: number;
 	size?: number;
+	radius?: number;
 };
 
-export const HorizontalBars = ({ children, gap = 1, size = 30, className }: Props) => {
+export const HorizontalBars = ({ children, gap = 1, size = 30, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -53,12 +55,18 @@ export const HorizontalBars = ({ children, gap = 1, size = 30, className }: Prop
 							const y2 = y1 + barHeight;
 							const x1 = index === 0 ? 0 : coordinate[idx];
 							const x2 = index === 0 ? xy.x : coordinate[idx] + (0 + xy.x);
+
+							const candleRadius =
+								groupBars.length === index + 1
+									? PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius, true)
+									: `M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`;
+
 							// recorde the combined x coordinate (use for next stacked bar)
 							coordinate[idx] = index === 0 ? xy.x : coordinate[idx] + xy.x;
 							return (
 								<path
 									key={idx + index + xy.y + xy.x}
-									d={`M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`}
+									d={candleRadius}
 									fill={bar.stroke}
 									stroke={bar.stroke}
 									vectorEffect={"non-scaling-stroke"}
