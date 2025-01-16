@@ -8,12 +8,11 @@ import { PathUtils } from "@/utils/path/path";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
-	gap?: number;
 	size?: number;
 	radius?: number;
 };
 
-export const HorizontalBars = ({ children, gap = 1, size = 30, radius = 0, className }: Props) => {
+export const HorizontalBars = ({ children, size = 30, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -34,7 +33,7 @@ export const HorizontalBars = ({ children, gap = 1, size = 30, radius = 0, class
 		};
 	});
 
-	const barGap = (context.viewbox.x * gap) / 100; // 16% gap
+	const barGap = context.viewbox.x / 100; // 16% gap
 	const barHeight = Math.floor(((context.viewbox.y - barGap) * size) / 1000);
 	const groups = [...new Set(bars.map((bar) => bar.group))];
 

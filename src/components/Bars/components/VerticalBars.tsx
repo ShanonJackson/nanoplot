@@ -8,12 +8,11 @@ import { PathUtils } from "@/utils/path/path";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: ReactNode;
-	gap?: number;
 	size?: number;
 	radius?: number;
 };
 
-export const VerticalBars = ({ children, gap = 1, size = 30, radius = 0, className }: Props) => {
+export const VerticalBars = ({ children, size = 30, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -38,7 +37,7 @@ export const VerticalBars = ({ children, gap = 1, size = 30, radius = 0, classNa
 	// always setting a group (which is how you stack).
 	// and because group is defaulted to id or name stacks will be commonly 1/1
 	// if consumers of the library use 'group' it will be stacked for members of that group.
-	const barGap = (context.viewbox.x * gap) / 100; // 16% gap
+	const barGap = context.viewbox.x / 100; // 16% gap
 	const barWidth = Math.floor(((context.viewbox.x - barGap) * size) / 1000);
 	const groups = [...new Set(bars.map((bar) => bar.group))];
 

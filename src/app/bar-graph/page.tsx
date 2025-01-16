@@ -25,14 +25,6 @@ export default function Page() {
 					<Control name={"Horizontal Bras"} type={"boolean"}>
 						<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
 					</Control>
-					<Control name="Bars Gap" type="number">
-						<SliderControl
-							value={barsBase.gap}
-							onChange={(value) => setBarsBAse({ gap: value })}
-							min={0}
-							description={"Gap between bars"}
-						/>
-					</Control>
 					<Control name="Bars Size" type="number">
 						<SliderControl
 							value={barsBase.size}
@@ -91,7 +83,7 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<Bars horizontal={bars} gap={barsBase.gap} size={barsBase.size} radius={barsBase.radius} />
+					<Bars horizontal={bars} size={barsBase.size} radius={barsBase.radius} />
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
