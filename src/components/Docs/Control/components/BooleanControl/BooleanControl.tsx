@@ -6,7 +6,7 @@ type Props = {
 
 export const BooleanControl = ({ value = false, description, onChange = Object }: Props) => {
 	return (
-		<label className={"flex items-center cursor-pointer"}>
+		<label className={"flex items-center cursor-pointer select-none"}>
 			<input
 				type={"checkbox"}
 				checked={value}
