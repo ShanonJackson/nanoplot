@@ -49,3 +49,17 @@ export default function Page() {
 		</div>
 	);
 }
+
+const MOCK_DATA = [
+	{
+		name: "Jasons Progress",
+		data: [
+			{ x: "Demand", y: 70 },
+			{ x: "Travelability", y: 8 },
+			{ x: "Franchisability", y: 300 },
+			{ x: "Momentum", y: 90 },
+			{ x: "Longevity", y: 60 },
+			{ x: "Reach", y: 65 },
+		],
+	},
+];

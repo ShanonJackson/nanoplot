@@ -70,7 +70,8 @@ export const PathUtils = {
 		const end = PathUtils.polarToCartesian(x, y, radius, startAngle);
 
 		const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-		return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
+		// more than 5.dp can give hydration error between server/client because floating point decimals past like 10 seem to be different in node/bun
+		return ["M", start.x.toFixed(5), start.y.toFixed(5), "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
 	},
 	circleArc: (cx: number, cy: number, r: number) => {
 		const theta = (360 * Math.PI) / 180;
