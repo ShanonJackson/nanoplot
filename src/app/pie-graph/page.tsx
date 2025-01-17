@@ -56,8 +56,7 @@ export default function Page() {
 					"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] overflow-hidden resize"
 				}
 			>
-				<Graph data={MOCK_DATA} gap={{ top: 30 }}>
-					<Legend position={"top"} alignment={"center"} />
+				<Graph data={MOCK_DATA}>
 					<Pie {...pie}>{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
 			</div>

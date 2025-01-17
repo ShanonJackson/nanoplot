@@ -38,7 +38,7 @@ export const Worldmap = ({ tooltips, translate, className, children }: Props) =>
 							stroke={dataset[iso]?.stroke ?? "white"}
 							strokeWidth={0.5}
 							data-iso={iso}
-							className={`hover:stroke-white hover:stroke-[1.5] worldmapcountry${iso} worldmap__country`}
+							className={`hover:stroke-white hover:stroke-[1.5] worldmap__country_${iso} worldmap__country`}
 						/>
 					);
 				})}

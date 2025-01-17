@@ -5,6 +5,12 @@
   <h1>Nanoplot</h1>
 </div>
 
+
+## Design Philosophy
+- Smallest possible bundle size (10KB per graph on AVG)
+- React First, React Only, RSC First.
+- Fully responsive without javascript
+
 ## Getting Started
 ```shell
 npm install nanoplot
