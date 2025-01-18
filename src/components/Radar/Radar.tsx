@@ -36,7 +36,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 	const arcDegrees = 360 / axis;
 	const proportion = MAX_SCALE / (scalars.length - 1);
 
-	if (loading) return <RadarSkeleton />;
+	if (loading) return <RadarSkeleton radius={radius} rings={rings} className={className} />;
 
 	const scale = (value: number) => {
 		if (value === 0) return MIN_THRESHOLD;
