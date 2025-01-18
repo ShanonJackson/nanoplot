@@ -29,7 +29,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, cla
 	const radius = (viewbox.x / 2) * PADDING_PERCENT;
 	const categories = new Set(data.flatMap(({ data }) => data.map(({ x }) => x.toString())));
 	const points = Array.from(categories);
-
 	const axis = categories.size;
 	const angles = Array.from({ length: axis }, (_, index) => (index * 360) / axis);
 	const rings = Array.from({ length: scalars.length }, (_, index) => 1 - index * (1 / (scalars.length - 1)));
@@ -50,26 +49,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, cla
 		return MathUtils.scale(value, [scalars[index], scalars[index + 1] || scalars[index]], output);
 	};
 
-	const anglesPath = angles
-		.map((angle) => {
-			const { x, y } = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle);
-			return `M ${viewbox.x / 2} ${viewbox.y / 2} L ${x} ${y}`;
-		})
-		.join(" ");
-
-	const markersPath = rings
-		.map((ring) => {
-			const x = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
-			const y = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
-			return `M ${x} ${y} L ${x} ${y + viewbox.y / 100}`;
-		})
-		.join(" ");
-
-	const ringData = rings
-		.slice(0, isEmpty ? 2 : Infinity)
-		.map((ring) => PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius * ring))
-		.join(" ");
-
 	return (
 		<>
 			<svg className={cx("h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
@@ -86,7 +65,10 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, cla
 				</radialGradient>
 				<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} className={"fill-[#efefef] dark:fill-[#111111]"} />
 				<path
-					d={ringData}
+					d={rings
+						.slice(0, isEmpty ? 2 : Infinity)
+						.map((ring) => PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius * ring))
+						.join(" ")}
 					fillRule="evenodd"
 					className={
 						"fill-[#dfdfdf] dark:fill-[#1b1b1b] [vector-effect:non-scaling-stroke] stroke-1 stroke-gray-300 dark:stroke-[#2d2d2d]"
@@ -98,8 +80,23 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, cla
 					</text>
 				) : (
 					<>
-						<path d={anglesPath} />
-						<path d={markersPath} />
+						<path
+							d={angles
+								.map((angle) => {
+									const { x, y } = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle);
+									return `M ${viewbox.x / 2} ${viewbox.y / 2} L ${x} ${y}`;
+								})
+								.join(" ")}
+						/>
+						<path
+							d={rings
+								.map((ring) => {
+									const x = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
+									const y = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
+									return `M ${x} ${y} L ${x} ${y + viewbox.y / 100}`;
+								})
+								.join(" ")}
+						/>
 						{scalars
 							.map((scalar, index) => {
 								if (scalar === 0) return "0";
