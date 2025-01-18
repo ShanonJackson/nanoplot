@@ -13,9 +13,10 @@ type Props = {
 	loading?: boolean;
 	scalars?: number[];
 	className?: string;
+	labels?: boolean;
 };
 
-export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }: Props) => {
+export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, className }: Props) => {
 	const { data, viewbox } = useGraph();
 	const pointGlowId = useId();
 	const radarDotId = useId();
@@ -27,7 +28,8 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 	const isEmpty = !loading && data.length == 0;
 	const radius = (viewbox.x / 2) * PADDING_PERCENT;
 	const categories = new Set(data.flatMap(({ data }) => data.map(({ x }) => x.toString())));
-	const labels = Array.from(categories);
+	const points = Array.from(categories);
+
 	const axis = categories.size;
 	const angles = Array.from({ length: axis }, (_, index) => (index * 360) / axis);
 	const rings = Array.from({ length: scalars.length }, (_, index) => 1 - index * (1 / (scalars.length - 1)));
@@ -119,7 +121,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 					.map((item) => ({
 						...item,
 						data: item.data
-							.toSorted((a, b) => labels.indexOf(a.x.toString()) - labels.indexOf(b.x.toString()))
+							.toSorted((a, b) => points.indexOf(a.x.toString()) - points.indexOf(b.x.toString()))
 							.map(({ y }) => scale(+y)),
 					}))
 					.map(({ data, stroke, fill }, i) => {
@@ -171,44 +173,45 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 							</React.Fragment>
 						);
 					})}
-				{angles.map((angle, i) => {
-					/* Labels and dots on outer ring */
-					const x1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).x;
-					const y1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).y;
-					const labelX = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).x;
-					const labelY = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).y;
-					const side = (() => {
-						const cx = viewbox.x / 2;
-						const cy = viewbox.y / 2;
-						if (x1 > cx && y1 < cy) return "top-right";
-						if (x1 < cx && y1 < cy) return "top-left";
-						if (x1 < cx && y1 > cy) return "bottom-left";
-						if (x1 > cx && y1 > cy) return "bottom-right";
-						if (x1 === cx && y1 < cy) return "top";
-						return "bottom";
-					})();
-					return (
-						<React.Fragment key={i}>
-							<text
-								x={labelX}
-								y={labelY}
-								fontSize={"50px"}
-								className={cx(
-									"dark:fill-gray-400 [font-size-adjust:0.12]",
-									side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
-									side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
-									side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
-									side === "bottom-right" && "[dominant-baseline:middle] [text-anchor:start]",
-									side === "bottom-left" && "[dominant-baseline:middle] [text-anchor:end]",
-									side === "bottom" && "[dominant-baseline:hanging] [text-anchor:middle]",
-								)}
-							>
-								{labels[i]}
-							</text>
-							<circle cx={x1} cy={y1} r={viewbox.x * 0.005} className={"fill-gray-500 dark:fill-white"} />
-						</React.Fragment>
-					);
-				})}
+				{labels &&
+					angles.map((angle, i) => {
+						/* Labels and dots on outer ring */
+						const x1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).x;
+						const y1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).y;
+						const labelX = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).x;
+						const labelY = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).y;
+						const side = (() => {
+							const cx = viewbox.x / 2;
+							const cy = viewbox.y / 2;
+							if (x1 > cx && y1 < cy) return "top-right";
+							if (x1 < cx && y1 < cy) return "top-left";
+							if (x1 < cx && y1 > cy) return "bottom-left";
+							if (x1 > cx && y1 > cy) return "bottom-right";
+							if (x1 === cx && y1 < cy) return "top";
+							return "bottom";
+						})();
+						return (
+							<React.Fragment key={i}>
+								<text
+									x={labelX}
+									y={labelY}
+									fontSize={"50px"}
+									className={cx(
+										"dark:fill-gray-400 [font-size-adjust:0.12]",
+										side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
+										side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
+										side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
+										side === "bottom-right" && "[dominant-baseline:middle] [text-anchor:start]",
+										side === "bottom-left" && "[dominant-baseline:middle] [text-anchor:end]",
+										side === "bottom" && "[dominant-baseline:hanging] [text-anchor:middle]",
+									)}
+								>
+									{points[i]}
+								</text>
+								<circle cx={x1} cy={y1} r={viewbox.x * 0.005} className={"fill-gray-500 dark:fill-white"} />
+							</React.Fragment>
+						);
+					})}
 				{angles.map((point, i) => {
 					return (
 						<path
