@@ -16,7 +16,7 @@ type Props = {
 	labels?: boolean;
 };
 
-export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels, loading, className }: Props) => {
+export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loading, className }: Props) => {
 	const { data, viewbox } = useGraph();
 	const pointGlowId = useId();
 	const radarDotId = useId();
