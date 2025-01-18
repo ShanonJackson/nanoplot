@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from "bun:test";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { XAxisControlGroup } from "./XAxisControlGroup";
+import { XAxisControlGroup } from "./XAxisControlGroup"
 import { jest } from "bun:test";
 
 const fn = jest.fn();
