@@ -31,17 +31,7 @@ export default function Page() {
 					"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] overflow-hidden resize"
 				}
 			>
-				<Graph
-					gap={{ top: 30 }}
-					data={[
-						{ name: "Demand", value: 70 },
-						{ name: "Travelability", value: 8 },
-						{ name: "Franchisability", value: 300 },
-						{ name: "Momentum", value: 90 },
-						{ name: "Longevity", value: 60 },
-						{ name: "Reach", value: 65 },
-					]}
-				>
+				<Graph gap={{ top: 30 }} data={MOCK_DATA}>
 					<Radar {...radar} />
 				</Graph>
 			</div>
@@ -53,6 +43,7 @@ export default function Page() {
 const MOCK_DATA = [
 	{
 		name: "Jasons Progress",
+		stroke: "#11ACAE",
 		data: [
 			{ x: "Demand", y: 70 },
 			{ x: "Travelability", y: 8 },

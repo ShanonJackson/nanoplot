@@ -18,17 +18,22 @@ type Props = {
 export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }: Props) => {
 	const { data, viewbox } = useGraph();
 	const pointGlowId = useId();
-	if (!GraphUtils.isSegmentData(data)) return null;
+	const radarDotId = useId();
+	const radarShapeId = useId();
+
+	if (!GraphUtils.isXYData(data)) return null;
+
 	const MAX_SCALE = Math.max(...scalars);
 	const isEmpty = !loading && data.length == 0;
 	const radius = (viewbox.x / 2) * PADDING_PERCENT;
-	const axis = data.length;
+	const categories = new Set(data.flatMap(({ data }) => data.map(({ x }) => x.toString())));
+	const labels = Array.from(categories);
+	const axis = categories.size;
 	const angles = Array.from({ length: axis }, (_, index) => (index * 360) / axis);
 	const rings = Array.from({ length: scalars.length }, (_, index) => 1 - index * (1 / (scalars.length - 1)));
 	const edges = rings.toReversed();
 	const arcDegrees = 360 / axis;
 	const proportion = MAX_SCALE / (scalars.length - 1);
-	const allZero = data.every(({ value }) => !Boolean(value));
 
 	if (loading) return <RadarSkeleton />;
 
@@ -43,16 +48,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 		return MathUtils.scale(value, [scalars[index], scalars[index + 1] || scalars[index]], output);
 	};
 
-	const dataset = data.map((item) => ({ ...item, scaled: allZero ? 0 : scale(+item.value) }));
-
-	const path = dataset
-		.map(({ scaled }, index) =>
-			PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, (scaled * radius) / MAX_SCALE, index * arcDegrees),
-		)
-		.map(({ x, y }, i) => (i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`))
-		.join(" ")
-		.concat(" Z");
-
 	const anglesPath = angles
 		.map((angle) => {
 			const { x, y } = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle);
@@ -62,11 +57,9 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 
 	const markersPath = rings
 		.map((ring) => {
-			const xPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
-			const yPosition = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
-
-			return `M ${xPosition} ${yPosition} 
-				L ${xPosition} ${yPosition + viewbox.y / 100}`;
+			const x = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * ring, 90).x;
+			const y = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y;
+			return `M ${x} ${y} L ${x} ${y + viewbox.y / 100}`;
 		})
 		.join(" ");
 
@@ -74,25 +67,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 		.slice(0, isEmpty ? 2 : Infinity)
 		.map((ring) => PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius * ring))
 		.join(" ");
-
-	const glow = dataset
-		.filter(({ scaled }) => Boolean(scaled))
-		.map(({ scaled }, index) => {
-			const { x: cx, y: cy } = PathUtils.polarToCartesian(
-				viewbox.x / 2,
-				viewbox.y / 2,
-				(scaled * radius) / MAX_SCALE,
-				index * arcDegrees,
-			);
-			const r = viewbox.x / 100;
-
-			return `M ${cx - r} ${cy} A ${r} ${r} 0 1 1 ${cx + r} ${cy} A ${r} ${r} 0 1 1 ${cx - r} ${cy} Z`;
-		})
-		.join(" ");
-
-	const radarDotId = useId();
-	const radarShapeId = useId();
-	const fill = "#11ACAE";
 
 	return (
 		<>
@@ -107,14 +81,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 					<stop offset="70%" stopColor={"white"} stopOpacity={0.08} />
 					<stop offset="80%" stopColor={"white"} stopOpacity={0.06} />
 					<stop offset="100%" stopColor={"white"} stopOpacity={0.03} />
-				</radialGradient>
-				<radialGradient id={radarShapeId} cx={viewbox.x / 2} cy={viewbox.y / 2} gradientUnits="userSpaceOnUse">
-					<stop offset="30%" stopColor={fill} />
-					<stop offset="50%" stopColor={fill} stopOpacity={0.7} />
-					<stop offset="60%" stopColor={fill} stopOpacity={0.5} />
-					<stop offset="70%" stopColor={fill} stopOpacity={0.4} />
-					<stop offset="80%" stopColor={fill} stopOpacity={0.3} />
-					<stop offset="100%" stopColor={fill} stopOpacity={0.2} />
 				</radialGradient>
 				<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} className={"fill-[#efefef] dark:fill-[#111111]"} />
 				<path
@@ -149,46 +115,100 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], loading, className }
 							))}
 					</>
 				)}
-				<path d={glow} strokeOpacity="0" fillOpacity={0.5} filter={`url(#${pointGlowId})`} />
-				{!isEmpty &&
-					angles.map((angle, i) => {
-						const x1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).x;
-						const y1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).y;
-						const labelX = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).x;
-						const labelY = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).y;
-						const side = (() => {
-							const cx = viewbox.x / 2;
-							const cy = viewbox.y / 2;
-							if (x1 > cx && y1 < cy) return "top-right";
-							if (x1 < cx && y1 < cy) return "top-left";
-							if (x1 < cx && y1 > cy) return "bottom-left";
-							if (x1 > cx && y1 > cy) return "bottom-right";
-							if (x1 === cx && y1 < cy) return "top";
-							return "bottom";
+				{data
+					.map((item) => ({
+						...item,
+						data: item.data
+							.toSorted((a, b) => labels.indexOf(a.x.toString()) - labels.indexOf(b.x.toString()))
+							.map(({ y }) => scale(+y)),
+					}))
+					.map(({ data, stroke, fill }, i) => {
+						const glow = data
+							.filter((scaled) => Boolean(scaled))
+							.map((scaled, index) => {
+								const { x: cx, y: cy } = PathUtils.polarToCartesian(
+									viewbox.x / 2,
+									viewbox.y / 2,
+									(scaled * radius) / MAX_SCALE,
+									index * arcDegrees,
+								);
+								const r = viewbox.x / 100;
+
+								return `M ${cx - r} ${cy} A ${r} ${r} 0 1 1 ${cx + r} ${cy} A ${r} ${r} 0 1 1 ${cx - r} ${cy} Z`;
+							})
+							.join(" ");
+
+						const path = data
+							.map((scaled, index) =>
+								PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, (scaled * radius) / MAX_SCALE, index * arcDegrees),
+							)
+							.map(({ x, y }, i) => (i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`))
+							.join(" ")
+							.concat(" Z");
+
+						const FILL = (() => {
+							if (fill === true || fill === undefined) return stroke;
+							if (fill === false) return "transparent";
+							return fill;
 						})();
 						return (
 							<React.Fragment key={i}>
-								<text
-									x={labelX}
-									y={labelY}
-									fontSize={"50px"}
-									className={cx(
-										"dark:fill-gray-400 [font-size-adjust:0.12]",
-										side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
-										side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
-										side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
-										side === "bottom-right" && "[dominant-baseline:middle] [text-anchor:start]",
-										side === "bottom-left" && "[dominant-baseline:middle] [text-anchor:end]",
-										side === "bottom" && "[dominant-baseline:hanging] [text-anchor:middle]",
-									)}
-								>
-									{dataset[i].name}
-								</text>
-								<circle cx={x1} cy={y1} r={viewbox.x / 150} className={"fill-gray-500 dark:fill-white"} />
+								<radialGradient id={radarShapeId + i} cx={viewbox.x / 2} cy={viewbox.y / 2} gradientUnits="userSpaceOnUse">
+									<stop offset="30%" stopColor={FILL} />
+									<stop offset="50%" stopColor={FILL} stopOpacity={0.7} />
+									<stop offset="60%" stopColor={FILL} stopOpacity={0.5} />
+									<stop offset="70%" stopColor={FILL} stopOpacity={0.4} />
+									<stop offset="80%" stopColor={FILL} stopOpacity={0.3} />
+									<stop offset="100%" stopColor={FILL} stopOpacity={0.2} />
+								</radialGradient>
+								<path d={glow} strokeOpacity="0" fillOpacity={0.5} filter={`url(#${pointGlowId})`} />
+								<path
+									stroke={stroke}
+									d={path}
+									fill={`url(#${radarShapeId + i}`}
+									className={"stroke-[10] [fill-opacity:0.7]"}
+								/>
 							</React.Fragment>
 						);
 					})}
-				<path stroke={fill} d={path} fill={`url(#${radarShapeId}`} className={"stroke-[10] [fill-opacity:0.7]"} />
+				{angles.map((angle, i) => {
+					/* Labels and dots on outer ring */
+					const x1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).x;
+					const y1 = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, angle).y;
+					const labelX = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).x;
+					const labelY = PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * 1.075, angle).y;
+					const side = (() => {
+						const cx = viewbox.x / 2;
+						const cy = viewbox.y / 2;
+						if (x1 > cx && y1 < cy) return "top-right";
+						if (x1 < cx && y1 < cy) return "top-left";
+						if (x1 < cx && y1 > cy) return "bottom-left";
+						if (x1 > cx && y1 > cy) return "bottom-right";
+						if (x1 === cx && y1 < cy) return "top";
+						return "bottom";
+					})();
+					return (
+						<React.Fragment key={i}>
+							<text
+								x={labelX}
+								y={labelY}
+								fontSize={"50px"}
+								className={cx(
+									"dark:fill-gray-400 [font-size-adjust:0.12]",
+									side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
+									side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
+									side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
+									side === "bottom-right" && "[dominant-baseline:middle] [text-anchor:start]",
+									side === "bottom-left" && "[dominant-baseline:middle] [text-anchor:end]",
+									side === "bottom" && "[dominant-baseline:hanging] [text-anchor:middle]",
+								)}
+							>
+								{labels[i]}
+							</text>
+							<circle cx={x1} cy={y1} r={viewbox.x * 0.005} className={"fill-gray-500 dark:fill-white"} />
+						</React.Fragment>
+					);
+				})}
 				{angles.map((point, i) => {
 					return (
 						<path
