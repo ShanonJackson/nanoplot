@@ -5,42 +5,32 @@ import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
-import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { GridLines } from "@/components/GridLines/GridLines";
-import { Control } from "@/components/Docs/Control/Control";
-import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
+import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
+import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
-	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
-
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
+			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<ControlGroup title={"XAxis"}>
-					<Control name={"title"} type={"ReactNode"}>
-						<HTMLControl html={xaxis.title?.toString() ?? ""} onChange={(html) => setXAxisPartial({ title: html })} />
-					</Control>
-					<Control name={"description"} type={"ReactNode"}>
-						<HTMLControl
-							html={xaxis.description?.toString() ?? ""}
-							onChange={(html) => setXAxisPartial({ description: html })}
-						/>
-					</Control>
-				</ControlGroup>
-			</div>
-			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
+				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
+				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
+			</ControlPanel>
+			<GraphPanel>
 				<Graph
 					data={[
 						{
@@ -94,8 +84,8 @@ export default function Page() {
 					/>
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
-			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			</GraphPanel>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

@@ -9,6 +9,10 @@ import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
@@ -19,13 +23,13 @@ export default function Page() {
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-black dark:border-white p-4 bg-gray-100 dark:bg-gray-800"}>
+			<ControlPanel>
 				<h1 className={"text-2xl"}>Bar Graph</h1>
-				<ControlGroup title={"Base"}>
+				<ControlGroup title={"Bars"}>
 					<Control name={"Horizontal Bras"} type={"boolean"}>
 						<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
 					</Control>
-					<Control name="Bars Size" type="number">
+					<Control name="Size" type="number">
 						<SliderControl
 							value={barsBase.size}
 							onChange={(value) => setBarsBAse({ size: value })}
@@ -33,7 +37,7 @@ export default function Page() {
 							description={"Size Of Bars"}
 						/>
 					</Control>
-					<Control name="Bar Radius" type="number">
+					<Control name="Radius" type="number">
 						<SliderControl
 							value={barsBase.radius}
 							onChange={(value) => setBarsBAse({ radius: value })}
@@ -43,32 +47,10 @@ export default function Page() {
 						/>
 					</Control>
 				</ControlGroup>
-				<ControlGroup title={"GridLines"}>
-					<Control name={"Border"} type={"boolean"}>
-						<BooleanControl
-							value={gridline.border}
-							onChange={(checked) => setGridPartial({ border: checked })}
-							description={"Adds Border To Graph"}
-						/>
-					</Control>
-					<Control name={"Horizontal Grid"} type={"boolean"}>
-						<BooleanControl
-							value={gridline.horizontal}
-							onChange={(checked) => setGridPartial({ horizontal: checked })}
-							description={"Adds Horizontal Grid Lines"}
-						/>
-					</Control>
-					<Control name={"Vertical Grid"} type={"boolean"}>
-						<BooleanControl
-							value={gridline.vertical}
-							onChange={(checked) => setGridPartial({ vertical: checked })}
-							description={"Adds Vertical Grid Lines"}
-						/>
-					</Control>
-				</ControlGroup>
-			</div>
+				<GridLinesControlGroup state={gridline} onChange={setGridline} />
+			</ControlPanel>
 
-			<div className={"h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
+			<GraphPanel>
 				<Graph
 					data={MOCK_DATA.map((bar) => {
 						return {
@@ -86,8 +68,8 @@ export default function Page() {
 					<Bars horizontal={bars} size={barsBase.size} radius={barsBase.radius} />
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
-			</div>
-			<div className={"border-[1px] border-dotted border-black dark:border-white"}>EXAMPLES</div>
+			</GraphPanel>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
