@@ -1,5 +1,4 @@
-import { WorldmapIcon, PieGraphIcon, ScatterGraphIcon, LineGraphIcon, BarGraphIcon } from "@/assets/icons";
-import { RadarChartIcon } from "@/assets/icons/RadarChartIcon";
+import { WorldmapIcon, PieGraphIcon, ScatterGraphIcon, LineGraphIcon, BarGraphIcon, RadarGraphtIcon } from "@/assets/icons";
 
 export const Routes = [
 	{
@@ -25,7 +24,7 @@ export const Routes = [
 	{
 		name: "Radar Graph",
 		href: "/radar-graph",
-		icon: RadarChartIcon,
+		icon: RadarGraphtIcon,
 	},
 	{
 		name: "Bar Graph",

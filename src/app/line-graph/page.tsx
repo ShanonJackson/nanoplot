@@ -1,8 +1,4 @@
 "use client";
-import { Graph } from "@/components/Graph/Graph";
-import { ComponentProps, useState } from "react";
-import { XAxis } from "@/components/XAxis/XAxis";
-import { YAxis } from "@/components/YAxis/YAxis";
 import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
 import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
@@ -12,6 +8,10 @@ import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HT
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
+import { ComponentProps } from "react";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
+import { Graph } from "@/components/Graph/Graph";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -98,4 +98,32 @@ export default function Page() {
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>
 	);
+}
+
+const data = [
+	{
+		name: "Josh - Hours gamed",
+		data: [
+			{ x: 1, y: 20 },
+			{ x: 2, y: 40 },
+			{ x: 3, y: 30 },
+			{ x: 4, y: 50 },
+			{ x: 5, y: 36 },
+			{ x: 6, y: 60 },
+		],
+	},
+	{
+		name: "Sally - Hours gamed",
+		data: [
+			{ x: 1, y: 5.25 },
+			{ x: 2, y: 10 },
+			{ x: 3, y: 25.4 },
+			{ x: 4, y: 36 },
+			{ x: 5, y: 40 },
+			{ x: 6, y: 35 },
+		],
+	},
+];
+function useState<T>(arg0: {}): [any, any] {
+	throw new Error("Function not implemented.");
 }
