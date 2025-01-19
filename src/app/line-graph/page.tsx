@@ -6,11 +6,12 @@ import { YAxis } from "@/components/YAxis/YAxis";
 import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
 import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { GridLines } from "@/components/GridLines/GridLines";
 import { Control } from "@/components/Docs/Control/Control";
 import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
-
+import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
+import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
+import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import CodeBlock from '@/components/CodeHighlighter/CodeHighlighter'
 import Tabs from '@/components/Tabs/Tabs';
 import Tab from '@/components/Tabs/Tab';
@@ -24,10 +25,6 @@ export default function Page() {
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
-	const setYAxisPartial = (partial: Partial<ComponentProps<typeof YAxis>>) => setYAxis((prev) => ({ ...prev, ...partial }));
-	const setLegendPartial = (partial: Partial<ComponentProps<typeof Legend>>) => setLegend((prev) => ({ ...prev, ...partial }));
-	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
-	const setLinePartial = (partial: Partial<ComponentProps<typeof Lines>>) => setLine((prev) => ({ ...prev, ...partial }));
 
 	let graphData = [
 		{
@@ -56,49 +53,10 @@ export default function Page() {
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white"}>
-				<ControlGroup title={"Legend"}>
-					<Control name={"position"} type={"'top' | 'bottom' | 'left' | 'right'"}>
-						control pending...
-					</Control>
-					<Control name={"alignment"} type={"'center' | 'left' | 'right' | 'top'"}>
-						control pending...
-					</Control>
-				</ControlGroup>
-				<ControlGroup title={"YAxis"}>
-					<Control name={"title"} type={"ReactNode"}>
-						<HTMLControl html={yaxis.title?.toString() ?? ""} onChange={(html) => setYAxisPartial({ title: html })} />
-					</Control>
-					<Control name={"description"} type={"ReactNode"}>
-						<HTMLControl
-							html={yaxis.description?.toString() ?? ""}
-							onChange={(html) => setYAxisPartial({ description: html })}
-						/>
-					</Control>
-				</ControlGroup>
-				<ControlGroup title={"GridLines"}>
-					<Control name={"border"} type={"boolean"} default={"false"}>
-						<BooleanControl
-							value={gridline.border}
-							onChange={(checked) => setGridPartial({ border: checked })}
-							description={"Adds Border To Graph"}
-						/>
-					</Control>
-					<Control name={"horizontal"} type={"boolean"} default={"false"}>
-						<BooleanControl
-							value={gridline.horizontal}
-							onChange={(checked) => setGridPartial({ horizontal: checked })}
-							description={"Adds horizontal grid lines to graph"}
-						/>
-					</Control>
-					<Control name={"vertical"} type={"boolean"} default={"false"}>
-						<BooleanControl
-							value={gridline.vertical}
-							onChange={(checked) => setGridPartial({ vertical: checked })}
-							description={"Adds vertical grid lines to graph"}
-						/>
-					</Control>
-				</ControlGroup>
+			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
+				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
+				<LegendControlGroup state={legend} onChange={setLegend} />
+				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<ControlGroup title={"XAxis"}>
 					<Control name={"title"} type={"ReactNode"}>
 						<HTMLControl html={xaxis.title?.toString() ?? ""} onChange={(html) => setXAxisPartial({ title: html })} />
@@ -111,43 +69,55 @@ export default function Page() {
 					</Control>
 				</ControlGroup>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-white"}>
+			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
 				<Tabs>
-					<div className="bg-[rgb(247,250,251)]">
-						<Tab id="chart"><img className='px-1' src={`@/assets/icons/chart-icon-inactive.png`} />chart</Tab>
-						<Tab id="code"><img className='px-1' src={`@/assets/icons/code-icon-inactive.png`} />code</Tab>
-						<Tab id="data"><img className='px-1' src={`@/assets/icons/data-icon-inactive.png`} />data</Tab>
-					</div>
+                					<div className="bg-[rgb(247,250,251)]">
+                						<Tab id="chart"><img className='px-1' src={`@/assets/icons/chart-icon-inactive.png`} />chart</Tab>
+                						<Tab id="code"><img className='px-1' src={`@/assets/icons/code-icon-inactive.png`} />code</Tab>
+                						<Tab id="data"><img className='px-1' src={`@/assets/icons/data-icon-inactive.png`} />data</Tab>
+                					</div>
 
-					<div>
-						<TabPanel id="chart">
-							<Graph
-								data={graphData}
-								gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
-							>
-								<Legend position={"top"} alignment={"center"} />
-								<YAxis
-									{...yaxis}
-									title={<div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
-									description={<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />}
-								/>
-								<GridLines {...gridline} />
-								<Lines />
-								<XAxis
-									{...xaxis}
-									title={<div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
-									description={<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />}
-								/>
-							</Graph>
-						</TabPanel>
-						<TabPanel id="code">
-							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
-						</TabPanel>
-						<TabPanel id="data">
-							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
-						</TabPanel>
-					</div>
-				</Tabs>
+                					<div>
+                						<TabPanel id="chart">
+				<Graph
+					data={graphData}
+					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
+				>
+					{legend.position === "top" && <Legend {...legend} />}
+					{legend.position === "left" && <Legend {...legend} />}
+					<YAxis
+						{...yaxis}
+						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+							)
+						}
+					/>
+					<GridLines {...gridline} />
+					<Lines />
+					<LinesTooltip tooltip={(_, x) => `${x}`} />
+					{legend.position === "right" && <Legend {...legend} />}
+					<XAxis
+						{...xaxis}
+						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+							)
+						}
+					/>
+					{legend.position === "bottom" && <Legend {...legend} />}
+				</Graph>
+				</TabPanel>
+                						<TabPanel id="code">
+                							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
+                						</TabPanel>
+                						<TabPanel id="data">
+                							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
+                						</TabPanel>
+                					</div>
+                				</Tabs>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>

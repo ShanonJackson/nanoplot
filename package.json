@@ -59,7 +59,9 @@
     "build:library": "tsc --p ./tsconfig.typings.json && bun run esbuild.js",
     "start": "next start",
     "test": "bun test --watch",
-    "cypress": "cypress open"
+    "test:ci": "bun test --ci",
+    "cypress": "cypress open",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@deanc/esbuild-plugin-postcss": "^1.0.2",
@@ -78,14 +80,15 @@
     "esbuild": "^0.24.2",
     "esbuild-plugin-sass": "^1.0.1",
     "esbuild-sass-plugin": "^3.3.1",
+    "husky": "^9.1.7",
     "next": "15.0.3",
-    "postcss": "^8",
+    "postcss": "^8.4.49",
     "postcss-modules": "^6.0.1",
     "prettier": "^3.3.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "sass": "^1.80.6",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.17",
     "typescript": "5.7.2"
   },
   "dependencies": {

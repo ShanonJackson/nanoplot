@@ -70,7 +70,8 @@ export const PathUtils = {
 		const end = PathUtils.polarToCartesian(x, y, radius, startAngle);
 
 		const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-		return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
+		// more than 5.dp can give hydration error between server/client because floating point decimals past like 10 seem to be different in node/bun
+		return ["M", start.x.toFixed(5), start.y.toFixed(5), "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
 	},
 	circleArc: (cx: number, cy: number, r: number) => {
 		const theta = (360 * Math.PI) / 180;
@@ -160,4 +161,30 @@ export const PathUtils = {
 		const centerY = parsed.reduce((acc, { coords }) => acc + (coords[1] ?? 0), 0) / parsed.length;
 		return { x: centerX, y: centerY };
 	},
+	borderRadius: (xy1: { x: number; y: number }, xy2: { x: number; y: number }, radius: number, horizontal = false) => {
+		const middle = horizontal ? xy2.y - xy1.y : xy2.x - xy1.x;
+		if (horizontal) {
+			return `
+				M ${xy1.x} ${xy1.y} H ${xy2.x - radius}
+				Q ${xy2.x} ${xy1.y} ${xy2.x} ${xy1.y + (radius > middle / 2 ? middle / 2 : radius)}
+				L ${xy2.x} ${xy2.y - (radius > middle / 2 ? middle / 2 : radius)}
+				Q ${xy2.x} ${xy2.y} ${xy2.x - radius} ${xy2.y}
+				H ${xy1.x}
+			`;
+		}
+		return `
+			M ${xy1.x} ${xy1.y} V ${xy2.y + radius + radius}
+			Q ${xy1.x} ${xy2.y} ${xy1.x + (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
+			L ${xy2.x - (radius > middle / 2 ? middle / 2 : radius)} ${xy2.y}
+			Q ${xy2.x} ${xy2.y}
+				${xy2.x} ${xy2.y + radius + radius}
+			V ${xy1.y}
+		`;
+	},
+	// H ${xy1.x - middle / 2}
+	// H ${xy1.x}
+	// Q ${xy1.x} ${xy2.y}
+	// 	${xy1.x + radius} ${xy2.y}
+	// V ${xy2.y - middle / 2}
+	// V ${xy2.y}
 };
