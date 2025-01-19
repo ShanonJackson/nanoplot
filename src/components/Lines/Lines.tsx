@@ -5,16 +5,21 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 
-type Props = {
+interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
-};
+}
 
-export const Lines = ({ children }: Props) => {
-	const context = useGraph();
-	if (!GraphUtils.isXYData(context.data)) return null;
-	const xForValue = CoordinatesUtils.xCoordinateFor(context);
-	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-	const lines = context.data.map((line, i, lines) => {
+export const Lines = ({ className, children }: Props) => {
+	const {
+		interactions: { pinned, hovered },
+		data,
+		viewbox,
+		domain,
+	} = useGraph();
+	if (!GraphUtils.isXYData(data)) return null;
+	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
+	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
+	const lines = data.map((line, i, lines) => {
 		return {
 			...line,
 			id: line.id ?? line.name,
@@ -26,15 +31,13 @@ export const Lines = ({ children }: Props) => {
 			})),
 		};
 	});
-	const { pinned, hovered } = context.interactions;
-	const { viewbox } = context;
 	return (
 		<svg
-			viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			height={"100%"}
 			width={"100%"}
 			preserveAspectRatio={"none"}
-			className={"[grid-area:graph]"}
+			className={cx("[grid-area:graph]", className)}
 		>
 			{lines.map(({ id, stroke, data, fill }, i) => {
 				const path = data.map((xy, index) => `${index === 0 ? "M" : "L"} ${xy.x} ${xy.y}`).join(" ");
@@ -54,7 +57,7 @@ export const Lines = ({ children }: Props) => {
 							d={path}
 							fill={"transparent"}
 							stroke={stroke}
-							className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
+							className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1] lines__outlined")}
 							vectorEffect={"non-scaling-stroke"}
 							strokeWidth={1.5}
 						/>
@@ -68,12 +71,12 @@ export const Lines = ({ children }: Props) => {
 									return undefined;
 								})()}
 								strokeOpacity={0}
+								className="lines__filled"
 							/>
 						)}
 					</React.Fragment>
 				);
 			})}
-
 			{children}
 		</svg>
 	);
