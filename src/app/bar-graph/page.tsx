@@ -9,11 +9,13 @@ import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
+import { BarLoading } from "@/components/Bars/components/BarsLoading";
 
 export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [barsBase, setBarsBase] = useState<ComponentProps<typeof Bars>>({});
 	const [bars, setBars] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 	const setBarsBAse = (partial: Partial<ComponentProps<typeof Bars>>) => setBarsBase((prev) => ({ ...prev, ...partial }));
 
@@ -24,6 +26,13 @@ export default function Page() {
 				<ControlGroup title={"Base"}>
 					<Control name={"Horizontal Bras"} type={"boolean"}>
 						<BooleanControl value={bars} onChange={() => setBars(!bars)} description={"Display Bras horizontally"} />
+					</Control>
+					<Control name={"loading"} type={"boolean"}>
+						<BooleanControl
+							value={loading}
+							onChange={() => setLoading(!loading)}
+							description={"Renders loading skeleton placeholder"}
+						/>
 					</Control>
 					<Control name="Bars Size" type="number">
 						<SliderControl
@@ -83,7 +92,11 @@ export default function Page() {
 				>
 					<YAxis />
 					<GridLines {...gridline} />
-					<Bars horizontal={bars} size={barsBase.size} radius={barsBase.radius} />
+					{loading ? (
+						<BarLoading size={barsBase.size} />
+					) : (
+						<Bars horizontal={bars} size={barsBase.size} radius={barsBase.radius} />
+					)}
 					<XAxis ticks={{ from: 0 }} />
 				</Graph>
 			</div>
