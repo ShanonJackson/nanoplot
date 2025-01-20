@@ -12,6 +12,11 @@ import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HT
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -20,27 +25,16 @@ export default function Page() {
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
-	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
-
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
+			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<ControlGroup title={"XAxis"}>
-					<Control name={"title"} type={"ReactNode"}>
-						<HTMLControl html={xaxis.title?.toString() ?? ""} onChange={(html) => setXAxisPartial({ title: html })} />
-					</Control>
-					<Control name={"description"} type={"ReactNode"}>
-						<HTMLControl
-							html={xaxis.description?.toString() ?? ""}
-							onChange={(html) => setXAxisPartial({ description: html })}
-						/>
-					</Control>
-				</ControlGroup>
-			</div>
-			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
+				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
+				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
+			</ControlPanel>
+			<GraphPanel>
 				<Graph
 					data={[
 						{
@@ -87,15 +81,15 @@ export default function Page() {
 						{...xaxis}
 						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
 						description={
-							yaxis.description?.toString() && (
+							xaxis.description?.toString() && (
 								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
 							)
 						}
 					/>
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
-			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			</GraphPanel>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
