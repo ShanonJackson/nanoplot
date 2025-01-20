@@ -1,21 +1,25 @@
 "use client";
-import { Graph } from "@/components/Graph/Graph";
-import { ComponentProps, useState } from "react";
-import { XAxis } from "@/components/XAxis/XAxis";
-import { YAxis } from "@/components/YAxis/YAxis";
 import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
+import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { GridLines } from "@/components/GridLines/GridLines";
+import { Control } from "@/components/Docs/Control/Control";
+import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
-import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
-import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { ComponentProps, useState } from "react";
+import { XAxis } from "@/components/XAxis/XAxis";
+import { YAxis } from "@/components/YAxis/YAxis";
+import { Graph } from "@/components/Graph/Graph";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 
 export default function Page() {
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
@@ -27,8 +31,8 @@ export default function Page() {
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
+				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
@@ -77,7 +81,7 @@ export default function Page() {
 						{...xaxis}
 						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
 						description={
-							yaxis.description?.toString() && (
+							xaxis.description?.toString() && (
 								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
 							)
 						}
@@ -89,3 +93,28 @@ export default function Page() {
 		</div>
 	);
 }
+
+const data = [
+	{
+		name: "Josh - Hours gamed",
+		data: [
+			{ x: 1, y: 20 },
+			{ x: 2, y: 40 },
+			{ x: 3, y: 30 },
+			{ x: 4, y: 50 },
+			{ x: 5, y: 36 },
+			{ x: 6, y: 60 },
+		],
+	},
+	{
+		name: "Sally - Hours gamed",
+		data: [
+			{ x: 1, y: 5.25 },
+			{ x: 2, y: 10 },
+			{ x: 3, y: 25.4 },
+			{ x: 4, y: 36 },
+			{ x: 5, y: 40 },
+			{ x: 6, y: 35 },
+		],
+	},
+];
