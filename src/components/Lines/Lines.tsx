@@ -4,6 +4,7 @@ import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
+import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -81,3 +82,5 @@ export const Lines = ({ className, children }: Props) => {
 		</svg>
 	);
 };
+
+Lines.Tooltip = LinesTooltip;

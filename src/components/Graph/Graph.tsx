@@ -7,13 +7,13 @@ import { ColorUtils } from "@/utils/color/color";
 import { GraphUtils } from "@/utils/graph/graph";
 
 type Props = {
-	data: GraphContext["data"];
+	data?: GraphContext["data"];
 	gap?: { top?: number; right?: number; bottom?: number; left?: number };
 	interactions?: { hovered?: string[]; pinned?: string[] } /* array of ids */;
 	children: ReactNode;
 };
 
-export const Graph = ({ data, gap, children, interactions }: Props) => {
+export const Graph = ({ data = [], gap, children, interactions }: Props) => {
 	const id = useId();
 	const X_SCALE = 3000;
 	const Y_SCALE = 3000;
