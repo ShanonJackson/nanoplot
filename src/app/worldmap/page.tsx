@@ -12,7 +12,7 @@ import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
-		translate: { x: 0, y: 0, scale: 0 },
+		translate: { x: 100, y: 0, scale: 0 },
 	});
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (

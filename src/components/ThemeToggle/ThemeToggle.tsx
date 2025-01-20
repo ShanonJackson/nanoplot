@@ -13,20 +13,12 @@ export function ThemeToggle() {
 		document.cookie
 			.split(";")
 			.find((c) => c.includes("theme"))
-			?.split("=")[1] ?? "light";
+			?.split("=")[1] ?? "dark";
 
 	return (
 		<button
 			onClick={() => {
-				// parse cookie extract theme
-				document.cookie = `theme=${
-					document.cookie
-						.split(";")
-						.find((c) => c.includes("theme"))
-						?.split("=")[1] === "light"
-						? "dark"
-						: "light"
-				}; path=/;`;
+				document.cookie = `theme=${theme === "dark" ? "light" : "dark"}; path=/;`;
 				router.refresh();
 			}}
 			className="flex items-center p-2 rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground"
@@ -34,8 +26,7 @@ export function ThemeToggle() {
 		>
 			<span className="sr-only">Toggle theme</span>
 			{theme === "light" ? "☀️" : "🌙"}
-			{/* Debug display */}
-			<span className="ml-2 text-xs">{theme} mode</span>
+			<span className="ml-2 text-xs">{theme[0].toUpperCase() + theme.slice(1)} Mode</span>
 		</button>
 	);
 }
