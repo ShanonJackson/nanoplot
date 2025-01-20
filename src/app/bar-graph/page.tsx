@@ -17,6 +17,7 @@ import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
+import { Bars } from "@/components/Bars/Bars";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -28,40 +29,14 @@ export default function Page() {
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<ControlPanel>
-				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
+				<h1 className={"text-2xl pb-2"}>Bars</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel>
-				<Graph
-					data={[
-						{
-							name: "Josh - Hours gamed",
-							data: [
-								{ x: 1, y: 20 },
-								{ x: 2, y: 40 },
-								{ x: 3, y: 30 },
-								{ x: 4, y: 50 },
-								{ x: 5, y: 36 },
-								{ x: 6, y: 60 },
-							],
-						},
-						{
-							name: "Sally - Hours gamed",
-							data: [
-								{ x: 1, y: 5.25 },
-								{ x: 2, y: 10 },
-								{ x: 3, y: 25.4 },
-								{ x: 4, y: 36 },
-								{ x: 5, y: 40 },
-								{ x: 6, y: 35 },
-							],
-						},
-					]}
-					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
-				>
+				<Graph data={MOCK_DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
@@ -74,7 +49,7 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Lines />
+					<Bars />
 					<LinesTooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
@@ -93,3 +68,102 @@ export default function Page() {
 		</div>
 	);
 }
+
+const MOCK_DATA = [
+	{
+		name: "Sally hours gamed",
+		group: "gamers",
+		data: [
+			{ x: "Jan", y: 10 },
+			{ x: "Feb", y: 20 },
+			{ x: "Mar", y: 33 },
+			{ x: "Apr", y: 24 },
+			{ x: "May", y: 31 },
+			{ x: "Jun", y: 43 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		group: "gamers",
+		data: [
+			{ x: "Jan", y: 50 },
+			{ x: "Feb", y: 50 },
+			{ x: "Mar", y: 33 },
+			{ x: "Apr", y: 24 },
+			{ x: "May", y: 21 },
+			{ x: "Jun", y: 33 },
+		],
+	},
+	{
+		name: "Sally hours gamed",
+		group: "viewers",
+		data: [
+			{ x: "Jan", y: 40 },
+			{ x: "Feb", y: 21 },
+			{ x: "Mar", y: 43 },
+			{ x: "Apr", y: 54 },
+			{ x: "May", y: 51 },
+			{ x: "Jun", y: 23 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		group: "viewers",
+		data: [
+			{ x: "Jan", y: 30 },
+			{ x: "Feb", y: 31 },
+			{ x: "Mar", y: 53 },
+			{ x: "Apr", y: 92 },
+			{ x: "May", y: 41 },
+			{ x: "Jun", y: 13 },
+		],
+	},
+	{
+		name: "Sally hours gamed",
+		group: "followers",
+		data: [
+			{ x: "Jan", y: 30 },
+			{ x: "Feb", y: 41 },
+			{ x: "Mar", y: 33 },
+			{ x: "Apr", y: 54 },
+			{ x: "May", y: 21 },
+			{ x: "Jun", y: 13 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		group: "followers",
+		data: [
+			{ x: "Jan", y: 10 },
+			{ x: "Feb", y: 21 },
+			{ x: "Mar", y: 13 },
+			{ x: "Apr", y: 22 },
+			{ x: "May", y: 11 },
+			{ x: "Jun", y: 13 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		group: "gamers",
+		data: [
+			{ x: "Jan", y: 10 },
+			{ x: "Feb", y: 21 },
+			{ x: "Mar", y: 13 },
+			{ x: "Apr", y: 22 },
+			{ x: "May", y: 11 },
+			{ x: "Jun", y: 13 },
+		],
+	},
+	{
+		name: "Joe hours gamed",
+		group: "visitors",
+		data: [
+			{ x: "Jan", y: 10 },
+			{ x: "Feb", y: 21 },
+			{ x: "Mar", y: 13 },
+			{ x: "Apr", y: 22 },
+			{ x: "May", y: 11 },
+			{ x: "Jun", y: 13 },
+		],
+	},
+];
