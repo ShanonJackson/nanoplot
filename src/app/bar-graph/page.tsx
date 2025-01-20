@@ -18,6 +18,7 @@ import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { Bars } from "@/components/Bars/Bars";
+import { BarLoading } from "@/components/Bars/components/BarLoading";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -49,7 +50,7 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars />
+					{legend.loading ? <BarLoading /> : <Bars />}
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
