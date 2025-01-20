@@ -1,9 +1,9 @@
-import TabsProvider from './tabs-context';
+import TabsProvider from "./tabs-context";
 
 interface TabsProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
-export default function Tabs({ children }: TabsProps) {
-  return <TabsProvider>{children}</TabsProvider>;
-}
+export const Tabs = ({ children }: TabsProps) => {
+	return <TabsProvider>{children}</TabsProvider>;
+};
