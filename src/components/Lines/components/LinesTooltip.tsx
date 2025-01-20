@@ -134,7 +134,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 						}
 					>
 						<div className="font-medium bg-gradient-to-b from-transparent to-[#CFCFCF] dark:to-[#3C3C3C] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
-							10 December 2024
+							{closest.toString()}
 						</div>
 						<div className={"px-2.5"}>
 							{points.map(({ name, data: { x, y }, stroke }, i) => {
