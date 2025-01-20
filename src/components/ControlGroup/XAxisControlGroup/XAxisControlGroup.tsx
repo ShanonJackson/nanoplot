@@ -16,10 +16,13 @@ export const XAxisControlGroup: FC<Props> = ({ state, onChange }) => {
 		<>
 			<ControlGroup title={"XAxis"}>
 				<Control name={"title"} type={"ReactNode"}>
-					<HTMLControl html={state.title?.toString() ?? ""} onChange={(html) => onChange({...state, title: html })} />
+					<HTMLControl html={state.title?.toString() ?? ""} onChange={(html) => onChange({ ...state, title: html })} />
 				</Control>
 				<Control name={"description"} type={"ReactNode"}>
-					<HTMLControl html={state.description?.toString() ?? ""} onChange={(html) => onChange({...state, description: html })} />
+					<HTMLControl
+						html={state.description?.toString() ?? ""}
+						onChange={(html) => onChange({ ...state, description: html })}
+					/>
 				</Control>
 			</ControlGroup>
 		</>

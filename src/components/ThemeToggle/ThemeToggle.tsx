@@ -8,7 +8,7 @@ export function ThemeToggle() {
 	const router = useRouter();
 
 	if (!mounted) return null; /* Hydration issue. */
-  
+
 	const theme =
 		document.cookie
 			.split(";")
