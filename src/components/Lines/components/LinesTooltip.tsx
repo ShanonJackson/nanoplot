@@ -130,23 +130,25 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 				<overlay.div ref={setTooltipRef} className={"absolute"} style={{ left, top }}>
 					<div
 						className={
-							"rounded-sm border border-gray-600 bg-gray-600 shadow-[0_0_10px_0_rgba(0,0,0,0.5)] backdrop-blur-sm w-[250px] pb-[6px]"
+							"text-[14px] leading-[14px] rounded border bg-opacity-60 shadow-md backdrop-blur-sm w-[250px] pb-1.5 border-gray-200 dark-border-[#454545]"
 						}
 					>
-						<div className="rounded-tl-[4px] rounded-tr-[4px] bg-gradient-to-b from-transparent to-gray-600 backdrop-blur-sm px-2.5 py-1.5 font-extrabold mb-1 text-white">
-							{closest.toString()}
+						<div className="font-medium bg-gradient-to-b from-transparent to-[#CFCFCF] dark:to-[#3C3C3C] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
+							10 December 2024
 						</div>
-						{points.map(({ name, data: { x, y }, stroke }, i) => {
-							return (
-								<div key={i} className={"flex items-center pr-2 text-white"}>
-									<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] mx-2.5 rounded-full" />
-									<div className="flex-1 text-[0.875rem] leading-[14px] whitespace-nowrap overflow-hidden overflow-ellipsis mr-1">
-										{name}
+						<div className={"px-2.5"}>
+							{points.map(({ name, data: { x, y }, stroke }, i) => {
+								return (
+									<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
+										<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] rounded-full mr-1" />
+										<div className="flex-1 text-[0.875rem] leading-[16px] whitespace-nowrap overflow-hidden overflow-ellipsis mr-1">
+											{name}
+										</div>
+										<div className={"font-bold"}>{+(Math.round(+(y.toString() + "e+2")) + "e-2")}</div>
 									</div>
-									<div>{(+y).toFixed(2)}</div>
-								</div>
-							);
-						})}
+								);
+							})}
+						</div>
 					</div>
 				</overlay.div>
 			)}
