@@ -8,10 +8,15 @@ import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HT
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
-import { ComponentProps } from "react";
+import { ComponentProps, useState } from "react";
 import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
+import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
+import { Tabs } from "@/components/Tabs/Tabs";
+import { Tab } from "@/components/Tabs/Tab";
+import { TabPanel } from "@/components/Tabs/TabPanel";
+import Image from "next/image";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -21,6 +26,31 @@ export default function Page() {
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
+
+	let graphData = [
+		{
+			name: "Josh - Hours gamed",
+			data: [
+				{ x: 1, y: 20 },
+				{ x: 2, y: 40 },
+				{ x: 3, y: 30 },
+				{ x: 4, y: 50 },
+				{ x: 5, y: 36 },
+				{ x: 6, y: 60 },
+			],
+		},
+		{
+			name: "Sally - Hours gamed",
+			data: [
+				{ x: 1, y: 5.25 },
+				{ x: 2, y: 10 },
+				{ x: 3, y: 25.4 },
+				{ x: 4, y: 36 },
+				{ x: 5, y: 40 },
+				{ x: 6, y: 35 },
+			],
+		},
+	];
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
@@ -41,59 +71,73 @@ export default function Page() {
 				</ControlGroup>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
-				<Graph
-					data={[
-						{
-							name: "Josh - Hours gamed",
-							data: [
-								{ x: 1, y: 20 },
-								{ x: 2, y: 40 },
-								{ x: 3, y: 30 },
-								{ x: 4, y: 50 },
-								{ x: 5, y: 36 },
-								{ x: 6, y: 60 },
-							],
-						},
-						{
-							name: "Sally - Hours gamed",
-							data: [
-								{ x: 1, y: 5.25 },
-								{ x: 2, y: 10 },
-								{ x: 3, y: 25.4 },
-								{ x: 4, y: 36 },
-								{ x: 5, y: 40 },
-								{ x: 6, y: 35 },
-							],
-						},
-					]}
-					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
-				>
-					{legend.position === "top" && <Legend {...legend} />}
-					{legend.position === "left" && <Legend {...legend} />}
-					<YAxis
-						{...yaxis}
-						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
-						description={
-							yaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					<GridLines {...gridline} />
-					<Lines />
-					<LinesTooltip tooltip={(_, x) => `${x}`} />
-					{legend.position === "right" && <Legend {...legend} />}
-					<XAxis
-						{...xaxis}
-						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
-						description={
-							yaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					{legend.position === "bottom" && <Legend {...legend} />}
-				</Graph>
+				<Tabs>
+					<div className="flex bg-[rgb(247,250,251)]">
+						<Tab
+							id="chart"
+							icon={<Image className="px-1" src={`/assets/chart-icon-inactive.png`} alt={""} width={24} height={24} />}
+						>
+							chart
+						</Tab>
+						<Tab
+							id="code"
+							icon={<Image className="px-1" src={`/assets/code-icon-inactive.png`} alt={""} width={24} height={24} />}
+						>
+							code
+						</Tab>
+						<Tab
+							id="data"
+							icon={<Image className="px-1" src={`/assets/data-icon-inactive.png`} alt={""} width={24} height={24} />}
+						>
+							data
+						</Tab>
+					</div>
+					<div>
+						<TabPanel id="chart">
+							<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+								{legend.position === "top" && <Legend {...legend} />}
+								{legend.position === "left" && <Legend {...legend} />}
+								<YAxis
+									{...yaxis}
+									title={
+										yaxis.title?.toString() && (
+											<div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
+										)
+									}
+									description={
+										yaxis.description?.toString() && (
+											<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+										)
+									}
+								/>
+								<GridLines {...gridline} />
+								<Lines />
+								<LinesTooltip tooltip={(_, x) => `${x}`} />
+								{legend.position === "right" && <Legend {...legend} />}
+								<XAxis
+									{...xaxis}
+									title={
+										xaxis.title?.toString() && (
+											<div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
+										)
+									}
+									description={
+										yaxis.description?.toString() && (
+											<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+										)
+									}
+								/>
+								{legend.position === "bottom" && <Legend {...legend} />}
+							</Graph>
+						</TabPanel>
+						<TabPanel id="code">
+							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
+						</TabPanel>
+						<TabPanel id="data">
+							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
+						</TabPanel>
+					</div>
+				</Tabs>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>
@@ -124,6 +168,3 @@ const data = [
 		],
 	},
 ];
-function useState<T>(arg0: {}): [any, any] {
-	throw new Error("Function not implemented.");
-}
