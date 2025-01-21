@@ -2,7 +2,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface TabsContextType {
   activeTab: string;
-  setActiveTab: (tabId: string) => void;
+  onChange: (tabId: string) => void;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
@@ -14,12 +14,12 @@ interface TabsProviderProps {
 }
 
 export const TabsProvider = ({ children, activeTab, onTabChange }: TabsProviderProps) => {
-  const setActiveTab = (tabId: string) => {
+  const onChange = (tabId: string) => {
     onTabChange(tabId);
   };
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabsContext.Provider value={{ activeTab, onChange }}>
       {children}
     </TabsContext.Provider>
   );
