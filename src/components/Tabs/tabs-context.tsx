@@ -2,29 +2,33 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface TabsContextType {
   activeTab: string;
-  onTabClick: (tabId: string) => void;
+  setActiveTab: (tabId: string) => void;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
-export default function TabsProvider({ children }: { children: ReactNode }) {
-  const [activeTab, setActiveTab] = useState<string>('chart');
+interface TabsProviderProps {
+  children: ReactNode;
+  activeTab: string;
+  onTabChange: (tabId: string) => void;
+}
 
-  const onTabClick = (tabId: string) => {
-    setActiveTab(tabId);
+export const TabsProvider = ({ children, activeTab, onTabChange }: TabsProviderProps) => {
+  const setActiveTab = (tabId: string) => {
+    onTabChange(tabId);
   };
 
   return (
-    <TabsContext.Provider value={{ activeTab, onTabClick }}>
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
       {children}
     </TabsContext.Provider>
   );
-}
+};
 
-export function useTabsContext() {
+export const useTabsContext = () => {
   const context = useContext(TabsContext);
   if (!context) {
     throw new Error('useTabsContext must be used within a TabsProvider');
   }
   return context;
-}
+};

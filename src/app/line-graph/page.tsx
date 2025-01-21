@@ -14,9 +14,6 @@ import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
 import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
 import { Tabs } from "@/components/Tabs/Tabs";
-import { Tab } from "@/components/Tabs/Tab";
-import { TabPanel } from "@/components/Tabs/TabPanel";
-import Image from "next/image";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -26,6 +23,7 @@ export default function Page() {
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
+	const [tab, setTab] = useState("chart");
 
 	let graphData = [
 		{
@@ -71,29 +69,22 @@ export default function Page() {
 				</ControlGroup>
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
-				<Tabs>
-					<div className="flex bg-[rgb(247,250,251)]">
-						<Tab
-							id="chart"
-							icon={<Image className="px-1" src={`/assets/chart-icon-inactive.png`} alt={""} width={24} height={24} />}
-						>
-							chart
-						</Tab>
-						<Tab
-							id="code"
-							icon={<Image className="px-1" src={`/assets/code-icon-inactive.png`} alt={""} width={24} height={24} />}
-						>
-							code
-						</Tab>
-						<Tab
-							id="data"
-							icon={<Image className="px-1" src={`/assets/data-icon-inactive.png`} alt={""} width={24} height={24} />}
-						>
-							data
-						</Tab>
-					</div>
-					<div>
-						<TabPanel id="chart">
+				<Tabs activeTab={tab} onTabChange={setTab}>
+						<Tabs.Tab
+							value="chart"
+							icon="chart-icon"
+						/>
+						<Tabs.Tab
+							value="code"
+							icon="code-icon"
+						/>
+						<Tabs.Tab
+							value="data"
+							icon="data-icon"
+						/>
+				</Tabs>
+				<div className="h-[450px]">
+						{tab === "chart" &&
 							<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
 								{legend.position === "top" && <Legend {...legend} />}
 								{legend.position === "left" && <Legend {...legend} />}
@@ -128,16 +119,14 @@ export default function Page() {
 									}
 								/>
 								{legend.position === "bottom" && <Legend {...legend} />}
-							</Graph>
-						</TabPanel>
-						<TabPanel id="code">
+							</Graph>}
+						{tab === "code" &&
 							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
-						</TabPanel>
-						<TabPanel id="data">
+						}
+						{tab === "data" &&
 							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
-						</TabPanel>
+						}
 					</div>
-				</Tabs>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>
