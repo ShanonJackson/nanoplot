@@ -21,6 +21,13 @@ export default function Page() {
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>Scatter Graph</h1>
+				<Control name={"loading"} type={"boolean"}>
+					<BooleanControl
+						value={scatter.loading}
+						onChange={(loading) => setScatterPartial({ loading })}
+						description={"Renders loading skeleton placeholder"}
+					/>
+				</Control>
 				<Control name={"Trend Line"} type={"boolean"}>
 					<BooleanControl
 						value={scatter.trendline}
