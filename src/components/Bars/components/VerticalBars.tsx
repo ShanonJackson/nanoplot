@@ -5,14 +5,16 @@ import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { useGraph } from "@/hooks/use-graph/use-graph";
 import { PathUtils } from "@/utils/path/path";
+import { BarsVerticalLoading } from "./BarsVerticalLoading";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: ReactNode;
+	loading?: boolean;
 	size?: number;
 	radius?: number;
 };
 
-export const VerticalBars = ({ children, size = 30, radius = 0, className }: Props) => {
+export const VerticalBars = ({ children, size = 30, radius = 0, className, loading }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -40,6 +42,10 @@ export const VerticalBars = ({ children, size = 30, radius = 0, className }: Pro
 	const barGap = context.viewbox.x / 100; // 16% gap
 	const barWidth = Math.floor(((context.viewbox.x - barGap) * size) / 1000);
 	const groups = [...new Set(bars.map((bar) => bar.group))];
+
+	if (loading) {
+		return <BarsVerticalLoading />;
+	}
 
 	return (
 		<svg
