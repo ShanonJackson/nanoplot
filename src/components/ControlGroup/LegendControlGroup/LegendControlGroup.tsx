@@ -15,13 +15,6 @@ export const LegendControlGroup: FC<Props> = ({ state, onChange }) => {
 	return (
 		<>
 			<ControlGroup title={"Legend"}>
-				<Control name={"loading"} type={"boolean"} default={"false"}>
-					<BooleanControl
-						value={state.loading}
-						onChange={(checked) => onChange({ ...state, loading: checked })}
-						description={"Renders loading skeleton placeholder"}
-					/>
-				</Control>
 				<Control name={"position"} type={"'top' | 'right' | 'bottom' | 'left'"} required={true}>
 					<EnumControl
 						options={["top", "right", "bottom", "left"]}

@@ -8,7 +8,6 @@ import { cx } from "@/utils/cx/cx";
 type Props = {
 	position?: "top" | "bottom" | "left" | "right";
 	alignment?: "center" | "start" | "end";
-	loading?: boolean;
 	children?: ReactNode;
 };
 
