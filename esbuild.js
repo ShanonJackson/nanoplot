@@ -4,7 +4,7 @@ const { sassPlugin, postcssModules } = require("esbuild-sass-plugin");
 
 const path = require("path");
 
-const entries = [
+const componentExports = [
 	"./src/components/Sunburst/Sunburst.tsx",
 	"./src/components/Bars/Bars.tsx",
 	"./src/components/Lines/Lines.tsx",
@@ -21,7 +21,7 @@ const entries = [
 
 await esbuild
 	.build({
-		entryPoints: entries,
+		entryPoints: componentExports,
 		bundle: true,
 		splitting: true,
 		minify: true,

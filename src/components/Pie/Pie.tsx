@@ -26,7 +26,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 
 	if (!GraphUtils.isSegmentData(data)) return null;
 
-	const PIE_RADIUS = (viewbox.x / 3) * PADDING_PERCENT;
+	const PIE_RADIUS = viewbox.x * 0.3; /* 30% */
 	const DONUT_RADIUS = viewbox.x * 0.16; /* 16% */
 	const CX = viewbox.x / 2;
 	const CY = viewbox.y / 2;
@@ -103,39 +103,45 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 			);
 			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, viewbox.x, 100) > 50;
 
-			const path = (
-				<g className={"transform origin-center rotate-180 group"} key={i}>
-					{labels && (
-						<>
-							<path
-								className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
-								key={segment.name}
-								d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
-									isRightAligned ? "l 100 0" : "l -100 0"
-								}`}
-								stroke={segment.stroke}
-							/>
-							<g
-								className={cx(
-									`text-7xl font-bold pointer-events-auto transform origin-center rotate-180 pie__segment-${segment.name}-label`,
+			const label = labels && (
+				<>
+					<path
+						className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
+						key={segment.name}
+						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
+							isRightAligned ? "l 100 0" : "l -100 0"
+						}`}
+						stroke={segment.stroke}
+					/>
+					<g
+						className={cx(
+							`text-7xl font-bold pointer-events-auto transform origin-center rotate-180 pie__segment-${segment.name}-label`,
+						)}
+					>
+						<text
+							aria-label={`${segment.name}-label`}
+							y={endLabelLine.y}
+							x={endLabelLine.x}
+							stroke={segment.stroke}
+							fill={segment.fill}
+							dx={isRightAligned ? 140 : -140}
+							className={"[font-size-adjust:0.08]"}
+							style={{ textAnchor: isRightAligned ? "start" : "end" }}
+						>
+							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+							<tspan dx={25}>
+								{new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(
+									(segment.value / total) * 100,
 								)}
-							>
-								<text
-									aria-label={`${segment.name}-label`}
-									y={endLabelLine.y}
-									x={endLabelLine.x}
-									stroke={segment.stroke}
-									fill={segment.fill}
-									dx={isRightAligned ? 140 : -140}
-									className={"[font-size-adjust:0.08]"}
-									style={{ textAnchor: isRightAligned ? "start" : "end" }}
-								>
-									<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
-									<tspan dx={25}>{+(Math.round(+(((segment.value / total) * 100).toFixed(1) + "e+2")) + "e-2")}%</tspan>
-								</text>
-							</g>
-						</>
-					)}
+								%
+							</tspan>
+						</text>
+					</g>
+				</>
+			);
+
+			const path = (
+				<g className={"transform origin-center rotate-180"} key={i}>
 					<path
 						className={cx(
 							`transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto pie__segment-${segment.name}-path`,
@@ -158,13 +164,14 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 			return {
 				id: segment.id,
 				path,
+				label,
 			};
 		});
 
 	return (
 		<>
 			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
-			{paths.map(({ path, id }, i) => {
+			{paths.map(({ path, label, id }, i) => {
 				/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 				return (
 					<svg
@@ -177,12 +184,15 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						key={i}
 					>
 						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
-						<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
-							{path}
+						<g className={"pie__slice group"}>
+							<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
+								{path}
+							</g>
+							<g className={"transform origin-center rotate-180"}>{label}</g>
 						</g>
 						{donut && (
 							<mask id={maskId}>
-								<rect width="100%" height="100%" fill="white" />
+								<rect width="80%" height="80%" fill="white" />
 								<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
 							</mask>
 						)}

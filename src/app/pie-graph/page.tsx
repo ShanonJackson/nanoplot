@@ -7,6 +7,9 @@ import { Control } from "@/components/Docs/Control/Control";
 import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { ComponentProps, useState } from "react";
 import { Legend } from "@/components/Legend/Legend";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 export default function Page() {
 	const [pie, setPie] = useState<ComponentProps<typeof Pie>>({
@@ -18,11 +21,7 @@ export default function Page() {
 	const setPiePartial = (partial: Partial<ComponentProps<typeof Pie>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div
-				className={
-					"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] p-4 dark:bg-gray-800"
-				}
-			>
+			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Pie Graph</h1>
 				<ControlGroup title={"Pie"}>
 					<Control name={"loading"} type={"boolean"}>
@@ -50,18 +49,14 @@ export default function Page() {
 						<HTMLControl html={pie.children?.toString() ?? ""} onChange={(children) => setPiePartial({ children })} />
 					</Control>
 				</ControlGroup>
-			</div>
-			<div
-				className={
-					"border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] overflow-hidden resize"
-				}
-			>
+			</ControlPanel>
+			<GraphPanel>
 				<Graph data={MOCK_DATA}>
 					<Legend position={"top"} alignment={"center"} />
 					<Pie {...pie}>{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
-			</div>
-			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
+			</GraphPanel>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

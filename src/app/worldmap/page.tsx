@@ -6,19 +6,18 @@ import React, { ComponentProps, useState } from "react";
 import { Graph } from "@/components/Graph/Graph";
 import { Control } from "@/components/Docs/Control/Control";
 import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
-		translate: { x: 0, y: 0, scale: 0 },
+		translate: { x: 100, y: 0, scale: 0 },
 	});
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div
-				className={
-					"row-span-2 h-full border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] dark:bg-gray-800 p-4"
-				}
-			>
+			<ControlPanel>
 				<h1 className={"text-2xl"}>World Map</h1>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
 					<SliderControl
@@ -37,12 +36,8 @@ export default function Page() {
 						description={`${map.translate?.scale} scale`}
 					/>
 				</Control>
-			</div>
-			<div
-				className={
-					"relative overflow-hidden border-[1px] h-full border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)] overflow-hidden resize"
-				}
-			>
+			</ControlPanel>
+			<GraphPanel>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {
@@ -75,8 +70,8 @@ export default function Page() {
 						{...map}
 					/>
 				</Graph>
-			</div>
-			<div className={"border-[1px] border-dotted border-[hsl(0deg,0%,0%)] dark:border-[hsl(0deg,0%,100%)]"}>EXAMPLES</div>
+			</GraphPanel>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
