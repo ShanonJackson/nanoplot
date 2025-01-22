@@ -51,7 +51,7 @@ export default function Page() {
 	];
 
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
