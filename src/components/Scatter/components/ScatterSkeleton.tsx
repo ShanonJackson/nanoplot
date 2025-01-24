@@ -5,24 +5,40 @@ type Props = {
 	className?: string;
 };
 
+const pseudoRandom = (base: number) => {
+	let value = base;
+	return () => {
+		value = (value * 9301 + 49297) % 233280;
+		return value / 233280;
+	};
+};
+
 export const ScatterSkeleton = ({ className }: Props) => {
 	const context = useGraph();
 	const { x, y } = context.viewbox;
 
-	const randomPositions = Array.from({ length: 30 }, () => ({
-		cx: Math.random() * x,
-		cy: Math.random() * y,
-	}));
+	const base = 10; // You can change this base to get different but consistent patterns
+	const random = pseudoRandom(base);
+
+	const fixedPositions = Array.from({ length: 100 }, () => {
+		const factor = random();
+		const offsetX = (random() - 0.5) * 0.2 * x;
+		const offsetY = (random() - 0.5) * 0.2 * y;
+		return {
+			cx: (1 - factor) * x + offsetX,
+			cy: factor * y + offsetY,
+		};
+	});
 
 	return (
 		<div className="relative [grid-area:graph] h-full w-full">
 			<svg
 				viewBox={`0 0 ${x} ${y}`}
-				className={`h-full w-full absolute inset-0 scatter__skeleton ${className} `}
+				className={`h-full w-full absolute inset-0 scatter__skeleton ${className}`}
 				preserveAspectRatio="none"
 			>
 				<path
-					d={randomPositions.map(({ cx, cy }) => `M ${cx} ${cy} L ${cx} ${cy}`).join(" ")}
+					d={fixedPositions.map(({ cx, cy }) => `M ${cx} ${cy} L ${cx} ${cy}`).join(" ")}
 					strokeWidth={10}
 					strokeLinecap="round"
 					strokeLinejoin="round"
