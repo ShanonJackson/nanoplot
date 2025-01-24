@@ -15,6 +15,8 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { ObjectUtils } from "@/utils/object/object";
+import { DateDomain } from "@/utils/domain/date-domain";
+import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 
 const roundUp = (num: number, nearest: number) => Math.ceil(num / nearest) * nearest;
 const roundDown = (num: number, nearest: number) => Math.floor(num / nearest) * nearest;
@@ -57,9 +59,9 @@ export const DomainUtils = {
 			},
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
-
+			const isDateTime = data[0]?.data?.[0]?.x instanceof Date;
 			const isDistinctValues =
-				new Set(data.flatMap((line) => line.data.map((d) => +d.x))).size <= 11 && from === "auto" && to === "auto";
+				new Set(data.flatMap((line) => line.data.map((d) => +d.x))).size <= 11 && from === "auto" && to === "auto" && !isDateTime;
 			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */ || isDistinctValues) {
 				const isCategoricalStrings = typeof data[0]?.data?.[0].x === "string";
 				const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d.x))));
@@ -78,14 +80,10 @@ export const DomainUtils = {
 
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
-			if (min === max) return [{ tick: min, coordinate: viewbox.x }];
-			if (typeof jumps === "string" && jumps !== "auto") {
-				/* datetime un-implemented */
-				return [];
-			}
+
+			if (min === max) return [{ tick: min, coordinate: viewbox.x / 2 }];
 			const MIN = (() => {
-				if (from === "auto") return DomainUtils.autoMinFor(min);
-				if (from === "min") return min;
+				if (from === "min" || from === "auto") return min;
 				if (typeof from === "number") return from;
 				const operator = from.match(/(\+|-)/)?.[0];
 				const isPercentage = from.includes("%");
@@ -95,8 +93,7 @@ export const DomainUtils = {
 				return min;
 			})();
 			const MAX = (() => {
-				if (to === "auto") return DomainUtils.autoMaxFor(max);
-				if (to === "max") return max;
+				if (to === "max" || to === "auto") return max;
 				if (typeof to === "number") return to;
 				const operator = to.match(/(\+|-)/)?.[0];
 				const isPercentage = to.includes("%");
@@ -105,18 +102,52 @@ export const DomainUtils = {
 				if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
 				return max;
 			})();
-			const JUMPS = (() => {
-				const distance = MAX - MIN;
-				if (jumps === "auto") {
-					/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
-					return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
-				}
-				return jumps;
-			})();
 
-			return Array.from({ length: JUMPS }, (_, i) => ({
-				tick: MathUtils.scale(i, [0, JUMPS - 1], [MIN, MAX]),
-				coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewbox.x]),
+			if (typeof jumps === "number" || jumps === "auto") {
+				const mx = Number(MAX);
+				const mn = Number(MIN);
+				const JUMPS = (() => {
+					const distance = mx - mn;
+					if (jumps === "auto") {
+						/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
+						return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+					}
+					return jumps;
+				})();
+
+				return Array.from({ length: JUMPS }, (_, i) => ({
+					tick: MathUtils.scale(i, [0, JUMPS - 1], [mn, mx]),
+					coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewbox.x]),
+				}));
+			}
+			/* is date/time domain */
+			const domain = DateDomain.domainFor({
+				min: new Date(MIN),
+				max: new Date(MAX),
+				jumps: jumps,
+			});
+			const linear = domain.map((d) => {
+				return {
+					tick: d,
+					coordinate: MathUtils.scale(d.getTime(), [domain[0].getTime(), domain[domain.length - 1].getTime()], [0, viewbox.x]),
+				};
+			});
+			const xCoordinateFor = CoordinatesUtils.xCoordinateFor({ viewbox, domain: { x: linear } });
+			const coordinates = data.flatMap((line) => line.data.map(({ x }) => xCoordinateFor(x)));
+			const xMin = Math.min(...coordinates);
+			const xMax = Math.max(...coordinates);
+			const xLastPoint = xMax - xMin;
+			if (xMin === xMax) return linear;
+			/*
+				This stretches the line wall-to-wall so that there isn't a gap before the line starts.
+				Consider "every 1 month" [jan, feb, mar]
+				min of dataset = jan 5th.
+				If this code below didn't exist, jan would be plotted on coordinate 0.
+				line would start after that meaning line would be disconnected from left side of graph.
+			*/
+			return linear.map(({ tick, coordinate }) => ({
+				tick,
+				coordinate: (coordinate - xMin) * (viewbox.x / xLastPoint),
 			}));
 		},
 	},
@@ -137,6 +168,8 @@ export const DomainUtils = {
 				/*
 					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 					This is the case for stacked-bars.
+					groupBy group; then group by x
+					Math.max(Sum y)
 				*/
 				return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, values]) => {
 					const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], ({ x }) => x.toString());
@@ -160,10 +193,6 @@ export const DomainUtils = {
 				}));
 			}
 
-			if (typeof jumps === "string" && jumps !== "auto" /* datetime un-implemented */) {
-				return [];
-			}
-
 			const MIN = (() => {
 				if (from === "auto") return DomainUtils.autoMinFor(min);
 				if (from === "min") return min;
@@ -186,6 +215,7 @@ export const DomainUtils = {
 				if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
 				return max;
 			})();
+
 			const JUMPS = (() => {
 				const distance = MAX - MIN;
 				if (jumps === "auto") {

@@ -1,4 +1,12 @@
-import { WorldmapIcon, PieGraphIcon, ScatterGraphIcon, LineGraphIcon, BarGraphIcon, RadarGraphtIcon } from "@/assets/icons";
+import {
+	WorldmapIcon,
+	PieGraphIcon,
+	ScatterGraphIcon,
+	LineGraphIcon,
+	BarGraphIcon,
+	RadarGraphtIcon,
+	SunburstCartIcon,
+} from "@/assets/icons";
 
 export const Routes = [
 	{
@@ -34,6 +42,6 @@ export const Routes = [
 	{
 		name: "Sunburst",
 		href: "/sunburst-graph",
-		icon: LineGraphIcon,
+		icon: SunburstCartIcon,
 	},
 ];

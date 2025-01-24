@@ -2,7 +2,7 @@ import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { MathUtils } from "@/utils/math/math";
 
 export const CoordinatesUtils = {
-	xCoordinateFor: ({ domain, viewbox }: Pick<GraphContext, "domain" | "viewbox">) => {
+	xCoordinateFor: ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { x: GraphContext["domain"]["x"] } }) => {
 		/*
 			X >= MAX = return x.scale (far right of graph)
 			X <= MIN = return 0 (far left of graph)
@@ -31,7 +31,7 @@ export const CoordinatesUtils = {
 			);
 		};
 	},
-	yCoordinateFor: ({ domain, viewbox }: Pick<GraphContext, "domain" | "viewbox">) => {
+	yCoordinateFor: ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { y: GraphContext["domain"]["y"] } }) => {
 		/*
 			Y >= MAX = return 0 (top of graph)
 			Y <= MIN = return y.scale (bottom of graph)

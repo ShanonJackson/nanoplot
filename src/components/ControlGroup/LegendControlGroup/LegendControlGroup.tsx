@@ -3,7 +3,6 @@ import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { Control } from "@/components/Docs/Control/Control";
 import { Legend } from "@/components/Legend/Legend";
 import { EnumControl } from "@/components/Docs/Control/components/EnumControl/EnumControl";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 
 type Legend = ComponentProps<typeof Legend>;
 
@@ -15,13 +14,6 @@ export const LegendControlGroup: FC<Props> = ({ state, onChange }) => {
 	return (
 		<>
 			<ControlGroup title={"Legend"}>
-				<Control name={"loading"} type={"boolean"} default={"false"}>
-					<BooleanControl
-						value={state.loading}
-						onChange={(checked) => onChange({ ...state, loading: checked })}
-						description={"Renders loading skeleton placeholder"}
-					/>
-				</Control>
 				<Control name={"position"} type={"'top' | 'right' | 'bottom' | 'left'"} required={true}>
 					<EnumControl
 						options={["top", "right", "bottom", "left"]}
