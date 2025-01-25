@@ -7,27 +7,27 @@ import { SliderControl } from "../Docs/Control/components/SliderControl/SliderCo
 type Props = {
     graphType?: 'WorldMap' | 'XYGraph' ,
     translate: ComponentProps<typeof Worldmap>['translate'] ,
-    setTranslate: (translate: ComponentProps<typeof Worldmap>['translate']) => void 
+    onChange: (translate: ComponentProps<typeof Worldmap>['translate']) => void 
 }
 
-export const NavControls = ({ graphType, translate, setTranslate }: Props) => {
+export const NavControls = ({ graphType, translate, onChange }: Props) => {
     
 
     return (
         <div className="flex-row m-4 w-20 absolute top-2 right-2">
             <SliderControl value={translate?.scale ?? 0} vertical={true}
-                onChange={(value) => setTranslate({ x:0 , y:0 , ...translate , scale: +value })}
+                onChange={(value) => onChange({ x:0 , y:0 , ...translate , scale: +value })}
                 //description={"zoom"}
             />
             <div className="flex-col m-0">
                 <CustomButton variation="plus" 
-                    onClick={ () => setTranslate({ x:0 , y:0 , ...translate, scale: (translate?.scale ?? 0) + 1 }) } 
+                    onClick={ () => onChange({ x:0 , y:0 , ...translate, scale: (translate?.scale ?? 0) + 1 }) } 
                 />
                 <CustomButton variation="home" 
-                    onClick={ () => setTranslate({ y: 0, scale: 0, x: 0 }) } 
+                    onClick={ () => onChange({ y: 0, scale: 0, x: 0 }) } 
                 />
                 <CustomButton variation="minus" 
-                    onClick={ () => setTranslate({ x:0 , y:0 , ...translate, scale: (translate?.scale ?? 0) - 1 }) } 
+                    onClick={ () => onChange({ x:0 , y:0 , ...translate, scale: (translate?.scale ?? 0) - 1 }) } 
                 />
             </div>
         </div>

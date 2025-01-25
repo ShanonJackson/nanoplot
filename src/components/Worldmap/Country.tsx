@@ -1,14 +1,15 @@
 import { memo, useId } from "react"
-import { GraphContext } from "@/hooks/use-graph/use-graph"
+import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph"
 import { countries } from "@/utils/countries"
 
 type Props = {
-	data: GraphContext['data']
+	fill?: string, 
+	stroke?: string
 }
 
-export const SvgMemo = memo(({data}: Props) => {
-	if(data === undefined) return <></>
+export const Country = memo(({ fill, stroke }: Props) => {
 	const id = useId();
+	const { data } = useGraph();
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
 	return (
 		<svg
@@ -19,8 +20,8 @@ export const SvgMemo = memo(({data}: Props) => {
 				<path
 					key={i}
 					d={path}
-					fill={typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color}
-					stroke={dataset[iso]?.stroke ?? "white"}
+					fill={fill ?? (typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color)}
+					stroke={stroke ?? (dataset[iso]?.stroke ?? "white")}
 					strokeWidth={0.5}
 					data-iso={iso}
 					className={`hover:stroke-white hover:stroke-[1.5] worldmapcountry${iso} worldmap__country`}

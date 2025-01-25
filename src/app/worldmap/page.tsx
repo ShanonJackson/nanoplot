@@ -61,7 +61,6 @@ export default function Page() {
 							fill: ColorUtils.between("rgb(255, 0, 0)", "rgb(0, 0, 255)", average_demand_multiplier / 50),
 						};
 					})}
-					pan = {pan}
 				>
 					<Worldmap
 						tooltips={Object.fromEntries(
@@ -84,10 +83,11 @@ export default function Page() {
 							}),
 						)}
 						{...map}
+						{...pan}
 					>
 						<NavControls
 							translate={map.translate}
-							setTranslate={(translate: ComponentProps<typeof Worldmap>['translate']) : void => {
+							onChange={(translate: ComponentProps<typeof Worldmap>['translate']) : void => {
 									setMapPartial({translate})
 								}
 							}
