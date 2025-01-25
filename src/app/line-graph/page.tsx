@@ -48,7 +48,7 @@ export default function Page() {
 					<Lines.Tooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
-						ticks={{ from: "min - 1 months", to: "max", jumps: "every 1 months" }}
+						ticks={{ jumps: "every 1 months" }}
 						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
 						description={
 							xaxis.description?.toString() && (
@@ -72,23 +72,23 @@ const MOCK_DATA = [
 	{
 		name: "Josh - Hours gamed",
 		data: [
-			{ x: new Date("2024-01-05"), y: 20 },
-			{ x: new Date("2024-02-10"), y: 40 },
-			{ x: new Date("2024-03-11"), y: 30 },
-			{ x: new Date("2024-04-15"), y: 50 },
-			{ x: new Date("2024-05-20"), y: 36 },
-			{ x: new Date("2024-06-25"), y: 60 },
+			{ x: new Date("2024-01-01"), y: 20 },
+			{ x: new Date("2024-02-01"), y: 40 },
+			{ x: new Date("2024-03-01"), y: 30 },
+			{ x: new Date("2024-04-01"), y: 50 },
+			{ x: new Date("2024-05-01"), y: 36 },
+			{ x: new Date("2024-06-01"), y: 60 },
 		],
 	},
 	{
 		name: "Sally - Hours gamed",
 		data: [
-			{ x: new Date("2024-01-08"), y: 5.25 },
-			{ x: new Date("2024-02-15"), y: 10 },
-			{ x: new Date("2024-03-20"), y: 25.4 },
-			{ x: new Date("2024-04-05"), y: 36 },
-			{ x: new Date("2024-05-10"), y: 40 },
-			{ x: new Date("2024-06-18"), y: 35 },
+			{ x: new Date("2024-01-01"), y: 5.25 },
+			{ x: new Date("2024-02-01"), y: 10 },
+			{ x: new Date("2024-03-01"), y: 25.4 },
+			{ x: new Date("2024-04-01"), y: 36 },
+			{ x: new Date("2024-05-01"), y: 40 },
+			{ x: new Date("2024-06-01"), y: 35 },
 		],
 	},
 ];

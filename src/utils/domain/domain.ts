@@ -80,12 +80,16 @@ export const DomainUtils = {
 
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
-
 			if (min === max) return [{ tick: min, coordinate: viewbox.x / 2 }];
 			const MIN = (() => {
 				if (from === "min" || from === "auto") {
-					if (isDateTime) return new Date(min);
-					return DomainUtils.autoMinFor(min);
+					if (isDateTime) {
+						const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
+						return from === "auto"
+							? new Date(min)
+							: DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
+					}
+					return from === "min" ? min : DomainUtils.autoMinFor(min);
 				}
 				if (typeof from === "number") return from;
 				const operator = from.match(/(\+|-)/)?.[0];
@@ -107,7 +111,13 @@ export const DomainUtils = {
 				return min;
 			})();
 			const MAX = (() => {
-				if (to === "max" || to === "auto") return max;
+				if (to === "max" || to === "auto") {
+					if (isDateTime) {
+						const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
+						return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
+					}
+					return to === "max" ? max : DomainUtils.autoMaxFor(max);
+				}
 				if (typeof to === "number") return to;
 				const operator = to.match(/(\+|-)/)?.[0];
 				const isPercentage = to.includes("%");
@@ -146,35 +156,23 @@ export const DomainUtils = {
 					coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewbox.x]),
 				}));
 			}
-			/* is date/time domain */
+			/*
+				Datetime Domain.
+				min === "auto" -> start the graph from the first datapoint in the dataset. (touching the side of graph)
+				min === "min" -> start the graph from the floored date.
+				min === "min - 1 month" -> start the graph from the floored date - 1 month.
+				max === "auto" -> end the graph at the last datapoint in the dataset (touching the side of graph)
+				max === "max" -> end the graph at the ceiling date.
+				max === "max + 1 month" -> end the graph at the ceiling date + 1 month.
+			 */
 			const domain = DateDomain.domainFor({
 				min: new Date(MIN),
 				max: new Date(MAX),
 				jumps: jumps,
 			});
-			const linear = domain.map((d) => {
-				return {
-					tick: d,
-					coordinate: MathUtils.scale(d.getTime(), [domain[0].getTime(), domain[domain.length - 1].getTime()], [0, viewbox.x]),
-				};
-			});
-			if (from !== "auto" && to !== "auto") return linear;
-			const xCoordinateFor = CoordinatesUtils.xCoordinateFor({ viewbox, domain: { x: linear } });
-			const coordinates = data.flatMap((line) => line.data.map(({ x }) => xCoordinateFor(x)));
-			const xMin = Math.min(...coordinates);
-			const xMax = Math.max(...coordinates);
-			const xLastPoint = xMax - xMin;
-			if (xMin === xMax) return linear;
-			/*
-				This stretches the line wall-to-wall so that there isn't a gap before the line starts.
-				Consider "every 1 month" [jan, feb, mar]
-				min of dataset = jan 5th.
-				If this code below didn't exist, jan would be plotted on coordinate 0.
-				line would start after that meaning line would be disconnected from left side of graph.
-			*/
-			return linear.map(({ tick, coordinate }) => ({
+			return domain.map((tick) => ({
 				tick,
-				coordinate: (coordinate - xMin) * (viewbox.x / xLastPoint),
+				coordinate: MathUtils.scale(tick.getTime(), [new Date(MIN).getTime(), new Date(MAX).getTime()], [0, viewbox.x]),
 			}));
 		},
 	},

@@ -40,25 +40,6 @@ describe("src/utils/domain/domain", () => {
 	});
 
 	describe("DateDomain.ceil", () => {
-		// same as floor test for month expect expected output is month + unit at end of month.
-		it.each([
-			["2024-04-04", 0, "months", "2024-04-30"],
-			["2024-04-04", 1, "months", "2024-05-31"],
-			["2024-04-04", 2, "months", "2024-06-30"],
-			["2024-04-04", 3, "months", "2024-07-31"],
-			["2024-04-04", 4, "months", "2024-08-31"],
-			["2024-04-04", 5, "months", "2024-09-30"],
-			["2024-04-04", 6, "months", "2024-10-31"],
-			["2024-04-04", 7, "months", "2024-11-30"],
-			["2024-04-04", 8, "months", "2024-12-31"],
-			["2024-04-04", 9, "months", "2025-01-31"],
-			["2024-04-04", 10, "months", "2025-02-28"],
-			["2024-04-04", 11, "months", "2025-03-31"],
-			["2024-04-04", 12, "months", "2025-04-30"],
-		])("Should 'ceil' correctly for months %s %i", (date, unit, interval, expected) => {
-			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
-		});
-
 		it.each([
 			["2024-04-04", 0, "years", "2024-12-31"],
 			["2024-04-04", 1, "years", "2025-12-31"],
@@ -74,6 +55,24 @@ describe("src/utils/domain/domain", () => {
 			["2024-04-04", 11, "years", "2035-12-31"],
 			["2024-04-04", 12, "years", "2036-12-31"],
 		])("Should 'ceil' correctly for years", (date, unit, interval, expected) => {
+			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
+		});
+
+		it.each([
+			["2024-04-04", 0, "months", "2024-05-01"],
+			["2024-04-04", 1, "months", "2024-06-01"],
+			["2024-04-04", 2, "months", "2024-07-01"],
+			["2024-04-04", 3, "months", "2024-08-01"],
+			["2024-04-04", 4, "months", "2024-09-01"],
+			["2024-04-04", 5, "months", "2024-10-01"],
+			["2024-04-04", 6, "months", "2024-11-01"],
+			["2024-04-04", 7, "months", "2024-12-01"],
+			["2024-04-04", 8, "months", "2025-01-01"],
+			["2024-04-04", 9, "months", "2025-02-01"],
+			["2024-04-04", 10, "months", "2025-03-01"],
+			["2024-04-04", 11, "months", "2025-04-01"],
+			["2024-04-04", 12, "months", "2025-05-01"],
+		])("Should 'ceil' correctly for months %s %i", (date, unit, interval, expected) => {
 			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
 		});
 

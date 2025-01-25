@@ -171,7 +171,7 @@ export const times = {
 		getter: "getMonth",
 		setter: "setMonth",
 		toFloor: (dte: Date, unit: number) => new Date(dte.getFullYear(), dte.getMonth() - unit, 1, 0, 0, 0, 0),
-		toCeil: (date: Date, unit: number) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + unit + 1, 0, 0, 0, 0, 0)),
+		toCeil: (dte: Date, unit: number) => new Date(dte.getFullYear(), dte.getMonth() + unit + 1, 1, 0, 0, 0, 0),
 	},
 	years: {
 		getter: "getFullYear",
@@ -212,6 +212,10 @@ export const dateRange = (every: TimeseriesFormats, min: Date, max: Date) => {
 };
 
 export const DateDomain = {
+	intervalForJumps: (jumps: string) => {
+		const [, , interval] = jumps.match(regex) || ["", "1", "days"];
+		return interval;
+	},
 	floor: ({ date, unit, interval }: { date: Date; unit: number; interval: string }) => {
 		const { getter, setter, toFloor } = times[interval as keyof typeof times];
 		return toFloor(new Date(new Date(date)[setter](date[getter]())), unit);
