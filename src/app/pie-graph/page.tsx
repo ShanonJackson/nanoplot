@@ -20,7 +20,7 @@ export default function Page() {
 	});
 	const setPiePartial = (partial: Partial<ComponentProps<typeof Pie>>) => setPie((prev) => ({ ...prev, ...partial }));
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Pie Graph</h1>
 				<ControlGroup title={"Pie"}>

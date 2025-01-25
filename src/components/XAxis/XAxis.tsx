@@ -51,10 +51,13 @@ export const XAxis = ({ display, title, description }: Props) => {
 					if (x > 100 || x < 0) return null;
 					return (
 						<React.Fragment key={i}>
-							<div className={"absolute -translate-x-1/2 text-gray-700 dark:text-gray-300"} style={{ left: `${x}%` }}>
+							<div
+								className={"absolute -translate-x-1/2 text-gray-700 dark:text-gray-300 text-nowrap"}
+								style={{ left: `${x}%` }}
+							>
 								{label}
 							</div>
-							<div className={"opacity-0"}>{label}</div>
+							<div className={"opacity-0 text-nowrap"}>{label}</div>
 						</React.Fragment>
 					);
 				})}

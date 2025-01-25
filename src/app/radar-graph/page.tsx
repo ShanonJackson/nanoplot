@@ -14,7 +14,7 @@ export default function Page() {
 	});
 	const setRadarPartial = (partial: Partial<ComponentProps<typeof Radar>>) => setRadar((prev) => ({ ...prev, ...partial }));
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>Radar Graph</h1>
 				<Control name={"loading"} type={"boolean"}>
