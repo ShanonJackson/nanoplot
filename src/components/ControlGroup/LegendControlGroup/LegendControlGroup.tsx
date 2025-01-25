@@ -3,7 +3,6 @@ import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { Control } from "@/components/Docs/Control/Control";
 import { Legend } from "@/components/Legend/Legend";
 import { EnumControl } from "@/components/Docs/Control/components/EnumControl/EnumControl";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 
 type Legend = ComponentProps<typeof Legend>;
 

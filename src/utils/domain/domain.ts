@@ -6,7 +6,7 @@
 	{from: "min", to: "max", jumps: 5}
 	{from: "min", to: "max + 10%", jumps: 5, rounding: "whole"}
 	{from: "min", to: "max", jumps: "1 month"}
-	{from: "min - 10%", to: "max + 10%" jumps: "1 month"}
+	{from: "min - 1 month", to: "max + 1 month" jumps: "1 month"}
  */
 import { XAxis } from "@/components/XAxis/XAxis";
 import { ComponentProps } from "react";
@@ -15,6 +15,8 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { MathUtils } from "@/utils/math/math";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { ObjectUtils } from "@/utils/object/object";
+import { DateDomain } from "@/utils/domain/date-domain";
+import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 
 const roundUp = (num: number, nearest: number) => Math.ceil(num / nearest) * nearest;
 const roundDown = (num: number, nearest: number) => Math.floor(num / nearest) * nearest;
@@ -57,9 +59,9 @@ export const DomainUtils = {
 			},
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
-
+			const isDateTime = data[0]?.data?.[0]?.x instanceof Date;
 			const isDistinctValues =
-				new Set(data.flatMap((line) => line.data.map((d) => +d.x))).size <= 11 && from === "auto" && to === "auto";
+				new Set(data.flatMap((line) => line.data.map((d) => +d.x))).size <= 11 && from === "auto" && to === "auto" && !isDateTime;
 			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */ || isDistinctValues) {
 				const isCategoricalStrings = typeof data[0]?.data?.[0].x === "string";
 				const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d.x))));
@@ -78,45 +80,99 @@ export const DomainUtils = {
 
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
-			if (min === max) return [{ tick: min, coordinate: viewbox.x }];
-			if (typeof jumps === "string" && jumps !== "auto") {
-				/* datetime un-implemented */
-				return [];
-			}
+			if (min === max) return [{ tick: min, coordinate: viewbox.x / 2 }];
 			const MIN = (() => {
-				if (from === "auto") return DomainUtils.autoMinFor(min);
-				if (from === "min") return min;
+				if (from === "min" || from === "auto") {
+					if (isDateTime) {
+						const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
+						return from === "auto"
+							? new Date(min)
+							: DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
+					}
+					return from === "min" ? min : DomainUtils.autoMinFor(min);
+				}
 				if (typeof from === "number") return from;
 				const operator = from.match(/(\+|-)/)?.[0];
 				const isPercentage = from.includes("%");
 				const value = +from.replace(/[^0-9]/g, "");
-				if (operator === "+") return isPercentage ? min + (min * value) / 100 : min + value;
-				if (operator === "-") return isPercentage ? min - (min * value) / 100 : min - value;
+				const interval = from.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+				if (operator === "+") {
+					if (interval) {
+						return DateDomain.floor({ date: new Date(min), unit: value, interval });
+					}
+					return isPercentage ? min + (min * value) / 100 : min + value;
+				}
+				if (operator === "-") {
+					if (interval) {
+						return DateDomain.floor({ date: new Date(min), unit: value, interval });
+					}
+					return isPercentage ? min - (min * value) / 100 : min - value;
+				}
 				return min;
 			})();
 			const MAX = (() => {
-				if (to === "auto") return DomainUtils.autoMaxFor(max);
-				if (to === "max") return max;
+				if (to === "max" || to === "auto") {
+					if (isDateTime) {
+						const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
+						return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
+					}
+					return to === "max" ? max : DomainUtils.autoMaxFor(max);
+				}
 				if (typeof to === "number") return to;
 				const operator = to.match(/(\+|-)/)?.[0];
 				const isPercentage = to.includes("%");
 				const value = +to.replace(/[^0-9]/g, "");
-				if (operator === "+") return isPercentage ? max + (max * value) / 100 : max + value;
-				if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
+				const interval = to.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+
+				if (operator === "+") {
+					if (interval) {
+						return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+					}
+					return isPercentage ? max + (max * value) / 100 : max + value;
+				}
+				if (operator === "-") {
+					if (interval) {
+						return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+					}
+					return isPercentage ? max - (max * value) / 100 : max - value;
+				}
 				return max;
 			})();
-			const JUMPS = (() => {
-				const distance = MAX - MIN;
-				if (jumps === "auto") {
-					/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
-					return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
-				}
-				return jumps;
-			})();
 
-			return Array.from({ length: JUMPS }, (_, i) => ({
-				tick: MathUtils.scale(i, [0, JUMPS - 1], [MIN, MAX]),
-				coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewbox.x]),
+			if (typeof jumps === "number" || jumps === "auto") {
+				const mx = Number(MAX);
+				const mn = Number(MIN);
+				const JUMPS = (() => {
+					const distance = mx - mn;
+					if (jumps === "auto") {
+						/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
+						return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+					}
+					return jumps;
+				})();
+
+				return Array.from({ length: JUMPS }, (_, i) => ({
+					tick: MathUtils.scale(i, [0, JUMPS - 1], [mn, mx]),
+					coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewbox.x]),
+				}));
+			}
+			/*
+				Datetime Domain.
+				min === "auto" -> start the graph from the first datapoint in the dataset. (touching the side of graph)
+				min === "min" -> start the graph from the floored date.
+				min === "min - 1 month" -> start the graph from the floored date - 1 month.
+				max === "auto" -> end the graph at the last datapoint in the dataset (touching the side of graph)
+				max === "max" -> end the graph at the ceiling date.
+				max === "max + 1 month" -> end the graph at the ceiling date + 1 month.
+			 */
+			const domain = DateDomain.domainFor({
+				min: new Date(MIN),
+				max: new Date(MAX),
+				jumps: jumps,
+			});
+			return domain.map((tick) => ({
+				tick,
+				coordinate: MathUtils.scale(tick.getTime(), [new Date(MIN).getTime(), new Date(MAX).getTime()], [0, viewbox.x]),
 			}));
 		},
 	},
@@ -137,6 +193,8 @@ export const DomainUtils = {
 				/*
 					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 					This is the case for stacked-bars.
+					groupBy group; then group by x
+					Math.max(Sum y)
 				*/
 				return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, values]) => {
 					const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], ({ x }) => x.toString());
@@ -160,10 +218,6 @@ export const DomainUtils = {
 				}));
 			}
 
-			if (typeof jumps === "string" && jumps !== "auto" /* datetime un-implemented */) {
-				return [];
-			}
-
 			const MIN = (() => {
 				if (from === "auto") return DomainUtils.autoMinFor(min);
 				if (from === "min") return min;
@@ -186,6 +240,7 @@ export const DomainUtils = {
 				if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
 				return max;
 			})();
+
 			const JUMPS = (() => {
 				const distance = MAX - MIN;
 				if (jumps === "auto") {
