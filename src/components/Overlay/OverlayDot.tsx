@@ -1,13 +1,17 @@
 import { FC } from "react";
 import { MathUtils } from "@/utils/math/math";
+import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
+import { useGraph } from "@/hooks/use-graph/use-graph";
+
 type Props = {
-	x: number;
+	x: number | string | Date;
 	y: number;
 };
 
 export const OverlayDot: FC<Props> = ({ x, y }) => {
-	const left = MathUtils.scale(x, 3000, 100);
-	const top = MathUtils.scale(y, 3000, 100);
+	const context = useGraph();
+	const xCoordinateFor = CoordinatesUtils.xCoordinateFor(context);
+	const yCoordinateFor = CoordinatesUtils.yCoordinateFor(context);
 	return (
 		<>
 			<div
@@ -15,9 +19,9 @@ export const OverlayDot: FC<Props> = ({ x, y }) => {
 					borderRadius: "50%",
 					height: "25px",
 					width: "25px",
-					left: `${left}%`,
-					top: `${top}%`,
-					backgroundColor: "#bbb",
+					left: `${MathUtils.scale(xCoordinateFor(x), 3000, 100)}%`,
+					top: `${MathUtils.scale(yCoordinateFor(y), 3000, 100)}%`,
+					backgroundColor: "blue",
 					position: "absolute",
 				}}
 				className="[grid-area:graph]"

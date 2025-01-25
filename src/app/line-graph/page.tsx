@@ -15,6 +15,7 @@ import { Graph } from "@/components/Graph/Graph";
 import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
 import { Tabs } from "@/components/Tabs/Tabs";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { overlay } from "@/components/Overlay/Overlay";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -69,6 +70,7 @@ export default function Page() {
 							<GridLines {...gridline} />
 							<Lines />
 							<LinesTooltip tooltip={(_, x) => `${x}`} />
+							<overlay.dot x={new Date("2024-03-01T00:00:00Z")} y={30} />
 							{legend.position === "right" && <Legend {...legend} />}
 							<XAxis
 								{...xaxis}
