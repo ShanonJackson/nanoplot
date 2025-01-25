@@ -6,7 +6,7 @@
 	{from: "min", to: "max", jumps: 5}
 	{from: "min", to: "max + 10%", jumps: 5, rounding: "whole"}
 	{from: "min", to: "max", jumps: "1 month"}
-	{from: "min - 10%", to: "max + 10%" jumps: "1 month"}
+	{from: "min - 1 month", to: "max + 1 month" jumps: "1 month"}
  */
 import { XAxis } from "@/components/XAxis/XAxis";
 import { ComponentProps } from "react";
@@ -83,13 +83,27 @@ export const DomainUtils = {
 
 			if (min === max) return [{ tick: min, coordinate: viewbox.x / 2 }];
 			const MIN = (() => {
-				if (from === "min" || from === "auto") return min;
+				if (from === "min" || from === "auto") {
+					if (isDateTime) return new Date(min);
+					return DomainUtils.autoMinFor(min);
+				}
 				if (typeof from === "number") return from;
 				const operator = from.match(/(\+|-)/)?.[0];
 				const isPercentage = from.includes("%");
 				const value = +from.replace(/[^0-9]/g, "");
-				if (operator === "+") return isPercentage ? min + (min * value) / 100 : min + value;
-				if (operator === "-") return isPercentage ? min - (min * value) / 100 : min - value;
+				const interval = from.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+				if (operator === "+") {
+					if (interval) {
+						return DateDomain.floor({ date: new Date(min), unit: value, interval });
+					}
+					return isPercentage ? min + (min * value) / 100 : min + value;
+				}
+				if (operator === "-") {
+					if (interval) {
+						return DateDomain.floor({ date: new Date(min), unit: value, interval });
+					}
+					return isPercentage ? min - (min * value) / 100 : min - value;
+				}
 				return min;
 			})();
 			const MAX = (() => {
@@ -98,8 +112,20 @@ export const DomainUtils = {
 				const operator = to.match(/(\+|-)/)?.[0];
 				const isPercentage = to.includes("%");
 				const value = +to.replace(/[^0-9]/g, "");
-				if (operator === "+") return isPercentage ? max + (max * value) / 100 : max + value;
-				if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
+				const interval = to.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+
+				if (operator === "+") {
+					if (interval) {
+						return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+					}
+					return isPercentage ? max + (max * value) / 100 : max + value;
+				}
+				if (operator === "-") {
+					if (interval) {
+						return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+					}
+					return isPercentage ? max - (max * value) / 100 : max - value;
+				}
 				return max;
 			})();
 
@@ -132,6 +158,7 @@ export const DomainUtils = {
 					coordinate: MathUtils.scale(d.getTime(), [domain[0].getTime(), domain[domain.length - 1].getTime()], [0, viewbox.x]),
 				};
 			});
+			if (from !== "auto" && to !== "auto") return linear;
 			const xCoordinateFor = CoordinatesUtils.xCoordinateFor({ viewbox, domain: { x: linear } });
 			const coordinates = data.flatMap((line) => line.data.map(({ x }) => xCoordinateFor(x)));
 			const xMin = Math.min(...coordinates);

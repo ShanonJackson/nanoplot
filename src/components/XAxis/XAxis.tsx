@@ -4,9 +4,27 @@ import { MathUtils } from "@/utils/math/math";
 import React, { ReactNode } from "react";
 import { DomainUtils } from "@/utils/domain/domain";
 
-type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
-type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
 type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
+type From =
+	| "auto"
+	| "min"
+	| `min - ${number}`
+	| `min + ${number}`
+	| `min + ${number}%`
+	| `min - ${number}%`
+	| `min - ${number} ${interval}`
+	| `min + ${number} ${interval}`
+	| number;
+type To =
+	| "auto"
+	| "max"
+	| `max - ${number}`
+	| `max + ${number}`
+	| `max + ${number}%`
+	| `max - ${number}%`
+	| `max - ${number} ${interval}`
+	| `max + ${number} ${interval}`
+	| number;
 type Jumps = "auto" | `every ${number} ${interval}` | number;
 
 type Props = {

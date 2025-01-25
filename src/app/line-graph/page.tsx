@@ -48,14 +48,17 @@ export default function Page() {
 					<Lines.Tooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
-						ticks={{ jumps: "every 1 months" }}
+						ticks={{ from: "min - 1 months", to: "max", jumps: "every 1 months" }}
 						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
 						description={
 							xaxis.description?.toString() && (
 								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
 							)
 						}
-						display={(x) => `${x.getFullYear()}/${x.getMonth() + 1}/${x.getDate()}`}
+						display={(x) => {
+							if (typeof x === "number" || typeof x === "string") return null;
+							return `${x.getFullYear()}/${x.getMonth() + 1}/${x.getDate()}`;
+						}}
 					/>
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
