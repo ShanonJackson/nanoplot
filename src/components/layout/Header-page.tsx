@@ -9,24 +9,26 @@ interface Props {}
 
 const HeaderPage = (props: Props) => {
 	return (
-		<div className="w- flex flex-row-reverse lg:flex-row justify-between lg:justify-end items-center gap-4 px-4
+		<div
+			className="w- flex flex-row-reverse lg:flex-row justify-between lg:justify-end items-center gap-4 px-4
 			bg-gradient-to-r from-[hsl(347.29deg,47.58%,51.37%)] to-[hsl(14.2deg,70.71%,53.14%)] text-white
-			dark:from-[hsl(209.65deg,52.15%,31.96%)] dark:to-[hsl(210.5deg,68.97%,65.88%)">
-			<div className="hidden lg:block">
-				<DropDown label="Why NanoPlot ?" items={nanoplotItems} />
-			</div>
+			dark:from-[hsl(209.65deg,52.15%,31.96%)] dark:to-[hsl(210.5deg,68.97%,65.88%)"
+		>
+			{/*<div className="hidden lg:block">*/}
+			{/*	<DropDown label="Why NanoPlot ?" items={nanoplotItems} />*/}
+			{/*</div>*/}
 
-			<Link href={"/components"} className="hidden lg:block w-fit px-4 text-sm cursor-pointer">
-				Components
-			</Link>
+			{/*<Link href={"/components"} className="hidden lg:block w-fit px-4 text-sm cursor-pointer">*/}
+			{/*	Components*/}
+			{/*</Link>*/}
 
-			<div className="hidden lg:block">
-				<DropDown label="Guides" items={guideItems} />
-			</div>
+			{/*<div className="hidden lg:block">*/}
+			{/*	<DropDown label="Guides" items={guideItems} />*/}
+			{/*</div>*/}
 
-			<Link href={"/donate"} className="hidden lg:block w-fit px-4 text-sm cursor-pointer">
-				donate
-			</Link>
+			{/*<Link href={"/donate"} className="hidden lg:block w-fit px-4 text-sm cursor-pointer">*/}
+			{/*	donate*/}
+			{/*</Link>*/}
 
 			<ThemeToggle />
 

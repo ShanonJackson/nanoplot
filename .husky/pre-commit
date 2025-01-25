@@ -1,1 +1,1 @@
-bun run prettier --write $(git diff --cached --name-only | grep '\.js\|\.ts')
+bun run prettier --write "src/**/*.{ts,tsx}"

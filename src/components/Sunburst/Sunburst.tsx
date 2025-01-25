@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import { useGraph } from "@/hooks/use-graph/use-graph";
 import { ColorUtils } from "@/utils/color/color";
 import { PathUtils } from "@/utils/path/path";
+import { SunburstLoading } from "./SunburstLoading";
 
 export type Sunburst = Array<{
 	name: string;
@@ -10,7 +11,7 @@ export type Sunburst = Array<{
 	children: Sunburst;
 }>;
 
-type Props = {};
+type Props = { loading?: boolean };
 
 const RING_SIZE = 0.2;
 const data = [
@@ -126,10 +127,12 @@ const data = [
 	},
 ];
 
-export const Sunburst = ({}: Props) => {
+export const Sunburst = ({ loading }: Props) => {
 	const { viewbox } = useGraph();
 	const [activeRing, setActiveRing] = useState<Sunburst[number]>();
 	const dataset = data.toSorted((a, b) => b.value - a.value);
+
+	if (loading) return <SunburstLoading />;
 
 	/* maximum depth */
 	const rings = (function getDepth(data: Sunburst, depth = 1): number {
@@ -227,14 +230,15 @@ export const Sunburst = ({}: Props) => {
 };
 
 type SegmentProps = {
-	segment: Sunburst[number];
 	previousDegrees: number;
 	degrees: number;
 	stroke: string;
 	ring: number;
-	onClick: () => void;
-};
-const Segment = ({ onClick, segment, previousDegrees, degrees, ring, stroke }: SegmentProps) => {
+	segment?: Sunburst[number];
+	onClick?: () => void;
+} & React.JSX.IntrinsicElements["path"];
+
+export const Segment = ({ onClick, previousDegrees, degrees, ring, stroke, ...path }: SegmentProps) => {
 	const { viewbox } = useGraph();
 	const RING_WIDTH = 300;
 	const RING_GAP = 20;
@@ -254,6 +258,7 @@ const Segment = ({ onClick, segment, previousDegrees, degrees, ring, stroke }: S
 			fill={stroke}
 			stroke={stroke}
 			onClick={onClick}
+			{...path}
 		/>
 	);
 };
