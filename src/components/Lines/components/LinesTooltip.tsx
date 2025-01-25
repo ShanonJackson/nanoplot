@@ -137,7 +137,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 							{closest.toString()}
 						</div>
 						<div className={"px-2.5"}>
-							{points.map(({ name, data: { x, y }, stroke }, i) => {
+							{points.map(({ name, data: { y }, stroke }, i) => {
 								return (
 									<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
 										<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] rounded-full mr-1" />

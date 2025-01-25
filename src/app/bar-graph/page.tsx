@@ -50,7 +50,7 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars  />
+					<Bars />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}

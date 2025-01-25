@@ -14,6 +14,7 @@ import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
 import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
 import { Tabs } from "@/components/Tabs/Tabs";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -24,31 +25,6 @@ export default function Page() {
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
 	const [tab, setTab] = useState("chart");
-
-	let graphData = [
-		{
-			name: "Josh - Hours gamed",
-			data: [
-				{ x: 1, y: 20 },
-				{ x: 2, y: 40 },
-				{ x: 3, y: 30 },
-				{ x: 4, y: 50 },
-				{ x: 5, y: 36 },
-				{ x: 6, y: 60 },
-			],
-		},
-		{
-			name: "Sally - Hours gamed",
-			data: [
-				{ x: 1, y: 5.25 },
-				{ x: 2, y: 10 },
-				{ x: 3, y: 25.4 },
-				{ x: 4, y: 36 },
-				{ x: 5, y: 40 },
-				{ x: 6, y: 35 },
-			],
-		},
-	];
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
@@ -68,92 +44,81 @@ export default function Page() {
 					</Control>
 				</ControlGroup>
 			</div>
-			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
+			<div className={"flex flex-col border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
 				<Tabs activeTab={tab} onTabChange={setTab}>
-						<Tabs.Tab
-							value="chart"
-							icon="chart-icon"
-						/>
-						<Tabs.Tab
-							value="code"
-							icon="code-icon"
-						/>
-						<Tabs.Tab
-							value="data"
-							icon="data-icon"
-						/>
+					<Tabs.Tab value="chart" icon="chart-icon" />
+					<Tabs.Tab value="code" icon="code-icon" />
+					<Tabs.Tab value="data" icon="data-icon" />
 				</Tabs>
-				<div className="h-[450px]">
-						{tab === "chart" &&
-							<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
-								{legend.position === "top" && <Legend {...legend} />}
-								{legend.position === "left" && <Legend {...legend} />}
-								<YAxis
-									{...yaxis}
-									title={
-										yaxis.title?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
-										)
-									}
-									description={
-										yaxis.description?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-										)
-									}
-								/>
-								<GridLines {...gridline} />
-								<Lines />
-								<LinesTooltip tooltip={(_, x) => `${x}`} />
-								{legend.position === "right" && <Legend {...legend} />}
-								<XAxis
-									{...xaxis}
-									title={
-										xaxis.title?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
-										)
-									}
-									description={
-										yaxis.description?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-										)
-									}
-								/>
-								{legend.position === "bottom" && <Legend {...legend} />}
-							</Graph>}
-						{tab === "code" &&
-							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
-						}
-						{tab === "data" &&
-							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
-						}
-					</div>
+				<div className={"h-0 flex-1"}>
+					{tab === "chart" && (
+						<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+							{legend.position === "top" && <Legend {...legend} />}
+							{legend.position === "left" && <Legend {...legend} />}
+							<YAxis
+								{...yaxis}
+								title={
+									yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
+								}
+								description={
+									yaxis.description?.toString() && (
+										<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+									)
+								}
+							/>
+							<GridLines {...gridline} />
+							<Lines />
+							<LinesTooltip tooltip={(_, x) => `${x}`} />
+							{legend.position === "right" && <Legend {...legend} />}
+							<XAxis
+								{...xaxis}
+								ticks={{ jumps: "every 1 months" }}
+								title={
+									xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
+								}
+								description={
+									yaxis.description?.toString() && (
+										<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+									)
+								}
+								display={(x) => {
+									if (typeof x === "number" || typeof x === "string") return null;
+									return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+								}}
+							/>
+							{legend.position === "bottom" && <Legend {...legend} />}
+						</Graph>
+					)}
+					{tab === "code" && <CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />}
+					{tab === "data" && <CodeBlock code={JSON.stringify(DATA, null, 2)} language="javascript" />}
+				</div>
 			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
 
-const data = [
+const DATA = [
 	{
 		name: "Josh - Hours gamed",
 		data: [
-			{ x: 1, y: 20 },
-			{ x: 2, y: 40 },
-			{ x: 3, y: 30 },
-			{ x: 4, y: 50 },
-			{ x: 5, y: 36 },
-			{ x: 6, y: 60 },
+			{ x: new Date("2024-01-01"), y: 20 },
+			{ x: new Date("2024-02-01"), y: 40 },
+			{ x: new Date("2024-03-01"), y: 30 },
+			{ x: new Date("2024-04-01"), y: 50 },
+			{ x: new Date("2024-05-01"), y: 36 },
+			{ x: new Date("2024-06-01"), y: 60 },
 		],
 	},
 	{
 		name: "Sally - Hours gamed",
 		data: [
-			{ x: 1, y: 5.25 },
-			{ x: 2, y: 10 },
-			{ x: 3, y: 25.4 },
-			{ x: 4, y: 36 },
-			{ x: 5, y: 40 },
-			{ x: 6, y: 35 },
+			{ x: new Date("2024-01-01"), y: 5.25 },
+			{ x: new Date("2024-02-01"), y: 10 },
+			{ x: new Date("2024-03-01"), y: 25.4 },
+			{ x: new Date("2024-04-01"), y: 36 },
+			{ x: new Date("2024-05-01"), y: 40 },
+			{ x: new Date("2024-06-01"), y: 35 },
 		],
 	},
 ];
