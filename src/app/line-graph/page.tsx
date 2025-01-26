@@ -68,9 +68,8 @@ export default function Page() {
 								}
 							/>
 							<GridLines {...gridline} />
-							<Lines />
+							<Lines curve={"natural"} />
 							<LinesTooltip tooltip={(_, x) => `${x}`} />
-							<overlay.dot x={new Date("2024-03-01T00:00:00Z")} y={30} />
 							{legend.position === "right" && <Legend {...legend} />}
 							<XAxis
 								{...xaxis}

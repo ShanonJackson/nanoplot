@@ -5,12 +5,14 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
+import { CurveUtils } from "@/utils/path/curve";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
+	curve?: keyof typeof CurveUtils;
 }
 
-export const Lines = ({ className, children }: Props) => {
+export const Lines = ({ className, curve = "linear", children }: Props) => {
 	const {
 		interactions: { pinned, hovered },
 		data,
@@ -32,6 +34,7 @@ export const Lines = ({ className, children }: Props) => {
 			})),
 		};
 	});
+
 	return (
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
@@ -41,7 +44,7 @@ export const Lines = ({ className, children }: Props) => {
 			className={cx("[grid-area:graph]", className)}
 		>
 			{lines.map(({ id, stroke, data, fill }, i) => {
-				const path = data.map((xy, index) => `${index === 0 ? "M" : "L"} ${xy.x} ${xy.y}`).join(" ");
+				const path = CurveUtils[curve](data);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 				const filled = fill || hovered.includes(id) || (pinned.includes(id) && !disabled);
 				const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
@@ -82,5 +85,9 @@ export const Lines = ({ className, children }: Props) => {
 		</svg>
 	);
 };
+
+/*
+	Chart composition
+*/
 
 Lines.Tooltip = LinesTooltip;

@@ -181,10 +181,4 @@ export const PathUtils = {
 			V ${xy1.y}
 		`;
 	},
-	// H ${xy1.x - middle / 2}
-	// H ${xy1.x}
-	// Q ${xy1.x} ${xy2.y}
-	// 	${xy1.x + radius} ${xy2.y}
-	// V ${xy2.y - middle / 2}
-	// V ${xy2.y}
 };
