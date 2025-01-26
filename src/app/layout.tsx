@@ -28,7 +28,7 @@ export default async function RootLayout({
 				data-theme={theme}
 				className={
 					theme +
-					" h-full w-full md:overflow-hidden sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200"
+					" nanoplot h-full w-full md:overflow-hidden sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200"
 				}
 			>
 				<div className={"flex w-screen h-auto md:overflow-hidden  sm:overflow-unset"}>

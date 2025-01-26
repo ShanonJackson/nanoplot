@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { XAxis } from "nanoplot/xaxis";
+import { XAxis } from "@/components/XAxis/XAxis";
 
 type Jumps = NonNullable<ComponentProps<typeof XAxis>["ticks"]>["jumps"];
 type TimeseriesFormats = NonNullable<Exclude<Jumps, number | "auto">>;

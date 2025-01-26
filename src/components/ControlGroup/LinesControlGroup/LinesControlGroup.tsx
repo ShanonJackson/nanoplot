@@ -1,5 +1,4 @@
 import { ComponentProps, FC } from "react";
-import { GridLines } from "@/components/GridLines/GridLines";
 import { ControlGroup } from "../ControlGroup";
 import { Control } from "../../Docs/Control/Control";
 import { Lines } from "@/components/Lines/Lines";
