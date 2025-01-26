@@ -12,7 +12,7 @@ type Props = {
 };
 export const LinesControlGroup: FC<Props> = ({ state, onChange }) => {
 	return (
-		<ControlGroup title={"GridLines"}>
+		<ControlGroup title={"Lines"}>
 			<Control
 				name={"curve"}
 				type={Object.keys(CurveUtils)

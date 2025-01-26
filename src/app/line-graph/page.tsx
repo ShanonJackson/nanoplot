@@ -17,6 +17,8 @@ import { Tabs } from "@/components/Tabs/Tabs";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { overlay } from "@/components/Overlay/Overlay";
 import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -30,7 +32,7 @@ export default function Page() {
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
+			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LinesControlGroup state={line} onChange={setLine} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
@@ -46,56 +48,41 @@ export default function Page() {
 						/>
 					</Control>
 				</ControlGroup>
-			</div>
-			<div className={"flex flex-col border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
-				<Tabs active={tab} onTabChange={setTab}>
-					<Tabs.Tab value="chart" icon="chart-icon" />
-					<Tabs.Tab value="code" icon="code-icon" />
-					<Tabs.Tab value="data" icon="data-icon" />
-				</Tabs>
-				<div className={"h-0 flex-1"}>
-					{tab === "chart" && (
-						<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
-							{legend.position === "top" && <Legend {...legend} />}
-							{legend.position === "left" && <Legend {...legend} />}
-							<YAxis
-								{...yaxis}
-								title={
-									yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
-								}
-								description={
-									yaxis.description?.toString() && (
-										<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-									)
-								}
-							/>
-							<GridLines {...gridline} />
-							<Lines {...line} />
-							<LinesTooltip tooltip={(_, x) => `${x}`} />
-							{legend.position === "right" && <Legend {...legend} />}
-							<XAxis
-								{...xaxis}
-								ticks={{ jumps: "every 1 months" }}
-								title={
-									xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
-								}
-								description={
-									yaxis.description?.toString() && (
-										<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-									)
-								}
-								display={(x) => {
-									if (typeof x === "number" || typeof x === "string") return null;
-									return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
-								}}
-							/>
-							{legend.position === "bottom" && <Legend {...legend} />}
-						</Graph>
-					)}
-					{tab === "code" && <CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />}
-					{tab === "data" && <CodeBlock code={JSON.stringify(DATA, null, 2)} language="javascript" />}
-				</div>
-			</div>
+			</ControlPanel>
+			<GraphPanel>
+				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+					{legend.position === "top" && <Legend {...legend} />}
+					{legend.position === "left" && <Legend {...legend} />}
+					<YAxis
+						{...yaxis}
+						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+							)
+						}
+					/>
+					<GridLines {...gridline} />
+					<Lines {...line} />
+					<LinesTooltip tooltip={(_, x) => `${x}`} />
+					{legend.position === "right" && <Legend {...legend} />}
+					<XAxis
+						{...xaxis}
+						ticks={{ jumps: "every 1 months" }}
+						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+							)
+						}
+						display={(x) => {
+							if (typeof x === "number" || typeof x === "string") return null;
+							return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+						}}
+					/>
+					{legend.position === "bottom" && <Legend {...legend} />}
+				</Graph>
+			</GraphPanel>
 			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
