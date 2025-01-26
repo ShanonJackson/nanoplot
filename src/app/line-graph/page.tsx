@@ -12,10 +12,6 @@ import { ComponentProps, useState } from "react";
 import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
-import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
-import { Tabs } from "@/components/Tabs/Tabs";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
-import { overlay } from "@/components/Overlay/Overlay";
 import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
@@ -83,7 +79,6 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

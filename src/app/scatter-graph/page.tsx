@@ -74,7 +74,6 @@ export default function Page() {
 					<XAxis title={"title x axis"} description={"description x axis"} />
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

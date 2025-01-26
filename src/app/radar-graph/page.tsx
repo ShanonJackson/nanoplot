@@ -30,7 +30,6 @@ export default function Page() {
 					<Radar {...radar} />
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

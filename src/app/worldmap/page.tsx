@@ -71,7 +71,6 @@ export default function Page() {
 					/>
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
