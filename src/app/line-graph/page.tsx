@@ -16,6 +16,7 @@ import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
 import { Tabs } from "@/components/Tabs/Tabs";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { overlay } from "@/components/Overlay/Overlay";
+import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -31,6 +32,7 @@ export default function Page() {
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
+				<LinesControlGroup state={line} onChange={setLine} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<ControlGroup title={"XAxis"}>
@@ -68,7 +70,7 @@ export default function Page() {
 								}
 							/>
 							<GridLines {...gridline} />
-							<Lines curve={"natural"} />
+							<Lines {...line} />
 							<LinesTooltip tooltip={(_, x) => `${x}`} />
 							{legend.position === "right" && <Legend {...legend} />}
 							<XAxis
@@ -103,23 +105,23 @@ const DATA = [
 	{
 		name: "Josh - Hours gamed",
 		data: [
-			{ x: new Date("2024-01-01T00:00:00Z"), y: 20 },
-			{ x: new Date("2024-02-01T00:00:00Z"), y: 40 },
-			{ x: new Date("2024-03-01T00:00:00Z"), y: 30 },
-			{ x: new Date("2024-04-01T00:00:00Z"), y: 50 },
-			{ x: new Date("2024-05-01T00:00:00Z"), y: 36 },
-			{ x: new Date("2024-06-01T00:00:00Z"), y: 60 },
+			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
 		],
 	},
 	{
 		name: "Sally - Hours gamed",
 		data: [
-			{ x: new Date("2024-01-01T00:00:00Z"), y: 5.25 },
-			{ x: new Date("2024-02-01T00:00:00Z"), y: 10 },
-			{ x: new Date("2024-03-01T00:00:00Z"), y: 25.4 },
-			{ x: new Date("2024-04-01T00:00:00Z"), y: 36 },
-			{ x: new Date("2024-05-01T00:00:00Z"), y: 40 },
-			{ x: new Date("2024-06-01T00:00:00Z"), y: 35 },
+			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 5.25 },
+			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 10 },
+			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 25.4 },
+			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 36 },
+			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 40 },
+			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 35 },
 		],
 	},
 ];
