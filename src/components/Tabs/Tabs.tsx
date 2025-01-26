@@ -3,14 +3,14 @@ import { TabsProvider } from "./tabs-context";
 import { Tab } from "./Tab";
 
 interface TabsProps {
-	activeTab: string;
+	active: string;
 	onTabChange: (tabId: string) => void;
 	children: ReactNode;
 }
 
-export function Tabs({ activeTab, onTabChange, children }: TabsProps) {
+export function Tabs({ active, onTabChange, children }: TabsProps) {
 	return (
-		<TabsProvider activeTab={activeTab} onTabChange={onTabChange}>
+		<TabsProvider active={active} onTabChange={onTabChange}>
 			<div className="flex bg-[rgb(247,250,251)]">{children}</div>
 		</TabsProvider>
 	);

@@ -5,7 +5,7 @@
   "arrowParens": "always",
   "parser": "typescript",
   "trailingComma": "all",
-  "endOfLine": "lf",
+  "endOfLine": "crlf",
   "overrides": [
     {
       "files": "*.json",

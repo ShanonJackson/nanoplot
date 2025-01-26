@@ -40,12 +40,11 @@ const MOCK_DATA = [
 		name: "Jasons Progress",
 		stroke: "#11ACAE",
 		data: [
-			{ x: "Demand", y: 70 },
-			{ x: "Travelability", y: 8 },
-			{ x: "Franchisability", y: 300 },
-			{ x: "Momentum", y: 90 },
-			{ x: "Longevity", y: 60 },
-			{ x: "Reach", y: 65 },
+			{ x: "Fighting", y: 70 },
+			{ x: "Farming", y: 8 },
+			{ x: "Supporting", y: 300 },
+			{ x: "Pushing", y: 90 },
+			{ x: "Versatility", y: 60 },
 		],
 	},
 ];

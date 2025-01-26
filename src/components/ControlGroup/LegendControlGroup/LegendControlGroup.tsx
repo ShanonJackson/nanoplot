@@ -22,7 +22,7 @@ export const LegendControlGroup: FC<Props> = ({ state, onChange }) => {
 						description={"Positions legend element as row/column depending on option in correct 'slot'"}
 					/>
 				</Control>
-				<Control name={"alignment"} type={"'center' | 'start' | 'end'"} default={"false"}>
+				<Control name={"alignment"} type={"'center' | 'start' | 'end'"} default={"center"}>
 					<EnumControl
 						value={state.alignment}
 						options={["center", "start", "end"]}

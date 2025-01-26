@@ -9,8 +9,7 @@ interface TabProps {
 }
 
 export function Tab({ value, icon }: TabProps) {
-	const { activeTab, onChange } = useTabsContext();
-	const isActive = activeTab === value;
+	const { active, onChange } = useTabsContext();
 
 	return (
 		<div className="group">
@@ -18,7 +17,7 @@ export function Tab({ value, icon }: TabProps) {
 				onClick={() => onChange(value)}
 				className={
 					"flex items-center justify-center" +
-					cx(`flex p-2 text-slate-400 hover:text-black cursor-pointer`, activeTab === value && "bg-white")
+					cx(`flex p-2 text-slate-400 hover:text-black cursor-pointer`, active === value && "bg-white")
 				}
 			>
 				<div className={"shrink-0 px-2"}>

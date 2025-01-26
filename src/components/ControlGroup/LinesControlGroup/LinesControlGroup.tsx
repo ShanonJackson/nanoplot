@@ -12,23 +12,21 @@ type Props = {
 };
 export const LinesControlGroup: FC<Props> = ({ state, onChange }) => {
 	return (
-		<>
-			<ControlGroup title={"GridLines"}>
-				<Control
-					name={"curve"}
-					type={Object.keys(CurveUtils)
-						.map((c) => `'${c}'`)
-						.join(" | ")}
-					default={"linear"}
-				>
-					<EnumControl
-						options={Object.keys(CurveUtils)}
-						value={state.curve ?? "linear"}
-						description={"Curving function"}
-						onChange={(value) => onChange({ ...state, curve: value })}
-					/>
-				</Control>
-			</ControlGroup>
-		</>
+		<ControlGroup title={"GridLines"}>
+			<Control
+				name={"curve"}
+				type={Object.keys(CurveUtils)
+					.map((c) => `'${c}'`)
+					.join(" | ")}
+				default={"linear"}
+			>
+				<EnumControl
+					options={Object.keys(CurveUtils)}
+					value={state.curve ?? "linear"}
+					description={"Curving function"}
+					onChange={(value) => onChange({ ...state, curve: value })}
+				/>
+			</Control>
+		</ControlGroup>
 	);
 };

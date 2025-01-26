@@ -52,7 +52,6 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph data={MOCK_DATA}>
-					<Legend position={"top"} alignment={"center"} />
 					<Pie {...pie}>{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
 			</GraphPanel>

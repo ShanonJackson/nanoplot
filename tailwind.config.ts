@@ -7,9 +7,7 @@ export default {
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
 	],
-	theme: {
-
-	},
-	plugins: [],
+	theme: {},
+	plugins: [require("@tailwindcss/container-queries")],
 	darkMode: "selector",
 };

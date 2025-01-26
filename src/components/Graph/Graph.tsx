@@ -43,7 +43,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 				}),
 		gap: { top: gap?.top ?? 0, left: gap?.left ?? 0, right: gap?.right ?? 0, bottom: gap?.bottom ?? 0 },
 		attributes: {
-			className: "relative grid h-full w-full isolate",
+			className: "@container/graph relative grid h-full w-full isolate",
 		},
 		domain: {
 			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),

@@ -66,6 +66,7 @@
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
 		"@happy-dom/global-registrator": "^15.11.7",
+		"@tailwindcss/container-queries": "^0.1.1",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.0.1",
@@ -83,7 +84,7 @@
 		"esbuild-sass-plugin": "^3.3.1",
 		"husky": "^9.1.7",
 		"nanoplot": "^0.0.12",
-    "next": "15.0.3",
+		"next": "15.0.3",
 		"postcss": "^8.4.49",
 		"postcss-modules": "^6.0.1",
 		"prettier": "^3.3.3",

@@ -9,3 +9,6 @@ export const PieEmptyExample = () => {
 		</Graph>
 	);
 };
+
+// Code snippet.
+// Data snippet.

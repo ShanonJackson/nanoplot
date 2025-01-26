@@ -48,7 +48,7 @@ export default function Page() {
 				</ControlGroup>
 			</div>
 			<div className={"flex flex-col border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
-				<Tabs activeTab={tab} onTabChange={setTab}>
+				<Tabs active={tab} onTabChange={setTab}>
 					<Tabs.Tab value="chart" icon="chart-icon" />
 					<Tabs.Tab value="code" icon="code-icon" />
 					<Tabs.Tab value="data" icon="data-icon" />
