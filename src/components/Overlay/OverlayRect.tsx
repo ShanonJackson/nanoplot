@@ -1,9 +1,9 @@
 import React from "react";
-import { MathUtils } from "@/utils/MathUtils";
 import { cx } from "@/utils/cx/cx";
 import { GraphUtils } from "../../utils/graph/graph";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { useGraph } from "../../hooks/use-graph/use-graph";
+import { MathUtils } from "../../utils/math/math";
 
 interface OverlayRectProps extends React.HTMLAttributes<HTMLDivElement> {
 	x1: Date | number;
@@ -12,7 +12,7 @@ interface OverlayRectProps extends React.HTMLAttributes<HTMLDivElement> {
 	y2?: number;
 }
 
-export const OverlayRect: React.FC<OverlayRectProps> = ({ x1, y1, x2, y2 = y1, className, ...rest }) => {
+export const OverlayRect: React.FC<OverlayRectProps> = ({ x1, y1, x2, y2 = y1, className, children, ...rest }) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -24,7 +24,6 @@ export const OverlayRect: React.FC<OverlayRectProps> = ({ x1, y1, x2, y2 = y1, c
 	const top = MathUtils.scale(Math.min(yForValue(y1), viewbox.y), viewbox.y, 100);
 	const width = Math.abs(MathUtils.scale(xForValue(x2) - xForValue(x1), viewbox.x, 100));
 	const height = Math.abs(MathUtils.scale(y2, viewbox.y, 100));
-	console.log("left", left, "top", top, "width", width, "height", height, "x2", xForValue(x2));
 
 	return (
 		<div
@@ -37,9 +36,7 @@ export const OverlayRect: React.FC<OverlayRectProps> = ({ x1, y1, x2, y2 = y1, c
 				height: `${height}%`,
 			}}
 		>
-			<div className="transform rotate-180" style={{ writingMode: "vertical-rl" }}>
-				YOUR OCCUPATION
-			</div>
+			{children}
 		</div>
 	);
 };

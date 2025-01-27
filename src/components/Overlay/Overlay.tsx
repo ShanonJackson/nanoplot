@@ -7,7 +7,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & { ref?: Ref<HTMLDivElement>;
 
 export const Overlay = ({ children, tag, ref, ...rest }: Props) => {
 	if (tag === "rect") {
-		return <OverlayRect {...(rest as any)} />;
+		return <OverlayRect {...(rest as any)}>{children}</OverlayRect>;
 	}
 
 	return (

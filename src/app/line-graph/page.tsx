@@ -12,10 +12,7 @@ import { ComponentProps, useState } from "react";
 import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
-import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
-import { Tabs } from "@/components/Tabs/Tabs";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
-import { Overlay, overlay } from "@/components/Overlay/Overlay";
+import { overlay } from "@/components/Overlay/Overlay";
 import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
@@ -37,7 +34,6 @@ export default function Page() {
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
 	const [tab, setTab] = useState("chart");
-	console.log("mark", mark);
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
@@ -58,7 +54,7 @@ export default function Page() {
 					</Control>
 				</ControlGroup>
 				<ControlGroup title={"Mark"}>
-					<Control name={"Mark Title"} type={"ReactNode"}>
+					<Control name={"Mark Content"} type={"ReactNode"}>
 						<HTMLControl html={mark.title?.toString() ?? ""} onChange={(html) => setMark({ ...mark, title: html })} />
 					</Control>
 					<Control name={"Date From"} type={"Date"}>
@@ -88,7 +84,11 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
-					<overlay.rect x1={new Date(mark.x1)} x2={new Date(mark.x2)} y1={2550} y2={mark.y1} />
+					<overlay.rect x1={new Date(mark.x1)} x2={new Date(mark.x2)} y1={2550} y2={mark.y1}>
+						<div className="transform -rotate-180" style={{ writingMode: "vertical-rl" }}>
+							{mark.title}
+						</div>
+					</overlay.rect>
 					<LinesTooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
@@ -108,7 +108,6 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
@@ -137,3 +136,4 @@ const DATA = [
 		],
 	},
 ];
+
