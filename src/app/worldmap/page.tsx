@@ -9,12 +9,22 @@ import { SliderControl } from "@/components/Docs/Control/components/SliderContro
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { NavControls } from "@/components/Controls/NavControls";
+import { usePan } from "@/hooks/use-pan";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
 		translate: { x: 100, y: 0, scale: 0 },
 	});
+
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
+	const pan = usePan({
+		translate: map.translate,
+		setTranslatePartial: (partial: ComponentProps<typeof Worldmap>['translate']) => setMapPartial({ 
+			translate: { x:0, y:0, scale:0, ...map.translate, ...partial }
+		})
+	})
+
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
 			<ControlPanel>
@@ -68,7 +78,16 @@ export default function Page() {
 							}),
 						)}
 						{...map}
-					/>
+						{...pan}
+					>
+						<NavControls
+							translate={map.translate}
+							onChange={(translate: ComponentProps<typeof Worldmap>['translate']) : void => {
+									setMapPartial({translate})
+								}
+							}
+						/>
+					</Worldmap>
 				</Graph>
 			</GraphPanel>
 		</div>
