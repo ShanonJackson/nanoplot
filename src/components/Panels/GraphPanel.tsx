@@ -1,26 +1,29 @@
-import { FC, ReactNode, useState } from "react";
+import { ComponentType, FC, ReactNode, useState } from "react";
 import { Tabs } from "@/components/Tabs/Tabs";
 import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
+import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 
 type Props = {
-	data?: string;
 	code?: string;
+	examples?: Array<{ name: string; code: string; component: ComponentType }>;
 	children: ReactNode;
 };
-export const GraphPanel: FC<Props> = ({ code, data, children }) => {
+export const GraphPanel: FC<Props> = ({ examples = [], code, children }) => {
 	const [tab, setTab] = useState("chart");
+	const [example, setExample] = useState<{ name: string; code: string; component: ComponentType }>();
 	return (
-		<div className={"flex flex-col h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
-			<Tabs active={tab} onTabChange={setTab}>
-				<Tabs.Tab value="chart" icon="chart-icon" />
-				<Tabs.Tab value="code" icon="code-icon" />
-				<Tabs.Tab value="data" icon="data-icon" />
-			</Tabs>
-			<div className={"w-full h-0 flex-1 pt-2"}>
-				{tab === "chart" && <>{children}</>}
-				{tab === "code" && <CodeBlock code={code ?? "<Coming Soon>"} language="typescript" />}
-				{tab === "data" && <CodeBlock code={data ?? ""} language="typescript" />}
+		<>
+			<div className={"flex flex-col h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
+				<Tabs active={tab} onTabChange={setTab}>
+					<Tabs.Tab value="chart" icon="chart-icon" />
+					<Tabs.Tab value="code" icon="code-icon" />
+				</Tabs>
+				<div className={"w-full h-0 flex-1"}>
+					{tab === "chart" && <>{example ? <example.component /> : children}</>}
+					{tab === "code" && <CodeBlock code={example?.code ?? code ?? "<Coming Soon>"} language="typescript" />}
+				</div>
 			</div>
-		</div>
+			<ExamplesPanel examples={examples} onClick={setExample} active={example?.name} />
+		</>
 	);
 };

@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import { isolateInsideOfContainer, scopedPreflightStyles } from "tailwindcss-scoped-preflight";
 
 export default {
 	content: [
@@ -8,6 +8,11 @@ export default {
 		"./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {},
-	plugins: [require("@tailwindcss/container-queries")],
+	plugins: [
+		require("@tailwindcss/container-queries"),
+		scopedPreflightStyles({
+			isolationStrategy: isolateInsideOfContainer(".nanoplot"),
+		}),
+	],
 	darkMode: "selector",
 };

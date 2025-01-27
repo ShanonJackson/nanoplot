@@ -3,7 +3,6 @@ import { Graph } from "@/components/Graph/Graph";
 import { Sunburst } from "@/components/Sunburst/Sunburst";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { Control } from "@/components/Docs/Control/Control";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 import { ComponentProps, useState } from "react";
@@ -30,7 +29,6 @@ export default function Page() {
 					<Sunburst {...sunburst} />
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }

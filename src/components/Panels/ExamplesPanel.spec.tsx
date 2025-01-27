@@ -3,14 +3,10 @@ import { render, screen } from "@testing-library/react";
 import { ExamplesPanel } from "./ExamplesPanel";
 
 describe("Examples Panel", () => {
-	it("Should render children and styling.", () => {
+	it("Should render example with text 'EXAMPLE'", () => {
 		const { container } = render(
-			<ExamplesPanel>
-				<div>Examples Panel Children</div>
-			</ExamplesPanel>,
+			<ExamplesPanel examples={[{ name: "EXAMPLE", code: "", component: () => <div /> }]} onClick={Object} active={undefined} />,
 		);
-
-		expect(container.firstChild).toHaveClass("border-[1px] border-dotted border-black dark:border-white");
-		expect(screen.getByText("Examples Panel Children")).toBeInTheDocument();
+		expect(screen.getByText("EXAMPLE")).toBeInTheDocument();
 	});
 });
