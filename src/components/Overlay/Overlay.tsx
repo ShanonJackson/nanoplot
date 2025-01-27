@@ -1,10 +1,15 @@
 import React, { ReactNode, Ref } from "react";
 import { cx } from "@/utils/cx/cx";
+import { OverlayRect } from "./OverlayRect";
 
 type HTMLElements = keyof React.JSX.IntrinsicElements;
 type Props = React.HTMLAttributes<HTMLDivElement> & { ref?: Ref<HTMLDivElement>; tag: HTMLElements };
 
 export const Overlay = ({ children, tag, ref, ...rest }: Props) => {
+	if (tag === "rect") {
+		return <OverlayRect {...(rest as any)} />;
+	}
+
 	return (
 		<div {...rest} className={cx("[grid-area:graph]", rest.className)} ref={ref}>
 			{children}
@@ -32,3 +37,4 @@ export const overlay = new Proxy<Record<HTMLElements, (props: Omit<Props, "tag">
 		return component;
 	},
 });
+

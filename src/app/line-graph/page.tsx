@@ -15,20 +15,29 @@ import { Graph } from "@/components/Graph/Graph";
 import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
 import { Tabs } from "@/components/Tabs/Tabs";
 import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
-import { overlay } from "@/components/Overlay/Overlay";
+import { Overlay, overlay } from "@/components/Overlay/Overlay";
 import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
+import { OverlayRect } from "../../components/Overlay/OverlayRect";
+import { CalendarControl } from "../../components/Docs/Control/components/CalendarControl/CalendarControl";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
+	const [mark, setMark] = useState<ComponentProps<typeof OverlayRect>>({
+		title: "",
+		x1: new Date("2024-01-01"),
+		x2: new Date("2024-02-01"),
+		y1: 2550,
+	});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
 	const [tab, setTab] = useState("chart");
+	console.log("mark", mark);
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
@@ -48,6 +57,21 @@ export default function Page() {
 						/>
 					</Control>
 				</ControlGroup>
+				<ControlGroup title={"Mark"}>
+					<Control name={"Mark Title"} type={"ReactNode"}>
+						<HTMLControl html={mark.title?.toString() ?? ""} onChange={(html) => setMark({ ...mark, title: html })} />
+					</Control>
+					<Control name={"Date From"} type={"Date"}>
+						<CalendarControl value={mark.x1 as Date} onChange={(html) => setMark({ ...mark, x1: html })} />
+					</Control>
+
+					<Control name={"Date To"} type={"Date"}>
+						<CalendarControl value={mark.x2 as Date} onChange={(html) => setMark({ ...mark, x2: html })} />
+					</Control>
+					<Control name={"Mark Height"} type={"Number"}>
+						<HTMLControl html={mark.y1?.toString()} onChange={(html) => setMark({ ...mark, y1: Number(html) })} />
+					</Control>
+				</ControlGroup>
 			</ControlPanel>
 			<GraphPanel>
 				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
@@ -64,6 +88,7 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
+					<overlay.rect x1={new Date(mark.x1)} x2={new Date(mark.x2)} y1={2550} y2={mark.y1} />
 					<LinesTooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
@@ -112,3 +137,4 @@ const DATA = [
 		],
 	},
 ];
+
