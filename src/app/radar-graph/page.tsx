@@ -14,7 +14,7 @@ export default function Page() {
 	});
 	const setRadarPartial = (partial: Partial<ComponentProps<typeof Radar>>) => setRadar((prev) => ({ ...prev, ...partial }));
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>Radar Graph</h1>
 				<Control name={"loading"} type={"boolean"}>
@@ -30,7 +30,6 @@ export default function Page() {
 					<Radar {...radar} />
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
@@ -40,12 +39,11 @@ const MOCK_DATA = [
 		name: "Jasons Progress",
 		stroke: "#11ACAE",
 		data: [
-			{ x: "Demand", y: 70 },
-			{ x: "Travelability", y: 8 },
-			{ x: "Franchisability", y: 300 },
-			{ x: "Momentum", y: 90 },
-			{ x: "Longevity", y: 60 },
-			{ x: "Reach", y: 65 },
+			{ x: "Fighting", y: 70 },
+			{ x: "Farming", y: 8 },
+			{ x: "Supporting", y: 300 },
+			{ x: "Pushing", y: 90 },
+			{ x: "Versatility", y: 60 },
 		],
 	},
 ];

@@ -3,7 +3,6 @@ import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { Control } from "@/components/Docs/Control/Control";
 import { Legend } from "@/components/Legend/Legend";
 import { EnumControl } from "@/components/Docs/Control/components/EnumControl/EnumControl";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
 
 type Legend = ComponentProps<typeof Legend>;
 
@@ -23,7 +22,7 @@ export const LegendControlGroup: FC<Props> = ({ state, onChange }) => {
 						description={"Positions legend element as row/column depending on option in correct 'slot'"}
 					/>
 				</Control>
-				<Control name={"alignment"} type={"'center' | 'start' | 'end'"} default={"false"}>
+				<Control name={"alignment"} type={"'center' | 'start' | 'end'"} default={"center"}>
 					<EnumControl
 						value={state.alignment}
 						options={["center", "start", "end"]}

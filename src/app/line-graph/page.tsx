@@ -12,8 +12,9 @@ import { ComponentProps, useState } from "react";
 import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
 import { Graph } from "@/components/Graph/Graph";
-import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
-import { Tabs } from "@/components/Tabs/Tabs";
+import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
+import { GraphPanel } from "@/components/Panels/GraphPanel";
+import { ControlPanel } from "@/components/Panels/ControlPanel";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -25,35 +26,11 @@ export default function Page() {
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
 	const [tab, setTab] = useState("chart");
 
-	let graphData = [
-		{
-			name: "Josh - Hours gamed",
-			data: [
-				{ x: 1, y: 20 },
-				{ x: 2, y: 40 },
-				{ x: 3, y: 30 },
-				{ x: 4, y: 50 },
-				{ x: 5, y: 36 },
-				{ x: 6, y: 60 },
-			],
-		},
-		{
-			name: "Sally - Hours gamed",
-			data: [
-				{ x: 1, y: 5.25 },
-				{ x: 2, y: 10 },
-				{ x: 3, y: 25.4 },
-				{ x: 4, y: 36 },
-				{ x: 5, y: 40 },
-				{ x: 6, y: 35 },
-			],
-		},
-	];
-
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
-			<div className={"row-span-2 h-full border-[1px] border-dotted border-white p-4 dark:bg-gray-800"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
+			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
+				<LinesControlGroup state={line} onChange={setLine} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<ControlGroup title={"XAxis"}>
@@ -67,77 +44,66 @@ export default function Page() {
 						/>
 					</Control>
 				</ControlGroup>
-			</div>
-			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
-				<Tabs activeTab={tab} onTabChange={setTab}>
-					<Tabs.Tab value="chart" icon="chart-icon" />
-					<Tabs.Tab value="code" icon="code-icon" />
-					<Tabs.Tab value="data" icon="data-icon" />
-				</Tabs>
-				<div className="h-[450px]">
-					{tab === "chart" && (
-						<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
-							{legend.position === "top" && <Legend {...legend} />}
-							{legend.position === "left" && <Legend {...legend} />}
-							<YAxis
-								{...yaxis}
-								title={
-									yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
-								}
-								description={
-									yaxis.description?.toString() && (
-										<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-									)
-								}
-							/>
-							<GridLines {...gridline} />
-							<Lines loading={true} />
-							<LinesTooltip tooltip={(_, x) => `${x}`} />
-							{legend.position === "right" && <Legend {...legend} />}
-							<XAxis
-								{...xaxis}
-								title={
-									xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
-								}
-								description={
-									yaxis.description?.toString() && (
-										<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-									)
-								}
-							/>
-							{legend.position === "bottom" && <Legend {...legend} />}
-						</Graph>
-					)}
-					{tab === "code" && <CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />}
-					{tab === "data" && <CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />}
-				</div>
-			</div>
-			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
+			</ControlPanel>
+			<GraphPanel>
+				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+					{legend.position === "top" && <Legend {...legend} />}
+					{legend.position === "left" && <Legend {...legend} />}
+					<YAxis
+						{...yaxis}
+						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+							)
+						}
+					/>
+					<GridLines {...gridline} />
+					<Lines {...line} loading />
+					<LinesTooltip tooltip={(_, x) => `${x}`} />
+					{legend.position === "right" && <Legend {...legend} />}
+					<XAxis
+						{...xaxis}
+						ticks={{ jumps: "every 1 months" }}
+						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+							)
+						}
+						display={(x) => {
+							if (typeof x === "number" || typeof x === "string") return null;
+							return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+						}}
+					/>
+					{legend.position === "bottom" && <Legend {...legend} />}
+				</Graph>
+			</GraphPanel>
 		</div>
 	);
 }
 
-const data = [
+const DATA = [
 	{
 		name: "Josh - Hours gamed",
 		data: [
-			{ x: 1, y: 20 },
-			{ x: 2, y: 40 },
-			{ x: 3, y: 30 },
-			{ x: 4, y: 50 },
-			{ x: 5, y: 36 },
-			{ x: 6, y: 60 },
+			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
 		],
 	},
 	{
 		name: "Sally - Hours gamed",
 		data: [
-			{ x: 1, y: 5.25 },
-			{ x: 2, y: 10 },
-			{ x: 3, y: 25.4 },
-			{ x: 4, y: 36 },
-			{ x: 5, y: 40 },
-			{ x: 6, y: 35 },
+			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 5.25 },
+			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 10 },
+			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 25.4 },
+			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 36 },
+			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 40 },
+			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 35 },
 		],
 	},
 ];

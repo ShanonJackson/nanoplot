@@ -4,7 +4,7 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
 import { PathUtils } from "@/utils/path/path";
-import { ScatterSkeleton } from "@/components/Scatter/components/ScatterSkeleton";
+import { ScatterLoading } from "@/components/Scatter/components/ScatterLoading";
 
 type Props = {
 	trendline?: boolean;
@@ -16,7 +16,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 	const context = useGraph();
 	const { x, y } = context.viewbox;
 
-	if (loading) return <ScatterSkeleton className={className} />;
+	if (loading) return <ScatterLoading className={className} />;
 
 	if (!GraphUtils.isXYData(context.data)) return null;
 

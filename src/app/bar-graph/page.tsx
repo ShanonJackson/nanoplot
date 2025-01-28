@@ -3,13 +3,8 @@ import { Graph } from "@/components/Graph/Graph";
 import { ComponentProps, useState } from "react";
 import { XAxis } from "@/components/XAxis/XAxis";
 import { YAxis } from "@/components/YAxis/YAxis";
-import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
-import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { GridLines } from "@/components/GridLines/GridLines";
-import { Control } from "@/components/Docs/Control/Control";
-import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
-import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
@@ -18,19 +13,20 @@ import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { Bars } from "@/components/Bars/Bars";
-import { BarsVerticalLoading } from "@/components/Bars/components/BarsVerticalLoading";
+import { BarsControlGroup } from "@/components/ControlGroup/BarsControlGroup/BarsControlGroup";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
+	const [bars, setBars] = useState<ComponentProps<typeof Bars>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Bars</h1>
+				<BarsControlGroup state={bars} onChange={setBars} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
@@ -50,7 +46,7 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars  />
+					<Bars {...bars} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
@@ -64,7 +60,6 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-			<ExamplesPanel>EXAMPLES</ExamplesPanel>
 		</div>
 	);
 }
