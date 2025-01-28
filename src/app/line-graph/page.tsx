@@ -70,63 +70,47 @@ export default function Page() {
 			</div>
 			<div className={"border-[1px] h-full border-dotted border-white overflow-hidden resize"}>
 				<Tabs activeTab={tab} onTabChange={setTab}>
-						<Tabs.Tab
-							value="chart"
-							icon="chart-icon"
-						/>
-						<Tabs.Tab
-							value="code"
-							icon="code-icon"
-						/>
-						<Tabs.Tab
-							value="data"
-							icon="data-icon"
-						/>
+					<Tabs.Tab value="chart" icon="chart-icon" />
+					<Tabs.Tab value="code" icon="code-icon" />
+					<Tabs.Tab value="data" icon="data-icon" />
 				</Tabs>
 				<div className="h-[450px]">
-						{tab === "chart" &&
-							<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
-								{legend.position === "top" && <Legend {...legend} />}
-								{legend.position === "left" && <Legend {...legend} />}
-								<YAxis
-									{...yaxis}
-									title={
-										yaxis.title?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
-										)
-									}
-									description={
-										yaxis.description?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-										)
-									}
-								/>
-								<GridLines {...gridline} />
-								<Lines />
-								<LinesTooltip tooltip={(_, x) => `${x}`} />
-								{legend.position === "right" && <Legend {...legend} />}
-								<XAxis
-									{...xaxis}
-									title={
-										xaxis.title?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
-										)
-									}
-									description={
-										yaxis.description?.toString() && (
-											<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-										)
-									}
-								/>
-								{legend.position === "bottom" && <Legend {...legend} />}
-							</Graph>}
-						{tab === "code" &&
-							<CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />
-						}
-						{tab === "data" &&
-							<CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />
-						}
-					</div>
+					{tab === "chart" && (
+						<Graph data={graphData} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+							{legend.position === "top" && <Legend {...legend} />}
+							{legend.position === "left" && <Legend {...legend} />}
+							<YAxis
+								{...yaxis}
+								title={
+									yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />
+								}
+								description={
+									yaxis.description?.toString() && (
+										<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+									)
+								}
+							/>
+							<GridLines {...gridline} />
+							<Lines loading={true} />
+							<LinesTooltip tooltip={(_, x) => `${x}`} />
+							{legend.position === "right" && <Legend {...legend} />}
+							<XAxis
+								{...xaxis}
+								title={
+									xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />
+								}
+								description={
+									yaxis.description?.toString() && (
+										<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
+									)
+								}
+							/>
+							{legend.position === "bottom" && <Legend {...legend} />}
+						</Graph>
+					)}
+					{tab === "code" && <CodeBlock code="Code Tab: Enter relevant code here" language="javascript" />}
+					{tab === "data" && <CodeBlock code={JSON.stringify(graphData, null, 2)} language="javascript" />}
+				</div>
 			</div>
 			<div className={"border-[1px] border-dotted border-white"}>EXAMPLES</div>
 		</div>

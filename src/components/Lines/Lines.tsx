@@ -8,9 +8,10 @@ import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
+	loading?: boolean;
 }
 
-export const Lines = ({ className, children }: Props) => {
+export const Lines = ({ className, children, loading }: Props) => {
 	const {
 		interactions: { pinned, hovered },
 		data,
@@ -32,6 +33,17 @@ export const Lines = ({ className, children }: Props) => {
 			})),
 		};
 	});
+
+	// kate loading state
+	if (loading) {
+		//return <div className={"[grid-area:graph]"}>loading</div>;
+		return (
+			<svg height={"100%"} width={"100%"} className={"[grid-area:graph] stroke-gray-600"}>
+				<path d="M10 380 L150 300 L220 330 L350 200 L450 160" strokeWidth="5" fill="none" />
+			</svg>
+		);
+	}
+
 	return (
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
