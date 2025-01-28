@@ -38,10 +38,21 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 
 	// kate loading state
 	if (loading) {
-		//return <div className={"[grid-area:graph]"}>loading</div>;
 		return (
-			<svg height={"100%"} width={"100%"} className={"[grid-area:graph] stroke-gray-600"}>
-				<path d="M10 380 L150 300 L220 330 L350 200 L450 160" strokeWidth="5" fill="none" />
+			<svg
+				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
+				height={"100%"}
+				width={"100%"}
+				preserveAspectRatio={"none"}
+				className={"[grid-area:graph] stroke-gray-600"}
+			>
+				<path
+					d="M 150 2850 L 650 1650 L 1050 2250 L 1650 850 L 2150 1550 L 2850 150"
+					strokeWidth={5}
+					strokeLinecap={"round"}
+					fill="none"
+					vectorEffect={"non-scaling-stroke"}
+				/>
 			</svg>
 		);
 	}
