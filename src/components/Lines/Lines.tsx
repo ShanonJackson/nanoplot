@@ -47,7 +47,7 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 				className={"[grid-area:graph] stroke-gray-600"}
 			>
 				<path
-					d="M 150 2850 L 650 1650 L 1050 2250 L 1650 850 L 2150 1550 L 2850 150"
+					d={`M ${viewbox.x * 0.05} ${viewbox.y * 0.95} L ${viewbox.x * 0.2167} ${viewbox.y * 0.55} L ${viewbox.x * 0.35} ${viewbox.y * 0.75} L ${viewbox.x * 0.55} ${viewbox.y * 0.2833} L ${viewbox.x * 0.7167} ${viewbox.y * 0.5167} L ${viewbox.x * 0.95} ${viewbox.y * 0.05}`}
 					strokeWidth={5}
 					strokeLinecap={"round"}
 					fill="none"
