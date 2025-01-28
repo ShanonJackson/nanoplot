@@ -37,7 +37,7 @@ export default function Page() {
 					/>
 				</Control>
 			</ControlPanel>
-			<GraphPanel code={""} data={""}>
+			<GraphPanel>
 				<Graph
 					data={MOCK_DATA.map(({ market, average_demand_multiplier }) => {
 						return {

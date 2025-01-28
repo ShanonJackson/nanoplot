@@ -33,7 +33,14 @@ export default function Page() {
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel>
-				<Graph data={MOCK_DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+				<Graph
+					data={MOCK_DATA.map(({ group, ...d }) => {
+						return {
+							...d,
+						};
+					})}
+					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
+				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
@@ -68,6 +75,7 @@ const MOCK_DATA = [
 	{
 		name: "Sally hours gamed",
 		group: "gamers",
+		stroke: "linear-gradient(to top, #16a085, #1abc9c, #3498db)",
 		data: [
 			{ x: "Jan", y: 10 },
 			{ x: "Feb", y: 20 },
@@ -75,90 +83,6 @@ const MOCK_DATA = [
 			{ x: "Apr", y: 24 },
 			{ x: "May", y: 31 },
 			{ x: "Jun", y: 43 },
-		],
-	},
-	{
-		name: "Joe hours gamed",
-		group: "gamers",
-		data: [
-			{ x: "Jan", y: 50 },
-			{ x: "Feb", y: 50 },
-			{ x: "Mar", y: 33 },
-			{ x: "Apr", y: 24 },
-			{ x: "May", y: 21 },
-			{ x: "Jun", y: 33 },
-		],
-	},
-	{
-		name: "Sally hours gamed",
-		group: "viewers",
-		data: [
-			{ x: "Jan", y: 40 },
-			{ x: "Feb", y: 21 },
-			{ x: "Mar", y: 43 },
-			{ x: "Apr", y: 54 },
-			{ x: "May", y: 51 },
-			{ x: "Jun", y: 23 },
-		],
-	},
-	{
-		name: "Joe hours gamed",
-		group: "viewers",
-		data: [
-			{ x: "Jan", y: 30 },
-			{ x: "Feb", y: 31 },
-			{ x: "Mar", y: 53 },
-			{ x: "Apr", y: 92 },
-			{ x: "May", y: 41 },
-			{ x: "Jun", y: 13 },
-		],
-	},
-	{
-		name: "Sally hours gamed",
-		group: "followers",
-		data: [
-			{ x: "Jan", y: 30 },
-			{ x: "Feb", y: 41 },
-			{ x: "Mar", y: 33 },
-			{ x: "Apr", y: 54 },
-			{ x: "May", y: 21 },
-			{ x: "Jun", y: 13 },
-		],
-	},
-	{
-		name: "Joe hours gamed",
-		group: "followers",
-		data: [
-			{ x: "Jan", y: 10 },
-			{ x: "Feb", y: 21 },
-			{ x: "Mar", y: 13 },
-			{ x: "Apr", y: 22 },
-			{ x: "May", y: 11 },
-			{ x: "Jun", y: 13 },
-		],
-	},
-	{
-		name: "Joe hours gamed",
-		group: "gamers",
-		data: [
-			{ x: "Jan", y: 10 },
-			{ x: "Feb", y: 21 },
-			{ x: "Mar", y: 13 },
-			{ x: "Apr", y: 22 },
-			{ x: "May", y: 11 },
-			{ x: "Jun", y: 13 },
-		],
-	},
-	{
-		name: "Joe hours gamed",
-		group: "visitors",
-		data: [
-			{ x: "Jan", y: 10 },
-			{ x: "Feb", y: 21 },
-			{ x: "Mar", y: 13 },
-			{ x: "Apr", y: 22 },
-			{ x: "May", y: 11 },
-			{ x: "Jun", y: 13 },
 		],
 	},
 ];

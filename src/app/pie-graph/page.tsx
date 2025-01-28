@@ -6,6 +6,7 @@ import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { PieEmptyExample, PieEmptyExampleCode } from "@/app/pie-graph/examples/PieEmptyExample";
 import { Graph } from "@/components/Graph/Graph";
 import { PieControlGroup, PieControls } from "@/components/ControlGroup/PieControlGroup/PieControlGroup";
+import { PieCollisionExample, PieCollisionExampleCode } from "@/app/pie-graph/examples/PieCollisionExample";
 
 export default function Page() {
 	const [pie, setPie] = useState<PieControls>({
@@ -22,7 +23,10 @@ export default function Page() {
 				<PieControlGroup state={pie} onChange={setPie} />
 			</ControlPanel>
 			<GraphPanel
-				examples={[{ name: "Pie Empty", code: PieEmptyExampleCode, component: PieEmptyExample }]}
+				examples={[
+					{ name: "Pie Empty", code: PieEmptyExampleCode, component: PieEmptyExample },
+					{ name: "Pie Collision", code: PieCollisionExampleCode, component: PieCollisionExample },
+				]}
 				code={`
 const data = ${JSON.stringify(MOCK_DATA, null, 4)};
 <Graph data={data}>

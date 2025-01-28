@@ -60,7 +60,7 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
-					<LinesTooltip tooltip={(_, x) => `${x}`} />
+					<Lines.Tooltip />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
