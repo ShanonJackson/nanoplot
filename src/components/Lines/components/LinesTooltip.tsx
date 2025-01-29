@@ -10,7 +10,10 @@ import { overlay } from "@/components/Overlay/Overlay";
 import { useMouseCoordinates } from "@/hooks/use-mouse-coordinates";
 
 type Props = {
-	tooltip: (points: Array<XYDataset>, x: number | Date) => React.ReactNode;
+	tooltip?: (
+		points: Array<Omit<XYDataset[number], "data"> & { data: XYDataset[number]["data"][number] }>,
+		x: number | string | Date,
+	) => React.ReactNode;
 	joints?: boolean;
 };
 
@@ -128,28 +131,37 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 			</svg>
 			{points && closest !== undefined && mouse && (
 				<overlay.div ref={setTooltipRef} className={"absolute"} style={{ left, top }}>
-					<div
-						className={
-							"text-[14px] leading-[14px] rounded border bg-opacity-60 shadow-md backdrop-blur-sm w-[250px] pb-1.5 border-gray-200 dark-border-[#454545]"
-						}
-					>
-						<div className="font-medium bg-gradient-to-b from-transparent to-[#CFCFCF] dark:to-[#3C3C3C] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
-							{closest.toString()}
-						</div>
-						<div className={"px-2.5"}>
-							{points.map(({ name, data: { y }, stroke }, i) => {
-								return (
-									<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
-										<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] rounded-full mr-1" />
-										<div className="flex-1 text-[0.875rem] leading-[16px] whitespace-nowrap overflow-hidden overflow-ellipsis mr-1">
-											{name}
+					{tooltip ? (
+						tooltip(points, closest)
+					) : (
+						<div
+							className={
+								"text-[14px] leading-[14px] rounded border bg-opacity-60 shadow-md backdrop-blur-sm w-[250px] pb-1.5 border-gray-200 dark-border-[#454545]"
+							}
+						>
+							<div className="font-medium bg-gradient-to-b from-transparent to-[#CFCFCF] dark:to-[#3C3C3C] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
+								{(() => {
+									if (closest instanceof Date) {
+										return `${closest.getFullYear()}-${closest.getMonth() + 1}-${closest.getDate()}`;
+									}
+									return closest.toString();
+								})()}
+							</div>
+							<div className={"px-2.5"}>
+								{points.map(({ name, data: { y }, stroke }, i) => {
+									return (
+										<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
+											<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] rounded-full mr-1" />
+											<div className="flex-1 text-[0.875rem] leading-[16px] whitespace-nowrap overflow-hidden overflow-ellipsis mr-1">
+												{name}
+											</div>
+											<div className={"font-bold"}>{+(Math.round(+(y.toString() + "e+2")) + "e-2")}</div>
 										</div>
-										<div className={"font-bold"}>{+(Math.round(+(y.toString() + "e+2")) + "e-2")}</div>
-									</div>
-								);
-							})}
+									);
+								})}
+							</div>
 						</div>
-					</div>
+					)}
 				</overlay.div>
 			)}
 		</>
