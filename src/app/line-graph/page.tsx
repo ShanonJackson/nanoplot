@@ -59,7 +59,7 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Lines {...line} loading />
+					<Lines {...line} />
 					<LinesTooltip tooltip={(_, x) => `${x}`} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis

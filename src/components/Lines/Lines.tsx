@@ -5,6 +5,7 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
+import { LinesLoading } from "@/components/Lines/components/LinesLoading";
 import { CurveUtils } from "@/utils/path/curve";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
@@ -36,25 +37,8 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		};
 	});
 
-	// kate loading state
 	if (loading) {
-		return (
-			<svg
-				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-				height={"100%"}
-				width={"100%"}
-				preserveAspectRatio={"none"}
-				className={"[grid-area:graph] stroke-gray-600"}
-			>
-				<path
-					d={`M ${viewbox.x * 0.05} ${viewbox.y * 0.95} L ${viewbox.x * 0.2167} ${viewbox.y * 0.55} L ${viewbox.x * 0.35} ${viewbox.y * 0.75} L ${viewbox.x * 0.55} ${viewbox.y * 0.2833} L ${viewbox.x * 0.7167} ${viewbox.y * 0.5167} L ${viewbox.x * 0.95} ${viewbox.y * 0.05}`}
-					strokeWidth={5}
-					strokeLinecap={"round"}
-					fill="none"
-					vectorEffect={"non-scaling-stroke"}
-				/>
-			</svg>
-		);
+		return <LinesLoading />;
 	}
 
 	return (
