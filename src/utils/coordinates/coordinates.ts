@@ -42,7 +42,7 @@ export const CoordinatesUtils = {
 
 		if (max === min) return () => domain.y[0]?.coordinate ?? viewbox.y;
 
-		return (value: number | string) => {
+		return (value: number | string | Date) => {
 			if (+value > max) return 0;
 			if (+value < min) return viewbox.y;
 			/* if value is a string, it's a categorical axis, in this case values can't be between ticks */
@@ -54,7 +54,7 @@ export const CoordinatesUtils = {
 					if (!next) return coord;
 					const { coordinate: nextCoordinate, tick: nextTick } = next;
 					if (MathUtils.isBetween(+value, +tick, +nextTick)) {
-						return MathUtils.scale(value, [+tick, +nextTick], [coordinate, nextCoordinate]);
+						return MathUtils.scale(+value, [+tick, +nextTick], [coordinate, nextCoordinate]);
 					}
 					return coord;
 				}, undefined) ?? viewbox.y
