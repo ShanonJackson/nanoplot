@@ -1,5 +1,5 @@
-import { Pie } from "nanoplot/pie";
-import { Graph } from "nanoplot/graph";
+import { Pie } from "nanoplot/Pie";
+import { Graph } from "nanoplot/Graph";
 import "nanoplot/styles.css";
 
 export const PieEmptyExample = () => {
@@ -11,8 +11,8 @@ export const PieEmptyExample = () => {
 };
 
 export const PieEmptyExampleCode = `
-import { Pie } from "nanoplot/pie";
-import { Graph } from "nanoplot/graph";
+import { Pie } from "nanoplot/Pie";
+import { Graph } from "nanoplot/Graph";
 import "nanoplot/styles.css";
 
 export const PieEmptyExample = () => {

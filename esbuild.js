@@ -67,15 +67,11 @@ const fs = require("fs");
 
 // rename ./dist/library-global.css to ./dist/index.css
 fs.renameSync("./dist/library-global.css", "./dist/index.css");
-
-// move every d.ts file in ./dist/components/<component-name/<component-name>.d.ts to ./dist/<component-name>/<component-name>.d.ts
-const components = fs.readdirSync("./dist/components");
-components.forEach((component) => {
-	if (!componentExports.join("|").includes(component)) return;
-	fs.renameSync(`./dist/components/${component}/${component}.d.ts`, `./dist/${component}/${component}.d.ts`);
-	fs.rmdirSync(`./dist/components/${component}`, { recursive: true });
-});
-
-// merge contents of ./dist/Worldmap/Worldmap.css and ./dist/index.css into ./dist/index.css
 fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Worldmap/Worldmap.css", "utf-8"));
 fs.unlinkSync("./dist/Worldmap/Worldmap.css");
+
+// delete everything in ./dist except index.css
+const index = fs.readFileSync("./dist/index.css", "utf-8");
+fs.rmdirSync("./dist", { recursive: true });
+fs.mkdirSync("./dist");
+fs.writeFileSync("./dist/index.css", index);

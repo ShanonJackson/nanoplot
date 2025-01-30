@@ -9,7 +9,7 @@ const fn = jest.fn();
 
 describe("EnumControl", () => {
 	beforeEach(() => {
-		render(<EnumControl description={legendDiscription} options={options} onChange={fn} />);
+		render(<EnumControl description={legendDiscription} options={options} value={"top"} onChange={fn} />);
 	});
 	it("Should render discription.", () => {
 		expect(screen.getByText("legendDiscription")).toBeInTheDocument();
