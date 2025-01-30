@@ -1,11 +1,7 @@
 "use client";
 import { Lines } from "@/components/Lines/Lines";
 import { Legend } from "@/components/Legend/Legend";
-import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
 import { GridLines } from "@/components/GridLines/GridLines";
-import { Control } from "@/components/Docs/Control/Control";
-import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
-import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
 import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { ComponentProps, useState } from "react";
@@ -17,9 +13,7 @@ import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/L
 import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { OverlayRect } from "../../components/Overlay/OverlayRect";
-import { CalendarControl } from "../../components/Docs/Control/components/CalendarControl/CalendarControl";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
-import { LineTimeslotExample } from "@/app/line-graph/components/LineTimeslotExample";
 import { LinesTimeslotExample, LinesTimeslotExampleCode } from "@/app/line-graph/components/LinesTimeslotExample";
 
 export default function Page() {
@@ -60,17 +54,6 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
-					<overlay.rect
-						x1={new Date(2024, 3, 1, 0, 0, 0, 0)}
-						x2={new Date(2024, 4, 1, 0, 0, 0, 0)}
-						y1={50}
-						y2={0}
-						className={"bg-green-400/70 text-black text-xs py-4"}
-					>
-						<div className="transform -rotate-180 text-white text-xs py-4" style={{ writingMode: "vertical-rl" }}>
-							TRAFFIC BLOCKED
-						</div>
-					</overlay.rect>
 					<Lines.Tooltip />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
