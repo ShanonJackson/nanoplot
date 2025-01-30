@@ -18,6 +18,9 @@ import { GraphPanel } from "@/components/Panels/GraphPanel";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { OverlayRect } from "../../components/Overlay/OverlayRect";
 import { CalendarControl } from "../../components/Docs/Control/components/CalendarControl/CalendarControl";
+import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { LineTimeslotExample } from "@/app/line-graph/components/LineTimeslotExample";
+import { LinesTimeslotExample, LinesTimeslotExampleCode } from "@/app/line-graph/components/LinesTimeslotExample";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -31,9 +34,7 @@ export default function Page() {
 		y1: 2550,
 	});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
-
 	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
-	const [tab, setTab] = useState("chart");
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
@@ -42,34 +43,9 @@ export default function Page() {
 				<LinesControlGroup state={line} onChange={setLine} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<ControlGroup title={"XAxis"}>
-					<Control name={"title"} type={"ReactNode"}>
-						<HTMLControl html={xaxis.title?.toString() ?? ""} onChange={(html) => setXAxisPartial({ title: html })} />
-					</Control>
-					<Control name={"description"} type={"ReactNode"}>
-						<HTMLControl
-							html={xaxis.description?.toString() ?? ""}
-							onChange={(html) => setXAxisPartial({ description: html })}
-						/>
-					</Control>
-				</ControlGroup>
-				<ControlGroup title={"Mark"}>
-					<Control name={"Mark Content"} type={"ReactNode"}>
-						<HTMLControl html={mark.title?.toString() ?? ""} onChange={(html) => setMark({ ...mark, title: html })} />
-					</Control>
-					<Control name={"Date From"} type={"Date"}>
-						<CalendarControl value={mark.x1 as Date} onChange={(html) => setMark({ ...mark, x1: html })} />
-					</Control>
-
-					<Control name={"Date To"} type={"Date"}>
-						<CalendarControl value={mark.x2 as Date} onChange={(html) => setMark({ ...mark, x2: html })} />
-					</Control>
-					<Control name={"Mark Height"} type={"Number"}>
-						<HTMLControl html={mark.y1?.toString()} onChange={(html) => setMark({ ...mark, y1: Number(html) })} />
-					</Control>
-				</ControlGroup>
+				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 			</ControlPanel>
-			<GraphPanel>
+			<GraphPanel examples={[{ name: "Lines timeslot", code: LinesTimeslotExampleCode, component: LinesTimeslotExample }]}>
 				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
@@ -84,19 +60,25 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
-					<overlay.rect x1={new Date(mark.x1)} x2={new Date(mark.x2)} y1={2550} y2={mark.y1}>
-						<div className="transform -rotate-180" style={{ writingMode: "vertical-rl" }}>
-							{mark.title}
+					<overlay.rect
+						x1={new Date(2024, 3, 1, 0, 0, 0, 0)}
+						x2={new Date(2024, 4, 1, 0, 0, 0, 0)}
+						y1={50}
+						y2={0}
+						className={"bg-green-400/70 text-black text-xs py-4"}
+					>
+						<div className="transform -rotate-180 text-white text-xs py-4" style={{ writingMode: "vertical-rl" }}>
+							TRAFFIC BLOCKED
 						</div>
 					</overlay.rect>
-					<LinesTooltip tooltip={(_, x) => `${x}`} />
+					<Lines.Tooltip />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
 						ticks={{ jumps: "every 1 months" }}
 						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
 						description={
-							yaxis.description?.toString() && (
+							xaxis.description?.toString() && (
 								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
 							)
 						}
@@ -136,4 +118,3 @@ const DATA = [
 		],
 	},
 ];
-

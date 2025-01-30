@@ -5,14 +5,16 @@ import { GraphUtils } from "@/utils/graph/graph";
 import { ColorUtils } from "@/utils/color/color";
 import { cx } from "@/utils/cx/cx";
 import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
+import { LinesLoading } from "@/components/Lines/components/LinesLoading";
 import { CurveUtils } from "@/utils/path/curve";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
 	curve?: keyof typeof CurveUtils;
+	loading?: boolean;
 }
 
-export const Lines = ({ className, curve = "linear", children }: Props) => {
+export const Lines = ({ className, curve = "linear", children, loading }: Props) => {
 	const {
 		interactions: { pinned, hovered },
 		data,
@@ -34,6 +36,10 @@ export const Lines = ({ className, curve = "linear", children }: Props) => {
 			})),
 		};
 	});
+
+	if (loading) {
+		return <LinesLoading />;
+	}
 
 	return (
 		<svg

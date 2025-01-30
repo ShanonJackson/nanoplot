@@ -18,7 +18,6 @@ type Props = {
 	children?: ReactNode;
 };
 
-const PADDING_PERCENT = 0.8;
 export const Pie = ({ donut, labels = true, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
@@ -41,6 +40,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 	}
 
 	const paths = data
+		.toSorted((a, b) => Number(b.value) - Number(a.value))
 		.map((segment, i, segments) => ({
 			...segment,
 			id: segment.name ?? segment.name,
@@ -49,7 +49,6 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 			fill:
 				typeof segment.fill === "string" ? segment.fill : ColorUtils.colorFor(i, segments.length) /* boolean fill not supported */,
 		}))
-		.sort((a, b) => b.value - a.value)
 		.map((segment, i, segments) => {
 			return {
 				...segment,
@@ -67,7 +66,6 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 				PIE_RADIUS,
 				segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 			);
-
 			const collisionPosition = dataset
 				.slice(0, i + 1)
 				.map((segment) => {
@@ -83,18 +81,14 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 				})
 				.filter((segment, i, segments) => {
 					if (!segments[i - 1]) return false;
-					const COLLISION_THRESHOLD = 0.15; /* 10% */
 					const { y, x } = segment.position;
 					const { y: nextY, x: nextX } = segments[i - 1].position;
-					return (
-						MathUtils.isBetween(nextY * (1 - COLLISION_THRESHOLD), nextY * (1 + COLLISION_THRESHOLD), y) &&
-						MathUtils.isBetween(nextX * 0.7, nextX * 1.3, x)
-					);
+					// collision threshold roughly 15%;
+					return MathUtils.isBetween(y, nextY * 0.85, nextY * 1.15) && MathUtils.isBetween(x, nextX * 0.7, nextX * 1.3);
 				})
 				.map((segment) => segment.name)
 				.findIndex((str) => segment.name === str);
-
-			const isCollisionFlipped = collisionPosition > 4;
+			const isCollisionFlipped = collisionPosition > 2;
 			const endLabelLine = PathUtils.polarToCartesian(
 				CX,
 				CX,
@@ -106,12 +100,12 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 			const label = labels && (
 				<>
 					<path
-						className={`stroke-2 fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
+						className={`stroke-[5] fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
 						key={segment.name}
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
 						}`}
-						stroke={segment.stroke}
+						stroke={segment.fill}
 					/>
 					<g
 						className={cx(

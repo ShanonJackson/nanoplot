@@ -5,7 +5,8 @@
     "outDir": "./dist/",
     "allowJs": false,
     "noEmit": false,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
+    "moduleResolution": "bundler",
     "declaration": true
   },
   "include": [

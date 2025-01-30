@@ -1,67 +1,82 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.13",
+	"version": "0.0.20",
 	"private": false,
 	"exports": {
 		"./styles.css": "./dist/index.css",
-		"./sunburst": {
-			"import": "./dist/Sunburst/Sunburst.js",
-			"types": "./dist/Sunburst/Sunburst.d.ts"
+		"./Sunburst": {
+			"import": "./dist/src/components/Sunburst/Sunburst.jsx",
+			"types": "./dist/src/components/Sunburst/Sunburst.d.ts"
 		},
-		"./bars": {
-			"import": "./dist/Bars/Bars.js",
-			"types": "./dist/Bars/Bars.d.ts"
+		"./Bars": {
+			"import": "./dist/src/components/Bars/Bars.jsx",
+			"types": "./dist/src/components/Bars/Bars.d.ts"
 		},
-		"./lines": {
-			"import": "./dist/Lines/Lines.js",
-			"types": "./dist/Lines/Lines.d.ts"
+		"./Lines": {
+			"import": "./dist/src/components/Lines/Lines.jsx",
+			"types": "./dist/src/components/Lines/Lines.d.ts"
 		},
-		"./pie": {
-			"import": "./dist/Pie/Pie.js",
-			"types": "./dist/Pie/Pie.d.ts"
+		"./Pie": {
+			"import": "./dist/src/components/Pie/Pie.jsx",
+			"types": "./dist/src/components/Pie/Pie.d.ts"
 		},
-		"./scatter": {
-			"import": "./dist/Scatter/Scatter.js",
-			"types": "./dist/Scatter/Scatter.d.ts"
+		"./Scatter": {
+			"import": "./dist/src/components/Scatter/Scatter.jsx",
+			"types": "./dist/src/components/Scatter/Scatter.d.ts"
 		},
-		"./worldmap": {
-			"import": "./dist/Worldmap/Worldmap.js",
-			"types": "./dist/Worldmap/Worldmap.d.ts"
+		"./Worldmap": {
+			"import": "./dist/src/components/Worldmap/Worldmap.jsx",
+			"types": "./dist/src/components/Worldmap/Worldmap.d.ts"
 		},
-		"./xaxis": {
-			"import": "./dist/XAxis/XAxis.js",
-			"types": "./dist/XAxis/XAxis.d.ts"
+		"./XAxis": {
+			"import": "./dist/src/components/XAxis/XAxis.jsx",
+			"types": "./dist/src/components/XAxis/XAxis.d.ts"
 		},
-		"./yaxis": {
-			"import": "./dist/YAxis/YAxis.js",
-			"types": "./dist/YAxis/YAxis.d.ts"
+		"./YAxis": {
+			"import": "./dist/src/components/YAxis/YAxis.jsx",
+			"types": "./dist/src/components/YAxis/YAxis.d.ts"
 		},
-		"./grid-lines": {
-			"import": "./dist/GridLines/GridLines.js",
-			"types": "./dist/GridLines/GridLines.d.ts"
+		"./GridLines": {
+			"import": "./dist/src/components/GridLines/GridLines.jsx",
+			"types": "./dist/src/components/GridLines/GridLines.d.ts"
 		},
-		"./radar": {
-			"import": "./dist/Radar/Radar.js",
-			"types": "./dist/Radar/Radar.d.ts"
+		"./Radar": {
+			"import": "./dist/src/components/Radar/Radar.jsx",
+			"types": "./dist/src/components/Radar/Radar.d.ts"
 		},
-		"./legend": {
-			"import": "./dist/Legend/Legend.js",
-			"types": "./dist/Legend/Legend.d.ts"
+		"./Legend": {
+			"import": "./dist/src/components/Legend/Legend.jsx",
+			"types": "./dist/src/components/Legend/Legend.d.ts"
 		},
-		"./graph": {
-			"import": "./dist/Graph/Graph.js",
-			"types": "./dist/Graph/Graph.d.ts"
+		"./Graph": {
+			"import": "./dist/src/components/Graph/Graph.jsx",
+			"types": "./dist/src/components/Graph/Graph.d.ts"
+		},
+		"./Overlay": {
+			"import": "./dist/src/components/Overlay/Overlay.jsx",
+			"types": "./dist/src/components/Overlay/Overlay.d.ts"
+		},
+		"./colors": {
+			"import": "./dist/src/utils/color/color.js",
+			"types": "./dist/src/utils/color/color.d.ts"
+		},
+		"./coordinates": {
+			"import": "./dist/src/utils/coordinates/coordinates.js",
+			"types": "./dist/src/utils/coordinates/coordinates.d.ts"
+		},
+		"./use-graph": {
+			"import": "./dist/src/hooks/use-graph/use-graph.jsx",
+			"types": "./dist/src/hooks/use-graph/use-graph.d.ts"
 		}
 	},
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"build:library": "tsc --p ./tsconfig.typings.json && bun run esbuild.js",
+		"build:library": "bun run esbuild.js && tsc --p ./tsconfig.typings.json && bun run ./scripts/post-build.js",
 		"start": "next start",
 		"test": "bun test --watch",
 		"test:ci": "bun test --ci",
-		"cypress": "cypress open",
-		"prepare": "husky install"
+		"cypress": "cypress open"
 	},
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
@@ -83,7 +98,7 @@
 		"esbuild-plugin-sass": "^1.0.1",
 		"esbuild-sass-plugin": "^3.3.1",
 		"husky": "^9.1.7",
-		"nanoplot": "0.0.13",
+		"nanoplot": "0.0.19",
 		"next": "15.0.3",
 		"postcss": "^8.4.49",
 		"postcss-modules": "^6.0.1",
