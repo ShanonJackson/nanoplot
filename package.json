@@ -60,8 +60,7 @@
 		"start": "next start",
 		"test": "bun test --watch",
 		"test:ci": "bun test --ci",
-		"cypress": "cypress open",
-		"prepare": "husky install"
+		"cypress": "cypress open"
 	},
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
