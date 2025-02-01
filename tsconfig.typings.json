@@ -5,6 +5,7 @@
     "outDir": "./dist/",
     "allowJs": false,
     "noEmit": false,
+    "jsx": "react-jsx",
     "emitDeclarationOnly": false,
     "moduleResolution": "bundler",
     "declaration": true

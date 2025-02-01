@@ -122,14 +122,14 @@ export const VerticalBars = ({ children, size = 45, radius = 0, glow, className,
 						<div className={"h-full w-full relative"}>
 							<span
 								className={cx(
-									"invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 @[height:20px]:!visible",
-									breakpoint === 2 && "@[width:2ch&height:1.25em]:!visible",
-									breakpoint === 4 && "@[width:4ch&height:1.25em]:!visible",
-									breakpoint === 6 && "@[width:6ch&height:1.25em]:!visible",
-									breakpoint === 8 && "@[width:8ch&height:1.25em]:!visible",
-									breakpoint === 10 && "@[width:10ch&height:1.25em]:!visible",
-									breakpoint === 15 && "@[width:15ch&height:1.25em]:!visible",
-									breakpoint === 20 && "@[width:20ch&height:1.25em]:!visible",
+									"invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+									breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
+									breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
+									breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
+									breakpoint === 8 && "@[width:8ch|height:1.25em]:!visible",
+									breakpoint === 10 && "@[width:10ch|height:1.25em]:!visible",
+									breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
+									breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
 								)}
 							>
 								{bar.data.y}

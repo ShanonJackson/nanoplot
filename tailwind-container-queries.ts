@@ -33,19 +33,20 @@ export default plugin(
 			"@",
 			(value = "", { modifier }) => {
 				const [width, height] = (() => {
-					return value.replace("width:", "").replace("height:", "").split("&");
+					if (!value.includes("width:") && value.includes("height")) return [null, value.replace("height:", "")];
+					return value.replace("width:", "").replace("height:", "").split("|");
 				})();
 				const isHeight = value.includes("height");
 				const isWidth = value.includes("width");
-				let parsed = parseValue(width);
+				let pwidth = width ? parseValue(width) : null;
+				let pheight = height ? parseValue(height) : null;
 				const selector = (() => {
 					if (!isHeight && !isWidth) return `(min-width: ${width})`;
-					if (isHeight && isWidth) return `(min-width: ${width}) and (min-height: ${height})`;
-					if (isHeight) return `(min-height: ${height})`;
-					return `(min-width: ${width})`;
+					if (isHeight && isWidth) return `(min-width:${width}) and (min-height:${height})`;
+					if (isHeight) return `(min-height:${height})`;
+					return `(min-width:${width})`;
 				})();
-
-				return parsed !== null ? `@container ${modifier ?? ""} ${selector}` : [];
+				return pwidth !== null || pheight !== null ? `@container ${modifier ?? ""} ${selector}` : [];
 			},
 			{
 				values,

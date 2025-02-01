@@ -1,59 +1,59 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.20",
+	"version": "0.0.22",
 	"private": false,
 	"exports": {
 		"./styles.css": "./dist/index.css",
 		"./Sunburst": {
-			"import": "./dist/src/components/Sunburst/Sunburst.jsx",
+			"import": "./dist/src/components/Sunburst/Sunburst.js",
 			"types": "./dist/src/components/Sunburst/Sunburst.d.ts"
 		},
 		"./Bars": {
-			"import": "./dist/src/components/Bars/Bars.jsx",
+			"import": "./dist/src/components/Bars/Bars.js",
 			"types": "./dist/src/components/Bars/Bars.d.ts"
 		},
 		"./Lines": {
-			"import": "./dist/src/components/Lines/Lines.jsx",
+			"import": "./dist/src/components/Lines/Lines.js",
 			"types": "./dist/src/components/Lines/Lines.d.ts"
 		},
 		"./Pie": {
-			"import": "./dist/src/components/Pie/Pie.jsx",
+			"import": "./dist/src/components/Pie/Pie.js",
 			"types": "./dist/src/components/Pie/Pie.d.ts"
 		},
 		"./Scatter": {
-			"import": "./dist/src/components/Scatter/Scatter.jsx",
+			"import": "./dist/src/components/Scatter/Scatter.js",
 			"types": "./dist/src/components/Scatter/Scatter.d.ts"
 		},
 		"./Worldmap": {
-			"import": "./dist/src/components/Worldmap/Worldmap.jsx",
+			"import": "./dist/src/components/Worldmap/Worldmap.js",
 			"types": "./dist/src/components/Worldmap/Worldmap.d.ts"
 		},
 		"./XAxis": {
-			"import": "./dist/src/components/XAxis/XAxis.jsx",
+			"import": "./dist/src/components/XAxis/XAxis.js",
 			"types": "./dist/src/components/XAxis/XAxis.d.ts"
 		},
 		"./YAxis": {
-			"import": "./dist/src/components/YAxis/YAxis.jsx",
+			"import": "./dist/src/components/YAxis/YAxis.js",
 			"types": "./dist/src/components/YAxis/YAxis.d.ts"
 		},
 		"./GridLines": {
-			"import": "./dist/src/components/GridLines/GridLines.jsx",
+			"import": "./dist/src/components/GridLines/GridLines.js",
 			"types": "./dist/src/components/GridLines/GridLines.d.ts"
 		},
 		"./Radar": {
-			"import": "./dist/src/components/Radar/Radar.jsx",
+			"import": "./dist/src/components/Radar/Radar.js",
 			"types": "./dist/src/components/Radar/Radar.d.ts"
 		},
 		"./Legend": {
-			"import": "./dist/src/components/Legend/Legend.jsx",
+			"import": "./dist/src/components/Legend/Legend.js",
 			"types": "./dist/src/components/Legend/Legend.d.ts"
 		},
 		"./Graph": {
-			"import": "./dist/src/components/Graph/Graph.jsx",
+			"import": "./dist/src/components/Graph/Graph.js",
 			"types": "./dist/src/components/Graph/Graph.d.ts"
 		},
 		"./Overlay": {
-			"import": "./dist/src/components/Overlay/Overlay.jsx",
+			"import": "./dist/src/components/Overlay/Overlay.js",
 			"types": "./dist/src/components/Overlay/Overlay.d.ts"
 		},
 		"./colors": {
@@ -65,7 +65,7 @@
 			"types": "./dist/src/utils/coordinates/coordinates.d.ts"
 		},
 		"./use-graph": {
-			"import": "./dist/src/hooks/use-graph/use-graph.jsx",
+			"import": "./dist/src/hooks/use-graph/use-graph.js",
 			"types": "./dist/src/hooks/use-graph/use-graph.d.ts"
 		}
 	},
@@ -98,7 +98,7 @@
 		"esbuild-plugin-sass": "^1.0.1",
 		"esbuild-sass-plugin": "^3.3.1",
 		"husky": "^9.1.7",
-		"nanoplot": "^0.0.19",
+		"nanoplot": "0.0.22",
 		"next": "15.0.3",
 		"postcss": "^8.4.49",
 		"postcss-modules": "^6.0.1",
