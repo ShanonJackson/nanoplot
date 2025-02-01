@@ -4,10 +4,11 @@ import { Control } from "../../Docs/Control/Control";
 import { Bars } from "@/components/Bars/Bars";
 import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
 import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { VerticalBars } from "@/components/Bars/components/VerticalBars";
 
 type Props = {
-	state: ComponentProps<typeof Bars>;
-	onChange: (setGridPartial: Partial<ComponentProps<typeof Bars>>) => void;
+	state: ComponentProps<typeof VerticalBars>;
+	onChange: (setGridPartial: Partial<ComponentProps<typeof VerticalBars>>) => void;
 };
 export const BarsControlGroup: FC<Props> = ({ state, onChange }) => {
 	return (
@@ -19,9 +20,16 @@ export const BarsControlGroup: FC<Props> = ({ state, onChange }) => {
 					description={"Adds Loading Animation"}
 				/>
 			</Control>
-			<Control name={"size"} type={"number"} default={"16"}>
+			<Control name={"glow"} type={"boolean"} default={"false"}>
+				<BooleanControl
+					value={state.glow}
+					onChange={(checked) => onChange({ ...state, glow: checked })}
+					description={"Adds glow effect to bars"}
+				/>
+			</Control>
+			<Control name={"size"} type={"number"} default={"45"}>
 				<SliderControl
-					value={state.size ?? 16}
+					value={state.size ?? 45}
 					onChange={(value) => onChange({ ...state, size: value })}
 					description={"Size of the bars as percent 0-100"}
 				/>

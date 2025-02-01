@@ -182,7 +182,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 							<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
 								{path}
 							</g>
-							<g className={"transform origin-center rotate-180 invisible @sm:visible "}>{label}</g>
+							<g className={"transform origin-center rotate-180 invisible @[width:400px]:!visible "}>{label}</g>
 						</g>
 						{donut && (
 							<mask id={maskId}>

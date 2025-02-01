@@ -1,4 +1,6 @@
 import { HTMLAttributes } from "react";
+import { GraphContextServer, useGraphServer } from "@/hooks/use-graph/use-server-graph";
+import { GraphContextClient, useGraphClient } from "@/hooks/use-graph/use-client-graph";
 
 export type XYDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -23,6 +25,7 @@ export type SegmentDataset = Array<{
 	value: string | number | Date;
 }>;
 
+type AlterType<T, Key extends keyof T, NewType> = Omit<T, Key> & { [K in Key]: NewType };
 export type GraphContext = {
 	id: string;
 	attributes: HTMLAttributes<HTMLDivElement>;
@@ -42,7 +45,6 @@ export const useGraphColumn = (ctx: GraphContext) => {
 	// return the column index + 1
 	return ctx.layout.columns.split(" ").findIndex((col) => col.includes("[graph]")) + 1;
 };
-export const GraphContextProvider =
-	typeof window === "undefined" ? require("./use-server-graph").GraphContextServer : require("./use-client-graph").GraphContextClient;
-export const useGraph: () => GraphContext =
-	typeof window === "undefined" ? require("./use-server-graph").useGraphServer : require("./use-client-graph").useGraphClient;
+
+export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;
+export const useGraph: () => GraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;

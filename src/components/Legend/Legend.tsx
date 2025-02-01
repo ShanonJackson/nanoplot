@@ -29,10 +29,10 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 			)}
 			style={position === "top" || position === "bottom" ? { gridColumn: column } : undefined}
 		>
-			{context.data?.map(({ name, stroke }, i, dps) => {
+			{context.data?.map(({ name, fill }, i) => {
 				return (
 					<div key={i} className={"flex items-center"}>
-						<div className={"size-4 mr-1 rounded-full"} style={{ background: stroke ?? ColorUtils.colorFor(i, dps.length) }} />
+						<div className={"size-4 mr-1 rounded-full"} style={{ background: String(fill) }} />
 						<div className={"text-nowrap"}>{name}</div>
 					</div>
 				);

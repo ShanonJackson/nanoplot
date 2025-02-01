@@ -26,10 +26,18 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 		viewbox: { x: X_SCALE, y: Y_SCALE },
 		data: GraphUtils.isXYData(data)
 			? data.map((dp, i, dps) => {
+					/*
+						Properties that can't be defaulted.
+						fill: - Fill can't be defaulted because Line graph uses fill: undefined to determine if it should be filled or not.
+						group - Group can't be defaulted to 'name' or 'id' because legend separates 'groups' by a divider.
+					 */
 					return {
 						id: dp.id ?? dp.name,
 						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
-						fill: dp.fill === true ? (dp.stroke ?? ColorUtils.colorFor(i, dps.length)) : dp.fill,
+						fill:
+							dp.fill === true
+								? (dp.stroke ?? ColorUtils.colorFor(i, dps.length))
+								: (dp.fill ?? dp.stroke ?? ColorUtils.colorFor(i, dps.length)),
 						...dp,
 					};
 				})
@@ -37,7 +45,6 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 					return {
 						id: dp.id ?? dp.name,
 						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
-						fill: dp.fill === true ? (dp.stroke ?? ColorUtils.colorFor(i, dps.length)) : dp.fill,
 						...dp,
 					};
 				}),
@@ -51,6 +58,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 		},
 		interactions: { hovered: interactions?.hovered ?? [], pinned: interactions?.pinned ?? [] },
 	});
+
 	return (
 		<div
 			id={id}

@@ -1,5 +1,5 @@
 import { isolateInsideOfContainer, scopedPreflightStyles } from "tailwindcss-scoped-preflight";
-
+const container = require("./tailwind-container-queries");
 export default {
 	content: [
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,7 +9,7 @@ export default {
 	],
 	theme: {},
 	plugins: [
-		require("@tailwindcss/container-queries"),
+		container,
 		scopedPreflightStyles({
 			isolationStrategy: isolateInsideOfContainer(".nanoplot"),
 		}),

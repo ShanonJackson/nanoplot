@@ -146,7 +146,7 @@ export const DomainUtils = {
 					const distance = mx - mn;
 					if (jumps === "auto") {
 						/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
-						return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+						return ([5, 6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
 					}
 					return jumps;
 				})();
@@ -244,7 +244,7 @@ export const DomainUtils = {
 			const JUMPS = (() => {
 				const distance = MAX - MIN;
 				if (jumps === "auto") {
-					return ([6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+					return ([6, 5, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
 				}
 				return jumps;
 			})();

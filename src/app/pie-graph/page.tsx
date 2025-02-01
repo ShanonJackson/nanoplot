@@ -37,7 +37,7 @@ const data = ${JSON.stringify(MOCK_DATA, null, 4)};
 `}
 			>
 				<Graph data={MOCK_DATA}>
-					<Pie {...pie}>{pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
+					<Pie {...pie}> {pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
 			</GraphPanel>
 		</div>

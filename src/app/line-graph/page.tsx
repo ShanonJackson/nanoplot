@@ -15,20 +15,14 @@ import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { OverlayRect } from "../../components/Overlay/OverlayRect";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { LinesTimeslotExample, LinesTimeslotExampleCode } from "@/app/line-graph/components/LinesTimeslotExample";
+import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
-	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true, vertical: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
-	const [mark, setMark] = useState<ComponentProps<typeof OverlayRect>>({
-		title: "",
-		x1: new Date("2024-01-01"),
-		x2: new Date("2024-02-01"),
-		y1: 2550,
-	});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
-	const setXAxisPartial = (partial: Partial<ComponentProps<typeof XAxis>>) => setXAxis((prev) => ({ ...prev, ...partial }));
 
 	return (
 		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
@@ -38,6 +32,7 @@ export default function Page() {
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
+				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel examples={[{ name: "Lines timeslot", code: LinesTimeslotExampleCode, component: LinesTimeslotExample }]}>
 				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>

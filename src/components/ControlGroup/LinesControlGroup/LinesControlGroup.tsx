@@ -22,7 +22,7 @@ export const LinesControlGroup: FC<Props> = ({ state, onChange }) => {
 				<EnumControl
 					options={Object.keys(CurveUtils)}
 					value={state.curve ?? "linear"}
-					description={"Curving function"}
+					description={"Curves lines to make them smooth or sharp."}
 					onChange={(value) => onChange({ ...state, curve: value })}
 				/>
 			</Control>

@@ -9,7 +9,6 @@ import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup
 import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { ControlPanel } from "@/components/Panels/ControlPanel";
 import { GraphPanel } from "@/components/Panels/GraphPanel";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
 import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { Bars } from "@/components/Bars/Bars";
@@ -17,7 +16,7 @@ import { BarsControlGroup } from "@/components/ControlGroup/BarsControlGroup/Bar
 
 export default function Page() {
 	const [bars, setBars] = useState<ComponentProps<typeof Bars>>({});
-	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
@@ -34,10 +33,8 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
-					data={MOCK_DATA.map(({ group, ...d }) => {
-						return {
-							...d,
-						};
+					data={MOCK_DATA.map((bar) => {
+						return bar;
 					})}
 					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
 				>
@@ -70,54 +67,27 @@ export default function Page() {
 		</div>
 	);
 }
-
 const MOCK_DATA = [
 	{
-		name: "Sally hours gamed",
-		group: "gamers",
+		name: "Male",
+		stroke: "transparent",
+		fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
 		data: [
-			{ x: "Jan", y: 10 },
-			{ x: "Feb", y: 20 },
-			{ x: "Mar", y: 33 },
-			{ x: "Apr", y: 24 },
-			{ x: "May", y: 31 },
-			{ x: "Jun", y: 43 },
+			{ x: "Jan", y: 5_000 },
+			{ x: "Feb", y: 20_000 },
+			{ x: "Mar", y: 45_000 },
+			{ x: "Apr", y: 20_000 },
 		],
 	},
 	{
-		name: "Joe hours gamed",
-		group: "gamers",
+		name: "Female",
+		stroke: "transparent",
+		fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
 		data: [
-			{ x: "Jan", y: 50 },
-			{ x: "Feb", y: 50 },
-			{ x: "Mar", y: 33 },
-			{ x: "Apr", y: 24 },
-			{ x: "May", y: 21 },
-			{ x: "Jun", y: 33 },
-		],
-	},
-	{
-		name: "Kate hours gamed",
-		group: "viewers",
-		data: [
-			{ x: "Jan", y: 40 },
-			{ x: "Feb", y: 21 },
-			{ x: "Mar", y: 43 },
-			{ x: "Apr", y: 54 },
-			{ x: "May", y: 51 },
-			{ x: "Jun", y: 23 },
-		],
-	},
-	{
-		name: "Josh hours gamed",
-		group: "viewers",
-		data: [
-			{ x: "Jan", y: 30 },
-			{ x: "Feb", y: 31 },
-			{ x: "Mar", y: 53 },
-			{ x: "Apr", y: 92 },
-			{ x: "May", y: 41 },
-			{ x: "Jun", y: 13 },
+			{ x: "Jan", y: 45_000 },
+			{ x: "Feb", y: 10_000 },
+			{ x: "Mar", y: 15_000 },
+			{ x: "Apr", y: 30_000 },
 		],
 	},
 ];
