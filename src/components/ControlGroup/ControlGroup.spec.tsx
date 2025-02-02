@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ControlGroup } from "./ControlGroup";
-import { Control } from "@/components/Docs/Control/Control";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
+import { Control } from "../Docs/Control/Control";
+import { BooleanControl } from "../Docs/Control/components/BooleanControl/BooleanControl";
 
 describe("Control Group", () => {
 	it("Should show element when close and clicked", async () => {

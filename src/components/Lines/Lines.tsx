@@ -1,12 +1,11 @@
 import React, { ReactNode } from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { GraphUtils } from "@/utils/graph/graph";
-import { ColorUtils } from "@/utils/color/color";
-import { cx } from "@/utils/cx/cx";
-import { LinesTooltip } from "@/components/Lines/components/LinesTooltip";
-import { LinesLoading } from "@/components/Lines/components/LinesLoading";
-import { CurveUtils } from "@/utils/path/curve";
+import { GraphUtils } from "../../utils/graph/graph";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { CurveUtils } from "../../utils/path/curve";
+import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { LinesLoading } from "./components/LinesLoading";
+import { cx } from "../../utils/cx/cx";
+import { LinesTooltip } from "./components/LinesTooltip";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -22,14 +21,14 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		domain,
 	} = useGraph();
 	if (!GraphUtils.isXYData(data)) return null;
+
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
-	const lines = data.map((line, i, lines) => {
+	const lines = data.map((line) => {
 		return {
 			...line,
-			id: line.id ?? line.name,
-			stroke: line.stroke ?? ColorUtils.colorFor(i, lines.length),
-			fill: line.fill === true ? (line.stroke ?? ColorUtils.colorFor(i, lines.length)) : line.fill,
+			id: String(line.id),
+			fill: String(line.fill),
 			data: line.data.map((xy) => ({
 				x: xForValue(xy.x),
 				y: yForValue(xy.y),
@@ -37,22 +36,18 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		};
 	});
 
-	if (loading) {
-		return <LinesLoading />;
-	}
+	if (loading) return <LinesLoading />;
 
 	return (
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-			height={"100%"}
-			width={"100%"}
 			preserveAspectRatio={"none"}
-			className={cx("[grid-area:graph]", className)}
+			className={cx("h-full w-full [grid-area:graph]", className)}
 		>
 			{lines.map(({ id, stroke, data, fill }, i) => {
 				const path = CurveUtils[curve](data);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
-				const filled = fill || hovered.includes(id) || (pinned.includes(id) && !disabled);
+				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled);
 				const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
 				return (
 					<React.Fragment key={i}>
@@ -75,13 +70,9 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 							<path
 								d={path + `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} Z`}
 								stroke={stroke}
-								fill={(() => {
-									if (typeof fill === "string") return fill;
-									if (filled) return `url(#${identifier})`;
-									return undefined;
-								})()}
+								fill={filled ? `url(#${identifier})` : undefined}
 								strokeOpacity={0}
-								className="lines__filled"
+								className="lines__fill"
 							/>
 						)}
 					</React.Fragment>
@@ -91,9 +82,5 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		</svg>
 	);
 };
-
-/*
-	Chart composition
-*/
 
 Lines.Tooltip = LinesTooltip;

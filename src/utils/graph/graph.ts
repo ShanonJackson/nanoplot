@@ -1,4 +1,4 @@
-import { SegmentDataset, XYDataset } from "@/hooks/use-graph/use-graph";
+import { SegmentDataset, XYDataset } from "../../hooks/use-graph/use-graph";
 
 export const GraphUtils = {
 	isSegmentData: (data: SegmentDataset | XYDataset): data is SegmentDataset => {

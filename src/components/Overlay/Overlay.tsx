@@ -1,16 +1,16 @@
 import React, { ReactNode, Ref } from "react";
-import { cx } from "@/utils/cx/cx";
 import { OverlayRect } from "./OverlayRect";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { MathUtils } from "@/utils/math/math";
+import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { MathUtils } from "../../utils/math/math";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { cx } from "../../utils/cx/cx";
 
 type HTMLElements = keyof React.JSX.IntrinsicElements;
 type Props = React.HTMLAttributes<HTMLDivElement> & {
 	ref?: Ref<HTMLDivElement>;
 	tag: HTMLElements;
-	x?: { coordinate: number };
-	y?: { coordinate: number };
+	x?: { coordinate: number } | { tick: number | Date | string };
+	y?: { coordinate: number } | { tick: number | Date | string };
 };
 
 export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
@@ -24,11 +24,13 @@ export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
 	const x1 = (() => {
 		if (!x) return undefined;
 		if ("coordinate" in x) return MathUtils.scale(x.coordinate, viewbox.x, 100) + "%";
+		if ("tick" in x) return xForValue(x.tick);
 		return undefined;
 	})();
 	const y1 = (() => {
 		if (!y) return undefined;
 		if ("coordinate" in y) return MathUtils.scale(y.coordinate, viewbox.y, 100) + "%";
+		if ("tick" in y) return yForValue(y.tick);
 		return undefined;
 	})();
 
@@ -37,7 +39,7 @@ export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
 			{...rest}
 			className={cx("[grid-area:graph]", rest.className)}
 			ref={ref}
-			style={x1 && y1 ? { position: "absolute", left: x1, top: y1, ...rest.style } : undefined}
+			style={x1 && y1 ? { position: "absolute", left: x1, top: y1, ...rest.style } : rest.style}
 		>
 			{children}
 		</div>

@@ -1,8 +1,8 @@
 import React from "react";
-import { cx } from "@/utils/cx/cx";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { MathUtils } from "@/utils/math/math";
+import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { MathUtils } from "../../utils/math/math";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { cx } from "../../utils/cx/cx";
 
 interface OverlayRectProps extends React.HTMLAttributes<HTMLDivElement> {
 	x1: Date | number | string;

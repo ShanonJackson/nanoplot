@@ -1,8 +1,7 @@
 import { afterEach, expect, it } from "bun:test";
-import { render, screen } from "@testing-library/react";
 import { Pie } from "./Pie";
-import { cleanup } from "@testing-library/react";
-import { Graph } from "@/components/Graph/Graph";
+import { Graph } from "../Graph/Graph";
+import { cleanup, render, screen } from "@testing-library/react";
 
 afterEach(cleanup);
 

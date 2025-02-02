@@ -1,10 +1,10 @@
 import { ComponentProps, FC, useEffect } from "react";
 import { ControlGroup } from "../ControlGroup";
 import { Control } from "../../Docs/Control/Control";
-import { Pie } from "@/components/Pie/Pie";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
-import { HTMLControl } from "@/components/Docs/Control/components/HTMLControl/HTMLControl";
-import { propFor } from "@/utils/prop-for/prop-for";
+import { propFor } from "../../../utils/prop-for/prop-for";
+import { Pie } from "../../Pie/Pie";
+import { BooleanControl } from "../../Docs/Control/components/BooleanControl/BooleanControl";
+import { HTMLControl } from "../../Docs/Control/components/HTMLControl/HTMLControl";
 
 export type PieControls = ComponentProps<typeof Pie> & {
 	example?: {

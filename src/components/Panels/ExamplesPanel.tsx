@@ -1,5 +1,5 @@
 import React, { ComponentType, FC } from "react";
-import { cx } from "@/utils/cx/cx";
+import { cx } from "../../utils/cx/cx";
 
 type Props = {
 	active?: string;

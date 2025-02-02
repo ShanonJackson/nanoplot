@@ -1,14 +1,13 @@
 "use client";
-import { Worldmap } from "@/components/Worldmap/Worldmap";
 import Image from "next/image";
-import { ColorUtils } from "@/utils/color/color";
 import React, { ComponentProps, useState } from "react";
-import { Graph } from "@/components/Graph/Graph";
-import { Control } from "@/components/Docs/Control/Control";
-import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
-import { ControlPanel } from "@/components/Panels/ControlPanel";
-import { GraphPanel } from "@/components/Panels/GraphPanel";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { ControlPanel } from "../../../components/Panels/ControlPanel";
+import { Control } from "../../../components/Docs/Control/Control";
+import { Worldmap } from "../../../components/Worldmap/Worldmap";
+import { SliderControl } from "../../../components/Docs/Control/components/SliderControl/SliderControl";
+import { GraphPanel } from "../../../components/Panels/GraphPanel";
+import { Graph } from "../../../components/Graph/Graph";
+import { ColorUtils } from "../../../utils/color/color";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
@@ -16,7 +15,7 @@ export default function Page() {
 	});
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-[40%_1fr] grid-rows-2 gap-4"}>
+		<>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>World Map</h1>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
@@ -71,7 +70,7 @@ export default function Page() {
 					/>
 				</Graph>
 			</GraphPanel>
-		</div>
+		</>
 	);
 }
 const MOCK_DATA = [

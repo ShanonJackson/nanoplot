@@ -1,9 +1,9 @@
 import { ComponentProps, FC } from "react";
 import { ControlGroup } from "../ControlGroup";
 import { Control } from "../../Docs/Control/Control";
-import { Lines } from "@/components/Lines/Lines";
-import { CurveUtils } from "@/utils/path/curve";
-import { EnumControl } from "@/components/Docs/Control/components/EnumControl/EnumControl";
+import { Lines } from "../../Lines/Lines";
+import { CurveUtils } from "../../../utils/path/curve";
+import { EnumControl } from "../../Docs/Control/components/EnumControl/EnumControl";
 
 type Props = {
 	state: ComponentProps<typeof Lines>;

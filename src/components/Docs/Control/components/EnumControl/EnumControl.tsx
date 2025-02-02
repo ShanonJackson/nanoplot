@@ -1,5 +1,5 @@
 import React from "react";
-import { cx } from "@/utils/cx/cx";
+import { cx } from "../../../../../utils/cx/cx";
 
 type Props<T extends string> = {
 	options: Array<T>;
@@ -22,7 +22,6 @@ export const EnumControl = <T extends string>({ description, options, value, onC
 							className={cx(
 								"px-4 py-2 rounded-md font-medium transition-all duration-200 text-sm",
 								"hover:bg-slate-700 hover:shadow-lg hover:-translate-y-0.5",
-								"focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900",
 								"focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900",
 								selected
 									? "bg-blue-500 text-white shadow-blue-500/25 shadow-lg"

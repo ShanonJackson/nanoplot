@@ -1,6 +1,6 @@
 import React, { ComponentProps } from "react";
-import { VerticalBars } from "@/components/Bars/components/VerticalBars";
 import { HorizontalBars } from "./components/HorizontalBars";
+import { VerticalBars } from "./components/VerticalBars";
 
 type VerticalProps = { horizontal?: false } & ComponentProps<typeof VerticalBars>;
 type HorizontalProps = { horizontal?: true } & ComponentProps<typeof HorizontalBars>;

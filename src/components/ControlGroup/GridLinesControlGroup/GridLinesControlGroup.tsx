@@ -1,8 +1,8 @@
 import { FC, ComponentProps } from "react";
-import { GridLines } from "@/components/GridLines/GridLines";
 import { ControlGroup } from "../ControlGroup";
 import { Control } from "../../Docs/Control/Control";
 import { BooleanControl } from "../../Docs/Control/components/BooleanControl/BooleanControl";
+import { GridLines } from "../../GridLines/GridLines";
 
 type Grid = ComponentProps<typeof GridLines>;
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { GraphContext } from "@/hooks/use-graph/use-graph";
 import { cache, ReactNode } from "react";
+import { GraphContext } from "./use-graph";
 
 const [get, set] = cache((): [() => GraphContext, (ctx: GraphContext) => void] => {
 	let ctx = {} as GraphContext;

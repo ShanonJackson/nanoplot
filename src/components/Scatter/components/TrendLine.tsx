@@ -1,9 +1,9 @@
 import React, { useId } from "react";
-import { GraphUtils } from "@/utils/graph/graph";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { overlay } from "@/components/Overlay/Overlay";
-import { MathUtils } from "@/utils/math/math";
-import { GraphContext } from "@/hooks/use-graph/use-graph";
+import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
+import { GraphUtils } from "../../../utils/graph/graph";
+import { MathUtils } from "../../../utils/math/math";
+import { overlay } from "../../Overlay/Overlay";
 
 const ALL_TIME_TREND_TEXT_WIDTH_PX = 82; /* hardcoded width, as calculated VIA DOM inspector */
 const TEXT_WIDTH_PADDING = 15; // units of padding either side of text.

@@ -1,10 +1,10 @@
 import React, { useId } from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { GraphUtils } from "@/utils/graph/graph";
-import { MathUtils } from "@/utils/math/math";
-import { PathUtils } from "@/utils/path/path";
-import { cx } from "@/utils/cx/cx";
-import { RadarSkeleton } from "@/components/Radar/components/RadarSkeleton";
+import { GraphUtils } from "../../utils/graph/graph";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { RadarSkeleton } from "./components/RadarSkeleton";
+import { MathUtils } from "../../utils/math/math";
+import { cx } from "../../utils/cx/cx";
+import { PathUtils } from "../../utils/path/path";
 
 const PADDING_PERCENT = 0.8;
 const MIN_THRESHOLD = 4; // distance from center to render on graph when value is 0

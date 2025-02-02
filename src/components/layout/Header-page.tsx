@@ -1,9 +1,6 @@
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
-import { DropDown } from "../drop-down/drop-down";
 import Link from "next/link";
-import { Routes } from "@/utils/routes/routes";
-import { guideItems, nanoplotItems } from "@/utils/constant/navigation";
 import DropdownMenu from "../drop-down/drop-down-menu";
+import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 
 interface Props {}
 

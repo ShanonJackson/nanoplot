@@ -1,8 +1,8 @@
-import { ComponentProps, FC } from "react";
+import React, { ComponentProps, FC } from "react";
 import { Control } from "../../Docs/Control/Control";
 import { ControlGroup } from "../ControlGroup";
 import { HTMLControl } from "../../Docs/Control/components/HTMLControl/HTMLControl";
-import { XAxis } from "@/components/XAxis/XAxis";
+import { XAxis } from "../../XAxis/XAxis";
 
 type XAxis = ComponentProps<typeof XAxis>;
 

@@ -1,19 +1,26 @@
 import { ComponentType, FC, ReactNode, useState } from "react";
-import { Tabs } from "@/components/Tabs/Tabs";
-import { CodeBlock } from "@/components/CodeHighlighter/CodeHighlighter";
-import { ExamplesPanel } from "@/components/Panels/ExamplesPanel";
+import { cx } from "../../utils/cx/cx";
+import { Tabs } from "../Tabs/Tabs";
+import { CodeBlock } from "../CodeHighlighter/CodeHighlighter";
+import { ExamplesPanel } from "./ExamplesPanel";
 
 type Props = {
 	code?: string;
 	examples?: Array<{ name: string; code: string; component: ComponentType }>;
 	children: ReactNode;
+	className?: string;
 };
-export const GraphPanel: FC<Props> = ({ examples = [], code, children }) => {
+export const GraphPanel: FC<Props> = ({ examples = [], code, children, className }) => {
 	const [tab, setTab] = useState("chart");
 	const [example, setExample] = useState<{ name: string; code: string; component: ComponentType }>();
 	return (
 		<>
-			<div className={"flex flex-col h-full border-dotted border border-black dark:border-white overflow-hidden resize"}>
+			<div
+				className={cx(
+					"flex flex-col h-full border-dotted border border-black dark:border-white overflow-hidden resize row-start-1 min-h-[400px] md:min-h-[unset] md:row-start-[unset]",
+					className,
+				)}
+			>
 				<Tabs active={tab} onTabChange={setTab}>
 					<Tabs.Tab value="chart" icon="chart-icon" />
 					<Tabs.Tab value="code" icon="code-icon" />

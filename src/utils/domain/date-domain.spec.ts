@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { DateDomain } from "@/utils/domain/date-domain";
+import { DateDomain } from "./date-domain";
 
 describe("src/utils/domain/domain", () => {
 	describe("DateDomain.floor", () => {

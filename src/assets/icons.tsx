@@ -1,4 +1,4 @@
-import { cx } from "@/utils/cx/cx";
+import { cx } from "../utils/cx/cx";
 
 interface IProps {
 	className?: string;

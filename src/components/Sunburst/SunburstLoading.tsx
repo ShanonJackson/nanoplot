@@ -1,6 +1,6 @@
 import React from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
 import { Segment } from "./Sunburst";
+import { useGraph } from "../../hooks/use-graph/use-graph";
 
 const RING_COUNT = 5;
 const RING_DEGREES = 360 / RING_COUNT;

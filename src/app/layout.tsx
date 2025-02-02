@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Navigation } from "@/components/layout/Navigation";
-import HeaderPage from "@/components/layout/Header-page";
-import "./globals.css";
 import { cookies } from "next/headers";
-import { Graph } from "@/components/Graph/Graph";
-import { Legend } from "@/components/Legend/Legend";
-import { YAxis } from "@/components/YAxis/YAxis";
-import { GridLines } from "@/components/GridLines/GridLines";
-import { Lines } from "@/components/Lines/Lines";
-import { XAxis } from "@/components/XAxis/XAxis";
+import { Navigation } from "../components/layout/Navigation";
+import HeaderPage from "../components/layout/Header-page";
+import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "Nanoplot",
@@ -31,9 +25,9 @@ export default async function RootLayout({
 					" nanoplot h-full w-full md:overflow-hidden sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200"
 				}
 			>
-				<div className={"flex w-screen h-auto md:overflow-hidden  sm:overflow-unset"}>
+				<div className={"flex w-screen h-auto md:overflow-hidden sm:overflow-unset"}>
 					<Navigation />
-					<div className="flex-1 flex flex-col gap-4 overflow-hidden">
+					<div className={"w-full h-full"}>
 						<HeaderPage />
 						{children}
 					</div>

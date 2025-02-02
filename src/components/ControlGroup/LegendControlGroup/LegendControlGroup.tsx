@@ -1,8 +1,8 @@
 import { ComponentProps, FC } from "react";
-import { ControlGroup } from "@/components/ControlGroup/ControlGroup";
-import { Control } from "@/components/Docs/Control/Control";
-import { Legend } from "@/components/Legend/Legend";
-import { EnumControl } from "@/components/Docs/Control/components/EnumControl/EnumControl";
+import { Legend } from "../../Legend/Legend";
+import { ControlGroup } from "../ControlGroup";
+import { Control } from "../../Docs/Control/Control";
+import { EnumControl } from "../../Docs/Control/components/EnumControl/EnumControl";
 
 type Legend = ComponentProps<typeof Legend>;
 

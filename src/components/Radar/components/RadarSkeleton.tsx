@@ -1,7 +1,7 @@
-import { cx } from "@/utils/cx/cx";
-import { PathUtils } from "@/utils/path/path";
 import React from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { cx } from "../../../utils/cx/cx";
+import { PathUtils } from "../../../utils/path/path";
 
 type Props = {
 	className?: string;

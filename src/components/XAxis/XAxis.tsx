@@ -1,8 +1,8 @@
-import { Graph } from "@/components/Graph/Graph";
-import { GraphContext, useGraph, useGraphColumn } from "@/hooks/use-graph/use-graph";
-import { MathUtils } from "@/utils/math/math";
 import React, { ReactNode } from "react";
-import { DomainUtils } from "@/utils/domain/domain";
+import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import { Graph } from "../Graph/Graph";
+import { DomainUtils } from "../../utils/domain/domain";
+import { MathUtils } from "../../utils/math/math";
 
 type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
 type From =

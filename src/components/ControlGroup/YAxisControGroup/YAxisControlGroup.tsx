@@ -2,7 +2,7 @@ import { ComponentProps, FC } from "react";
 import { Control } from "../../Docs/Control/Control";
 import { ControlGroup } from "../ControlGroup";
 import { HTMLControl } from "../../Docs/Control/components/HTMLControl/HTMLControl";
-import { YAxis } from "@/components/YAxis/YAxis";
+import { YAxis } from "../../YAxis/YAxis";
 
 type YAxis = ComponentProps<typeof YAxis>;
 

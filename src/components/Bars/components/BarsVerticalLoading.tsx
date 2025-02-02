@@ -1,6 +1,6 @@
-import { cx } from "@/utils/cx/cx";
-import { useGraph } from "@/hooks/use-graph/use-graph";
 import { useId } from "react";
+import { cx } from "../../../utils/cx/cx";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
 
 export const BarsVerticalLoading = () => {
 	const maskId = useId();

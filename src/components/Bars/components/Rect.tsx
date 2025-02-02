@@ -1,6 +1,6 @@
 import React, { JSX, useId } from "react";
-import { LinearGradient } from "@/components/LinearGradient/LinearGradient";
-import { PathUtils } from "@/utils/path/path";
+import { LinearGradient } from "../../LinearGradient/LinearGradient";
+import { PathUtils } from "../../../utils/path/path";
 
 type Props = JSX.IntrinsicElements["path"] & {
 	x1: number;
@@ -32,7 +32,6 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
 					<use xlinkHref={"#" + clipPath} />
 				</clipPath>
 			</defs>
-
 			<use xlinkHref={`#${glowId}`} filter={"blur(45px)"} opacity={0.5} />
 			{glow && (
 				<g id={glowId}>
@@ -41,6 +40,7 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
 						stroke={"transparent"}
 						d={path}
 						vectorEffect={"non-scaling-stroke"}
+						className={rest.className}
 						strokeWidth={5}
 					/>
 				</g>
@@ -51,6 +51,7 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
 				d={path}
 				vectorEffect={"non-scaling-stroke"}
 				strokeWidth={10}
+				className={rest.className}
 				clipPath={`url(#${clip})`}
 			/>
 		</g>

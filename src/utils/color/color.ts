@@ -92,4 +92,50 @@ export const ColorUtils = {
 		];
 		return `rgb(${r}, ${g}, ${b})`;
 	},
+	textFor: (color: string): string => {
+		const isKnownColor = COLORS.find(({ fill }) => fill === color)?.color;
+		if (isKnownColor) return isKnownColor;
+
+		const hexToRgb = (hex: string) => {
+			hex = hex.replace(/^#/, "");
+			if (hex.length === 3)
+				hex = hex
+					.split("")
+					.map((x) => x + x)
+					.join("");
+			const num = parseInt(hex, 16);
+			return [num >> 16, (num >> 8) & 255, num & 255];
+		};
+
+		const hslToRgb = (h: number, s: number, l: number) => {
+			s /= 100;
+			l /= 100;
+			const k = (n: number) => (n + h / 30) % 12;
+			const a = s * Math.min(l, 1 - l);
+			const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+			return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+		};
+
+		let rgb: number[] | null = null;
+
+		// Extract first hex color
+		const hexMatch = color.match(/#([0-9a-fA-F]{3,6})/);
+		if (hexMatch) rgb = hexToRgb(hexMatch[0]);
+
+		// Extract first RGB color
+		const rgbMatch = color.match(/rgb\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)/);
+		if (rgbMatch) rgb = rgbMatch.slice(1, 4).map(Number);
+
+		// Extract first HSL color and convert to RGB (supporting "deg" in hue)
+		const hslMatch = color.match(/hsl\(\s*(\d+)(?:deg)?,\s*(\d+)%?,\s*(\d+)%?\s*\)/);
+		if (hslMatch) rgb = hslToRgb(Number(hslMatch[1]), Number(hslMatch[2]), Number(hslMatch[3]));
+
+		// Default to white if parsing fails
+		if (!rgb) rgb = [255, 255, 255];
+
+		// Calculate brightness
+		const brightness = Math.round((rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000);
+
+		return brightness > 125 ? "black" : "white";
+	},
 };

@@ -1,10 +1,10 @@
-import { ColorUtils } from "@/export";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { cx } from "@/utils/cx/cx";
-import { GraphUtils } from "@/utils/graph/graph";
-import React, { ReactNode } from "react";
-import { PathUtils } from "@/utils/path/path";
+import React from "react";
+import { ColorUtils } from "../../../utils/color/color";
+import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
+import { GraphUtils } from "../../../utils/graph/graph";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { cx } from "../../../utils/cx/cx";
+import { PathUtils } from "../../../utils/path/path";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;

@@ -1,12 +1,12 @@
 "use client";
-import { Pie } from "@/components/Pie/Pie";
 import { useState } from "react";
-import { ControlPanel } from "@/components/Panels/ControlPanel";
-import { GraphPanel } from "@/components/Panels/GraphPanel";
-import { PieEmptyExample, PieEmptyExampleCode } from "@/app/pie-graph/examples/PieEmptyExample";
-import { Graph } from "@/components/Graph/Graph";
-import { PieControlGroup, PieControls } from "@/components/ControlGroup/PieControlGroup/PieControlGroup";
-import { PieCollisionExample, PieCollisionExampleCode } from "@/app/pie-graph/examples/PieCollisionExample";
+import { ControlPanel } from "../../../components/Panels/ControlPanel";
+import { PieControlGroup, PieControls } from "../../../components/ControlGroup/PieControlGroup/PieControlGroup";
+import { GraphPanel } from "../../../components/Panels/GraphPanel";
+import { PieEmptyExample, PieEmptyExampleCode } from "./examples/PieEmptyExample";
+import { PieCollisionExample, PieCollisionExampleCode } from "./examples/PieCollisionExample";
+import { Graph } from "../../../components/Graph/Graph";
+import { Pie } from "../../../components/Pie/Pie";
 
 export default function Page() {
 	const [pie, setPie] = useState<PieControls>({
@@ -17,7 +17,7 @@ export default function Page() {
 	});
 
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
+		<>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Pie Graph</h1>
 				<PieControlGroup state={pie} onChange={setPie} />
@@ -40,7 +40,7 @@ const data = ${JSON.stringify(MOCK_DATA, null, 4)};
 					<Pie {...pie}> {pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
 				</Graph>
 			</GraphPanel>
-		</div>
+		</>
 	);
 }
 

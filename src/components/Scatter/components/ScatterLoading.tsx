@@ -1,5 +1,5 @@
 import React from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
 
 type Props = {
 	className?: string;

@@ -8,15 +8,14 @@
 	{from: "min", to: "max", jumps: "1 month"}
 	{from: "min - 1 month", to: "max + 1 month" jumps: "1 month"}
  */
-import { XAxis } from "@/components/XAxis/XAxis";
 import { ComponentProps } from "react";
-import { GraphContext } from "@/hooks/use-graph/use-graph";
-import { GraphUtils } from "@/utils/graph/graph";
-import { MathUtils } from "@/utils/math/math";
-import { YAxis } from "@/components/YAxis/YAxis";
-import { ObjectUtils } from "@/utils/object/object";
-import { DateDomain } from "@/utils/domain/date-domain";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
+import { GraphContext } from "../../hooks/use-graph/use-graph";
+import { XAxis } from "../../components/XAxis/XAxis";
+import { GraphUtils } from "../graph/graph";
+import { DateDomain } from "./date-domain";
+import { MathUtils } from "../math/math";
+import { ObjectUtils } from "../object/object";
+import { YAxis } from "../../components/YAxis/YAxis";
 
 const roundUp = (num: number, nearest: number) => Math.ceil(num / nearest) * nearest;
 const roundDown = (num: number, nearest: number) => Math.floor(num / nearest) * nearest;

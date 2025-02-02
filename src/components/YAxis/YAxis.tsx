@@ -1,8 +1,8 @@
-import { Graph } from "@/components/Graph/Graph";
-import { GraphContext, useGraph } from "@/hooks/use-graph/use-graph";
-import { MathUtils } from "@/utils/math/math";
-import React, { JSX, ReactNode } from "react";
-import { DomainUtils } from "@/utils/domain/domain";
+import React, { ReactNode } from "react";
+import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import { Graph } from "../Graph/Graph";
+import { MathUtils } from "../../utils/math/math";
+import { DomainUtils } from "../../utils/domain/domain";
 
 type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
 type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;

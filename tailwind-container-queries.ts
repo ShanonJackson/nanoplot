@@ -1,5 +1,10 @@
 import plugin from "tailwindcss/plugin";
 
+/*
+   This plugin is completely replicated from https://github.com/tailwindlabs/tailwindcss-container-queries
+   Except altered to support @container(min-height: 100px) and (min-width: 100px) to be written as @[height:100px|width:100px]
+
+ */
 export default plugin(
 	function containerQueries({ matchUtilities, matchVariant, theme }) {
 		let values: Record<string, string> = theme("containers") ?? {};
@@ -7,7 +12,6 @@ export default plugin(
 		function parseValue(value: string) {
 			let numericValue = value.match(/^(\d+\.\d+|\d+|\.\d+)\D+/)?.[1] ?? null;
 			if (numericValue === null) return null;
-
 			return parseFloat(value);
 		}
 

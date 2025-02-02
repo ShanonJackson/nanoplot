@@ -1,13 +1,13 @@
 "use client";
 import * as React from "react";
 import { useRef } from "react";
-import { useGraph, XYDataset } from "@/hooks/use-graph/use-graph";
-import { useStatefulRef } from "@/hooks/use-stateful-ref";
-import { GraphUtils } from "@/utils/graph/graph";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { MathUtils } from "@/utils/math/math";
-import { overlay } from "@/components/Overlay/Overlay";
-import { useMouseCoordinates } from "@/hooks/use-mouse-coordinates";
+import { useGraph, XYDataset } from "../../../hooks/use-graph/use-graph";
+import { useStatefulRef } from "../../../hooks/use-stateful-ref";
+import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
+import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
+import { GraphUtils } from "../../../utils/graph/graph";
+import { MathUtils } from "../../../utils/math/math";
+import { overlay } from "../../Overlay/Overlay";
 
 type Props = {
 	tooltip?: (

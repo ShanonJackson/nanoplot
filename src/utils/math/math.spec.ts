@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { MathUtils } from "@/utils/math/math";
+import { MathUtils } from "./math";
 
 describe("src/utils/math/math", () => {
 	it("Should scale correctly for negative values", () => {

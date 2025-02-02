@@ -1,6 +1,6 @@
-import { cx } from "@/utils/cx/cx";
 import React, { useId } from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { cx } from "../../../utils/cx/cx";
 
 type Props = {
 	donut: boolean;

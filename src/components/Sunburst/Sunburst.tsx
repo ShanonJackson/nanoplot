@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { ColorUtils } from "@/utils/color/color";
-import { PathUtils } from "@/utils/path/path";
 import { SunburstLoading } from "./SunburstLoading";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { ColorUtils } from "../../utils/color/color";
+import { PathUtils } from "../../utils/path/path";
 
 export type Sunburst = Array<{
 	name: string;

@@ -1,10 +1,10 @@
 import React, { CSSProperties, HTMLAttributes, ReactNode, useId } from "react";
-import { GraphContext, GraphContextProvider } from "@/hooks/use-graph/use-graph";
-import { ChildrenUtils } from "@/utils/children/children";
-import { DomainUtils } from "@/utils/domain/domain";
-import { cx } from "@/utils/cx/cx";
-import { ColorUtils } from "@/utils/color/color";
-import { GraphUtils } from "@/utils/graph/graph";
+import { GraphContext, GraphContextProvider } from "../../hooks/use-graph/use-graph";
+import { ChildrenUtils } from "../../utils/children/children";
+import { GraphUtils } from "../../utils/graph/graph";
+import { ColorUtils } from "../../utils/color/color";
+import { DomainUtils } from "../../utils/domain/domain";
+import { cx } from "../../utils/cx/cx";
 
 type Props = {
 	data?: GraphContext["data"];

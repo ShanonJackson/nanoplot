@@ -1,9 +1,8 @@
 import React from "react";
-import { GraphContext, useGraph, useGraphColumn } from "@/hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { ReactNode } from "react";
-import { ColorUtils } from "@/utils/color/color";
-import { cx } from "@/utils/cx/cx";
+import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import { cx } from "../../utils/cx/cx";
 
 type Props = {
 	position?: "top" | "bottom" | "left" | "right";
@@ -18,11 +17,12 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 	return (
 		<Element
 			className={cx(
-				"flex",
-				"gap-2",
+				"flex gap-3",
 				(position === "left" || position === "right") && "flex-col",
 				position === "right" && "pl-4",
 				position === "left" && "pr-4",
+				position === "top" && "pb-3 pt-2",
+				position === "bottom" && "pt-3 pb-2",
 				alignment === "start" && "justify-start",
 				alignment === "end" && "justify-end",
 				alignment === "center" && "justify-center",

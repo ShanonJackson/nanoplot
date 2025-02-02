@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, JSX, Ref } from "react";
-import { cx } from "@/utils/cx/cx";
-import styles from "@/components/Tooltip/Tooltip.module.scss";
-import { Position } from "@/hooks/use-tether";
+import { cx } from "../../utils/cx/cx";
+import { Position } from "../../hooks/use-tether";
+import styles from "./Tooltip.module.scss";
 
 type Props = HTMLAttributes<HTMLDivElement> & {
 	target: Position;

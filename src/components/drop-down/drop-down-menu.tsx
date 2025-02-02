@@ -1,9 +1,8 @@
 "use client";
-
-import { guideItems, nanoplotItems } from "@/utils/constant/navigation";
-import { Routes } from "@/utils/routes/routes";
 import Link from "next/link";
 import React from "react";
+import { Routes } from "../../utils/routes/routes";
+import { guideItems, nanoplotItems } from "../../utils/constant/navigation";
 
 interface IProp {
 	items?: any[];
@@ -11,13 +10,14 @@ interface IProp {
 const DropdownMenu = ({ items }: IProp) => {
 	const [isOpen, setIsOpen] = React.useState(false);
 
-	const handleToggle = () => {
-		setIsOpen(!isOpen);
-	};
-
 	return (
 		<div className="inline-block">
-			<button onClick={handleToggle} className="p-2">
+			<button
+				onClick={() => {
+					setIsOpen(!isOpen);
+				}}
+				className="p-2"
+			>
 				<svg width="32px" height="32px" viewBox="0 0 32 32" className="stroke-white stroke-2">
 					<g transform="translate(16, 16)">
 						<line x1="-11" x2="11" transform={`translate(0, ${!isOpen ? "-7" : "0"}) rotate(${!isOpen ? "0" : "45"})`}></line>
@@ -30,7 +30,9 @@ const DropdownMenu = ({ items }: IProp) => {
 			{isOpen && (
 				<div
 					className="absolute z-10 top-16 left-0 w-screen h-screen bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] shadow-md p-4"
-					onClick={handleToggle}
+					onClick={() => {
+						setIsOpen(!isOpen);
+					}}
 				>
 					<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 px-3 md:mx-6">
 						<div className="col-span-full grid grid-cols-2 md:grid-cols-3 md:col-span-2 lg:col-span-3 gap-6">

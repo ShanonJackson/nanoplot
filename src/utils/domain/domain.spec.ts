@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { DomainUtils } from "@/utils/domain/domain";
+import { DomainUtils } from "./domain";
 
 const context = {
 	data: [

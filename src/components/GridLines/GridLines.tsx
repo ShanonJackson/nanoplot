@@ -1,6 +1,6 @@
-import { cx } from "@/utils/cx/cx";
 import React from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
+import { cx } from "../../utils/cx/cx";
+import { useGraph } from "../../hooks/use-graph/use-graph";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	trendline?: boolean;

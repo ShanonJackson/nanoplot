@@ -1,5 +1,5 @@
-import { cx } from "@/utils/cx/cx";
 import Link from "next/link";
+import { cx } from "../../utils/cx/cx";
 
 export type DropDownItem = {
 	label: string;

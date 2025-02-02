@@ -1,7 +1,7 @@
 import React from "react";
 import { useTabsContext } from "./tabs-context";
-import { cx } from "@/utils/cx/cx";
 import Image from "next/image";
+import { cx } from "../../utils/cx/cx";
 
 interface TabProps {
 	value: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import { createContext, ReactNode, useContext } from "react";
-import { GraphContext } from "@/hooks/use-graph/use-graph";
+import { GraphContext } from "./use-graph";
 
 const ClientContext = createContext<GraphContext | undefined>(undefined);
 

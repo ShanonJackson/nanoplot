@@ -1,5 +1,5 @@
-import { GraphContext } from "@/hooks/use-graph/use-graph";
-import { MathUtils } from "@/utils/math/math";
+import { GraphContext } from "../../hooks/use-graph/use-graph";
+import { MathUtils } from "../math/math";
 
 export const CoordinatesUtils = {
 	xCoordinateFor: ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { x: GraphContext["domain"]["x"] } }) => {

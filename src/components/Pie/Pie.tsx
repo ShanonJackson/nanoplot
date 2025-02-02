@@ -1,14 +1,14 @@
 import React from "react";
 import { ReactNode, useId } from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { MathUtils } from "@/utils/math/math";
-import { PathUtils } from "@/utils/path/path";
-import { cx } from "@/utils/cx/cx";
-import { ColorUtils } from "@/utils/color/color";
-import { GraphUtils } from "@/utils/graph/graph";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { GraphUtils } from "../../utils/graph/graph";
+import { PieLoading } from "./components/PieLoading";
+import { PieEmpty } from "./components/PieEmpty";
+import { ColorUtils } from "../../utils/color/color";
+import { MathUtils } from "../../utils/math/math";
+import { PathUtils } from "../../utils/path/path";
+import { cx } from "../../utils/cx/cx";
 import { overlay } from "../Overlay/Overlay";
-import { PieLoading } from "@/components/Pie/components/PieLoading";
-import { PieEmpty } from "@/components/Pie/components/PieEmpty";
 
 type Props = {
 	loading?: boolean;

@@ -1,10 +1,10 @@
 import React from "react";
-import { useGraph } from "@/hooks/use-graph/use-graph";
-import { GraphUtils } from "@/utils/graph/graph";
-import { ColorUtils } from "@/utils/color/color";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { PathUtils } from "@/utils/path/path";
-import { ScatterLoading } from "@/components/Scatter/components/ScatterLoading";
+import { useGraph } from "../../hooks/use-graph/use-graph";
+import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { GraphUtils } from "../../utils/graph/graph";
+import { ScatterLoading } from "./components/ScatterLoading";
+import { ColorUtils } from "../../utils/color/color";
+import { PathUtils } from "../../utils/path/path";
 
 type Props = {
 	trendline?: boolean;

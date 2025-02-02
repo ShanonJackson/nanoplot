@@ -1,13 +1,14 @@
 import React, { ReactNode } from "react";
-import { CoordinatesUtils } from "@/utils/coordinates/coordinates";
-import { GraphUtils } from "@/utils/graph/graph";
-import { cx } from "@/utils/cx/cx";
-import { useGraph } from "@/hooks/use-graph/use-graph";
+import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
-import { Rect } from "@/app/bar-graph/components/Rect";
-import { ObjectUtils } from "@/utils/object/object";
-import { overlay } from "@/components/Overlay/Overlay";
-import { MathUtils } from "@/utils/math/math";
+import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
+import { ObjectUtils } from "../../../utils/object/object";
+import { Rect } from "./Rect";
+import { cx } from "../../../utils/cx/cx";
+import { MathUtils } from "../../../utils/math/math";
+import { overlay } from "../../Overlay/Overlay";
+import { ColorUtils } from "../../../utils/color/color";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: ReactNode;
@@ -17,79 +18,57 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 	radius?: number;
 };
 
-export const VerticalBars = ({ children, size = 45, radius = 0, glow, className, loading }: Props) => {
+export const VerticalBars = ({ children, size = 50, radius = 0, glow, className, loading, ...rest }: Props) => {
 	const context = useGraph();
+
 	if (!GraphUtils.isXYData(context.data)) return null;
-
-	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-
-	const bars = context.data.map((bar, i, bars) => {
-		return {
-			...bar,
-			group: bar.group ?? bar.id ?? bar.name,
-		};
-	});
 	if (loading) return <BarsVerticalLoading />;
 
-	const dataset = context.domain.x.map(({ tick, coordinate }) => {
-		return {
-			domain: { tick, coordinate },
-			groups: ObjectUtils.groupBy(
-				bars
-					.filter((b) => b.data.some(({ x }) => x === tick))
-					.flatMap((bar) => {
-						const d = bar.data.find(({ x }) => x === tick);
-						if (!d) return [];
-						return {
-							...bar,
-							data: d,
-						};
-					}),
-				({ group }) => group,
-			),
-		};
-	});
-
-	const uniqueBars = dataset.reduce((total, { groups }) => total + Object.keys(groups).length, 0);
-	const barWidth = Math.floor((context.viewbox.x * (size / 100)) / uniqueBars);
-
-	const dset = dataset
-		.flatMap(({ domain: { coordinate }, groups }) => {
-			return Object.entries(groups).flatMap(([_, bars], groupIndex) => {
-				return bars
+	const yForValue = CoordinatesUtils.yCoordinateFor(context);
+	const bars = context.data.flatMap((bar) => bar.data.map((xy) => ({ ...bar, group: bar.group ?? bar.id ?? bar.name, data: xy }))); // bars excl segments.
+	const BAR_WIDTH = Math.floor((context.viewbox.x * (size / 100)) / new Set(bars.map((bar) => `${bar.data.x}|${bar.group}`)).size);
+	/* dataset is a single array of rect's with x1/x2/y1/y2; rect can be a segment of a bar (grouped) or a bar itself */
+	const dataset = context.domain.x
+		.flatMap(({ tick, coordinate }) => {
+			return Object.entries(
+				ObjectUtils.groupBy(
+					bars.filter((d) => d.data.x === tick),
+					({ group }) => group,
+				),
+			).flatMap(([, barsForGroup], i, groups) => {
+				const x1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
+				return barsForGroup
 					?.map((bar) => {
-						const x1 = coordinate + barWidth * groupIndex - (barWidth * Object.keys(groups).length) / 2;
 						return {
 							...bar,
 							x1,
-							x2: x1 + barWidth,
+							x2: x1 + BAR_WIDTH,
 							y1: yForValue(bar.data.y),
 							y2: context.viewbox.y,
 						};
 					})
-					.map(({ x1, x2, y1, y2, ...bar }, index, segments) => {
-						const previousY = segments.slice(0, index).reduce((acc, { y1 }) => acc + context.viewbox.y - y1, 0);
+					.map((segment, i, segments) => {
+						const previousY = segments.slice(0, i).reduce((acc, { y1 }) => acc + context.viewbox.y - y1, 0);
 						return {
-							...bar,
-							x1,
-							x2,
+							...segment,
 							y1: context.viewbox.y - previousY,
-							y2: y1 - previousY,
-							radius: index === segments.length - 1 ? radius : undefined,
+							y2: segment.y1 - previousY,
+							radius: i === segments.length - 1 ? radius : undefined,
 						};
 					});
 			});
 		})
-		.filter((bar) => !!bar);
+		.filter((x) => !!x);
 
 	return (
 		<>
 			<svg
+				{...rest}
 				viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
-				className={cx("[grid-area:graph] h-full w-full", className)}
+				className={cx("[grid-area:graph] h-full w-full bars", className)}
 				preserveAspectRatio={"none"}
 			>
-				{dset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
 					return (
 						<Rect
 							key={index}
@@ -101,12 +80,13 @@ export const VerticalBars = ({ children, size = 45, radius = 0, glow, className,
 							stroke={bar.stroke}
 							radius={bar.radius}
 							glow={glow}
+							className={"bars__rect"}
 						/>
 					);
 				})}
 				{children}
 			</svg>
-			{dset.map((bar, i) => {
+			{dataset.map((bar, i) => {
 				const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
 				const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100) + "%";
 				const breakpoints = [2, 4, 6, 8, 10, 15, 20];
@@ -116,13 +96,13 @@ export const VerticalBars = ({ children, size = 45, radius = 0, glow, className,
 						x={{ coordinate: bar.x1 }}
 						y={{ coordinate: bar.y2 }}
 						key={i}
-						className={"@container-[size] text-center"}
+						className={"bars__label @container-[size] text-center"}
 						style={{ width, height }}
 					>
 						<div className={"h-full w-full relative"}>
 							<span
 								className={cx(
-									"invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+									"bars__label_text invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
 									breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
 									breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
 									breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
@@ -131,6 +111,7 @@ export const VerticalBars = ({ children, size = 45, radius = 0, glow, className,
 									breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
 									breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
 								)}
+								style={{ color: ColorUtils.textFor(String(bar.fill)) }}
 							>
 								{bar.data.y}
 							</span>

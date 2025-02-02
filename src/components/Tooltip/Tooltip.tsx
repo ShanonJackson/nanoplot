@@ -6,7 +6,7 @@ import { Position, useTether } from "../../hooks/use-tether";
 import { Portal } from "../Portal/Portal";
 import { useOnClickOutside } from "../../hooks/use-on-click-outside";
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
-import { Popup } from "@/components/Tooltip/Popup";
+import { Popup } from "./Popup";
 
 export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onDragStart" | "onDragEnd" | "onDrag" | "ref"> & {
 	active?: boolean;

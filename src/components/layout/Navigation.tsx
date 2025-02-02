@@ -1,10 +1,9 @@
 "use client";
-
-import { cx } from "@/utils/cx/cx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Routes } from "@/utils/routes/routes";
 import Image from "next/image";
+import { cx } from "../../utils/cx/cx";
+import { Routes } from "../../utils/routes/routes";
 
 type Props = {};
 

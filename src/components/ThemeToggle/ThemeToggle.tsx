@@ -1,7 +1,6 @@
 "use client";
-
-import { useMounted } from "@/hooks/use-mounted";
 import { useRouter } from "next/navigation";
+import { useMounted } from "../../hooks/use-mounted";
 
 export function ThemeToggle() {
 	const mounted = useMounted();

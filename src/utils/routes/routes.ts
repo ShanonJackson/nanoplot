@@ -1,47 +1,47 @@
 import {
-	WorldmapIcon,
-	PieGraphIcon,
-	ScatterGraphIcon,
-	LineGraphIcon,
 	BarGraphIcon,
+	LineGraphIcon,
+	PieGraphIcon,
 	RadarGraphtIcon,
+	ScatterGraphIcon,
 	SunburstCartIcon,
-} from "@/assets/icons";
+	WorldmapIcon,
+} from "../../assets/icons";
 
 export const Routes = [
 	{
 		name: "Pie Graph",
-		href: "/pie-graph",
+		href: "/graphs/pie",
 		icon: PieGraphIcon,
 	},
 	{
 		name: "Line Graph",
-		href: "/line-graph",
+		href: "/graphs/lines",
 		icon: LineGraphIcon,
 	},
 	{
 		name: "Bar Graph",
-		href: "/bar-graph",
+		href: "/graphs/bars",
 		icon: BarGraphIcon,
 	},
 	{
 		name: "Scatter Graph",
-		href: "/scatter-graph",
+		href: "/graphs/scatter",
 		icon: ScatterGraphIcon,
 	},
 	{
 		name: "Radar Graph",
-		href: "/radar-graph",
+		href: "/graphs/radar",
 		icon: RadarGraphtIcon,
 	},
 	{
 		name: "Worldmap",
-		href: "/worldmap",
+		href: "/graphs/worldmap",
 		icon: WorldmapIcon,
 	},
 	{
 		name: "Sunburst",
-		href: "/sunburst-graph",
+		href: "/graphs/sunburst",
 		icon: SunburstCartIcon,
 	},
 ];

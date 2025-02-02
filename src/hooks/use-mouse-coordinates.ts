@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
-import { MathUtils } from "@/utils/math/math";
+import { MathUtils } from "../utils/math/math";
 
 export const useMouseCoordinates = (
 	ref: RefObject<SVGSVGElement | null>,

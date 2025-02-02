@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
-import { GraphContextServer, useGraphServer } from "@/hooks/use-graph/use-server-graph";
-import { GraphContextClient, useGraphClient } from "@/hooks/use-graph/use-client-graph";
+import { GraphContextServer, useGraphServer } from "./use-server-graph";
+import { GraphContextClient, useGraphClient } from "./use-client-graph";
 
 export type XYDataset = Array<{
 	id?: string /* name is id, if undefined */;

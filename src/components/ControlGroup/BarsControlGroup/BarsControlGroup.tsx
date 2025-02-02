@@ -1,10 +1,9 @@
 import { ComponentProps, FC } from "react";
 import { ControlGroup } from "../ControlGroup";
 import { Control } from "../../Docs/Control/Control";
-import { Bars } from "@/components/Bars/Bars";
-import { SliderControl } from "@/components/Docs/Control/components/SliderControl/SliderControl";
-import { BooleanControl } from "@/components/Docs/Control/components/BooleanControl/BooleanControl";
-import { VerticalBars } from "@/components/Bars/components/VerticalBars";
+import { VerticalBars } from "../../Bars/components/VerticalBars";
+import { BooleanControl } from "../../Docs/Control/components/BooleanControl/BooleanControl";
+import { SliderControl } from "../../Docs/Control/components/SliderControl/SliderControl";
 
 type Props = {
 	state: ComponentProps<typeof VerticalBars>;

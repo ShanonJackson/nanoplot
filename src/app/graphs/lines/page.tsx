@@ -1,21 +1,19 @@
 "use client";
-import { Lines } from "@/components/Lines/Lines";
-import { Legend } from "@/components/Legend/Legend";
-import { GridLines } from "@/components/GridLines/GridLines";
-import { LegendControlGroup } from "@/components/ControlGroup/LegendControlGroup/LegendControlGroup";
-import { GridLinesControlGroup } from "@/components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { ComponentProps, useState } from "react";
-import { XAxis } from "@/components/XAxis/XAxis";
-import { YAxis } from "@/components/YAxis/YAxis";
-import { Graph } from "@/components/Graph/Graph";
-import { overlay } from "@/components/Overlay/Overlay";
-import { LinesControlGroup } from "@/components/ControlGroup/LinesControlGroup/LinesControlGroup";
-import { GraphPanel } from "@/components/Panels/GraphPanel";
-import { ControlPanel } from "@/components/Panels/ControlPanel";
-import { OverlayRect } from "../../components/Overlay/OverlayRect";
-import { XAxisControlGroup } from "@/components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
-import { LinesTimeslotExample, LinesTimeslotExampleCode } from "@/app/line-graph/components/LinesTimeslotExample";
-import { YAxisControlGroup } from "@/components/ControlGroup/YAxisControGroup/YAxisControlGroup";
+import { Lines } from "../../../components/Lines/Lines";
+import { GridLines } from "../../../components/GridLines/GridLines";
+import { XAxis } from "../../../components/XAxis/XAxis";
+import { YAxis } from "../../../components/YAxis/YAxis";
+import { Legend } from "../../../components/Legend/Legend";
+import { ControlPanel } from "../../../components/Panels/ControlPanel";
+import { LinesControlGroup } from "../../../components/ControlGroup/LinesControlGroup/LinesControlGroup";
+import { LegendControlGroup } from "../../../components/ControlGroup/LegendControlGroup/LegendControlGroup";
+import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
+import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
+import { GraphPanel } from "../../../components/Panels/GraphPanel";
+import { LinesTimeslotExample, LinesTimeslotExampleCode } from "./components/LinesTimeslotExample";
+import { Graph } from "../../../components/Graph/Graph";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -25,7 +23,7 @@ export default function Page() {
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
 
 	return (
-		<div className={"h-full max-h-screen grid grid-cols-1 grid-rows-2 gap-4 sm:grid-cols-[40%_1fr]"}>
+		<>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LinesControlGroup state={line} onChange={setLine} />
@@ -68,7 +66,7 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-		</div>
+		</>
 	);
 }
 
