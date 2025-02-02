@@ -49,7 +49,7 @@ export default function Page() {
 					},
 				]}
 			>
-				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }} interactions={{ pinned: ["Josh - Hours gamed"] }}>
+				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis

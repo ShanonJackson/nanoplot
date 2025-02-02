@@ -56,7 +56,7 @@ export const LinesSiteTrafficPinned = () => {
 			<Lines curve={"natural"} />
 			<Lines.Tooltip />
 			<XAxis
-				ticks={{ from: "min - 1 months", jumps: "every 1 months" }}
+				ticks={{ jumps: "every 1 months" }}
 				display={(x) => {
 					const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 					if (typeof x === "number" || typeof x === "string") return null;

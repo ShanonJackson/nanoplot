@@ -90,34 +90,4 @@ const MOCK_DATA = [
 			{ x: "Apr", y: 30_000 },
 		],
 	},
-	{
-		name: "Gen A",
-		group: "generation",
-		data: [
-			{ x: "Jan", y: 45_000 },
-			{ x: "Feb", y: 10_000 },
-			{ x: "Mar", y: 15_000 },
-			{ x: "Apr", y: 30_000 },
-		],
-	},
-	{
-		name: "Gen B",
-		group: "generation",
-		data: [
-			{ x: "Jan", y: 45_000 },
-			{ x: "Feb", y: 10_000 },
-			{ x: "Mar", y: 15_000 },
-			{ x: "Apr", y: 30_000 },
-		],
-	},
-	{
-		name: "Gen C",
-		group: "generation",
-		data: [
-			{ x: "Jan", y: 45_000 },
-			{ x: "Feb", y: 10_000 },
-			{ x: "Mar", y: 15_000 },
-			{ x: "Apr", y: 30_000 },
-		],
-	},
 ];
