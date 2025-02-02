@@ -14,6 +14,8 @@ import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControG
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { LinesTimeslotExample, LinesTimeslotExampleCode } from "./components/LinesTimeslotExample";
 import { Graph } from "../../../components/Graph/Graph";
+import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTraffic";
+import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
@@ -32,8 +34,22 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel examples={[{ name: "Lines timeslot", code: LinesTimeslotExampleCode, component: LinesTimeslotExample }]}>
-				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+			<GraphPanel
+				examples={[
+					{ name: "Timeseries with 'hovered' and curve 'natural'", code: LinesSiteTrafficCode, component: LinesSiteTraffic },
+					{
+						name: "Timeseries with 'pinned' and curve 'natural'",
+						code: LinesSiteTrafficPinnedCode,
+						component: LinesSiteTrafficPinned,
+					},
+					{
+						name: "Timeseries with timeslot",
+						code: LinesTimeslotExampleCode,
+						component: LinesTimeslotExample,
+					},
+				]}
+			>
+				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }} interactions={{ pinned: ["Josh - Hours gamed"] }}>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis

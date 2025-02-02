@@ -44,7 +44,7 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 			preserveAspectRatio={"none"}
 			className={cx("h-full w-full [grid-area:graph]", className)}
 		>
-			{lines.map(({ id, stroke, data, fill }, i) => {
+			{lines.map(({ id, stroke, data }, i) => {
 				const path = CurveUtils[curve](data);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled);
@@ -66,9 +66,9 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 							vectorEffect={"non-scaling-stroke"}
 							strokeWidth={1.5}
 						/>
-						{filled && (
+						{filled && data[0] && (
 							<path
-								d={path + `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} Z`}
+								d={path + `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} L ${data[0].x} ${viewbox.y} Z`}
 								stroke={stroke}
 								fill={filled ? `url(#${identifier})` : undefined}
 								strokeOpacity={0}

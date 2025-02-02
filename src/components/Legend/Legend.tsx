@@ -14,6 +14,9 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 	const context = useGraph();
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	const column = useGraphColumn(context);
+	const {
+		interactions: { pinned, hovered },
+	} = context;
 	return (
 		<Element
 			className={cx(
@@ -29,11 +32,15 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 			)}
 			style={position === "top" || position === "bottom" ? { gridColumn: column } : undefined}
 		>
-			{context.data?.map(({ name, fill }, i) => {
+			{context.data?.map(({ id, name, fill }, i) => {
+				const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
 				return (
 					<div key={i} className={"flex items-center"}>
-						<div className={"size-4 mr-1 rounded-full"} style={{ background: String(fill) }} />
-						<div className={"text-nowrap"}>{name}</div>
+						<div
+							className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
+							style={disabled ? undefined : { background: String(fill) }}
+						/>
+						<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
 					</div>
 				);
 			})}

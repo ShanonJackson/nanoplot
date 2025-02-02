@@ -12,7 +12,7 @@ export const LinesTimeslotExample = () => {
 			gap={{ right: 35, left: 10, top: 10, bottom: 10 }}
 			data={[
 				{
-					name: "Josh - Hours gamed",
+					name: "Cars",
 					data: [
 						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
 						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
