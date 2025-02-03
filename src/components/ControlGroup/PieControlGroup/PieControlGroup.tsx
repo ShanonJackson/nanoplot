@@ -47,7 +47,7 @@ export const PieControlGroup: FC<Props> = ({ state, onChange }) => {
 			</Control>
 			<Control name={"donut"} type={"boolean"}>
 				<BooleanControl
-					value={state.donut}
+					value={Boolean(state.donut)}
 					onChange={(donut) => onControlChange({ ...state, donut })}
 					description={"Renders a donut chart instead of a pie chart"}
 				/>
