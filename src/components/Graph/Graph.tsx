@@ -68,20 +68,21 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 									...dp,
 								};
 							})
-						: data.map((dp, i, dps) => {
-								const fill = (() => {
-									if (dp.fill === false) return "transparent";
-									if (dp.fill === true) return dp.stroke ?? ctx.colorFor(i, dps.length);
-									return dp.fill ?? dp.stroke ?? ctx.colorFor(i, dps.length);
-								})();
-
-								return {
-									id: dp.id ?? dp.name,
-									stroke: fill && !dp.stroke ? fill : (dp.stroke ?? ctx.colorFor(i, dps.length)),
-									fill: fill,
-									...dp,
-								};
-							}),
+						: [...data]
+								.sort((a, b) => Number(b.value) - Number(a.value))
+								.map((dp, i, dps) => {
+									const fill = (() => {
+										if (dp.fill === false) return "transparent";
+										if (dp.fill === true) return dp.stroke ?? ctx.colorFor(i, dps.length);
+										return dp.fill ?? dp.stroke ?? ctx.colorFor(i, dps.length);
+									})();
+									return {
+										id: dp.id ?? dp.name,
+										stroke: fill && !dp.stroke ? fill : (dp.stroke ?? ctx.colorFor(i, dps.length)),
+										fill: fill,
+										...dp,
+									};
+								}),
 				}}
 			>
 				{children}

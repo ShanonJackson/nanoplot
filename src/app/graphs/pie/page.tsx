@@ -46,10 +46,6 @@ const data = ${JSON.stringify(MOCK_DATA, null, 4)};
 
 const MOCK_DATA = [
 	{
-		name: "python",
-		value: 283,
-	},
-	{
 		name: "elixir",
 		value: 333,
 	},
@@ -64,5 +60,9 @@ const MOCK_DATA = [
 	{
 		name: "haskell",
 		value: 192,
+	},
+	{
+		name: "python",
+		value: 283,
 	},
 ];
