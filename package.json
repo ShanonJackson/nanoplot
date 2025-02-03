@@ -77,7 +77,7 @@
 		"test": "bun test --watch",
 		"test:ci": "bun test --ci",
 		"cypress": "cypress open",
-		"prepare": "bun run build:library"
+		"postinstall": "bun run build:library"
 	},
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
@@ -108,6 +108,7 @@
 		"react-dom": "19.0.0",
 		"sass": "^1.80.6",
 		"tailwindcss": "^3.4.17",
+		"tailwindcss-scoped-preflight": "^3.4.10",
 		"typescript": "5.7.2"
 	}
 }
