@@ -10,6 +10,11 @@ import {
 
 export const Routes = [
 	{
+		name: "Bar Graph",
+		href: "/graphs/bars",
+		icon: BarGraphIcon,
+	},
+	{
 		name: "Pie Graph",
 		href: "/graphs/pie",
 		icon: PieGraphIcon,
@@ -18,11 +23,6 @@ export const Routes = [
 		name: "Line Graph",
 		href: "/graphs/lines",
 		icon: LineGraphIcon,
-	},
-	{
-		name: "Bar Graph",
-		href: "/graphs/bars",
-		icon: BarGraphIcon,
 	},
 	{
 		name: "Scatter Graph",

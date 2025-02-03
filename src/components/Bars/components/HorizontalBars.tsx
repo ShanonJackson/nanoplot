@@ -1,10 +1,8 @@
 import React from "react";
-import { ColorUtils } from "../../../utils/color/color";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
-import { PathUtils } from "../../../utils/path/path";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
 

@@ -1,10 +1,8 @@
-import React from "react";
-import { ReactNode, useId } from "react";
+import React, { ReactNode, useId } from "react";
 import { useGraph } from "../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../utils/graph/graph";
 import { PieLoading } from "./components/PieLoading";
 import { PieEmpty } from "./components/PieEmpty";
-import { ColorUtils } from "../../utils/color/color";
 import { MathUtils } from "../../utils/math/math";
 import { PathUtils } from "../../utils/path/path";
 import { cx } from "../../utils/cx/cx";
@@ -12,7 +10,7 @@ import { overlay } from "../Overlay/Overlay";
 
 type Props = {
 	loading?: boolean;
-	donut?: boolean;
+	donut?: boolean | number /* radius as percentage */;
 	labels?: boolean;
 	className?: string;
 	children?: ReactNode;
@@ -26,7 +24,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 	if (!GraphUtils.isSegmentData(data)) return null;
 
 	const PIE_RADIUS = viewbox.x * 0.3; /* 30% */
-	const DONUT_RADIUS = viewbox.x * 0.16; /* 16% */
+	const DONUT_RADIUS = viewbox.x * (typeof donut === "number" ? donut / 100 : 0.16); /* 16% */
 	const CX = viewbox.x / 2;
 	const CY = viewbox.y / 2;
 	const isSinglePie = data.length === 1;

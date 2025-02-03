@@ -10,7 +10,6 @@ type Props = {
 export const ExamplesPanel: FC<Props> = ({ active, examples, onClick }) => {
 	return (
 		<div className={"border-[1px] border-dotted border-black dark:border-white"}>
-			<h4>Examples</h4>
 			{[undefined, ...examples].map((example, i) => {
 				const isActive = example === undefined ? !active : active === example.name;
 				return (

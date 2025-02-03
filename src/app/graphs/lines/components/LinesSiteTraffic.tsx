@@ -9,8 +9,8 @@ import { Legend } from "nanoplot/Legend";
 export const LinesSiteTraffic = () => {
 	return (
 		<Graph
-			gap={{ right: 35, left: 10, top: 10, bottom: 10 }}
-			interactions={{ hovered: ["New Users", "Registered Users"] }}
+			gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+			interactions={{ hovered: ["Registered Users"] }}
 			data={[
 				{
 					name: "New Users",
@@ -79,7 +79,7 @@ import { Legend } from "nanoplot/Legend";
 export const LinesSiteTraffic = () => {
 	return (
 		<Graph
-			gap={{ right: 35, left: 10, top: 10, bottom: 10 }}
+			gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
 			interactions={{ hovered: ["New Users", "Registered Users"] }}
 			data={[
 				{

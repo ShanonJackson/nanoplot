@@ -18,11 +18,11 @@ import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTr
 import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({});
-	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true, vertical: true });
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
-	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
+	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
 
 	return (
 		<>
@@ -36,9 +36,13 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel
 				examples={[
-					{ name: "Timeseries with 'hovered' and curve 'natural'", code: LinesSiteTrafficCode, component: LinesSiteTraffic },
 					{
-						name: "Timeseries with 'pinned' and curve 'natural'",
+						name: "Timeseries with 'Registered Users' interactions: 'hovered'",
+						code: LinesSiteTrafficCode,
+						component: LinesSiteTraffic,
+					},
+					{
+						name: "Timeseries with 'New Users' interactions: 'pinned'",
 						code: LinesSiteTrafficPinnedCode,
 						component: LinesSiteTrafficPinned,
 					},
@@ -49,7 +53,47 @@ export default function Page() {
 					},
 				]}
 			>
-				<Graph data={DATA} gap={{ top: 15, left: 15, right: 36, bottom: 15 }}>
+				<Graph
+					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+					data={[
+						{
+							name: "New Users",
+							stroke: "#FF4B4B",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+							],
+						},
+						{
+							name: "Registered Users",
+							stroke: "#33D4FF",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+							],
+						},
+					]}
+				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
@@ -64,49 +108,18 @@ export default function Page() {
 					<GridLines {...gridline} />
 					<Lines {...line} />
 					<Lines.Tooltip />
-					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
-						{...xaxis}
 						ticks={{ jumps: "every 1 months" }}
-						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
-						description={
-							xaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-							)
-						}
 						display={(x) => {
+							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+							return months[x.getMonth()];
 						}}
 					/>
+					{legend.position === "right" && <Legend {...legend} />}
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
 		</>
 	);
 }
-
-const DATA = [
-	{
-		name: "Josh - Hours gamed",
-		data: [
-			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-		],
-	},
-	{
-		name: "Sally - Hours gamed",
-		data: [
-			{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 5.25 },
-			{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 10 },
-			{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 25.4 },
-			{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 36 },
-			{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 40 },
-			{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 35 },
-		],
-	},
-];

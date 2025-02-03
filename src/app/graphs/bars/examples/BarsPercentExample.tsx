@@ -3,10 +3,10 @@ import { Bars } from "nanoplot/Bars";
 import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
 import { GridLines } from "nanoplot/GridLines";
-import { Legend } from "nanoplot/Legend";
 import "nanoplot/styles.css";
+import { Legend } from "nanoplot/Legend";
 
-export const StackedBarsExample = () => {
+export const BarsPercentExample = () => {
 	return (
 		<Graph
 			data={[
@@ -14,81 +14,72 @@ export const StackedBarsExample = () => {
 					name: "Male",
 					group: "gender",
 					data: [
-						{ x: "Jan", y: 5_000 },
-						{ x: "Feb", y: 20_000 },
-						{ x: "Mar", y: 45_000 },
-						{ x: "Apr", y: 20_000 },
+						{ x: "Jan", y: 10 },
+						{ x: "Feb", y: 70 },
+						{ x: "Mar", y: 80 },
+						{ x: "Apr", y: 50 },
 					],
 				},
 				{
 					name: "Female",
 					group: "gender",
 					data: [
-						{ x: "Jan", y: 45_000 },
-						{ x: "Feb", y: 10_000 },
-						{ x: "Mar", y: 15_000 },
-						{ x: "Apr", y: 30_000 },
+						{ x: "Jan", y: 90 },
+						{ x: "Feb", y: 30 },
+						{ x: "Mar", y: 20 },
+						{ x: "Apr", y: 50 },
 					],
 				},
 				{
-					name: "Gen Z",
+					name: "Younger",
 					group: "generation",
 					data: [
-						{ x: "Jan", y: 5500 },
-						{ x: "Feb", y: 10_000 },
-						{ x: "Mar", y: 10_000 },
-						{ x: "Apr", y: 10_000 },
+						{ x: "Jan", y: 33.33 },
+						{ x: "Feb", y: 33.33 },
+						{ x: "Mar", y: 33.33 },
+						{ x: "Apr", y: 33.33 },
 					],
 				},
 				{
-					name: "Millennials",
+					name: "Middle aged",
 					group: "generation",
 					data: [
-						{ x: "Jan", y: 40_000 },
-						{ x: "Feb", y: 40_000 },
-						{ x: "Mar", y: 40_000 },
-						{ x: "Apr", y: 40_000 },
+						{ x: "Jan", y: 33.33 },
+						{ x: "Feb", y: 33.33 },
+						{ x: "Mar", y: 33.33 },
+						{ x: "Apr", y: 33.33 },
 					],
 				},
 				{
-					name: "Boomers",
+					name: "Older",
 					group: "generation",
 					data: [
-						{ x: "Jan", y: 50_000 },
-						{ x: "Feb", y: 50_000 },
-						{ x: "Mar", y: 50_000 },
-						{ x: "Apr", y: 50_000 },
+						{ x: "Jan", y: 33.33 },
+						{ x: "Feb", y: 33.33 },
+						{ x: "Mar", y: 33.33 },
+						{ x: "Apr", y: 33.33 },
 					],
 				},
 			]}
 			gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 		>
-			<Legend position={"top"} />
-			<YAxis />
+			<YAxis ticks={{ to: 100 }} display={(y) => `${y}%`} />
 			<GridLines border horizontal />
-			<Bars
-				labels={(y) =>
-					new Intl.NumberFormat("en", {
-						notation: "compact",
-						compactDisplay: "short",
-					}).format(Number(y))
-				}
-			/>
+			<Bars labels={(y) => `${y}%`} />
 			<XAxis />
 		</Graph>
 	);
 };
 
-export const StackedBarsExampleCode = `
+export const BarsPercentExampleCode = `
 import { Graph } from "nanoplot/Graph";
 import { Bars } from "nanoplot/Bars";
 import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
 import { GridLines } from "nanoplot/GridLines";
-import { Legend } from "nanoplot/Legend";
 import "nanoplot/styles.css";
 
-export const StackedBarsExample = () => {
+export const BarsPercentExample = () => {
 	return (
 		<Graph
 			data={[
@@ -113,7 +104,7 @@ export const StackedBarsExample = () => {
 					],
 				},
 				{
-					name: "Gen Z",
+					name: "Younger",
 					group: "generation",
 					data: [
 						{ x: "Jan", y: 5500 },
@@ -123,7 +114,7 @@ export const StackedBarsExample = () => {
 					],
 				},
 				{
-					name: "Millennials",
+					name: "Middle aged",
 					group: "generation",
 					data: [
 						{ x: "Jan", y: 40_000 },
@@ -133,7 +124,7 @@ export const StackedBarsExample = () => {
 					],
 				},
 				{
-					name: "Boomers",
+					name: "Older",
 					group: "generation",
 					data: [
 						{ x: "Jan", y: 50_000 },
@@ -144,7 +135,6 @@ export const StackedBarsExample = () => {
 				},
 			]}
 		>
-			<Legend position={"top"} />
 			<YAxis />
 			<GridLines border horizontal />
 			<Bars />

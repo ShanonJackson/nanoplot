@@ -107,8 +107,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 						x2={xForValue(+closest)}
 						y1={0}
 						y2={viewbox.y}
-						stroke={"white"}
-						fill={"white"}
+						className={"stroke-black dark:stroke-white"}
 						strokeWidth={4}
 					/>
 				)}

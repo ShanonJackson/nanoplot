@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { Navigation } from "../components/layout/Navigation";
-import HeaderPage from "../components/layout/Header-page";
+import { Navigation } from "../components/Navigation/Navigation";
+import { NavigationHeader } from "../components/Navigation/NavigationHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,13 +22,13 @@ export default async function RootLayout({
 				data-theme={theme}
 				className={
 					theme +
-					" nanoplot h-full w-full md:overflow-hidden sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200"
+					" nanoplot h-full w-full sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200"
 				}
 			>
-				<div className={"flex w-screen h-auto md:overflow-hidden sm:overflow-unset"}>
+				<div className={"flex w-full h-auto sm:overflow-unset"}>
 					<Navigation />
-					<div className={"w-full h-full"}>
-						<HeaderPage />
+					<div className={"w-full flex flex-col"}>
+						<NavigationHeader />
 						{children}
 					</div>
 				</div>

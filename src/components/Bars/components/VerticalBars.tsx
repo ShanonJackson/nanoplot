@@ -15,10 +15,11 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 	loading?: boolean;
 	glow?: boolean;
 	size?: number;
+	labels?: boolean | ((value: string | number | Date) => ReactNode);
 	radius?: number;
 };
 
-export const VerticalBars = ({ children, size = 50, radius = 0, glow, className, loading, ...rest }: Props) => {
+export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, glow, className, loading, ...rest }: Props) => {
 	const context = useGraph();
 
 	if (!GraphUtils.isXYData(context.data)) return null;
@@ -86,39 +87,41 @@ export const VerticalBars = ({ children, size = 50, radius = 0, glow, className,
 				})}
 				{children}
 			</svg>
-			{dataset.map((bar, i) => {
-				const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
-				const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100) + "%";
-				const breakpoints = [2, 4, 6, 8, 10, 15, 20];
-				const breakpoint = breakpoints.find((bp) => bp >= bar.data.y.toString().length);
-				return (
-					<overlay.div
-						x={{ coordinate: bar.x1 }}
-						y={{ coordinate: bar.y2 }}
-						key={i}
-						className={"bars__label @container-[size] text-center"}
-						style={{ width, height }}
-					>
-						<div className={"h-full w-full relative"}>
-							<span
-								className={cx(
-									"bars__label_text invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
-									breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
-									breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
-									breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
-									breakpoint === 8 && "@[width:8ch|height:1.25em]:!visible",
-									breakpoint === 10 && "@[width:10ch|height:1.25em]:!visible",
-									breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
-									breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
-								)}
-								style={{ color: ColorUtils.textFor(String(bar.fill)) }}
-							>
-								{bar.data.y}
-							</span>
-						</div>
-					</overlay.div>
-				);
-			})}
+			{labels &&
+				dataset.map((bar, i) => {
+					const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
+					const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100) + "%";
+					const label = (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
+					const breakpoints = [2, 4, 6, 8, 10, 15, 20];
+					const breakpoint = breakpoints.find((bp) => bp >= label.toString().length);
+					return (
+						<overlay.div
+							x={{ coordinate: bar.x1 }}
+							y={{ coordinate: bar.y2 }}
+							key={i}
+							className={"bars__label @container-[size] text-center"}
+							style={{ width, height }}
+						>
+							<div className={"h-full w-full relative"}>
+								<span
+									className={cx(
+										"text-xs bars__label_text invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+										breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
+										breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
+										breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
+										breakpoint === 8 && "@[width:8ch|height:1.25em]:!visible",
+										breakpoint === 10 && "@[width:10ch|height:1.25em]:!visible",
+										breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
+										breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
+									)}
+									style={{ color: ColorUtils.textFor(String(bar.fill)) }}
+								>
+									{label}
+								</span>
+							</div>
+						</overlay.div>
+					);
+				})}
 		</>
 	);
 };

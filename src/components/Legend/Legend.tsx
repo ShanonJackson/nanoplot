@@ -1,6 +1,5 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
-import { ReactNode } from "react";
 import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 
@@ -17,6 +16,7 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 	const {
 		interactions: { pinned, hovered },
 	} = context;
+
 	return (
 		<Element
 			className={cx(
@@ -32,18 +32,24 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 			)}
 			style={position === "top" || position === "bottom" ? { gridColumn: column } : undefined}
 		>
-			{context.data?.map(({ id, name, fill }, i) => {
-				const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
-				return (
-					<div key={i} className={"flex items-center"}>
-						<div
-							className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
-							style={disabled ? undefined : { background: String(fill) }}
-						/>
-						<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
-					</div>
-				);
-			})}
+			{context.data
+				.map((dp) => ({ ...dp, group: dp.group ?? "" }))
+				.sort((a, b) => a.group.localeCompare(b.group))
+				.map(({ id, name, fill, ...datapoint }, i, datapoints) => {
+					const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
+					const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
+
+					return (
+						<div key={i} className={"flex items-center"}>
+							<div
+								className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
+								style={disabled ? undefined : { background: String(fill) }}
+							/>
+							<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
+							{isLastInGroup && <div className={"h-[16px] bg-gray-700 w-[1px] ml-[10px]"} />}
+						</div>
+					);
+				})}
 		</Element>
 	);
 };

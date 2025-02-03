@@ -11,11 +11,13 @@ type Jumps = "auto" | number;
 type Props = {
 	ticks?: { from?: From; to?: To; jumps?: Jumps };
 	title?: ReactNode;
+	display?: (tick: string | number | Date) => ReactNode;
 	description?: ReactNode;
 };
 
-export const YAxis = ({ title, description }: Props) => {
+export const YAxis = ({ title, description, display }: Props) => {
 	const context = useGraph();
+	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
 		<Graph.Column className={"flex relative text-xs font-normal select-none"}>
 			{(title || description) && (
@@ -26,15 +28,20 @@ export const YAxis = ({ title, description }: Props) => {
 			)}
 			<div className={"mr-2"}>
 				{context.domain.y.map(({ tick, coordinate }, i) => {
+					const label = (() => {
+						if (display) return display(tick);
+						if (typeof tick === "number") return formatter.format(tick);
+						return tick.toString();
+					})();
 					return (
 						<React.Fragment key={i}>
 							<div
 								className={`absolute right-2 -translate-y-1/2 text-gray-700 dark:text-gray-300`}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
-								{typeof tick === "number" ? +(Math.round(+(tick.toString() + "e+2")) + "e-2") : tick.toString()}
+								{label}
 							</div>
-							<div className={`opacity-0`}>{typeof tick === "number" ? tick.toFixed(2) : tick.toString()}</div>
+							<div className={`opacity-0`}>{label}</div>
 						</React.Fragment>
 					);
 				})}
