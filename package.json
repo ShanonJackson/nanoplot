@@ -1,6 +1,6 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.24",
+	"version": "0.0.25",
 	"private": false,
 	"exports": {
 		"./styles.css": "./dist/index.css",
@@ -76,7 +76,8 @@
 		"start": "next start",
 		"test": "bun test --watch",
 		"test:ci": "bun test --ci",
-		"cypress": "cypress open"
+		"cypress": "cypress open",
+		"prepare": "bun run build:library"
 	},
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
@@ -98,7 +99,7 @@
 		"esbuild-plugin-sass": "^1.0.1",
 		"esbuild-sass-plugin": "^3.3.1",
 		"husky": "^9.1.7",
-		"nanoplot": "^0.0.24",
+		"nanoplot": "0.0.25",
 		"next": "15.0.3",
 		"postcss": "^8.4.49",
 		"postcss-modules": "^6.0.1",

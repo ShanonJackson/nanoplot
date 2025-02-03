@@ -37,6 +37,7 @@ export type GraphContext = {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;
 		y: Array<{ coordinate: number; tick: string | number | Date }>;
 	};
+	colorFor: (index: number, datapoints: number) => string;
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
 };
 

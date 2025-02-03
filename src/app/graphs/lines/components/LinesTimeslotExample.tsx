@@ -34,9 +34,7 @@ export const LinesTimeslotExample = () => {
 				y2={0}
 				className={"bg-green-400/70 text-black text-xs py-4 rounded"}
 			>
-				<div className="transform -rotate-180 text-white text-xs py-4" style={{ writingMode: "vertical-rl" }}>
-					TRAFFIC BLOCKED
-				</div>
+				<div className="transform -rotate-180 text-white text-xs py-4 [writing-mode:vertical-rl]">TRAFFIC BLOCKED</div>
 			</overlay.rect>
 			<XAxis
 				ticks={{ jumps: "every 1 months" }}
@@ -86,7 +84,7 @@ export const LinesTimeslotExample = () => {
 				y2={0}
 				className={"bg-green-400/70 text-black text-xs py-4 rounded"}
 			>
-				<div className="transform -rotate-180 text-white text-xs py-4" style={{ writingMode: "vertical-rl" }}>
+				<div className="transform -rotate-180 text-white text-xs py-4 [writing-mode:vertical-rl]">
 					TRAFFIC BLOCKED
 				</div>
 			</overlay.rect>

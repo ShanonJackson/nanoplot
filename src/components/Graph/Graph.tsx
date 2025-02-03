@@ -24,30 +24,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 		id,
 		layout: { rows: "[graph] auto", columns: "[graph] auto" },
 		viewbox: { x: X_SCALE, y: Y_SCALE },
-		data: GraphUtils.isXYData(data)
-			? data.map((dp, i, dps) => {
-					/*
-						Properties that can't be defaulted.
-						fill: - Fill can't be defaulted because Line graph uses fill: undefined to determine if it should be filled or not.
-						group - Group can't be defaulted to 'name' or 'id' because legend separates 'groups' by a divider.
-					 */
-					return {
-						id: dp.id ?? dp.name,
-						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
-						fill:
-							dp.fill === true
-								? (dp.stroke ?? ColorUtils.colorFor(i, dps.length))
-								: (dp.fill ?? dp.stroke ?? ColorUtils.colorFor(i, dps.length)),
-						...dp,
-					};
-				})
-			: data.map((dp, i, dps) => {
-					return {
-						id: dp.id ?? dp.name,
-						stroke: dp.stroke ?? ColorUtils.colorFor(i, dps.length),
-						...dp,
-					};
-				}),
+		data: data,
 		gap: { top: gap?.top ?? 0, left: gap?.left ?? 0, right: gap?.right ?? 0, bottom: gap?.bottom ?? 0 },
 		attributes: {
 			className: "@container/graph nanoplot relative grid h-full w-full isolate",
@@ -56,6 +33,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 			y: DomainUtils.y.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 		},
+		colorFor: ColorUtils.colorFor,
 		interactions: { hovered: interactions?.hovered ?? [], pinned: interactions?.pinned ?? [] },
 	});
 
@@ -72,7 +50,42 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			}}
 			className={cx(ctx.attributes.className, className)}
 		>
-			<GraphContextProvider value={ctx}>{children}</GraphContextProvider>
+			<GraphContextProvider
+				value={{
+					...ctx,
+					data: GraphUtils.isXYData(data)
+						? data.map((dp, i, dps) => {
+								const fill = (() => {
+									if (dp.fill === false) return "transparent";
+									if (dp.fill === true) return dp.stroke ?? ctx.colorFor(i, dps.length);
+									return dp.fill ?? dp.stroke ?? ctx.colorFor(i, dps.length);
+								})();
+
+								return {
+									id: dp.id ?? dp.name,
+									stroke: fill && !dp.stroke ? fill : (dp.stroke ?? ctx.colorFor(i, dps.length)),
+									fill: fill,
+									...dp,
+								};
+							})
+						: data.map((dp, i, dps) => {
+								const fill = (() => {
+									if (dp.fill === false) return "transparent";
+									if (dp.fill === true) return dp.stroke ?? ctx.colorFor(i, dps.length);
+									return dp.fill ?? dp.stroke ?? ctx.colorFor(i, dps.length);
+								})();
+
+								return {
+									id: dp.id ?? dp.name,
+									stroke: fill && !dp.stroke ? fill : (dp.stroke ?? ctx.colorFor(i, dps.length)),
+									fill: fill,
+									...dp,
+								};
+							}),
+				}}
+			>
+				{children}
+			</GraphContextProvider>
 		</div>
 	);
 };

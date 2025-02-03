@@ -5,6 +5,8 @@ import { GraphUtils } from "../../../utils/graph/graph";
 import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
 import { PathUtils } from "../../../utils/path/path";
+import { ObjectUtils } from "../../../utils/object/object";
+import { Rect } from "./Rect";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
@@ -12,30 +14,46 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 	radius?: number;
 };
 
-export const HorizontalBars = ({ children, size = 30, radius = 0, className }: Props) => {
+export const HorizontalBars = ({ children, size = 50, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-
-	const bars = context.data.map((bar, i, bars) => {
-		return {
-			...bar,
-			id: bar.id ?? bar.name,
-			stroke: bar.stroke ?? ColorUtils.colorFor(i, bars.length),
-			fill: bar.fill === true ? (bar.stroke ?? ColorUtils.colorFor(i, bars.length)) : bar.fill,
-			bar: bar.group ?? bar.name,
-			data: bar.data.map((xy) => ({
-				x: xForValue(xy.x),
-				y: yForValue(xy.y),
-			})),
-		};
-	});
-
-	const barGap = context.viewbox.x / 100; // 16% gap
-	const barHeight = Math.floor(((context.viewbox.y - barGap) * size) / 1000);
-	const groups = [...new Set(bars.map((bar) => bar.group))];
+	const bars = context.data.flatMap((bar) => bar.data.map((xy) => ({ ...bar, group: bar.group ?? bar.id ?? bar.name, data: xy }))); // bars excl segments.
+	const BAR_WIDTH = Math.floor((context.viewbox.y * (size / 100)) / new Set(bars.map((bar) => `${bar.data.y}|${bar.group}`)).size);
+	/* dataset is a single array of rect's with x1/x2/y1/y2; rect can be a segment of a bar (grouped) or a bar itself */
+	const dataset = context.domain.y
+		.flatMap(({ tick, coordinate }) => {
+			return Object.entries(
+				ObjectUtils.groupBy(
+					bars.filter((d) => d.data.y === tick),
+					({ group }) => group,
+				),
+			).flatMap(([, barsForGroup], i, groups) => {
+				const y1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
+				return barsForGroup
+					?.map((bar) => {
+						return {
+							...bar,
+							x1: 0,
+							x2: xForValue(bar.data.x),
+							y1,
+							y2: y1 + BAR_WIDTH,
+						};
+					})
+					.map((segment, i, segments) => {
+						const previousX = segments.slice(0, i).reduce((acc, { x2 }) => acc + x2, 0);
+						return {
+							...segment,
+							x1: previousX,
+							x2: segment.x2 + previousX,
+							radius: i === segments.length - 1 ? radius : undefined,
+						};
+					});
+			});
+		})
+		.filter((x) => !!x);
 
 	return (
 		<svg
@@ -43,37 +61,22 @@ export const HorizontalBars = ({ children, size = 30, radius = 0, className }: P
 			className={cx("[grid-area:graph] h-full w-full", className)}
 			preserveAspectRatio={"none"}
 		>
-			{groups?.map((group, g) => {
-				const groupBars = bars.filter((b) => b.group === group);
-				const coordinate: number[] = [];
-
-				return groupBars.map((bar, index) => {
-					if (bar.group === group)
-						return bar.data?.map((xy, idx) => {
-							const y1 = xy.y + barHeight * g - barHeight * (groups.length / 2);
-							const y2 = y1 + barHeight;
-							const x1 = index === 0 ? 0 : coordinate[idx];
-							const x2 = index === 0 ? xy.x : coordinate[idx] + (0 + xy.x);
-
-							const candleRadius =
-								groupBars.length === index + 1
-									? PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius, true)
-									: `M ${x1} ${y1} L ${x1} ${y2} L ${x2} ${y2} L ${x2} ${y1}`;
-
-							// recorde the combined x coordinate (use for next stacked bar)
-							coordinate[idx] = index === 0 ? xy.x : coordinate[idx] + xy.x;
-							return (
-								<path
-									key={idx + index + xy.y + xy.x}
-									d={candleRadius}
-									fill={bar.stroke}
-									stroke={bar.stroke}
-									vectorEffect={"non-scaling-stroke"}
-									strokeWidth={1.5}
-								/>
-							);
-						});
-				});
+			{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+				return (
+					<Rect
+						key={index}
+						x1={x1}
+						x2={x2}
+						y2={y2}
+						y1={y1}
+						fill={String(bar.fill)}
+						stroke={bar.stroke}
+						radius={bar.radius}
+						glow={false}
+						horizontal={true}
+						className={"bars__rect"}
+					/>
+				);
 			})}
 			{children}
 		</svg>

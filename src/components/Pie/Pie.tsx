@@ -41,13 +41,9 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 
 	const paths = data
 		.toSorted((a, b) => Number(b.value) - Number(a.value))
-		.map((segment, i, segments) => ({
+		.map((segment) => ({
 			...segment,
-			id: segment.name ?? segment.name,
 			value: Number(segment.value),
-			stroke: segment.stroke ?? ColorUtils.colorFor(i, segments.length),
-			fill:
-				typeof segment.fill === "string" ? segment.fill : ColorUtils.colorFor(i, segments.length) /* boolean fill not supported */,
 		}))
 		.map((segment, i, segments) => {
 			return {
@@ -105,7 +101,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
 						}`}
-						stroke={segment.fill}
+						stroke={String(segment.fill)}
 					/>
 					<g
 						className={cx(
@@ -117,7 +113,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 							y={endLabelLine.y}
 							x={endLabelLine.x}
 							stroke={segment.stroke}
-							fill={segment.fill}
+							fill={String(segment.fill)}
 							dx={isRightAligned ? 140 : -140}
 							className={"[font-size-adjust:0.08]"}
 							style={{ textAnchor: isRightAligned ? "start" : "end" }}
@@ -150,7 +146,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 								segment.previousTotalDegrees + segment.degrees,
 							) + ` L ${CX} ${CX} Z`
 						}
-						fill={segment.fill}
+						fill={String(segment.fill)}
 						data-degrees={segment.degrees}
 					/>
 				</g>

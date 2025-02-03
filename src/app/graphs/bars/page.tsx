@@ -6,16 +6,18 @@ import { XAxis } from "../../../components/XAxis/XAxis";
 import { YAxis } from "../../../components/YAxis/YAxis";
 import { Legend } from "../../../components/Legend/Legend";
 import { ControlPanel } from "../../../components/Panels/ControlPanel";
-import { BarsControlGroup } from "../../../components/ControlGroup/BarsControlGroup/BarsControlGroup";
+import { BarControls, BarsControlGroup } from "../../../components/ControlGroup/BarsControlGroup/BarsControlGroup";
 import { LegendControlGroup } from "../../../components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
+import { StackedBarsExample, StackedBarsExampleCode } from "./examples/StackedBarsExample";
+import { HorizontalBarsExample, HorizontalBarsExampleCode } from "./examples/HorizontalBarsExample";
 
 export default function Page() {
-	const [bars, setBars] = useState<ComponentProps<typeof Bars>>({});
+	const [bars, setBars] = useState<BarControls>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Months" });
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Cookies Sold" });
@@ -31,12 +33,63 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel>
+			<GraphPanel
+				examples={[
+					{ name: "Stacked Bars", code: StackedBarsExampleCode, component: StackedBarsExample },
+					{ name: "Horizontal Bars", code: HorizontalBarsExampleCode, component: HorizontalBarsExample },
+				]}
+				code={`<Graph
+	data={[
+		{
+			name: "Male",
+			fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
+			data: [
+				{ x: "Jan", y: 5_000 },
+				{ x: "Feb", y: 20_000 },
+				{ x: "Mar", y: 45_000 },
+				{ x: "Apr", y: 20_000 },
+			],
+		},
+		{
+			name: "Female",
+			fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
+			data: [
+				{ x: "Jan", y: 45_000 },
+				{ x: "Feb", y: 10_000 },
+				{ x: "Mar", y: 15_000 },
+				{ x: "Apr", y: 30_000 },
+			],
+		},
+	]}
+>
+	<Bars${bars.example?.props ? bars.example.props : ""}/>
+</Graph>
+`}
+			>
 				<Graph
-					data={MOCK_DATA.map((bar) => {
-						return bar;
-					})}
-					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
+					data={[
+						{
+							name: "Male",
+							fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
+							data: [
+								{ x: "Jan", y: 5_000 },
+								{ x: "Feb", y: 20_000 },
+								{ x: "Mar", y: 45_000 },
+								{ x: "Apr", y: 20_000 },
+							],
+						},
+						{
+							name: "Female",
+							fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
+							data: [
+								{ x: "Jan", y: 45_000 },
+								{ x: "Feb", y: 10_000 },
+								{ x: "Mar", y: 15_000 },
+								{ x: "Apr", y: 30_000 },
+							],
+						},
+					]}
+					gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
@@ -67,27 +120,3 @@ export default function Page() {
 		</>
 	);
 }
-const MOCK_DATA = [
-	{
-		name: "Male",
-		stroke: "transparent",
-		fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
-		data: [
-			{ x: "Jan", y: 5_000 },
-			{ x: "Feb", y: 20_000 },
-			{ x: "Mar", y: 45_000 },
-			{ x: "Apr", y: 20_000 },
-		],
-	},
-	{
-		name: "Female",
-		stroke: "transparent",
-		fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
-		data: [
-			{ x: "Jan", y: 45_000 },
-			{ x: "Feb", y: 10_000 },
-			{ x: "Mar", y: 15_000 },
-			{ x: "Apr", y: 30_000 },
-		],
-	},
-];

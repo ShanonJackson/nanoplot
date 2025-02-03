@@ -8,10 +8,11 @@ type Props = JSX.IntrinsicElements["path"] & {
 	y1: number;
 	y2: number;
 	radius?: number; // in degrees
+	horizontal?: boolean;
 	glow?: boolean;
 };
 
-export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
+export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest }: Props) => {
 	const fillId = useId();
 	const strokeId = useId();
 	const clip = useId();
@@ -19,31 +20,32 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
 	const glowId = useId();
 	const isFillGradient = rest.fill?.includes("gradient");
 	const isGradientStroke = rest.stroke?.includes("gradient");
-	const path = PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius ?? 0);
+	const path = PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius ?? 0, horizontal);
 
 	return (
-		<g>
+		<>
 			<defs>
 				{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}
 				{isGradientStroke && rest.stroke && <LinearGradient id={strokeId} gradient={rest.stroke} />}
-				{/* Inner stroke */}
 				<path id={clipPath} d={path} />
 				<clipPath id={clip}>
 					<use xlinkHref={"#" + clipPath} />
 				</clipPath>
 			</defs>
-			<use xlinkHref={`#${glowId}`} filter={"blur(45px)"} opacity={0.5} />
 			{glow && (
-				<g id={glowId}>
-					<path
-						fill={isFillGradient ? `url(#${fillId})` : rest.fill}
-						stroke={"transparent"}
-						d={path}
-						vectorEffect={"non-scaling-stroke"}
-						className={rest.className}
-						strokeWidth={5}
-					/>
-				</g>
+				<>
+					<use xlinkHref={`#${glowId}`} filter={"blur(45px)"} opacity={0.5} />
+					<g id={glowId}>
+						<path
+							fill={isFillGradient ? `url(#${fillId})` : rest.fill}
+							stroke={"transparent"}
+							d={path}
+							vectorEffect={"non-scaling-stroke"}
+							className={rest.className}
+							strokeWidth={5}
+						/>
+					</g>
+				</>
 			)}
 			<path
 				fill={isFillGradient ? `url(#${fillId})` : rest.fill}
@@ -54,6 +56,6 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, ...rest }: Props) => {
 				className={rest.className}
 				clipPath={`url(#${clip})`}
 			/>
-		</g>
+		</>
 	);
 };

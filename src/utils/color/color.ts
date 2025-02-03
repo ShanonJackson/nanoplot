@@ -13,6 +13,13 @@ const COLORS = [
 ];
 
 export const ColorUtils = {
+	schemes: {
+		sunset: (index: number) => {
+			return ["#fecf03", "#fea81f", "#f48444", "#e4655f", "#cf4478", "#b32492", "#9224a5", "#6a22aa", "#421da0", "#0a1789"][index];
+		},
+		segmented: (index: number) => ColorUtils.colorFor(index) /* don't take into account length of dataset */,
+		regular: (index: number, length: number) => ColorUtils.colorFor(index, length),
+	},
 	colorFor: (index: number, length?: number) => {
 		if (length) {
 			/* When length is provided, the goal is to pick colors that contrast well with each other for that many data points.*/

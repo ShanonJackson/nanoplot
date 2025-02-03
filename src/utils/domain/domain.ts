@@ -59,26 +59,37 @@ export const DomainUtils = {
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 			const isDateTime = data[0]?.data?.[0]?.x instanceof Date;
-			const isDistinctValues =
-				new Set(data.flatMap((line) => line.data.map((d) => +d.x))).size <= 11 && from === "auto" && to === "auto" && !isDateTime;
-			if (typeof data[0]?.data?.[0].x === "string" /* categorical dataset */ || isDistinctValues) {
-				const isCategoricalStrings = typeof data[0]?.data?.[0].x === "string";
+
+			if (typeof data[0]?.data?.[0].x === "string" /* Categorical */) {
 				const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d.x))));
 				const tickWidth = viewbox.x / xValues.length;
-				if (isCategoricalStrings) {
-					return xValues.map((tick, i) => ({
-						tick,
-						coordinate: i * tickWidth + tickWidth / 2,
-					}));
-				}
 				return xValues.map((tick, i) => ({
 					tick,
-					coordinate: MathUtils.scale(i, [0, xValues.length - 1], [0, viewbox.x]),
+					coordinate: i * tickWidth + tickWidth / 2,
 				}));
 			}
 
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
-			const max = Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
+			const max = (() => {
+				const grouped = data.some((d) => Boolean(d.group));
+				if (!grouped) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
+				/*
+					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
+					This is the case for stacked-bars.
+					groupBy group; then group by x
+					Math.max(Sum y)
+				*/
+				return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, values]) => {
+					const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], ({ y }) => y.toString());
+					const maxForDataset = Object.entries(dataset).reduce((max2, [, values2]) => {
+						return Math.max(
+							max2,
+							(values2 ?? []).reduce((total, { x }) => total + +x, 0),
+						);
+					}, 0);
+					return Math.max(max1, maxForDataset);
+				}, 0);
+			})();
 			if (min === max) return [{ tick: min, coordinate: viewbox.x / 2 }];
 			const MIN = (() => {
 				if (from === "min" || from === "auto") {
@@ -145,7 +156,7 @@ export const DomainUtils = {
 					const distance = mx - mn;
 					if (jumps === "auto") {
 						/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
-						return ([5, 6, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+						return ([6, 5, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
 					}
 					return jumps;
 				})();
