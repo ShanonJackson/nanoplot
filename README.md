@@ -7,9 +7,10 @@
 
 
 ## Design Philosophy
-- Smallest possible bundle size (10KB per graph on AVG)
+- Smallest possible bundle size (10KB per graph on AVG) and zero dependencies.
 - React First, React Only, RSC First.
 - Fully responsive without javascript
+
 
 ## Getting Started
 ```shell
