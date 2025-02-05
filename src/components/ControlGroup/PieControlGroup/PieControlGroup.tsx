@@ -22,7 +22,7 @@ export const PieControlGroup: FC<Props> = ({ state, onChange }) => {
 	const onControlChange = (nextState: ComponentProps<typeof Pie>) => {
 		const props = [
 			propFor.boolean({ prop: "loading", value: nextState.loading }),
-			propFor.boolean({ prop: "donut", value: nextState.donut }),
+			propFor.boolean({ prop: "donut", value: Boolean(nextState.donut) }),
 			propFor.boolean({ prop: "labels", value: nextState.labels }),
 		]
 			.filter(Boolean)
