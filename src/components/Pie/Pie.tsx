@@ -113,7 +113,6 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 							stroke={segment.stroke}
 							fill={String(segment.fill)}
 							dx={isRightAligned ? 140 : -140}
-							className={"[font-size-adjust:0.08]"}
 							style={{ textAnchor: isRightAligned ? "start" : "end" }}
 						>
 							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>

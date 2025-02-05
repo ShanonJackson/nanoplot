@@ -15,7 +15,10 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 	loading?: boolean;
 	glow?: boolean;
 	size?: number;
-	labels?: boolean | ((value: string | number | Date) => ReactNode);
+	labels?:
+		| boolean
+		| ((value: string | number | Date) => string)
+		| { position: "above" | "center"; display: (value: string | number | Date) => string };
 	radius?: number;
 };
 
@@ -91,7 +94,11 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 				dataset.map((bar, i) => {
 					const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
 					const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100) + "%";
-					const label = (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
+					const label = (() => {
+						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.y);
+						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
+					})();
+					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
 					const breakpoints = [2, 4, 6, 8, 10, 15, 20];
 					const breakpoint = breakpoints.find((bp) => bp >= label.toString().length);
 					return (
@@ -105,7 +112,10 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"text-xs bars__label_text invisible absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+										"text-xs bars__label_text invisible absolute",
+										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+										position === "above" &&
+											"text-black dark:text-white top-0 left-[50%] transform -translate-x-1/2 -translate-y-full",
 										breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
 										breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
 										breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
@@ -114,7 +124,7 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 										breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
 										breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
 									)}
-									style={{ color: ColorUtils.textFor(String(bar.fill)) }}
+									style={{ color: position === "center" ? ColorUtils.textFor(String(bar.fill)) : undefined }}
 								>
 									{label}
 								</span>

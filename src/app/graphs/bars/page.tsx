@@ -22,7 +22,7 @@ export default function Page() {
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Months" });
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Cookies Sold" });
-	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({});
+	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top" });
 
 	return (
 		<>
@@ -105,7 +105,19 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars {...bars} />
+					<Bars
+						{...bars}
+						labels={{
+							position: "above",
+							display: (v) => {
+								return new Intl.NumberFormat("en", {
+									notation: "compact",
+									compactDisplay: "short",
+									maximumFractionDigits: 2,
+								}).format(Number(v));
+							},
+						}}
+					/>
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}

@@ -1,5 +1,6 @@
 import { isolateInsideOfContainer, scopedPreflightStyles } from "tailwindcss-scoped-preflight";
 const container = require("./tailwind-container-queries");
+
 export default {
 	content: [
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,7 +8,16 @@ export default {
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/assets/**/*.{js,ts,jsx,tsx,mdx}",
 	],
-	theme: {},
+	theme: {
+		fontFamily: {
+			sans: ["Inter", "Inter Fallback"],
+		},
+		extend: {
+			colors: {
+				"dark-priority-100": "rgb(45, 45, 45)",
+			},
+		},
+	},
 	plugins: [
 		container,
 		scopedPreflightStyles({

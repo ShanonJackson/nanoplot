@@ -14,32 +14,75 @@ export const GridLines = ({ border, horizontal, vertical, className }: Props) =>
 	const { x, y } = context.viewbox;
 	const { domain } = context;
 	return (
-		<svg viewBox={`0 0 ${x} ${y}`} className={cx("[grid-area:graph] h-full w-full", className)} preserveAspectRatio={"none"}>
+		<svg viewBox={`0 0 ${x} ${y}`} className={cx("[grid-area:graph] h-full w-full", className)} preserveAspectRatio="none">
 			{border && (
-				<path
-					d={`M 0 0 l${x} 0 l0 ${y} l${-x} 0 Z`}
-					strokeWidth={1}
-					vectorEffect={"non-scaling-stroke"}
-					fill={"transparent"}
-					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__border")}
-				/>
+				<>
+					<line
+						x1={0}
+						y1={0}
+						x2={x}
+						y2={0}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__border"
+					/>
+					<line
+						x1={x}
+						y1={0}
+						x2={x}
+						y2={y}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__border"
+					/>
+					<line
+						x1={x}
+						y1={y}
+						x2={0}
+						y2={y}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__border"
+					/>
+					<line
+						x1={0}
+						y1={y}
+						x2={0}
+						y2={0}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__border"
+					/>
+				</>
 			)}
-			{horizontal && (
-				<path
-					d={domain.y.map(({ coordinate }) => `M 0 ${coordinate} L ${x} ${coordinate}`).join(" ")}
-					strokeWidth={1}
-					vectorEffect={"non-scaling-stroke"}
-					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__horizontal")}
-				/>
-			)}
-			{vertical && (
-				<path
-					d={domain.x.map(({ coordinate }) => `M ${coordinate} 0 L ${coordinate} ${y}`).join(" ")}
-					strokeWidth={1}
-					vectorEffect={"non-scaling-stroke"}
-					className={cx("stroke-[#DFDFDF] dark:stroke-[#2D2D2D] grid-lines__vertical")}
-				/>
-			)}
+
+			{horizontal &&
+				domain.y.map(({ coordinate }) => (
+					<line
+						key={coordinate}
+						x1={0}
+						y1={coordinate}
+						x2={x}
+						y2={coordinate}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__horizontal"
+					/>
+				))}
+
+			{vertical &&
+				domain.x.map(({ coordinate }) => (
+					<line
+						key={coordinate}
+						x1={coordinate}
+						y1={0}
+						x2={coordinate}
+						y2={y}
+						strokeWidth={1}
+						vectorEffect="non-scaling-stroke"
+						className="stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__vertical"
+					/>
+				))}
 		</svg>
 	);
 };

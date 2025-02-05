@@ -4,7 +4,6 @@ import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
 import { GridLines } from "nanoplot/GridLines";
 import "nanoplot/styles.css";
-import { Legend } from "nanoplot/Legend";
 
 export const BarsPercentExample = () => {
 	return (
