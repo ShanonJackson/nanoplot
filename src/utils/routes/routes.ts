@@ -7,17 +7,23 @@ import {
 	SunburstCartIcon,
 	WorldmapIcon,
 } from "../../assets/icons";
+import { FC } from 'react';
 
-export const Routes = [
+interface RouteItem {
+    name: string;
+    href: string;
+    icon?: FC<{ className?: string }>;
+}
+
+export const Routes: RouteItem[] = [
+	{
+		name: "Home",
+		href: "/",
+	},
 	{
 		name: "Bar Graph",
 		href: "/graphs/bars",
 		icon: BarGraphIcon,
-	},
-	{
-		name: "Pie Graph",
-		href: "/graphs/pie",
-		icon: PieGraphIcon,
 	},
 	{
 		name: "Line Graph",
@@ -25,9 +31,9 @@ export const Routes = [
 		icon: LineGraphIcon,
 	},
 	{
-		name: "Scatter Graph",
-		href: "/graphs/scatter",
-		icon: ScatterGraphIcon,
+		name: "Pie Graph",
+		href: "/graphs/pie",
+		icon: PieGraphIcon,
 	},
 	{
 		name: "Radar Graph",
@@ -35,13 +41,18 @@ export const Routes = [
 		icon: RadarGraphtIcon,
 	},
 	{
-		name: "Worldmap",
-		href: "/graphs/worldmap",
-		icon: WorldmapIcon,
+		name: "Scatter Graph",
+		href: "/graphs/scatter",
+		icon: ScatterGraphIcon,
 	},
 	{
-		name: "Sunburst",
+		name: "Sunburst Graph",
 		href: "/graphs/sunburst",
 		icon: SunburstCartIcon,
+	},
+	{
+		name: "World Map",
+		href: "/graphs/worldmap",
+		icon: WorldmapIcon,
 	},
 ];

@@ -14,7 +14,7 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"incremental": true,
-		"types": ["bun-types", "cypress"],
+		"types": ["bun-types", "cypress", "./src/types/scss"],
 		"rootDir": ".",
 		"allowUmdGlobalAccess": true,
 		"plugins": [
@@ -23,6 +23,6 @@
 			}
 		]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/**/*.d.ts"],
 	"exclude": ["node_modules"]
 }

@@ -9,7 +9,7 @@ export const ControlPanel: FC<Props> = ({ className, children }) => {
 	return (
 		<div
 			className={cx(
-				"pb-[80px] row-span-2 h-full border-[1px] border-dotted border-black dark:border-white p-4 bg-gray-100 dark:bg-gray-800 overflow-auto min-h-[600px]",
+				"pb-[80px] row-span-2 h-full border-r-[1px]  dark:border-gray-700 light:border-gray-200  overflow-auto min-h-[600px]",
 				className,
 			)}
 		>

@@ -10,8 +10,12 @@ type Props = {};
 export const Navigation = ({}: Props) => {
 	const path = usePathname();
 	return (
-		<aside className={"h-screen min-w-[4.5rem] overflow-y-auto p-2 hidden lg:flex flex-col items-center gap-6"}>
-			<Link href={"/public"}>
+		<aside
+			className={
+				"h-screen min-w-[4.5rem] overflow-y-auto p-2 hidden lg:flex flex-col items-center gap-6 border-r dark:border-gray-700 light:border-gray-200 sticky top-0 "
+			}
+		>
+			<Link href={"/"}>
 				<Image src={"/nanoplot_logo.jpg"} height={36} width={36} alt={"Logo"} className={"rounded-full"} />
 			</Link>
 
@@ -24,9 +28,10 @@ export const Navigation = ({}: Props) => {
 						path === route.href ? "[&_svg]:opacity-100" : "[&>svg]:opacity-30",
 					)}
 				>
-					<route.icon className="w-8 h-8" />
+					{route.icon && <route.icon className="w-8 h-8" />}
 				</Link>
 			))}
 		</aside>
 	);
 };
+

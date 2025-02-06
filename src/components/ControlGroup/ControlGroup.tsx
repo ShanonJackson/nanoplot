@@ -9,12 +9,12 @@ export const ControlGroup: FC<Props> = ({ title, open = true, children }) => {
 	const [accordionOpen, setAccordionOpen] = useState(open);
 	return (
 		<>
-			<div>
+			<div className="border-b border-gray-700 dark:border-gray-700 light:border-gray-200">
 				<button
 					onClick={() => setAccordionOpen(!accordionOpen)}
 					role="button"
 					name="switch"
-					className="flex justify-between w-full py-2 px-2 bg-gradient-to-r from-[hsl(347.29deg,47.58%,51.37%)] to-[hsl(14.2deg,70.71%,53.14%)] text-white
+					className="flex justify-between w-full py-3 px-2 text-blue-400 hover:bg-gray-900
 			dark:from-[hsl(209.65deg,52.15%,31.96%)] dark:to-[hsl(210.5deg,68.97%,65.88%)"
 				>
 					<span className="uppercase font-bold">{title}</span>

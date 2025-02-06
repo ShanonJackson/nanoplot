@@ -2,3 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes borderWidth {
+  0%, 100% {
+    inset: -50%;
+  }
+  50% {
+    inset: -51%;
+  }
+}
+
+#nanoplot {
+  position: relative;
+  background: #fff;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  overflow: hidden;
+  width: fit-content;
+  isolation: isolate;
+}
+
+.dark #nanoplot {
+  background: #0f172a;
+}
+
+#nanoplot::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(90deg, 
+    #3b82f6 0%,
+    #60a5fa 20%,
+    #93c5fd 40%,
+    #60a5fa 60%,
+    #3b82f6 80%,
+    #60a5fa 100%
+  );
+  animation: 
+    rotate 3s linear infinite,
+    borderWidth 8s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+#nanoplot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: inherit;
+  border-radius: 9999px;
+  z-index: 1;
+}
+
+#nanoplot span {
+  position: relative;
+  z-index: 2;
+}
