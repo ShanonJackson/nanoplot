@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import { ExamplesPanel } from "../Panels/ExamplesPanel";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useExamples } from "../../stores/examples";
 import { StackedBarsExample, StackedBarsExampleCode } from "../../app/graphs/bars/examples/StackedBarsExample";
 import { HorizontalBarsExample, HorizontalBarsExampleCode } from "../../app/graphs/bars/examples/HorizontalBarsExample";
@@ -19,8 +19,7 @@ type Props = {
 };
 
 type Examples = {
-	bars: Example[];
-	pie: Example[];
+	[key: string]: Example[];
 };
 
 const examples: Examples = {
@@ -38,17 +37,29 @@ const examples: Examples = {
 
 export const NavigationHeader = ({ className }: Props) => {
 	const pathname = usePathname();
+	const router = useRouter();
 	const { example, setExample } = useExamples();
 
+	// Extract the graph type from the URL path
 	const graphType = pathname.includes("/graphs/bars") ? "bars" : pathname.includes("/graphs/pie") ? "pie" : undefined;
-	const currentExamples = graphType ? examples[graphType] : [];
+	const allExamples = Object.values(examples).flat();
+
+	// Handle example change with navigation
+	const handleExampleChange = (ex: Example | undefined) => {
+		setExample(ex);
+		if (ex && ex.type !== graphType) {
+			router.push(`/graphs/${ex.type}`);
+		}
+	};
 
 	return (
 		<div
 			className={`z-20 flex items-center justify-between border-b dark:border-gray-700 light:border-gray-200 sticky top-0 bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] px-4 py-2 ${className}`}
 		>
-			<div className="a">
-				{graphType && <ExamplesPanel examples={currentExamples} onClick={(ex) => setExample(ex)} active={example?.name} />}
+			<div className="">
+				{pathname.includes("/graphs/") && (
+					<ExamplesPanel examples={allExamples} onClick={handleExampleChange} active={example?.name} />
+				)}
 			</div>
 			<div className="flex items-center gap-4">
 				<ThemeToggle />
