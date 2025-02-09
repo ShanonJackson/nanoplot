@@ -60,8 +60,8 @@ export const PathUtils = {
 	polarToCartesian: (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
 		const angleRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 		return {
-			x: centerX + radius * Math.cos(angleRadians),
-			y: centerY + radius * Math.sin(angleRadians),
+			x: Number((centerX + radius * Math.cos(angleRadians)).toFixed(5)),
+			y: Number((centerY + radius * Math.sin(angleRadians)).toFixed(5)),
 		};
 	},
 	describeArc: (x: number, y: number, radius: number, startAngle: number, endAngle: number) => {
