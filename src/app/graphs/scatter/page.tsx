@@ -1,81 +1,74 @@
 "use client";
 import { ComponentProps, useState } from "react";
-import { Scatter } from "../../../components/Scatter/Scatter";
+import { Lines } from "../../../components/Lines/Lines";
 import { GridLines } from "../../../components/GridLines/GridLines";
-import { ControlPanel } from "../../../components/Panels/ControlPanel";
-import { Control } from "../../../components/Docs/Control/Control";
-import { BooleanControl } from "../../../components/Docs/Control/components/BooleanControl/BooleanControl";
-import { GraphPanel } from "../../../components/Panels/GraphPanel";
-import { YAxis } from "../../../components/YAxis/YAxis";
-import { Graph } from "../../../components/Graph/Graph";
 import { XAxis } from "../../../components/XAxis/XAxis";
+import { YAxis } from "../../../components/YAxis/YAxis";
+import { Legend } from "../../../components/Legend/Legend";
+import { ControlPanel } from "../../../components/Panels/ControlPanel";
+import { LinesControlGroup } from "../../../components/ControlGroup/LinesControlGroup/LinesControlGroup";
+import { LegendControlGroup } from "../../../components/ControlGroup/LegendControlGroup/LegendControlGroup";
+import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
+import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
+import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
+import { GraphPanel } from "../../../components/Panels/GraphPanel";
+import { Graph } from "../../../components/Graph/Graph";
+import { Scatter } from "../../../components/Scatter/Scatter";
 
 export default function Page() {
-	const [scatter, setScatter] = useState<ComponentProps<typeof Scatter>>({});
-	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({});
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
+	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
+	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
+	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
+	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
 
-	const setScatterPartial = (partial: Partial<ComponentProps<typeof Scatter>>) => setScatter((prev) => ({ ...prev, ...partial }));
-	const setGridPartial = (partial: Partial<ComponentProps<typeof GridLines>>) => setGridline((prev) => ({ ...prev, ...partial }));
 	return (
 		<>
 			<ControlPanel>
-				<h1 className={"text-2xl"}>Scatter Graph</h1>
-				<Control name={"loading"} type={"boolean"}>
-					<BooleanControl
-						value={scatter.loading}
-						onChange={(loading) => setScatterPartial({ loading })}
-						description={"Renders loading skeleton placeholder"}
-					/>
-				</Control>
-				<Control name={"Trend Line"} type={"boolean"}>
-					<BooleanControl
-						value={scatter.trendline}
-						onChange={(checked) => setScatterPartial({ trendline: checked })}
-						description={"Adds Trendline To Graph"}
-					/>
-				</Control>
-				<Control name={"Border"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.border}
-						onChange={(checked) => setGridPartial({ border: checked })}
-						description={"Adds Border To Graph"}
-					/>
-				</Control>
-				<Control name={"Horizontal"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.horizontal}
-						onChange={(checked) => setGridPartial({ horizontal: checked })}
-						description={"Adds Horizontal Grid Lines"}
-					/>
-				</Control>
-				<Control name={"Vertical"} type={"boolean"}>
-					<BooleanControl
-						value={gridline.vertical}
-						onChange={(checked) => setGridPartial({ vertical: checked })}
-						description={"Adds Vertical Grid Lines"}
-					/>
-				</Control>
+				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
+				<LinesControlGroup state={line} onChange={setLine} />
+				<LegendControlGroup state={legend} onChange={setLegend} />
+				<GridLinesControlGroup state={gridline} onChange={setGridline} />
+				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
+				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
-					data={MOCK_DATA.map((d, i) => {
-						return {
-							id: i.toString(),
-							name: "",
-							data: [{ x: d.hours_studied, y: d.test_score }],
-						};
-					})}
-					gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
+					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+					data={[{
+							name: "Scores",
+							data: MOCK_DATA.map((d) => {
+								return {
+									x: d.hours_studied,
+									y: d.test_score,
+								};
+							}),
+						}]
+					}
 				>
-					<YAxis title={"title y axis"} description={"description y axis"} />
+					{legend.position === "top" && <Legend {...legend} />}
+					{legend.position === "left" && <Legend {...legend} />}
+					<YAxis
+						{...yaxis}
+						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
+						description={
+							yaxis.description?.toString() && (
+								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
+							)
+						}
+					/>
 					<GridLines {...gridline} />
-					<Scatter {...scatter} />
-					<XAxis title={"title x axis"} description={"description x axis"} />
+					<Scatter />
+					<Lines.Tooltip />
+					{legend.position === "right" && <Legend {...legend} />}
+					<XAxis />
+					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
 		</>
 	);
 }
+
 
 const MOCK_DATA = [
 	{

@@ -12,10 +12,7 @@ import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLine
 import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
-import { LinesTimeslotExample, LinesTimeslotExampleCode } from "./components/LinesTimeslotExample";
 import { Graph } from "../../../components/Graph/Graph";
-import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTraffic";
-import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
@@ -34,25 +31,7 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel
-				examples={[
-					{
-						name: "Timeseries with 'Registered Users' interactions: 'hovered'",
-						code: LinesSiteTrafficCode,
-						component: LinesSiteTraffic,
-					},
-					{
-						name: "Timeseries with 'New Users' interactions: 'pinned'",
-						code: LinesSiteTrafficPinnedCode,
-						component: LinesSiteTrafficPinned,
-					},
-					{
-						name: "Timeseries with timeslot",
-						code: LinesTimeslotExampleCode,
-						component: LinesTimeslotExample,
-					},
-				]}
-			>
+			<GraphPanel>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
 					data={[
@@ -108,6 +87,7 @@ export default function Page() {
 					<GridLines {...gridline} />
 					<Lines {...line} />
 					<Lines.Tooltip />
+					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						ticks={{ jumps: "every 1 months" }}
 						display={(x) => {
@@ -116,7 +96,6 @@ export default function Page() {
 							return months[x.getMonth()];
 						}}
 					/>
-					{legend.position === "right" && <Legend {...legend} />}
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
