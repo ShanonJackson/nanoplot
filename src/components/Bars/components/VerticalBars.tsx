@@ -93,7 +93,7 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 			{labels &&
 				dataset.map((bar, i) => {
 					const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
-					const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100) + "%";
+					const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100)
 					const label = (() => {
 						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.y);
 						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
@@ -101,21 +101,25 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
 					const breakpoints = [2, 4, 6, 8, 10, 15, 20];
 					const breakpoint = breakpoints.find((bp) => bp >= label.toString().length);
+					const top = position === "above" ? 0 : MathUtils.scale(bar.y2, context.viewbox.y, 100) + "%";
+
 					return (
 						<overlay.div
-							x={{ coordinate: bar.x1 }}
-							y={{ coordinate: bar.y2 }}
 							key={i}
-							className={"bars__label @container-[size] text-center"}
-							style={{ width, height }}
+							className={"bars__label @container-[size] absolute text-center"}
+							style={{
+								width,
+								height: (position === "above" ? 100 : 0) - height + "%",
+								left: `${MathUtils.scale(bar.x1, context.viewbox.x, 100)}%`,
+								top: top,
+							}}
 						>
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
 										"text-xs bars__label_text invisible absolute",
 										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
-										position === "above" &&
-											"text-black dark:text-white top-0 left-[50%] transform -translate-x-1/2 -translate-y-full",
+										position === "above" && "text-black dark:text-white bottom-0 left-[50%] transform -translate-x-1/2",
 										breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
 										breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
 										breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
