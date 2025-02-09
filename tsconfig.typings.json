@@ -11,7 +11,9 @@
     "declaration": true
   },
   "include": [
+    "@types/**/*.ts",
     "next-env.d.ts",
+    ".next/types/**/*.ts",
     "./src/export/index.tsx",
   ],
   "exclude": []
