@@ -16,6 +16,20 @@ export default {
 			colors: {
 				"dark-priority-100": "rgb(45, 45, 45)",
 			},
+			animation: {
+				rotate: "rotate 3s linear infinite",
+				borderWidth: "borderWidth 8s ease-in-out infinite",
+			},
+			keyframes: {
+				rotate: {
+					"0%": { transform: "rotate(0deg)" },
+					"100%": { transform: "rotate(360deg)" },
+				},
+				borderWidth: {
+					"0%, 100%": { inset: "-50%" },
+					"50%": { inset: "-51%" },
+				},
+			},
 		},
 	},
 	plugins: [

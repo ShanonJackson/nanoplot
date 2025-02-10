@@ -7,11 +7,11 @@ import { ColorUtils } from "../../utils/color/color";
 type VerticalProps = { horizontal?: false } & ComponentProps<typeof VerticalBars>;
 type HorizontalProps = { horizontal?: true } & ComponentProps<typeof HorizontalBars>;
 
-export const Bars = (props: VerticalProps | HorizontalProps) => {
-	return props.horizontal ? <HorizontalBars {...props} /> : <VerticalBars {...props} />;
+export const Bars = ({ horizontal, ...props }: VerticalProps | HorizontalProps) => {
+	return horizontal ? <HorizontalBars {...props} /> : <VerticalBars {...props} />;
 };
 
-Bars.context = (ctx: GraphContext, props: VerticalProps | HorizontalProps): GraphContext => {
+Bars.context = (ctx: GraphContext): GraphContext => {
 	return {
 		...ctx,
 		colorFor: ColorUtils.schemes.segmented,

@@ -8,6 +8,17 @@ import {
 	WorldmapIcon,
 } from "../../assets/icons";
 
+export const Href = {
+	HOME: "/",
+	BARS: "/graphs/bars",
+	PIE: "/graphs/pie",
+	LINES: "/graphs/lines",
+	SCATTER: "/graphs/scatter",
+	RADAR: "/graphs/radar",
+	WORLDMAP: "/graphs/worldmap",
+	SUNBURST: "/graphs/sunburst",
+};
+
 export const Routes = [
 	{
 		name: "Bar Graph",
