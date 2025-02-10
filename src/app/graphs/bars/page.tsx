@@ -90,7 +90,14 @@ export default function Page() {
 								{ x: "Apr", y: 30_000 },
 							],
 						},
-					]}
+					].map((dp) => {
+						return {
+							...dp,
+							data: dp.data.map((d) => {
+								return { x: d.y, y: d.x };
+							}),
+						}
+					})}
 					gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 				>
 					{legend.position === "top" && <Legend {...legend} />}
@@ -107,6 +114,7 @@ export default function Page() {
 					<GridLines {...gridline} />
 					<Bars
 						{...bars}
+						horizontal={true}
 						labels={{
 							position: "above",
 							display: (v) => {

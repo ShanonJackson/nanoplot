@@ -5,14 +5,21 @@ import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
+import { MathUtils } from "../../../utils/math/math";
+import { overlay } from "../../Overlay/Overlay";
+import { ColorUtils } from "../../../utils/color/color";
 
 type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
 	size?: number;
 	radius?: number;
+	labels?:
+		| boolean
+		| ((value: string | number | Date) => string)
+		| { position: "above" | "center"; display: (value: string | number | Date) => string };
 };
 
-export const HorizontalBars = ({ children, size = 50, radius = 0, className }: Props) => {
+export const HorizontalBars = ({ children, labels, size = 50, radius = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -54,29 +61,77 @@ export const HorizontalBars = ({ children, size = 50, radius = 0, className }: P
 		.filter((x) => !!x);
 
 	return (
-		<svg
-			viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
-			className={cx("[grid-area:graph] h-full w-full", className)}
-			preserveAspectRatio={"none"}
-		>
-			{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
-				return (
-					<Rect
-						key={index}
-						x1={x1}
-						x2={x2}
-						y2={y2}
-						y1={y1}
-						fill={String(bar.fill)}
-						stroke={bar.stroke}
-						radius={bar.radius}
-						glow={false}
-						horizontal={true}
-						className={"bars__rect"}
-					/>
-				);
-			})}
-			{children}
-		</svg>
+		<>
+			<svg
+				viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+				className={cx("horizontal-bars [grid-area:graph] h-full w-full", className)}
+				preserveAspectRatio={"none"}
+			>
+				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+					return (
+						<Rect
+							key={index}
+							x1={x1}
+							x2={x2}
+							y2={y2}
+							y1={y1}
+							fill={String(bar.fill)}
+							stroke={bar.stroke}
+							radius={bar.radius}
+							glow={false}
+							horizontal={true}
+							className={"horizontal-bars__rect"}
+						/>
+					);
+				})}
+				{children}
+			</svg>
+			{labels &&
+				dataset.map((bar, i) => {
+					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
+					const width = ((position === "above" ? 100 : 0) - MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100)) + "%";
+					const height = MathUtils.scale(bar.y2 - bar.y1, context.viewbox.y, 100);
+					const top = MathUtils.scale(bar.y1, context.viewbox.y, 100);
+					const label = (() => {
+						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.x);
+						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
+					})();
+					const breakpoint = [2, 4, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().length);
+
+					return (
+						<overlay.div
+							key={i}
+							className={"horizontal-bars__label @container-[size] absolute text-center"}
+							style={{
+								width,
+								height: height + "%",
+								left: position === "above" ? "unset" : 0,
+								right: position === "above" ? 0 : "unset",
+								top: top + "%",
+							}}
+						>
+							<div className={"h-full w-full relative"}>
+								<span
+									className={cx(
+										"text-xs horizontal-bars__label-text invisible absolute",
+										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+										position === "above" && "top-[50%] left-2 transform -translate-y-1/2",
+										breakpoint === 2 && "@[width:2ch|height:1.25em]:!visible",
+										breakpoint === 4 && "@[width:4ch|height:1.25em]:!visible",
+										breakpoint === 6 && "@[width:6ch|height:1.25em]:!visible",
+										breakpoint === 8 && "@[width:8ch|height:1.25em]:!visible",
+										breakpoint === 10 && "@[width:10ch|height:1.25em]:!visible",
+										breakpoint === 15 && "@[width:15ch|height:1.25em]:!visible",
+										breakpoint === 20 && "@[width:20ch|height:1.25em]:!visible",
+									)}
+									style={{ color: position === "center" ? ColorUtils.textFor(String(bar.fill)) : undefined }}
+								>
+									{label}
+								</span>
+							</div>
+						</overlay.div>
+					);
+				})}
+		</>
 	);
 };
