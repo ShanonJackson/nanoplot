@@ -94,9 +94,9 @@ export default function Page() {
 						return {
 							...dp,
 							data: dp.data.map((d) => {
-								return { x: d.y, y: d.x };
+								return { x: d.x, y: d.y };
 							}),
-						}
+						};
 					})}
 					gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 				>
@@ -114,9 +114,10 @@ export default function Page() {
 					<GridLines {...gridline} />
 					<Bars
 						{...bars}
-						horizontal={true}
+						horizontal={false}
 						labels={{
 							position: "above",
+							collision: true,
 							display: (v) => {
 								return new Intl.NumberFormat("en", {
 									notation: "compact",
