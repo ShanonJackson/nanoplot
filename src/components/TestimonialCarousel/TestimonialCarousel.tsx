@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const testimonials = [
 	{
@@ -43,28 +43,6 @@ export const TestimonialCarousel = () => {
 		return () => clearInterval(timer);
 	}, []);
 
-	const slideVariants = {
-		enter: (direction: number) => ({
-			x: direction > 0 ? 1000 : -1000,
-			opacity: 0,
-		}),
-		center: {
-			zIndex: 1,
-			x: 0,
-			opacity: 1,
-		},
-		exit: (direction: number) => ({
-			zIndex: 0,
-			x: direction < 0 ? 1000 : -1000,
-			opacity: 0,
-		}),
-	};
-
-	const swipeConfidenceThreshold = 10000;
-	const swipePower = (offset: number, velocity: number) => {
-		return Math.abs(offset) * velocity;
-	};
-
 	const paginate = (newDirection: number) => {
 		setDirection(newDirection);
 		setCurrentIndex((prev) => (prev + newDirection + testimonials.length) % testimonials.length);
@@ -79,7 +57,22 @@ export const TestimonialCarousel = () => {
 						<motion.div
 							key={currentIndex}
 							custom={direction}
-							variants={slideVariants}
+							variants={{
+								enter: (direction: number) => ({
+									x: direction > 0 ? 1000 : -1000,
+									opacity: 0,
+								}),
+								center: {
+									zIndex: 1,
+									x: 0,
+									opacity: 1,
+								},
+								exit: (direction: number) => ({
+									zIndex: 0,
+									x: direction < 0 ? 1000 : -1000,
+									opacity: 0,
+								}),
+							}}
 							initial="enter"
 							animate="center"
 							exit="exit"
@@ -90,12 +83,12 @@ export const TestimonialCarousel = () => {
 							drag="x"
 							dragConstraints={{ left: 0, right: 0 }}
 							dragElastic={1}
-							onDragEnd={(e, { offset, velocity }) => {
-								const swipe = swipePower(offset.x, velocity.x);
+							onDragEnd={(_, { offset, velocity }) => {
+								const swipe = Math.abs(offset.x) * velocity.x;
 
-								if (swipe < -swipeConfidenceThreshold) {
+								if (swipe < -10000) {
 									paginate(1);
-								} else if (swipe > swipeConfidenceThreshold) {
+								} else if (swipe > 10000) {
 									paginate(-1);
 								}
 							}}

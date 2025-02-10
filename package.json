@@ -98,6 +98,7 @@
 		"esbuild": "^0.24.2",
 		"esbuild-plugin-sass": "^1.0.1",
 		"esbuild-sass-plugin": "^3.3.1",
+		"framer-motion": "^12.4.1",
 		"husky": "^9.1.7",
 		"nanoplot": "0.0.27",
 		"next": "15.0.3",
