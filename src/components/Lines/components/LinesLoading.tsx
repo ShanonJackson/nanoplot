@@ -10,7 +10,7 @@ export const LinesLoading = () => {
 			height={"100%"}
 			width={"100%"}
 			preserveAspectRatio={"none"}
-			className={"[grid-area:graph] stroke-gray-600"}
+			className={"lines__loading [grid-area:graph] stroke-gray-600"}
 		>
 			<path
 				d={`M ${viewbox.x * 0.05} ${viewbox.y * 0.95} L ${viewbox.x * 0.2167} ${viewbox.y * 0.55} L ${viewbox.x * 0.35} ${viewbox.y * 0.75} L ${viewbox.x * 0.55} ${viewbox.y * 0.2833} L ${viewbox.x * 0.7167} ${viewbox.y * 0.5167} L ${viewbox.x * 0.95} ${viewbox.y * 0.05}`}

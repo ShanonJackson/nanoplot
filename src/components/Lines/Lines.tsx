@@ -42,7 +42,7 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			preserveAspectRatio={"none"}
-			className={cx("h-full w-full [grid-area:graph]", className)}
+			className={cx("lines h-full w-full [grid-area:graph]", className)}
 		>
 			{lines.map(({ id, stroke, data }, i) => {
 				const path = CurveUtils[curve](data);
@@ -62,7 +62,7 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 							d={path}
 							fill={"transparent"}
 							stroke={stroke}
-							className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1] lines__outlined")}
+							className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 							vectorEffect={"non-scaling-stroke"}
 							strokeWidth={1.5}
 						/>

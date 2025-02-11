@@ -147,7 +147,7 @@ export const StackedBarsExample = () => {
 			<Legend position={"top"} />
 			<YAxis />
 			<GridLines border horizontal />
-			<Bars />
+			<Bars labels={true} />
 			<XAxis />
 		</Graph>
 	);

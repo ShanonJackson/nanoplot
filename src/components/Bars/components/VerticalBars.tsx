@@ -100,20 +100,19 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 					const collision = typeof labels === "object" && "collision" in labels ? labels.collision : true;
 					const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
 					const height = MathUtils.scale(bar.y1 - bar.y2, context.viewbox.y, 100);
-					const top = position === "above" ? 0 : MathUtils.scale(bar.y2, context.viewbox.y, 100) + "%";
+					const top = position === "above" ? -4 : MathUtils.scale(bar.y2, context.viewbox.y, 100) + "%";
 					const label = (() => {
 						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.y);
 						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
 					})();
 					const breakpoint = [2, 4, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().length);
-
 					return (
 						<overlay.div
 							key={i}
 							className={"horizontal-bars__label @container-[size] absolute text-center"}
 							style={{
 								width,
-								height: (position === "above" ? 100 : 0) - height + "%",
+								height: height - (position === "above" ? 100 : 0) + "%",
 								left: `${MathUtils.scale(bar.x1, context.viewbox.x, 100)}%`,
 								top: top,
 							}}

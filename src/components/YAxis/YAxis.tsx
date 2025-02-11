@@ -19,14 +19,16 @@ export const YAxis = ({ title, description, display }: Props) => {
 	const context = useGraph();
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
-		<Graph.Column className={"flex relative text-xs font-normal select-none"}>
+		<Graph.Column className={"yaxis flex relative text-xs font-normal select-none"}>
 			{(title || description) && (
-				<div className={"flex text-center rotate-180 font-bold"}>
-					<div className={"text-xs text-gray-500 dark:text-gray-600 [writing-mode:vertical-rl] ml-[10px]"}>{description}</div>
-					<div className={"text-[14px] text-gray-700 dark:text-gray-300 [writing-mode:vertical-rl]"}>{title}</div>
+				<div className={"yaxis__labels flex text-center rotate-180 font-bold"}>
+					<div className={"yaxis__description text-xs text-gray-500 dark:text-gray-600 [writing-mode:vertical-rl] ml-[10px]"}>
+						{description}
+					</div>
+					<div className={"yaxis__title text-[14px] text-gray-700 dark:text-gray-300 [writing-mode:vertical-rl]"}>{title}</div>
 				</div>
 			)}
-			<div className={"mr-2"}>
+			<div className={"yaxis__ticks mr-2"}>
 				{context.domain.y.map(({ tick, coordinate }, i) => {
 					const label = (() => {
 						if (display) return display(tick);
@@ -36,12 +38,14 @@ export const YAxis = ({ title, description, display }: Props) => {
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={`absolute right-2 -translate-y-1/2 text-gray-700 dark:text-gray-300`}
+								className={`yaxis__tick absolute right-2 -translate-y-1/2 text-gray-700 dark:text-gray-300`}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
 								{label}
 							</div>
-							<div className={`opacity-0`}>{label}</div>
+							<div className={`yaxis__tick opacity-0`} aria-hidden={true}>
+								{label}
+							</div>
 						</React.Fragment>
 					);
 				})}
