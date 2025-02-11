@@ -4,6 +4,7 @@
  * Other than 'linear' all of these curving function implementations were GPT generated and match their d3 counterpart.
  */
 
+const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
 export const CurveUtils = {
 	linear: (coordinates: Array<{ x: number; y: number }>) => {
 		return coordinates.map(({ x, y }, i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
@@ -62,11 +63,10 @@ export const CurveUtils = {
 		const px = controlPoints(x);
 		const py = controlPoints(y);
 
-		let result = `M ${x[0]} ${y[0]}`;
+		let result = `M ${toDP(x[0])} ${toDP(y[0])}`;
 		for (let i = 1; i < coordinates.length; i++) {
-			result += ` C ${px[0][i - 1]} ${py[0][i - 1]}, ${px[1][i - 1]} ${py[1][i - 1]}, ${x[i]} ${y[i]}`;
+			result += ` C ${toDP(px[0][i - 1])} ${toDP(py[0][i - 1])} ${toDP(px[1][i - 1])} ${toDP(py[1][i - 1])} ${toDP(x[i])} ${toDP(y[i])}`;
 		}
-
 		return result;
 	},
 	monotoneX: (coordinates: Array<{ x: number; y: number }>) => {

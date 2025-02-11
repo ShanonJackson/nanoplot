@@ -4,7 +4,7 @@ import { ChildrenUtils } from "../../utils/children/children";
 import { GraphUtils } from "../../utils/graph/graph";
 import { ColorUtils } from "../../utils/color/color";
 import { DomainUtils } from "../../utils/domain/domain";
-import { cx } from "../../utils/cx/cx";
+import { cx, tw } from "../../utils/cx/cx";
 
 type Props = {
 	data?: GraphContext["data"];
@@ -48,7 +48,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 				gridTemplateRows: ctx.layout.rows,
 				padding: `${ctx.gap.top}px ${ctx.gap.right}px ${ctx.gap.bottom}px ${ctx.gap.left}px`,
 			}}
-			className={cx(ctx.attributes.className, className)}
+			className={tw(ctx.attributes.className, className)}
 		>
 			<GraphContextProvider
 				value={{
