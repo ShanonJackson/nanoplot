@@ -10,7 +10,7 @@ export default {
 	],
 	theme: {
 		fontFamily: {
-			sans: ["Inter", "Inter Fallback"],
+			sans: ["Figtree", "sans0-serif"],
 		},
 		extend: {
 			colors: {
