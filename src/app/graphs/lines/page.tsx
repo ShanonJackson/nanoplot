@@ -108,6 +108,7 @@ export default function Page() {
 					<GridLines {...gridline} />
 					<Lines {...line} />
 					<Lines.Tooltip />
+					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						ticks={{ jumps: "every 1 months" }}
 						display={(x) => {
@@ -116,7 +117,7 @@ export default function Page() {
 							return months[x.getMonth()];
 						}}
 					/>
-					{legend.position === "right" && <Legend {...legend} />}
+
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

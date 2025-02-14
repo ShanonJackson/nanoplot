@@ -1,5 +1,5 @@
 import React, { ReactNode, useId } from "react";
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../utils/graph/graph";
 import { PieLoading } from "./components/PieLoading";
 import { PieEmpty } from "./components/PieEmpty";
@@ -7,6 +7,8 @@ import { MathUtils } from "../../utils/math/math";
 import { PathUtils } from "../../utils/path/path";
 import { cx } from "../../utils/cx/cx";
 import { overlay } from "../Overlay/Overlay";
+import { ColorUtils } from "../../utils/color/color";
+import { Bars } from "../Bars/Bars";
 
 type Props = {
 	loading?: boolean;
@@ -188,4 +190,11 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 			})}
 		</>
 	);
+};
+
+Pie.context = (ctx: GraphContext): GraphContext => {
+	return {
+		...ctx,
+		colorFor: ColorUtils.schemes.segmented,
+	};
 };

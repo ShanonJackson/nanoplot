@@ -12,6 +12,7 @@ export type XYDataset = Array<{
 	data: Array<{
 		x: number | Date | string;
 		y: number | string;
+		z: number | string | Date;
 	}>;
 }>;
 
