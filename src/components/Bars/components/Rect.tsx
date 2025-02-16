@@ -24,14 +24,12 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 
 	return (
 		<>
-			<defs>
-				{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}
-				{isGradientStroke && rest.stroke && <LinearGradient id={strokeId} gradient={rest.stroke} />}
-				<path id={clipPath} d={path} />
-				<clipPath id={clip}>
-					<use xlinkHref={"#" + clipPath} />
-				</clipPath>
-			</defs>
+			{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}
+			{isGradientStroke && rest.stroke && <LinearGradient id={strokeId} gradient={rest.stroke} />}
+			<path id={clipPath} d={path} />
+			<clipPath id={clip}>
+				<use xlinkHref={"#" + clipPath} />
+			</clipPath>
 			{glow && (
 				<>
 					<use xlinkHref={`#${glowId}`} filter={"blur(45px)"} opacity={0.5} />

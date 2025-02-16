@@ -112,7 +112,7 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 							className={"horizontal-bars__label @container-[size] absolute text-center"}
 							style={{
 								width,
-								height: height - (position === "above" ? 100 : 0) + "%",
+								height: (position === "above" ? 100 : 0) - height + "%",
 								left: `${MathUtils.scale(bar.x1, context.viewbox.x, 100)}%`,
 								top: top,
 							}}
