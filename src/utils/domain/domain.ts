@@ -72,7 +72,7 @@ export const DomainUtils = {
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.x)));
 			const max = (() => {
 				const grouped = data.some((d) => Boolean(d.group));
-				if (!grouped) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
+				if (!grouped || isDateTime) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.x)));
 				/*
 					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 					This is the case for stacked-bars.
@@ -196,10 +196,11 @@ export const DomainUtils = {
 			},
 		) => {
 			if (!GraphUtils.isXYData(data) || data.length === 0) return [];
+			const isDateTime = data[0]?.data?.[0]?.y instanceof Date;
 			const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d.y)));
 			const max = (() => {
 				const grouped = data.some((d) => Boolean(d.group));
-				if (!grouped) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.y)));
+				if (!grouped || isDateTime) return Math.max(...data.flatMap((line) => line.data.map((d) => +d.y)));
 				/*
 					If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 					This is the case for stacked-bars.

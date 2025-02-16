@@ -45,6 +45,13 @@ export const PieControlGroup: FC<Props> = ({ state, onChange }) => {
 					description={"Renders loading skeleton placeholder"}
 				/>
 			</Control>
+			<Control name={"glow"} type={"boolean"}>
+				<BooleanControl
+					value={state.glow}
+					onChange={(glow) => onControlChange({ ...state, glow })}
+					description={"Applies a glow effect to the Pie"}
+				/>
+			</Control>
 			<Control name={"donut"} type={"boolean"}>
 				<BooleanControl
 					value={Boolean(state.donut)}

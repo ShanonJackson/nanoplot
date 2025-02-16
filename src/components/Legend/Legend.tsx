@@ -35,7 +35,7 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 			{context.data
 				.map((dp) => ({ ...dp, group: dp.group ?? "" }))
 				.sort((a, b) => a.group.localeCompare(b.group))
-				.map(({ id, name, fill, ...datapoint }, i, datapoints) => {
+				.map(({ id, name, fill, stroke, ...datapoint }, i, datapoints) => {
 					const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
 					const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
 
@@ -43,7 +43,7 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 						<div key={i} className={"flex items-center"}>
 							<div
 								className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
-								style={disabled ? undefined : { background: String(fill) }}
+								style={disabled ? undefined : { background: fill ?? stroke }}
 							/>
 							<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
 							{isLastInGroup && <div className={"h-[16px] bg-gray-700 w-[1px] ml-[10px]"} />}

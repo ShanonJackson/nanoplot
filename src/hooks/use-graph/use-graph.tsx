@@ -2,17 +2,17 @@ import { HTMLAttributes } from "react";
 import { GraphContextServer, useGraphServer } from "./use-server-graph";
 import { GraphContextClient, useGraphClient } from "./use-client-graph";
 
-export type XYDataset = Array<{
+export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
 	name: string;
 	description?: string;
 	group?: string /* string literal used to associate id's with a group */;
 	stroke?: string;
-	fill?: string | boolean; // true = fill opaque same as stroke color, string = fill opaque color
+	fill?: string;
 	data: Array<{
 		x: number | Date | string;
 		y: number | string;
-		z: number | string | Date;
+		z?: number | string | Date;
 	}>;
 }>;
 
@@ -22,17 +22,16 @@ export type SegmentDataset = Array<{
 	description?: string;
 	group?: string;
 	stroke?: string;
-	fill?: string | boolean; // true = fill opaque same as stroke color, string = fill opaque color
+	fill?: string;
 	value: string | number | Date;
 }>;
 
-type AlterType<T, Key extends keyof T, NewType> = Omit<T, Key> & { [K in Key]: NewType };
 export type GraphContext = {
 	id: string;
 	attributes: HTMLAttributes<HTMLDivElement>;
 	gap: { top: number; right: number; bottom: number; left: number };
 	viewbox: { x: number; y: number };
-	data: XYDataset | SegmentDataset;
+	data: CartesianDataset | SegmentDataset;
 	layout: { rows: string; columns: string };
 	domain: {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;

@@ -1,17 +1,20 @@
 "use client";
 import * as React from "react";
 import { useRef } from "react";
-import { useGraph, XYDataset } from "../../../hooks/use-graph/use-graph";
+import { useGraph, CartesianDataset } from "../../../hooks/use-graph/use-graph";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { MathUtils } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
+import { ObjectUtils } from "../../../utils/object/object";
+import { Circle } from "../../Primatives/Circle";
+import { GradientUtils } from "../../../utils/gradient/gradient";
 
 type Props = {
 	tooltip?: (
-		points: Array<Omit<XYDataset[number], "data"> & { data: XYDataset[number]["data"][number] }>,
+		points: Array<Omit<CartesianDataset[number], "data"> & { data: CartesianDataset[number]["data"][number] }>,
 		x: number | string | Date,
 	) => React.ReactNode;
 	joints?: boolean;
@@ -26,6 +29,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 		data,
 		domain,
 		viewbox,
+		colorFor,
 		interactions: { pinned, hovered },
 	} = useGraph();
 
@@ -73,8 +77,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 			.filter(({ name }) => {
 				if (pinned.length) return pinned.includes(name) && !hovered.includes(name);
 				return true;
-			})
-			.sort((a, b) => +b.data.y - +a.data.y);
+			});
 	})();
 
 	// Check tooltip dimensions can fit inside SVG.
@@ -92,6 +95,35 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 			),
 			top: Math.round(MathUtils.clamp(mouse?.px.y, TOOLTIP_MARGIN, height - tooltipHeight - TOOLTIP_MARGIN)),
 		}) || { left: 0, top: 0 };
+
+	const jointPoints = Object.entries(ObjectUtils.groupBy(points ?? [], ({ group, id, name }) => group ?? id ?? name)).flatMap(
+		([, lines]) => {
+			return (
+				lines
+					?.map((line, i, lines) => {
+						return {
+							...line,
+							stroke: line.stroke ?? colorFor(i, lines.length),
+							data: {
+								x: xForValue(line.data.x),
+								y: yForValue(line.data.y),
+							},
+						};
+					})
+					.map((segment, i, segments) => {
+						return {
+							...segment,
+							data: {
+								x: segment.data.x,
+								y: segment.data.y - segments.slice(0, i).reduce((acc, { data }) => acc + (viewbox.y - data.y), 0),
+							},
+						};
+					}) ?? []
+			);
+		},
+	);
+
+	const ordered = points?.sort((a, b) => +b.data.y - +a.data.y);
 
 	return (
 		<>
@@ -112,26 +144,14 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 					/>
 				)}
 				{joints &&
-					points?.map(({ data, stroke }, i) => {
-						const xx = xForValue(+data.x);
-						const yy = yForValue(data.y);
-						return (
-							<path
-								key={i}
-								stroke={stroke}
-								fill={stroke}
-								d={`M ${xx} ${yy} A 0 0 0 0 1 ${xx} ${yy}`}
-								strokeWidth={"10"}
-								strokeLinecap={"round"}
-								vectorEffect={"non-scaling-stroke"}
-							/>
-						);
+					jointPoints?.map(({ data: { x, y }, stroke }, i) => {
+						return <Circle key={i} stroke={stroke} fill={stroke} x={x} y={y} />;
 					})}
 			</svg>
-			{points && closest !== undefined && mouse && (
+			{ordered && closest !== undefined && mouse && (
 				<overlay.div ref={setTooltipRef} className={"absolute"} style={{ left, top }}>
 					{tooltip ? (
-						tooltip(points, closest)
+						tooltip(ordered, closest)
 					) : (
 						<div
 							className={
@@ -147,10 +167,17 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 								})()}
 							</div>
 							<div className={"px-2.5"}>
-								{points.map(({ name, data: { y }, stroke }, i) => {
+								{ordered.map(({ name, data: { x, y }, stroke, fill }, i) => {
+									const percent = MathUtils.scale(xForValue(x), viewbox.x, 100);
+									const bg = fill ?? stroke;
 									return (
 										<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
-											<div style={{ color: stroke }} className="bg-current h-[14px] w-[14px] rounded-full mr-1" />
+											<div
+												style={{
+													background: bg?.includes("linear-gradient") ? GradientUtils.colorFrom(bg, percent) : bg,
+												}}
+												className="bg-current h-[14px] w-[14px] rounded-full mr-1"
+											/>
 											<div className="flex-1 text-[0.875rem] leading-[16px] whitespace-nowrap overflow-hidden overflow-ellipsis mr-1">
 												{name}
 											</div>

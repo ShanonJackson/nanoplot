@@ -1,24 +1,21 @@
 "use client";
 import { ComponentProps, useState } from "react";
-import { Lines } from "../../../components/Lines/Lines";
 import { GridLines } from "../../../components/GridLines/GridLines";
 import { XAxis } from "../../../components/XAxis/XAxis";
 import { YAxis } from "../../../components/YAxis/YAxis";
 import { Legend } from "../../../components/Legend/Legend";
 import { ControlPanel } from "../../../components/Panels/ControlPanel";
-import { LinesControlGroup } from "../../../components/ControlGroup/LinesControlGroup/LinesControlGroup";
 import { LegendControlGroup } from "../../../components/ControlGroup/LegendControlGroup/LegendControlGroup";
 import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLinesControlGroup/GridLinesControlGroup";
 import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
-import { LinesTimeslotExample, LinesTimeslotExampleCode } from "./components/LinesTimeslotExample";
 import { Graph } from "../../../components/Graph/Graph";
-import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTraffic";
-import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
+import { Area } from "../../../components/Area/Area";
+import { AreaControlGroup } from "../../../components/ControlGroup/AreaControlGroup/AreaControlGroup";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
+	const [area, setArea] = useState<ComponentProps<typeof Area>>({ curve: "natural" });
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
@@ -27,32 +24,14 @@ export default function Page() {
 	return (
 		<>
 			<ControlPanel>
-				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
-				<LinesControlGroup state={line} onChange={setLine} />
+				<h1 className={"text-2xl pb-2"}>Area Graph</h1>
+				<AreaControlGroup state={area} onChange={setArea} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel
-				examples={[
-					{
-						name: "Timeseries with 'Registered Users' interactions: 'hovered'",
-						code: LinesSiteTrafficCode,
-						component: LinesSiteTraffic,
-					},
-					{
-						name: "Timeseries with 'New Users' interactions: 'pinned'",
-						code: LinesSiteTrafficPinnedCode,
-						component: LinesSiteTrafficPinned,
-					},
-					{
-						name: "Timeseries with timeslot",
-						code: LinesTimeslotExampleCode,
-						component: LinesTimeslotExample,
-					},
-				]}
-			>
+			<GraphPanel examples={[]}>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
 					data={[
@@ -106,8 +85,8 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Lines {...line} />
-					<Lines.Tooltip />
+					<Area {...area} />
+					<Area.Tooltip />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}

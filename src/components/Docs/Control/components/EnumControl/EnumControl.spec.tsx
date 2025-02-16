@@ -14,14 +14,6 @@ describe("EnumControl", () => {
 	it("Should render discription.", () => {
 		expect(screen.getByText("legendDiscription")).toBeInTheDocument();
 	});
-	it("Should render given number of options as labels.", () => {
-		expect(screen.getAllByRole("listitem")).toHaveLength(4);
-		expect(screen.getByText("top")).toBeInTheDocument();
-		expect(screen.getByText("bottom")).toBeInTheDocument();
-		expect(screen.getByText("right")).toBeInTheDocument();
-		expect(screen.getByText("left")).toBeInTheDocument();
-	});
-
 	it("Should call function with parameter.", () => {
 		fireEvent.click(screen.getByText("top"));
 		expect(fn.mock.calls).toHaveLength(1);

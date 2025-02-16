@@ -14,14 +14,15 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean | number /* radius as percentage */;
 	labels?: boolean;
+	glow?: boolean;
 	className?: string;
 	children?: ReactNode;
 };
 
-export const Pie = ({ donut, labels = true, loading, className, children }: Props) => {
+export const Pie = ({ glow = true, donut, labels = true, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
-	const { data, viewbox } = useGraph();
+	const { data, viewbox, colorFor } = useGraph();
 
 	if (!GraphUtils.isSegmentData(data)) return null;
 
@@ -41,9 +42,10 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 
 	const paths = data
 		.toSorted((a, b) => Number(b.value) - Number(a.value))
-		.map((segment) => ({
+		.map((segment, i, segments) => ({
 			...segment,
 			value: Number(segment.value),
+			fill: colorFor(i, segments.length),
 		}))
 		.map((segment, i, segments) => {
 			return {
@@ -161,7 +163,6 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 		<>
 			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
 			{paths.map(({ path, label, id }, i) => {
-				/* Each path is it's own SVG because z-index on hover is required so that shadows work. */
 				return (
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
@@ -172,7 +173,7 @@ export const Pie = ({ donut, labels = true, loading, className, children }: Prop
 						)}
 						key={i}
 					>
-						<use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />
+						{glow && <use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />}
 						<g className={"pie__slice group"}>
 							<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
 								{path}

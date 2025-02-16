@@ -1,10 +1,13 @@
-type Props = {
+import { GradientUtils } from "../../utils/gradient/gradient";
+
+type Props = React.HTMLAttributes<SVGLinearGradientElement> & {
 	id: string;
 	gradient: string;
 };
 
-export const LinearGradient = ({ id, gradient }: Props) => {
-	const parseDirection = (direction: string) => {
+export const LinearGradient = ({ id, gradient, ...rest }: Props) => {
+	const { direction, stops } = GradientUtils.parse(gradient);
+	const { x1, y1, x2, y2 } = (() => {
 		if (direction.includes("to ")) {
 			switch (direction.replace("to ", "").trim()) {
 				case "top":
@@ -34,29 +37,12 @@ export const LinearGradient = ({ id, gradient }: Props) => {
 			};
 		}
 		return { x1: 0, y1: 0, x2: 0, y2: 1 }; // Default to "to bottom"
-	};
-
-	const parseStops = (stops: string[]) =>
-		stops.map((stop, i, arr) => {
-			const [color, offset] = stop.trim().split(/\s+(?![^()]*\))/);
-			return {
-				color,
-				offset: offset || (i === 0 ? "0%" : i === arr.length - 1 ? "100%" : undefined),
-			};
-		});
-
-	const { x1, y1, x2, y2, stops } = (() => {
-		const match = gradient.match(/linear-gradient\(([^)]+)\)/);
-		if (!match) throw new Error("Invalid gradient string");
-		const parts = match[1].split(/,(?![^()]*\))/).map((p) => p.trim());
-		const direction = parts[0].match(/^(to|\d+deg|\d+rad|\d+turn)/) ? parts.shift()! : "to bottom";
-		return { ...parseDirection(direction), stops: parseStops(parts) };
 	})();
 
 	return (
-		<linearGradient id={id} x1={x1} y1={y1} x2={x2} y2={y2}>
-			{stops.map(({ color, offset }, i) => (
-				<stop key={i} stopColor={color} offset={offset} />
+		<linearGradient {...rest} id={id} x1={x1} y1={y1} x2={x2} y2={y2}>
+			{stops.map(({ color, opacity, offset }, i) => (
+				<stop key={i} stopColor={color} stopOpacity={opacity} offset={(offset ?? 0) * 100 + "%"} />
 			))}
 		</linearGradient>
 	);

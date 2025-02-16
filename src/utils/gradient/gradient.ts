@@ -1,115 +1,89 @@
-/*
-	The following code block is GPT generated code.
-	It's designed to make getting the 'fill' for "heatmap" style graphs easier ( Worldmap, Heatmap, .. more in future).
-	It's designed to take a linear gradient string and a percentage and return the color at that percentage.
-	It's possible that we may want to simplify the implementation by only allowing rgb(a) colors.
- */
+import { toRgb } from "../color/to-rgb";
 
-export const colorFromGradient = (gradient: string, percent: number): string => {
-	const gradientRegex = /linear-gradient\([^,]+,\s*(.*)\)/;
-	const match = gradient.match(gradientRegex);
-	if (!match) throw new Error("Invalid gradient format");
+const parseRgbString = (rgb: string): { r: number; g: number; b: number; a: number } => {
+	const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+	if (!m) return { r: 0, g: 0, b: 0, a: 1 };
+	return { r: +m[1], g: +m[2], b: +m[3], a: m[4] !== undefined ? +m[4] : 1 };
+};
 
-	const colorStops = match[1].split(/,(?![^()]*\))/).map((s) => s.trim());
-	const colors = colorStops.map((stop) => {
-		const parts = stop.split(/\s+/);
-		return {
-			color: parseColor(parts.slice(0, -1).join(" ")),
-			position: parts.length > 1 ? parseFloat(parts[parts.length - 1]) / 100 : null,
-		};
-	});
+const regex =
+	/(?:linear-gradient\([^,]*,\s*)?((?:rgb\([^\)]+\)|rgba\([^\)]+\)|hsl\([^\)]+\)|hsla\([^\)]+\)|#[0-9a-fA-F]{3,6}|[a-zA-Z]+))(\s*(\d+%)?)?(\s*opacity\s*[:=]\s*(\d*\.?\d+))?/g;
 
-	colors[0].position = colors[0].position ?? 0;
-	colors[colors.length - 1].position = colors[colors.length - 1].position ?? 1;
+export const GradientUtils = {
+	parse: (gradient: string): { stops: Array<{ color: string; offset: number | null; opacity?: number }>; direction: string } => {
+		const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
+			undefined,
+			undefined,
+		];
+		const linear = direction ? gradient : gradient.replace("linear-gradient(", "linear-gradient(to bottom, ");
+		const stops = Array.from(linear.matchAll(regex))
+			.map((match) => ({
+				color: toRgb(match[1]),
+				// If an offset is provided (e.g. "0%"), divide by 100 to normalize.
+				offset: match[3] ? parseFloat(match[3]) / 100 : null,
+				opacity: match[5] ? parseFloat(match[5]) : undefined,
+			}))
+			.map((item, index, arr) => ({
+				...item,
+				// Auto-assign missing offsets evenly between 0 and 1.
+				offset: item.offset === null ? index / (arr.length - 1) : item.offset,
+			}));
+		return { stops, direction: direction ?? "to bottom" };
+	},
+	colorFrom: (gradient: string, percent: number): string => {
+		const { stops } = GradientUtils.parse(gradient);
 
-	for (let i = 1; i < colors.length; i++) {
-		if (colors[i].position === null) {
-			let start = i - 1;
-			let end = i;
-			while (end < colors.length && colors[end].position === null) end++;
-			const step = (colors[end].position - colors[start].position) / (end - start);
-			for (let j = start + 1; j < end; j++) {
-				colors[j].position = colors[j - 1].position + step;
+		// Ensure first and last stops have defined positions.
+		stops[0].offset = stops[0].offset ?? 0;
+		stops[stops.length - 1].offset = stops[stops.length - 1].offset ?? 1;
+
+		// Fill in any missing positions by linear interpolation.
+		for (let i = 1; i < stops.length; i++) {
+			if (stops[i].offset == null) {
+				let j = i;
+				while (j < stops.length && stops[j].offset == null) j++;
+				const startPos = stops[i - 1].offset!;
+				const endPos = stops[j].offset!;
+				const gap = (endPos - startPos) / (j - i + 1);
+				for (let k = i; k < j; k++) {
+					stops[k].offset = startPos + gap * (k - i + 1);
+				}
+				i = j - 1;
 			}
 		}
-	}
 
-	percent /= 100;
-	let startColor, endColor, t;
-	for (let i = 0; i < colors.length - 1; i++) {
-		if (percent >= colors[i].position && percent <= colors[i + 1].position) {
-			startColor = colors[i].color;
-			endColor = colors[i + 1].color;
-			t = (percent - colors[i].position) / (colors[i + 1].position - colors[i].position);
-			break;
+		// Normalize input percent to 0–1 and find the correct segment.
+		const p = percent / 100;
+		let startStop,
+			endStop,
+			t = 0;
+		for (let i = 0; i < stops.length - 1; i++) {
+			if (p >= stops[i].offset! && p <= stops[i + 1].offset!) {
+				startStop = stops[i];
+				endStop = stops[i + 1];
+				t = (p - stops[i].offset!) / (stops[i + 1].offset! - stops[i].offset!);
+				break;
+			}
 		}
-	}
+		// If no segment is found, return the last stop's color.
+		if (!startStop || !endStop) return stops[stops.length - 1].color;
 
-	if (!startColor || !endColor) {
-		const { r, g, b, a } = colors[colors.length - 1].color;
-		return `rgba(${r}, ${g}, ${b}, ${a})`;
-	}
-	return interpolateColors(startColor, endColor, t);
+		// Interpolate between the two stops.
+		const c1 = parseRgbString(startStop.color);
+		const c2 = parseRgbString(endStop.color);
+		return interpolateColors(c1, c2, t);
+	},
 };
 
-type RGBAColor = { r: number; g: number; b: number; a: number };
-
-const parseColor = (color: string): RGBAColor => {
-	const hexMatch = color.match(/^#([a-fA-F0-9]{3,8})$/);
-	if (hexMatch) {
-		let hex = hexMatch[1];
-		if (hex.length === 3)
-			hex = hex
-				.split("")
-				.map((c) => c + c)
-				.join("");
-		if (hex.length === 6) hex += "ff";
-		if (hex.length === 8) {
-			return {
-				r: parseInt(hex.slice(0, 2), 16),
-				g: parseInt(hex.slice(2, 4), 16),
-				b: parseInt(hex.slice(4, 6), 16),
-				a: parseInt(hex.slice(6, 8), 16) / 255,
-			};
-		}
-	}
-
-	const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-	if (rgbaMatch) {
-		return {
-			r: parseInt(rgbaMatch[1]),
-			g: parseInt(rgbaMatch[2]),
-			b: parseInt(rgbaMatch[3]),
-			a: rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1,
-		};
-	}
-
-	const hslaMatch = color.match(/hsla?\(([^)]+)\)/);
-	if (hslaMatch) {
-		const [h, s, l, a = 1] = hslaMatch[1].split(",").map((n) => parseFloat(n.trim()));
-		return hslToRgb(h, s, l, a);
-	}
-
-	throw new Error("Unsupported color format: " + color);
-};
-
-const hslToRgb = (h: number, s: number, l: number, a: number): RGBAColor => {
-	s /= 100;
-	l /= 100;
-	const k = (n: number) => (n + h / 30) % 12;
-	const f = (n: number) => l - s * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
-	return {
-		r: Math.round(f(0) * 255),
-		g: Math.round(f(8) * 255),
-		b: Math.round(f(4) * 255),
-		a,
-	};
-};
-
-const interpolateColors = (c1: RGBAColor, c2: RGBAColor, t: number): string => {
+const interpolateColors = (
+	c1: { r: number; g: number; b: number; a: number },
+	c2: { r: number; g: number; b: number; a: number },
+	t: number,
+): string => {
 	const r = Math.round(c1.r + (c2.r - c1.r) * t);
 	const g = Math.round(c1.g + (c2.g - c1.g) * t);
 	const b = Math.round(c1.b + (c2.b - c1.b) * t);
 	const a = c1.a + (c2.a - c1.a) * t;
+	// Format alpha to two decimals to match expected output.
 	return `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`;
 };

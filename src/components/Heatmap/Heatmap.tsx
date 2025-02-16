@@ -4,7 +4,7 @@ import { Rect } from "../Bars/components/Rect";
 import { GraphUtils } from "../../utils/graph/graph";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { MathUtils } from "../../utils/math/math";
-import { colorFromGradient } from "../../utils/gradient/gradient";
+import { GradientUtils } from "../../utils/gradient/gradient";
 import { overlay } from "../Overlay/Overlay";
 import { ColorUtils } from "../../utils/color/color";
 import React from "react";
@@ -37,14 +37,14 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 	});
 
 	const dataset = data.flatMap(({ data }) => {
-		return data.map(({ x, y, z }) => {
+		return data.map(({ x, y, z = 0 }) => {
 			const percent = ScalarUtils.percentFor(+z, ticks);
 			return {
 				x1: xCoordinateFor(x) - width / 2,
 				x2: xCoordinateFor(x) + width / 2,
 				y1: yCoordinateFor(y) - height / 2,
 				y2: yCoordinateFor(y) + height / 2,
-				fill: colorFromGradient(gradient, percent),
+				fill: GradientUtils.colorFrom(gradient, percent),
 				data: { x, y, z },
 			};
 		});
