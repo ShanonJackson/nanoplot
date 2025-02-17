@@ -32,7 +32,7 @@ export const HorizontalBarsExample = () => {
 		>
 			<YAxis />
 			<GridLines border horizontal />
-			<Bars horizontal labels={{ position: "center", display: (v) => v }} />
+			<Bars horizontal labels={{ position: "center", display: (v) => v.toString() }} />
 			<XAxis />
 		</Graph>
 	);
@@ -72,7 +72,7 @@ export const HorizontalBarsExample = () => {
 		>
 			<YAxis />
 			<GridLines border horizontal />
-			<Bars horizontal />
+			<Bars horizontal labels={{ position: "center", display: (v) => v.toString() }} />
 			<XAxis />
 		</Graph>
 	);
