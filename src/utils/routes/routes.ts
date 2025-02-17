@@ -7,6 +7,8 @@ import {
 	SunburstCartIcon,
 	WorldmapIcon,
 } from "../../assets/icons";
+import { AreaGraphIcon } from "../../assets/Icons/AreaGraphIcon/AreaGraphIcon";
+import { HeatmapGraphIcon } from "../../assets/Icons/HeatmapGraphIcon/HeatmapGraphIcon";
 
 export const Href = {
 	HOME: "/",
@@ -36,14 +38,24 @@ export const Routes = [
 		icon: LineGraphIcon,
 	},
 	{
-		name: "Scatter Graph",
-		href: "/graphs/scatter",
-		icon: ScatterGraphIcon,
-	},
-	{
 		name: "Radar Graph",
 		href: "/graphs/radar",
 		icon: RadarGraphtIcon,
+	},
+	{
+		name: "Area Graph",
+		href: "/graphs/area",
+		icon: AreaGraphIcon,
+	},
+	{
+		name: "Heatmap Graph",
+		href: "/graphs/heatmap",
+		icon: HeatmapGraphIcon,
+	},
+	{
+		name: "Scatter Graph",
+		href: "/graphs/scatter",
+		icon: ScatterGraphIcon,
 	},
 	{
 		name: "Worldmap",

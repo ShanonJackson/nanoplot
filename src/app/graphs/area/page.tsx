@@ -38,6 +38,7 @@ export default function Page() {
 						{
 							name: "New Users",
 							stroke: "#FF4B4B",
+							group: "users",
 							data: [
 								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
 								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
@@ -56,6 +57,7 @@ export default function Page() {
 						{
 							name: "Registered Users",
 							stroke: "#33D4FF",
+							group: "users",
 							data: [
 								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
 								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
