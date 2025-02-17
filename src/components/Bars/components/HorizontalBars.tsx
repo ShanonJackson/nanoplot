@@ -24,8 +24,15 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
-	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-	const bars = context.data.flatMap((bar) => bar.data.map((xy) => ({ ...bar, group: bar.group ?? bar.id ?? bar.name, data: xy }))); // bars excl segments.
+
+	const bars = context.data.flatMap((bar, i, bars) =>
+		bar.data.map((xy) => ({
+			...bar,
+			fill: bar.fill ?? bar.stroke ?? context.colorFor(i, bars.length),
+			group: bar.group ?? bar.id ?? bar.name,
+			data: xy,
+		})),
+	); // bars excl segments.
 	const BAR_WIDTH = Math.floor((context.viewbox.y * (size / 100)) / new Set(bars.map((bar) => `${bar.data.y}|${bar.group}`)).size);
 	/* dataset is a single array of rect's with x1/x2/y1/y2; rect can be a segment of a bar (grouped) or a bar itself */
 	const dataset = context.domain.y
@@ -90,7 +97,8 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 				dataset.map((bar, i) => {
 					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
 					const collision = typeof labels === "object" && "collision" in labels ? labels.collision : true;
-					const width = ((position === "above" ? 100 : 0) - MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100)) + "%";
+					const width =
+						Math.abs(MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) - (position === "above" ? 100 : 0)) + "%";
 					const height = MathUtils.scale(bar.y2 - bar.y1, context.viewbox.y, 100);
 					const top = MathUtils.scale(bar.y1, context.viewbox.y, 100);
 					const label = (() => {
@@ -128,7 +136,7 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 									)}
 									style={{ color: position === "center" ? ColorUtils.textFor(String(bar.fill)) : undefined }}
 								>
-									{label}
+									{label.toString()}
 								</span>
 							</div>
 						</overlay.div>

@@ -11,7 +11,7 @@ export type CartesianDataset = Array<{
 	fill?: string;
 	data: Array<{
 		x: number | Date | string;
-		y: number | string;
+		y: number | Date | string;
 		z?: number | string | Date;
 	}>;
 }>;

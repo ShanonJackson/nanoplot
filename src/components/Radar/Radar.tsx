@@ -17,7 +17,7 @@ type Props = {
 };
 
 export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loading, className }: Props) => {
-	const { data, viewbox } = useGraph();
+	const { data, viewbox, colorFor } = useGraph();
 	const pointGlowId = useId();
 	const radarDotId = useId();
 	const radarShapeId = useId();
@@ -145,20 +145,16 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 							.join(" ")
 							.concat(" Z");
 
-						const FILL = (() => {
-							if (fill === true || fill === undefined) return stroke;
-							if (fill === false) return "transparent";
-							return fill;
-						})();
+						const filled = fill ?? stroke ?? colorFor(i, data.length);
 						return (
 							<React.Fragment key={i}>
 								<radialGradient id={radarShapeId + i} cx={viewbox.x / 2} cy={viewbox.y / 2} gradientUnits="userSpaceOnUse">
-									<stop offset="30%" stopColor={FILL} />
-									<stop offset="50%" stopColor={FILL} stopOpacity={0.7} />
-									<stop offset="60%" stopColor={FILL} stopOpacity={0.5} />
-									<stop offset="70%" stopColor={FILL} stopOpacity={0.4} />
-									<stop offset="80%" stopColor={FILL} stopOpacity={0.3} />
-									<stop offset="100%" stopColor={FILL} stopOpacity={0.2} />
+									<stop offset="30%" stopColor={filled} />
+									<stop offset="50%" stopColor={filled} stopOpacity={0.7} />
+									<stop offset="60%" stopColor={filled} stopOpacity={0.5} />
+									<stop offset="70%" stopColor={filled} stopOpacity={0.4} />
+									<stop offset="80%" stopColor={filled} stopOpacity={0.3} />
+									<stop offset="100%" stopColor={filled} stopOpacity={0.2} />
 								</radialGradient>
 								<path d={glow} strokeOpacity="0" fillOpacity={0.5} filter={`url(#${pointGlowId})`} />
 								<path

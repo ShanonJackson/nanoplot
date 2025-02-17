@@ -162,6 +162,10 @@ export const PathUtils = {
 		return { x: centerX, y: centerY };
 	},
 	borderRadius: (xy1: { x: number; y: number }, xy2: { x: number; y: number }, radius: number, horizontal = false) => {
+		if (!radius) {
+			// return rect of coordinates.
+			return `M ${xy1.x} ${xy1.y} L ${xy2.x} ${xy1.y} L ${xy2.x} ${xy2.y} L ${xy1.x} ${xy2.y} Z`;
+		}
 		const middle = horizontal ? xy2.y - xy1.y : xy2.x - xy1.x;
 		if (horizontal) {
 			return `M ${xy1.x} ${xy1.y} H ${xy2.x - radius} Q ${xy2.x} ${xy1.y} ${xy2.x} ${xy1.y + (radius > middle / 2 ? middle / 2 : radius)} L ${xy2.x} ${xy2.y - (radius > middle / 2 ? middle / 2 : radius)} Q ${xy2.x} ${xy2.y} ${xy2.x - radius} ${xy2.y} H ${xy1.x}`;

@@ -8,6 +8,7 @@
     "jsx": "react-jsx",
     "emitDeclarationOnly": false,
     "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "declaration": true
   },
   "include": [

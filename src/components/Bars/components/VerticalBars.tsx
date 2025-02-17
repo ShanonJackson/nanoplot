@@ -28,9 +28,10 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 	if (loading) return <BarsVerticalLoading />;
 
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
-	const bars = context.data.flatMap((bar) =>
+	const bars = context.data.flatMap((bar, i, bars) =>
 		bar.data.map((xy) => ({
 			...bar,
+			fill: bar.fill ?? bar.stroke ?? context.colorFor(i, bars.length),
 			group: bar.group ?? bar.id ?? bar.name,
 			data: xy,
 		})),
@@ -55,13 +56,13 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 							y2: context.viewbox.y,
 						};
 					})
-					.map((segment, i, segments) => {
-						const previousY = segments.slice(0, i).reduce((acc, { y1 }) => acc + context.viewbox.y - y1, 0);
+					.map((segment, ii, segments) => {
+						const previousY = segments.slice(0, ii).reduce((acc, { y1 }) => acc + context.viewbox.y - y1, 0);
 						return {
 							...segment,
 							y1: context.viewbox.y - previousY,
 							y2: segment.y1 - previousY,
-							radius: i === segments.length - 1 ? radius : undefined,
+							radius: ii === segments.length - 1 ? radius : undefined,
 						};
 					});
 			});
@@ -112,7 +113,7 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 							className={"horizontal-bars__label @container-[size] absolute text-center"}
 							style={{
 								width,
-								height: (position === "above" ? 100 : 0) - height + "%",
+								height: Math.abs(height - (position === "above" ? 100 : 0)) + "%",
 								left: `${MathUtils.scale(bar.x1, context.viewbox.x, 100)}%`,
 								top: top,
 							}}
@@ -134,7 +135,7 @@ export const VerticalBars = ({ children, size = 50, labels = true, radius = 0, g
 									)}
 									style={{ color: position === "center" ? ColorUtils.textFor(String(bar.fill)) : undefined }}
 								>
-									{label}
+									{label.toString()}
 								</span>
 							</div>
 						</overlay.div>
