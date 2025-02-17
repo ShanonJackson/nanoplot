@@ -2,6 +2,8 @@ export type { GraphContext, CartesianDataset, SegmentDataset } from "../hooks/us
 
 export { Sunburst } from "../components/Sunburst/Sunburst";
 export { Bars } from "../components/Bars/Bars";
+export { Area } from "../components/Area/Area";
+export { Heatmap } from "../components/Heatmap/Heatmap";
 export { Lines } from "../components/Lines/Lines";
 export { Pie } from "../components/Pie/Pie";
 export { Scatter } from "../components/Scatter/Scatter";

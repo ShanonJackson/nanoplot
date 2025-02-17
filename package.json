@@ -4,6 +4,10 @@
 	"private": false,
 	"exports": {
 		"./styles.css": "./dist/index.css",
+		"./Area": {
+			"import": "./dist/src/components/Area/Area.js",
+			"types": "./dist/src/components/Area/Area.d.ts"
+		},
 		"./Sunburst": {
 			"import": "./dist/src/components/Sunburst/Sunburst.js",
 			"types": "./dist/src/components/Sunburst/Sunburst.d.ts"
