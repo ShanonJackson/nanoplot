@@ -13,6 +13,7 @@ import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
 import { Area } from "../../../components/Area/Area";
 import { AreaControlGroup } from "../../../components/ControlGroup/AreaControlGroup/AreaControlGroup";
+import { StackedAreaExample, StackedAreaExampleCode } from "./examples/StackedAreaExample";
 
 export default function Page() {
 	const [area, setArea] = useState<ComponentProps<typeof Area>>({ curve: "natural" });
@@ -31,7 +32,7 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel examples={[]}>
+			<GraphPanel examples={[{ name: "Stacked Area", code: StackedAreaExampleCode, component: StackedAreaExample }]}>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
 					data={[

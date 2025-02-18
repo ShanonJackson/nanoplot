@@ -4,7 +4,7 @@ export const HeatmapGraphIcon = ({}: Props) => {
 	return (
 		<svg
 			viewBox="0 -1.5 2253 2253"
-			className={"h-8 w-8"}
+			className={"h-6 w-6"}
 			style={{
 				fillRule: "evenodd",
 				clipRule: "evenodd",

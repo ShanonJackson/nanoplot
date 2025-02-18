@@ -65,13 +65,14 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 						};
 					})
 					.map(({ id, stroke, data, path, fill }, i, segments) => {
-						const previous = segments[i - 1] ? CurveUtils[curve](segments[i - 1]?.data.reverse()).replace("M", "L") : undefined;
+						const previous = segments[i - 1] ? CurveUtils[curve](segments[i - 1]?.data).replace("M", "L") : undefined;
 						const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 						const filled = (() => {
 							if (fill) return fill;
 							if (stroke.includes("linear-gradient")) return "transparent";
 							return `linear-gradient(${stroke} opacity:0.5 5%, ${stroke} opacity:0 95%)`;
 						})();
+						// M my start + previous + L my end Z?
 						return (
 							<React.Fragment key={i + "|" + index}>
 								<Line
@@ -82,7 +83,12 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 									className={"area__stroke"}
 								/>
 								<Line
-									d={path + (previous ?? ` L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} L ${data[0]?.x} ${viewbox.y} Z`)}
+									d={
+										path +
+										(previous
+											? `M ${data?.[0]?.x} ${data?.[0]?.y} L ${segments[i - 1].data[0].x} ${segments[i - 1].data[0].y} ${previous} L ${data?.at(-1)?.x} ${data?.at(-1)?.y} Z`
+											: `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} L ${data[0]?.x} ${viewbox.y} Z`)
+									}
 									disabled={Boolean(disabled)}
 									stroke={"transparent"}
 									fill={filled}
