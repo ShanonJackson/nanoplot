@@ -58,7 +58,7 @@ export default function Page() {
 					data={[
 						{
 							name: "New Users",
-							stroke: "#FF4B4B",
+							stroke: "mask:linear-gradient(to bottom, rgb(255, 0, 0) 40, rgb(0, 0, 255) 40.00001, rgb(0, 0, 255) 0)",
 							data: [
 								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
 								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },

@@ -18,7 +18,8 @@ export const Circle = ({ x, y, stroke, fill }: Props) => {
 	const fillId = useId();
 	const isGradientFill = fill?.includes("linear-gradient");
 	const isGradientStroke = stroke?.includes("linear-gradient");
-	const percent = MathUtils.scale(x, viewbox.x, 100);
+	const direction = GradientUtils.direction(stroke);
+	const percent = direction === "to bottom" ? MathUtils.scale(y, viewbox.y, 100) : MathUtils.scale(x, viewbox.x, 100);
 	const colorsFromGradient = isGradientStroke ? GradientUtils.colorFrom(stroke, percent) : stroke;
 	return (
 		<>

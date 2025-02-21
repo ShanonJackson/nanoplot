@@ -1,4 +1,5 @@
 import { GradientUtils } from "../../utils/gradient/gradient";
+import { useGraph } from "../../hooks/use-graph/use-graph";
 
 type Props = React.HTMLAttributes<SVGLinearGradientElement> & {
 	id: string;
@@ -6,7 +7,8 @@ type Props = React.HTMLAttributes<SVGLinearGradientElement> & {
 };
 
 export const LinearGradient = ({ id, gradient, ...rest }: Props) => {
-	const { direction, stops } = GradientUtils.parse(gradient);
+	const { viewbox, domain } = useGraph();
+	const { direction, stops } = GradientUtils.parse2({ gradient, viewbox, domain });
 	const { x1, y1, x2, y2 } = (() => {
 		if (direction.includes("to ")) {
 			switch (direction.replace("to ", "").trim()) {

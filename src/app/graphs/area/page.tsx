@@ -41,7 +41,7 @@ export default function Page() {
 							stroke: "#FF4B4B",
 							group: "users",
 							data: [
-								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 90 },
 								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
 								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
 								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },

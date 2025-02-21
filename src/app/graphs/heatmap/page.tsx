@@ -22,7 +22,7 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
-					gap={{ bottom: 30 }}
+					gap={{ bottom: 10, top: 10 }}
 					data={[
 						{
 							name: "Vehicle Tranpsort",

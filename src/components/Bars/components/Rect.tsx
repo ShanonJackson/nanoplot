@@ -19,7 +19,7 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 	const fillId = useId();
 	const strokeId = useId();
 	const clip = useId();
-	const clipPath = useId();
+	const clipId = useId();
 	const glowId = useId();
 
 	const isFillGradient = rest.fill?.includes("gradient");
@@ -31,9 +31,9 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 		<>
 			{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}
 			{isGradientStroke && rest.stroke && <LinearGradient id={strokeId} gradient={rest.stroke} />}
-			<path id={clipPath} d={path} />
+			<path id={clipId} d={path} />
 			<clipPath id={clip}>
-				<use xlinkHref={"#" + clipPath} />
+				<use xlinkHref={"#" + clipId} />
 			</clipPath>
 			{glow && (
 				<>

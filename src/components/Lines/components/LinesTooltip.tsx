@@ -66,11 +66,26 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 		/* Turn dataset into a dataset with a single point instead of line of points where that point === value near mouse */
 		if (!mouse || closest === undefined) return undefined;
 		return data
-			.flatMap((line) => {
+			.flatMap((line, i, lines) => {
 				const point = line.data.find((d) => +d.x === +closest);
 				if (!point) return [];
+
+				const stroke = (() => {
+					if (line.stroke?.includes("linear-gradient")) {
+						return GradientUtils.gradientColorFromValue({
+							gradient: line.stroke,
+							point: point,
+							dataset: line.data,
+							viewbox,
+							domain,
+						});
+					}
+					return line.stroke ?? colorFor(i, lines.length);
+				})();
+
 				return {
 					...line,
+					stroke,
 					data: point,
 				};
 			})
@@ -100,10 +115,9 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 		([, lines]) => {
 			return (
 				lines
-					?.map((line, i, lines) => {
+					?.map((line) => {
 						return {
 							...line,
-							stroke: line.stroke ?? colorFor(i, lines.length),
 							data: {
 								x: xForValue(line.data.x),
 								y: yForValue(line.data.y),
@@ -145,7 +159,17 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 				)}
 				{joints &&
 					jointPoints?.map(({ data: { x, y }, stroke }, i) => {
-						return <Circle key={i} stroke={stroke} fill={stroke} x={x} y={y} />;
+						return (
+							<path
+								key={i}
+								stroke={stroke}
+								fill={stroke}
+								d={`M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`}
+								strokeWidth={"10"}
+								strokeLinecap={"round"}
+								vectorEffect={"non-scaling-stroke"}
+							/>
+						);
 					})}
 			</svg>
 			{ordered && closest !== undefined && mouse && (
@@ -168,7 +192,11 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 							</div>
 							<div className={"px-2.5"}>
 								{ordered.map(({ name, data: { x, y }, stroke, fill }, i) => {
-									const percent = MathUtils.scale(xForValue(x), viewbox.x, 100);
+									const direction = GradientUtils.direction(stroke);
+									const percent =
+										direction === "to bottom"
+											? MathUtils.scale(yForValue(y), viewbox.y, 100)
+											: MathUtils.scale(xForValue(x), viewbox.x, 100);
 									const bg = fill ?? stroke;
 									return (
 										<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>

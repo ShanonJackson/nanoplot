@@ -6,6 +6,7 @@ import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
 import { cx } from "../../utils/cx/cx";
 import { LinesTooltip } from "./components/LinesTooltip";
+import { Line } from "./components/Line";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -19,15 +20,17 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 		data,
 		viewbox,
 		domain,
+		colorFor,
 	} = useGraph();
 	if (!GraphUtils.isXYData(data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
-	const lines = data.map((line) => {
+	const lines = data.map((line, i, lines) => {
 		return {
 			...line,
 			id: String(line.id),
+			stroke: line.stroke ?? colorFor(i, lines.length),
 			fill: String(line.fill),
 			data: line.data.map((xy) => ({
 				x: xForValue(xy.x),
@@ -57,14 +60,11 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 								<stop offset="95%" stopColor={stroke} stopOpacity={"0"} />
 							</linearGradient>
 						)}
-						<path
-							key={i}
+						<Line
 							d={path}
-							fill={"transparent"}
 							stroke={stroke}
+							fill={"transparent"}
 							className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
-							vectorEffect={"non-scaling-stroke"}
-							strokeWidth={1.5}
 						/>
 						{filled && data[0] && (
 							<path
