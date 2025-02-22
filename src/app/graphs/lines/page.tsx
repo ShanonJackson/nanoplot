@@ -16,6 +16,7 @@ import { LinesTimeslotExample, LinesTimeslotExampleCode } from "./components/Lin
 import { Graph } from "../../../components/Graph/Graph";
 import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTraffic";
 import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
+import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } from "./components/TimeSeriesCustomTooltipExample";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
@@ -50,6 +51,11 @@ export default function Page() {
 						name: "Timeseries with timeslot",
 						code: LinesTimeslotExampleCode,
 						component: LinesTimeslotExample,
+					},
+					{
+						name: "Time Series with Custom Tooltip",
+						code: TimeSeriesCustomTooltipExampleCode,
+						component: TimeSeriesCustomTooltipExample,
 					},
 				]}
 			>
