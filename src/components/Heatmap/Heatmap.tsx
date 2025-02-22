@@ -21,7 +21,7 @@ type Props = React.HTMLAttributes<SVGSVGElement> & {
 
 export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }: Props) => {
 	const context = useGraph();
-	const { viewbox, data } = context;
+	const { viewbox, data, domain } = context;
 	if (!GraphUtils.isXYData(data)) return null;
 
 	const xCoordinateFor = CoordinatesUtils.xCoordinateFor(context);
@@ -44,7 +44,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 				x2: xCoordinateFor(x) + width / 2,
 				y1: yCoordinateFor(y) - height / 2,
 				y2: yCoordinateFor(y) + height / 2,
-				fill: GradientUtils.colorFrom(gradient, percent),
+				fill: GradientUtils.colorFrom({ gradient, percent, domain, viewbox }),
 				data: { x, y, z },
 			};
 		});

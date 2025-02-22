@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useRef } from "react";
-import { useGraph, CartesianDataset } from "../../../hooks/use-graph/use-graph";
+import { CartesianDataset, useGraph } from "../../../hooks/use-graph/use-graph";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -9,7 +9,6 @@ import { GraphUtils } from "../../../utils/graph/graph";
 import { MathUtils } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ObjectUtils } from "../../../utils/object/object";
-import { Circle } from "../../Primatives/Circle";
 import { GradientUtils } from "../../../utils/gradient/gradient";
 
 type Props = {
@@ -202,7 +201,9 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 										<div key={i} className={"flex items-center text-black dark:text-white mt-1 mb-1"}>
 											<div
 												style={{
-													background: bg?.includes("linear-gradient") ? GradientUtils.colorFrom(bg, percent) : bg,
+													background: bg?.includes("linear-gradient")
+														? GradientUtils.colorFrom({ gradient: bg, percent, viewbox, domain })
+														: bg,
 												}}
 												className="bg-current h-[14px] w-[14px] rounded-full mr-1"
 											/>

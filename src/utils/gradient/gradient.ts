@@ -34,16 +34,21 @@ export const GradientUtils = {
 		const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
 
 		const direction = GradientUtils.direction(gradient);
-		if (direction === "to bottom") {
+		if (direction === "to bottom" || direction === "to top") {
 			const yMax = yForValue(Math.max(...dataset.map(({ y }) => +y)));
 			const yMin = yForValue(Math.min(...dataset.map(({ y }) => +y)));
-			const perc = MathUtils.scale(yForValue(point.y), [yMax, yMin], 100);
-			return GradientUtils.colorFrom(gradient, perc);
+			const percent = MathUtils.scale(yForValue(point.y), gradient.includes("mask:") ? viewbox.y : [yMax, yMin], 100);
+			return GradientUtils.colorFrom({
+				gradient,
+				percent: direction === "to top" ? 100 - percent : percent,
+				domain,
+				viewbox,
+			});
 		}
-		const xMin = Math.min(...dataset.map(({ x }) => +x));
-		const xMax = Math.max(...dataset.map(({ x }) => +x));
-		const percent = MathUtils.scale(xForValue(point.x), [xMin, xMax], 100);
-		return GradientUtils.colorFrom(gradient, percent);
+		const xMin = xForValue(Math.min(...dataset.map(({ x }) => +x)));
+		const xMax = xForValue(Math.max(...dataset.map(({ x }) => +x)));
+		const percent = MathUtils.scale(xForValue(point.x), gradient.includes("mask:") ? viewbox.x : [xMin, xMax], 100);
+		return GradientUtils.colorFrom({ gradient, percent: direction == "to left" ? 100 - percent : percent, domain, viewbox });
 	},
 	direction: (gradient: string): string => {
 		const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
@@ -52,7 +57,7 @@ export const GradientUtils = {
 		];
 		return direction ?? "to bottom";
 	},
-	parse2: ({
+	parse: ({
 		gradient,
 		viewbox,
 		domain,
@@ -74,13 +79,15 @@ export const GradientUtils = {
 			const stops = Array.from(linear.matchAll(regex))
 				.map((match) => {
 					const offset = match[3];
-					const isPercent = Boolean(offset?.endsWith("%"));
 					const computed = (() => {
+						if (offset === undefined) return null;
+						const isPercent = Boolean(offset?.endsWith("%"));
 						if (isPercent) return parseFloat(offset) / 100;
 						// it's a value in the domain.
 						if (direction === "to right" || direction === "to left") {
 							return MathUtils.scale(xForValue(parseFloat(offset)), viewbox.x, 1);
 						}
+						if (direction === "to top") return 1 - MathUtils.scale(yForValue(parseFloat(offset)), viewbox.y, 1);
 						return MathUtils.scale(yForValue(parseFloat(offset)), viewbox.y, 1);
 					})();
 					return {
@@ -93,80 +100,29 @@ export const GradientUtils = {
 					...item,
 					offset: item.offset === null ? index / (arr.length - 1) : item.offset,
 				}));
-			return { stops, direction: direction ?? "to bottom" };
+
+			const patched = [
+				...(stops[0].offset && stops[0].offset !== 0 ? [{ ...stops[0], offset: 0 }] : []),
+				...stops,
+				...(stops[stops.length - 1] && stops[stops.length - 1].offset !== 1 ? [{ ...stops[stops.length - 1], offset: 1 }] : []),
+			];
+			return { stops: patched, direction: direction ?? "to bottom" };
 		} catch (e) {
-			console.error(e);
 			return { stops: [], direction: "to bottom" };
 		}
 	},
-	parse: (gradient: string): { stops: Array<{ color: string; offset: number | null; opacity?: number }>; direction: string } => {
-		const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
-			undefined,
-			undefined,
-		];
-		const linear = direction ? gradient : gradient.replace("linear-gradient(", "linear-gradient(to bottom, ");
-		const stops = Array.from(linear.matchAll(regex))
-			.map((match) => {
-				// if it's 40.
-				// if it's to-bottom.
-				// get
-				return {
-					color: toRgb(match[1]),
-					offset: match[3] ? parseFloat(match[3]) / 100 : null,
-					opacity: match[5] ? parseFloat(match[5]) : undefined,
-				};
-			})
-			.map((item, index, arr) => ({
-				...item,
-				offset: item.offset === null ? index / (arr.length - 1) : item.offset,
-			}));
-		return { stops, direction: direction ?? "to bottom" };
-	},
-	colorFrom: (gradient: string, percent: number): string => {
-		const { stops } = GradientUtils.parse(gradient);
-
-		// Ensure first and last stops have defined positions.
-		stops[0].offset = stops[0].offset ?? 0;
-		stops[stops.length - 1].offset = stops[stops.length - 1].offset ?? 1;
-
-		// Fill in any missing positions by linear interpolation.
-		for (let i = 1; i < stops.length; i++) {
-			if (stops[i].offset == null) {
-				let j = i;
-				while (j < stops.length && stops[j].offset == null) j++;
-				const startPos = stops[i - 1].offset!;
-				const endPos = stops[j].offset!;
-				const gap = (endPos - startPos) / (j - i + 1);
-				for (let k = i; k < j; k++) {
-					stops[k].offset = startPos + gap * (k - i + 1);
-				}
-				i = j - 1;
-			}
-		}
-
-		// Normalize input percent to 0–1 and find the correct segment.
-		const p = percent / 100;
-		let startStop,
-			endStop,
-			t = 0;
-		for (let i = 0; i < stops.length - 1; i++) {
-			if (p >= stops[i].offset! && p <= stops[i + 1].offset!) {
-				startStop = stops[i];
-				endStop = stops[i + 1];
-				t = (p - stops[i].offset!) / (stops[i + 1].offset! - stops[i].offset!);
-				break;
-			}
-		}
-		// If no segment is found, return the last stop's color.
-		if (!startStop || !endStop) return stops[stops.length - 1].color;
-
-		// Interpolate between the two stops.
-		const c1 = parseRgbString(startStop.color);
-		const c2 = parseRgbString(endStop.color);
-		return interpolateColors(c1, c2, t);
-	},
-	colorFrom: (gradient: string, percent: number): string => {
-		const { stops } = GradientUtils.parse(gradient);
+	colorFrom: ({
+		gradient,
+		percent,
+		viewbox,
+		domain,
+	}: {
+		gradient: string;
+		percent: number;
+		viewbox: GraphContext["viewbox"];
+		domain: GraphContext["domain"];
+	}): string => {
+		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
 
 		// Ensure first and last stops have defined positions.
 		stops[0].offset = stops[0].offset ?? 0;
