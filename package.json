@@ -86,6 +86,7 @@
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
 		"@happy-dom/global-registrator": "^15.11.7",
+		"@number-flow/react": "^0.5.5",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.6.3",
