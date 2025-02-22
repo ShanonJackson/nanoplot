@@ -41,32 +41,36 @@ export const TimeSeriesCustomTooltipExample = () => {
 						return line.data.find((point) => point.x === x)?.percent;
 					});
 
-					return percents.map((percent) => (
-						<div
-							className={cx(
-								"flex items-center text-lg font-bold rounded border py-2 px-3 bg-opacity-60 shadow-md backdrop-blur-sm border-gray-200 dark-border-[#454545]",
-								percent >= 0 ? "text-green-500" : "text-red-500",
-							)}
-						>
-							<svg
-								viewBox={"0 0 25 25"}
-								height={"16"}
-								width={"16"}
-								className={cx("mr-1 transition-transform duration-300 ease-in-out", percent >= 0 ? "rotate-180" : "")}
+					return percents.map((percent, i) => {
+						if (!percent) return null;
+						return (
+							<div
+								className={cx(
+									"flex items-center text-lg font-bold rounded border py-1 px-3 bg-opacity-60 shadow-md backdrop-blur-sm border-gray-200 dark-border-[#454545]",
+									percent >= 0 ? "text-green-500" : "text-red-500",
+								)}
+								key={i}
 							>
-								<path
-									d={"M 12.5 2 L 12.5 23 L 4 13 M 12.5 23 L 21 13"}
-									stroke={"black"}
-									fill={"transparent"}
-									strokeWidth={3}
-									strokeLinecap={"round"}
-									strokeLinejoin={"round"}
-									className={cx(percent >= 0 ? "stroke-green-500" : "stroke-red-500")}
-								/>
-							</svg>
-							<NumberFlow isolate value={Math.round(percent)} />%
-						</div>
-					));
+								<svg
+									viewBox={"0 0 25 25"}
+									height={"16"}
+									width={"16"}
+									className={cx("mr-1 transition-transform duration-300 ease-in-out", percent >= 0 ? "rotate-180" : "")}
+								>
+									<path
+										d={"M 12.5 2 L 12.5 23 L 4 13 M 12.5 23 L 21 13"}
+										stroke={"black"}
+										fill={"transparent"}
+										strokeWidth={3}
+										strokeLinecap={"round"}
+										strokeLinejoin={"round"}
+										className={cx(percent >= 0 ? "stroke-green-500" : "stroke-red-500")}
+									/>
+								</svg>
+								<NumberFlow isolate value={Math.round(percent)} />%
+							</div>
+						);
+					});
 				}}
 			/>
 			<XAxis

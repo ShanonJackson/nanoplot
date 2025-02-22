@@ -14,7 +14,7 @@ export default function Home() {
 							<div className="relative isolate overflow-hidden rounded-full bg-white dark:bg-slate-900 px-5 py-2 w-fit">
 								<div className="absolute inset-[-50%] opacity-90 animate-rotate animate-borderWidth bg-gradient-to-r from-blue-500 via-blue-400 to-blue-300"></div>
 								<div className="absolute inset-[2px] rounded-full bg-inherit z-1"></div>
-								<span className="relative z-2 text-blue-500 dark:text-blue-400 font-medium">nanoplot.js</span>
+								<span className="relative z-2 text-blue-500 dark:text-blue-400 font-medium">nanoplot</span>
 							</div>
 							<h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-gray-900 dark:text-white">
 								<span className="text-blue-500 dark:text-blue-400">The last graph library you'll ever need</span>
