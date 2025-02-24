@@ -7,6 +7,7 @@ import { LinesLoading } from "./components/LinesLoading";
 import { cx } from "../../utils/cx/cx";
 import { LinesTooltip } from "./components/LinesTooltip";
 import { Line } from "./components/Line";
+import { toRgb } from "../../utils/color/to-rgb";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -67,14 +68,15 @@ export const Lines = ({ className, curve = "linear", children, loading }: Props)
 							className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 						/>
 						{filled && data[0] && (
-							<path
+							<Line
 								d={path + `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} L ${data[0].x} ${viewbox.y} Z`}
-								stroke={stroke}
-								fill={filled ? `url(#${identifier})` : undefined}
+								stroke={"transparent"}
+								fill={filled ? `linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})` : undefined}
 								strokeOpacity={0}
-								className="lines__fill"
+								className={"lines__fill"}
 							/>
 						)}
+						<path strokeOpacity={0} />
 					</React.Fragment>
 				);
 			})}

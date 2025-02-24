@@ -5,19 +5,24 @@ import { MathUtils } from "../../utils/math/math";
 import { PathUtils } from "../../utils/path/path";
 import { Popup } from "../Tooltip/Popup";
 import styles from "./Worldmap.module.scss";
+import { GradientUtils } from "../../utils/gradient/gradient";
+import { GraphUtils } from "../../utils/graph/graph";
 
 type Props = {
 	translate?: { x: number; y: number; scale: number };
+	gradient?: `linear-gradient(${string})`;
 	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
 	className?: string;
 	children?: ReactNode;
 };
 
-export const Worldmap = ({ tooltips, translate, className, children }: Props) => {
-	const { data } = useGraph();
+export const Worldmap = ({ tooltips, translate, gradient, className, children }: Props) => {
+	const { data, viewbox, domain } = useGraph();
 	const id = useId();
+	if (!GraphUtils.isSegmentData(data)) return null;
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
-
+	const max = Math.max(...Object.values(dataset).map(({ value }) => +value));
+	const min = Math.min(...Object.values(dataset).map(({ value }) => +value));
 	return (
 		<>
 			<svg
@@ -29,11 +34,23 @@ export const Worldmap = ({ tooltips, translate, className, children }: Props) =>
 			>
 				{Object.entries(countries).map(([iso, path], i) => {
 					const color = "#2c2c2c";
+					const fill = (() => {
+						if (gradient && dataset[iso]) {
+							return GradientUtils.colorFrom({
+								gradient: gradient,
+								percent: MathUtils.scale(+dataset[iso].value, [min, max], 100),
+								viewbox,
+								domain,
+							});
+						}
+						if (typeof dataset[iso]?.fill === "string") return dataset[iso].fill;
+						return color;
+					})();
 					return (
 						<path
 							key={i}
 							d={path}
-							fill={typeof dataset[iso]?.fill === "string" ? dataset[iso].fill : color}
+							fill={fill}
 							stroke={dataset[iso]?.stroke ?? "white"}
 							strokeWidth={0.5}
 							data-iso={iso}
@@ -42,21 +59,36 @@ export const Worldmap = ({ tooltips, translate, className, children }: Props) =>
 					);
 				})}
 			</svg>
-			{Object.entries(countries).map(([iso, path], i) => {
-				const { x, y } = PathUtils.center(path);
-				return (
-					<Popup
-						key={i}
-						target={{ side: "bottom", alignment: "center" }}
-						style={{ left: MathUtils.scale(x, 1090, 100) + "%", top: MathUtils.scale(y, 539, 100) + "%" }}
-						border={"rgb(45, 45, 45)"}
-						className={cx(`bg-black pointer-events-none`, styles.tooltip)}
-						data-iso={iso}
-					>
-						<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
-					</Popup>
-				);
-			})}
+			<div
+				className={"aspect-[1090/539] absolute [grid-area:graph] pointer-events-none h-full w-auto"}
+				style={{ left: `${translate?.x ?? 0}px` }}
+			>
+				<div className={"relative h-full w-full"}>
+					{Object.entries(countries).map(([iso, path], i) => {
+						const { x, y } = PathUtils.center(path);
+						if (!dataset[iso]) return null;
+						const left = MathUtils.scale(x, 1090, 100);
+						const top = MathUtils.scale(y, 539, 100);
+						return (
+							<Popup
+								key={i}
+								target={{ side: "bottom", alignment: "center" }}
+								style={{
+									left: left > 85 ? undefined : left + "%",
+									right: left > 85 ? 100 - left + "%" : undefined,
+									top: top > 85 ? undefined : top + "%",
+									bottom: top > 85 ? 100 - top + "%" : undefined,
+								}}
+								border={"rgb(45, 45, 45)"}
+								className={cx(`bg-black pointer-events-none`, styles.tooltip)}
+								data-iso={iso}
+							>
+								<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
+							</Popup>
+						);
+					})}
+				</div>
+			</div>
 			{children}
 		</>
 	);
@@ -65,7 +97,7 @@ export const Worldmap = ({ tooltips, translate, className, children }: Props) =>
 Worldmap.context = (ctx: GraphContext) => {
 	return {
 		...ctx,
-		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-max", styles.base) },
+		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-full", styles.base) },
 	};
 };
 

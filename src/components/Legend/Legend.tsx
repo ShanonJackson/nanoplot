@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
 import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
+import { GradientUtils } from "../../utils/gradient/gradient";
 
 type Props = {
 	position?: "top" | "bottom" | "left" | "right";
@@ -14,6 +15,8 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	const column = useGraphColumn(context);
 	const {
+		viewbox,
+		domain,
 		interactions: { pinned, hovered },
 	} = context;
 
@@ -39,12 +42,18 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 					const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
 					const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
 					const bg = fill ?? stroke;
-
+					const deserialized = bg?.replace("mask:", "")?.includes("linear-gradient")
+						? GradientUtils.deserialize({
+								gradient: bg.replace("mask:", ""),
+								viewbox,
+								domain,
+							})
+						: bg;
 					return (
 						<div key={i} className={"flex items-center"}>
 							<div
 								className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
-								style={disabled ? undefined : { background: bg?.replace("mask:", "") }}
+								style={disabled ? undefined : { background: deserialized }}
 							/>
 							<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
 							{isLastInGroup && <div className={"h-[16px] bg-gray-700 w-[1px] ml-[10px]"} />}

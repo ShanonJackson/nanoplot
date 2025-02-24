@@ -22,11 +22,13 @@ export const GradientLegend = ({ position, alignment = "center", gradient, scala
 
 	return (
 		<div
+			{...rest}
 			className={cx(
-				"gradient-legend w-[80%]",
+				"gradient-legend w-[100%] px-[20px]",
 				alignment === "center" && "mx-auto",
 				alignment === "start" && "mr-auto",
 				alignment === "end" && "ml-auto",
+				rest.className,
 			)}
 			style={{ gridColumn: column, ...rest.style }}
 		>

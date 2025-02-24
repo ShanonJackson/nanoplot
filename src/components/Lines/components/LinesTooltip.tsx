@@ -10,8 +10,9 @@ import { MathUtils } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ObjectUtils } from "../../../utils/object/object";
 import { GradientUtils } from "../../../utils/gradient/gradient";
+import { cx, tw } from "../../../utils/cx/cx";
 
-type Props = {
+type Props = React.HTMLAttributes<HTMLDivElement> & {
 	tooltip?: (
 		points: Array<Omit<CartesianDataset[number], "data"> & { data: CartesianDataset[number]["data"][number] }>,
 		x: number | string | Date,
@@ -20,7 +21,7 @@ type Props = {
 };
 
 const TOOLTIP_MARGIN = 20;
-export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
+export const LinesTooltip = ({ tooltip, joints = true, ...rest }: Props) => {
 	const ref = useRef<SVGSVGElement>(null);
 	const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>();
 	const mouse = useMouseCoordinates(ref);
@@ -144,7 +145,7 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 				ref={ref}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				preserveAspectRatio={"none"}
-				className={"h-full w-full [grid-area:graph] z-10 absolute overflow-visible"}
+				className={"h-full w-full [grid-area:graph] absolute overflow-visible"}
 			>
 				{closest !== undefined && (
 					<line
@@ -172,11 +173,17 @@ export const LinesTooltip = ({ tooltip, joints = true }: Props) => {
 					})}
 			</svg>
 			{ordered && closest !== undefined && mouse && (
-				<overlay.div ref={setTooltipRef} className={"absolute"} style={{ left, top }}>
+				<overlay.div
+					{...rest}
+					ref={setTooltipRef}
+					className={tw("lines-tooltip__tooltip absolute pointer-events-none", rest.className)}
+					style={{ left, top }}
+				>
 					{tooltip ? (
 						tooltip(ordered, closest)
 					) : (
 						<div
+							{...rest}
 							className={
 								"text-[14px] leading-[14px] rounded border bg-opacity-60 shadow-md backdrop-blur-sm w-[250px] pb-1.5 border-gray-200 dark-border-[#454545]"
 							}

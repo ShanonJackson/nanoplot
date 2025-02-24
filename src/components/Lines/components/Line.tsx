@@ -1,7 +1,7 @@
-import React, { useId } from "react";
+import React, { JSX, useId } from "react";
 import { LinearGradient } from "../../LinearGradient/LinearGradient";
 
-type Props = React.HTMLAttributes<SVGPathElement> & {
+type Props = JSX.IntrinsicElements["path"] & {
 	d: string;
 	stroke: string;
 	fill?: string;

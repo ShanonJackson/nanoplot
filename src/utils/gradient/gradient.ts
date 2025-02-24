@@ -57,6 +57,24 @@ export const GradientUtils = {
 		];
 		return direction ?? "to bottom";
 	},
+	deserialize: ({
+		gradient,
+		viewbox,
+		domain,
+	}: {
+		gradient: string;
+		viewbox: GraphContext["viewbox"];
+		domain: GraphContext["domain"];
+	}) => {
+		const direction = GradientUtils.direction(gradient);
+		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
+		const colors = stops
+			.map(({ color, offset, opacity }) => {
+				return `${color} ${(offset ?? 0) * 100}%`;
+			})
+			.join(", ");
+		return `linear-gradient(${direction}, ${colors})`;
+	},
 	parse: ({
 		gradient,
 		viewbox,

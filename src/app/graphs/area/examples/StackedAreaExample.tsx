@@ -123,7 +123,7 @@ export const StackedAreaExample = () => {
 			<YAxis ticks={{ to: 100 }} display={(y) => y.toString() + "%"} />
 			<GridLines border horizontal vertical />
 			<Area />
-			<Area.Tooltip />
+			<Area.Tooltip className={"bg-white dark:!bg-black"} />
 			<XAxis
 				ticks={{ jumps: "every 1 months" }}
 				display={(x) => {
@@ -262,7 +262,7 @@ export const StackedAreaExample = () => {
 			<YAxis ticks={{ to: 100 }} display={(y) => y.toString() + "%"} />
 			<GridLines border horizontal vertical />
 			<Area />
-			<Area.Tooltip />
+			<Area.Tooltip className={"bg-white dark:!bg-black"} />
 			<XAxis
 				ticks={{ jumps: "every 1 months" }}
 				display={(x) => {

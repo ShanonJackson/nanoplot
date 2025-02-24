@@ -14,6 +14,7 @@ import { Graph } from "../../../components/Graph/Graph";
 import { Area } from "../../../components/Area/Area";
 import { AreaControlGroup } from "../../../components/ControlGroup/AreaControlGroup/AreaControlGroup";
 import { StackedAreaExample, StackedAreaExampleCode } from "./examples/StackedAreaExample";
+import { toRgb } from "../../../utils/color/to-rgb";
 
 export default function Page() {
 	const [area, setArea] = useState<ComponentProps<typeof Area>>({ curve: "natural" });
@@ -39,6 +40,7 @@ export default function Page() {
 						{
 							name: "New Users",
 							stroke: "#FF4B4B",
+							fill: `linear-gradient(rgba(255, 75, 75, 0.5) 5%, rgba(255, 75, 75, 0) 95%)`,
 							group: "users",
 							data: [
 								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 90 },
@@ -58,6 +60,7 @@ export default function Page() {
 						{
 							name: "Registered Users",
 							stroke: "#33D4FF",
+							fill: `linear-gradient(${toRgb("#33D4FF", 0.5)} 5%, ${toRgb("#33D4FF", 0)} 95%)`,
 							group: "users",
 							data: [
 								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },

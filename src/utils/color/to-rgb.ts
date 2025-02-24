@@ -1,17 +1,18 @@
-export const toRgb = (color: string): string => {
+export const toRgb = (color: string, opacity?: number): string => {
 	if (/^rgba?\(/i.test(color)) {
 		return color;
 	}
 	if (/^#/i.test(color)) {
-		return parseHex(color);
+		return parseHex(color, opacity);
 	}
 	if (/^hsla?\(/i.test(color)) {
-		return parseHsl(color);
+		return parseHsl(color, opacity);
 	}
+	if (opacity !== undefined) return `rgba(0, 0, 0, ${opacity})`;
 	return `rgb(0, 0, 0)`;
 };
 
-const parseHex = (color: string): string => {
+const parseHex = (color: string, opacity?: number): string => {
 	let hex = color.replace(/^#/, "");
 	if (hex.length === 3)
 		hex = hex
@@ -21,11 +22,11 @@ const parseHex = (color: string): string => {
 	const r = parseInt(hex.slice(0, 2), 16);
 	const g = parseInt(hex.slice(2, 4), 16);
 	const b = parseInt(hex.slice(4, 6), 16);
-
+	if (opacity !== undefined) return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 	return `rgb(${r}, ${g}, ${b})`;
 };
 
-const parseHsl = (color: string): string => {
+const parseHsl = (color: string, opacity?: number): string => {
 	const match = color.match(/hsla?\(([^)]+)\)/);
 	if (!match) return "rgba(0, 0, 0)";
 	const [h, s, l] = match[1]
@@ -33,6 +34,7 @@ const parseHsl = (color: string): string => {
 		.map((x) => x.trim())
 		.map((x, i) => (i === 0 ? parseFloat(x) : parseFloat(x.replace("%", ""))));
 	const [r, g, b] = hslToRgb(h / 360, s / 100, l / 100);
+	if (opacity !== undefined) return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 	return `rgb(${r}, ${g}, ${b})`;
 };
 

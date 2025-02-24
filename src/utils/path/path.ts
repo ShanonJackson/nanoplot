@@ -156,10 +156,113 @@ export const PathUtils = {
 		return expandedCommands;
 	},
 	center: (path: string) => {
-		const parsed = PathUtils.parse(path);
-		const centerX = parsed.reduce((acc, { coords }) => acc + (coords?.[0] ?? 0), 0) / parsed.length;
-		const centerY = parsed.reduce((acc, { coords }) => acc + (coords[1] ?? 0), 0) / parsed.length;
-		return { x: centerX, y: centerY };
+		/*
+			GPT Generated.
+		 */
+		let currentX = 0,
+			currentY = 0;
+		const points: Array<{ x: number; y: number }> = [];
+
+		// Regex to split into commands (a letter) and their parameters.
+		const commandRegex = /([MLHVZmlhvz])([^MLHVZmlhvz]*)/g;
+		let match;
+
+		while ((match = commandRegex.exec(path)) !== null) {
+			const command = match[1];
+			const params = match[2].trim();
+			// Use a regex to capture numbers (handles numbers stuck together, e.g., "-1-2")
+			const numberMatches = params.match(/-?\d*\.?\d+(?:e[-+]?\d+)?/gi) || [];
+			const nums = numberMatches.map(Number);
+
+			switch (command) {
+				case "m": // relative move-to
+					currentX += nums[0];
+					currentY += nums[1];
+					points.push({ x: currentX, y: currentY });
+					// Extra pairs are treated as relative line-to
+					for (let i = 2; i < nums.length; i += 2) {
+						currentX += nums[i];
+						currentY += nums[i + 1];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "M": // absolute move-to
+					currentX = nums[0];
+					currentY = nums[1];
+					points.push({ x: currentX, y: currentY });
+					// Extra pairs are treated as absolute line-to
+					for (let i = 2; i < nums.length; i += 2) {
+						currentX = nums[i];
+						currentY = nums[i + 1];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "l": // relative line-to
+					for (let i = 0; i < nums.length; i += 2) {
+						currentX += nums[i];
+						currentY += nums[i + 1];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "L": // absolute line-to
+					for (let i = 0; i < nums.length; i += 2) {
+						currentX = nums[i];
+						currentY = nums[i + 1];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "h": // relative horizontal line-to
+					for (let i = 0; i < nums.length; i++) {
+						currentX += nums[i];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "H": // absolute horizontal line-to
+					for (let i = 0; i < nums.length; i++) {
+						currentX = nums[i];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "v": // relative vertical line-to
+					for (let i = 0; i < nums.length; i++) {
+						currentY += nums[i];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "V": // absolute vertical line-to
+					for (let i = 0; i < nums.length; i++) {
+						currentY = nums[i];
+						points.push({ x: currentX, y: currentY });
+					}
+					break;
+				case "z": // close path
+				case "Z":
+					// For a closed path, add the starting point again.
+					if (points.length > 0) {
+						points.push({ ...points[0] });
+					}
+					break;
+				default:
+					break;
+			}
+		}
+
+		// Filter out any potential NaN values
+		const validPoints = points.filter((p) => !isNaN(p.x) && !isNaN(p.y));
+		if (validPoints.length === 0) {
+			return { x: 0, y: 0 };
+		}
+
+		// Calculate bounding box
+		const xs = validPoints.map((p) => p.x);
+		const ys = validPoints.map((p) => p.y);
+		const minX = Math.min(...xs);
+		const maxX = Math.max(...xs);
+		const minY = Math.min(...ys);
+		const maxY = Math.max(...ys);
+
+		// The center is the midpoint of the bounding box.
+		return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
 	},
 	borderRadius: (xy1: { x: number; y: number }, xy2: { x: number; y: number }, radius: number, horizontal = false) => {
 		if (!radius) {

@@ -17,6 +17,7 @@ import { Graph } from "../../../components/Graph/Graph";
 import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTraffic";
 import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
 import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } from "./components/TimeSeriesCustomTooltipExample";
+import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
@@ -56,6 +57,11 @@ export default function Page() {
 						name: "Time Series with Custom Tooltip",
 						code: TimeSeriesCustomTooltipExampleCode,
 						component: TimeSeriesCustomTooltipExample,
+					},
+					{
+						name: "Line graph with gradient mask with 'ticks' and gradient",
+						code: LinesGradientMaskExampleCode,
+						component: LinesGradientMaskExample,
 					},
 				]}
 			>
