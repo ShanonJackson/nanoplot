@@ -32,35 +32,6 @@ export const Popup = ({ ref, target: { side, alignment }, border, children, ...r
 		if (side === "right" && alignment === "bottom") return styles.innerRightBottom;
 	})();
 
-	const triangle = (() => {
-		const path: Record<string, JSX.Element> = {
-			["lefttop"]: <path d="M 30 0 L 60 30" />,
-			["righttop"]: <path d="M 0 30 L 30 0" />,
-			["centertop"]: <path d="M 0 30 L 30 0 L 60 30" />,
-			["leftbottom"]: <path d="M 30 30 L 60 0" />,
-			["rightbottom"]: <path d="M 0 0 L 30 30" />,
-			["centerbottom"]: <path d="M 0 0 L 30 30 L 60 0" />,
-		};
-
-		return (
-			<svg
-				viewBox={"0 0 60 30"}
-				stroke={border}
-				className={cx(styles.triangle, {
-					[styles.triangleBottom]: side === "bottom",
-					[styles.triangleTopLeft]: alignment === "left" && side === "top",
-					[styles.triangleTopRight]: alignment === "right" && side === "top",
-					[styles.triangleTopCenter]: alignment === "center" && side === "top",
-					[styles.triangleBottomLeft]: alignment === "left" && side === "bottom",
-					[styles.triangleBottomRight]: alignment === "right" && side === "bottom",
-					[styles.triangleBottomCenter]: alignment === "center" && side === "bottom",
-				})}
-			>
-				{path[`${alignment}${side}`]}
-			</svg>
-		);
-	})();
-
 	const innerStyle = (() => {
 		if (side === "top") return styles.innerTop;
 		if (side === "bottom") return styles.innerBottom;
@@ -73,18 +44,15 @@ export const Popup = ({ ref, target: { side, alignment }, border, children, ...r
 		<div
 			ref={ref}
 			{...rest}
-			style={{
-				pointerEvents: "none",
-				transform,
-				...rest.style,
-				border: `1px solid ${border}`,
-			}}
 			className={cx(styles.base, tooltipPositionStyles, rest.className)}
+			style={{
+				...rest.style,
+				transform,
+				background: border,
+				boxShadow: `inset 0 0 0 1px ${border}`,
+			}}
 		>
-			<div className={cx(styles.inner, innerStyle, tooltipPositionStyles)}>
-				{children}
-				{triangle}
-			</div>
+			<div className={cx(styles.inner, innerStyle, tooltipPositionStyles)}>{children}</div>
 		</div>
 	);
 };

@@ -74,7 +74,7 @@
 		}
 	},
 	"scripts": {
-		"dev": "next dev --turbo",
+		"dev": "next dev",
 		"build": "next build",
 		"build:library": "bun run esbuild.js && tsc --p ./tsconfig.typings.json && bun run ./scripts/post-build.js",
 		"start": "next start",

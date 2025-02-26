@@ -10,7 +10,7 @@ export default {
 	],
 	theme: {
 		fontFamily: {
-			sans: ["Figtree", "sans0-serif"],
+			sans: ["Figtree", "sans-serif"],
 		},
 		extend: {
 			colors: {

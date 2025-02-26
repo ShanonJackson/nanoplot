@@ -13,12 +13,11 @@ export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onD
 	delay?: number;
 	trigger: (ref: RefObject<never>, active: boolean) => React.ReactNode;
 	disabled?: boolean;
-	targetPosition?: Position;
-	tetherPosition?: Position;
+	position?: { tooltip: Position; target: Position };
 	interactable?: boolean;
 	onClose?: () => void;
 	children?: React.ReactNode;
-	bounds?: React.RefObject<Element>;
+	bounds?: React.RefObject<Element> /* collision detection will be relative to this box OR window */;
 	contain?: React.RefObject<Element> /* if the tooltip renders outside this box, will render null */;
 	border?: string;
 	collision?: boolean;
@@ -29,8 +28,7 @@ export const Tooltip = ({
 	active,
 	border,
 	delay = 0,
-	targetPosition = { alignment: "center", side: "bottom" },
-	tetherPosition = { alignment: "center", side: "top" },
+	position = { tooltip: { alignment: "center", side: "bottom" }, target: { alignment: "center", side: "top" } },
 	trigger,
 	className,
 	style,
@@ -53,12 +51,12 @@ export const Tooltip = ({
 			tetherPosition: { alignment, side },
 		},
 	} = useTether({
-		targetPosition,
-		tetherPosition,
+		targetPosition: position.target,
+		tetherPosition: position.tooltip,
 		targetRef: target,
 		tetherRef: tooltipRef,
 		boundingContainer: bounds,
-		onCollision: () => ({ targetPosition, tetherPosition }),
+		onCollision: () => ({ targetPosition: position.target, tetherPosition: position.tooltip }),
 	});
 
 	useOnClickOutside([target, tooltipRef], onClose);
@@ -139,36 +137,17 @@ export const Tooltip = ({
 				<Portal>
 					{open && Boolean(children) && (
 						<Popup
+							{...rest}
 							ref={setTooltipRef}
 							style={tetherStyles}
 							border={border}
-							onMouseEnter={() => setIsInsideTooltip(true)}
 							target={{ side, alignment }}
+							onMouseEnter={() => setIsInsideTooltip(true)}
 							onMouseLeave={() => setIsInsideTooltip(false)}
 						>
 							{children}
 							{triangle}
 						</Popup>
-						// <div
-						// 	{...rest}
-						// 	ref={setTooltipRef}
-						// 	style={{
-						// 		pointerEvents: "none",
-						// 		transform,
-						// 		...tetherStyles,
-						// 		zIndex: (tetherStyles.zIndex || 0) + TOOLTIP_Z_INDEX,
-						// 		...style,
-						// 		border: `1px solid ${border}`,
-						// 		backgroundColor: border,
-						// 	}}
-						// 	className={cx(styles.base, tooltipPositionStyles, className)}
-						//
-						// >
-						// 	<div className={cx(styles.inner, innerStyle, tooltipPositionStyles)}>
-						// 		{children}
-						// 		{triangle}
-						// 	</div>
-						// </div>
 					)}
 				</Portal>
 			) : null}

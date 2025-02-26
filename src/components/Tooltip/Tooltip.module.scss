@@ -24,7 +24,7 @@ $radius: 5px;
 .base {
 	border-radius: $radius;
 	position: absolute;
-	width: auto;
+	pointer-events: none;
 }
 
 .inner {
@@ -34,6 +34,8 @@ $radius: 5px;
 	color: white;
 	min-width: 48px;
 	max-width: 28rem;
+	background: black;
+	margin: 1px; /* border thickness */
 	padding: 8px;
 
 	&--center-top {
@@ -233,7 +235,6 @@ $radius: 5px;
 }
 
 .triangle {
-	display: none;
 	position: absolute;
 	height: 10px;
 	width: 20px;
