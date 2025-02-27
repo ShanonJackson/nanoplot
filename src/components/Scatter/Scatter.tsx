@@ -8,6 +8,7 @@ import { ScatterTooltip } from "./components/ScatterTooltip";
 import { useGraph } from "../../hooks/use-graph/use-graph";
 import { ScatterLabels } from "./components/ScatterLabels";
 import { ObjectUtils } from "../../utils/object/object";
+import { ScatterQuadrant } from "./components/ScatterQuadrant";
 
 type Props = {
 	trendline?: boolean;
@@ -59,20 +60,18 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 					);
 				});
 			})}
-			{/*{trendline && (*/}
-			{/*	<path*/}
-			{/*		strokeWidth={3}*/}
-			{/*		strokeDasharray={"4,4"}*/}
-			{/*		className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}*/}
-			{/*		d={PathUtils.trend(*/}
-			{/*			dataset.flatMap(({ data }) => data),*/}
-			{/*			context.viewbox,*/}
-			{/*		)}*/}
-			{/*	/>*/}
-			{/*)}*/}
+			{trendline && (
+				<path
+					strokeWidth={3}
+					strokeDasharray={"4,4"}
+					className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
+					d={PathUtils.trend(points, context.viewbox)}
+				/>
+			)}
 		</svg>
 	);
 };
 
 Scatter.Tooltip = ScatterTooltip;
 Scatter.Labels = ScatterLabels;
+Scatter.Quadrant = ScatterQuadrant;

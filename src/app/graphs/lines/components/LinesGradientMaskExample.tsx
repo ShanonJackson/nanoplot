@@ -34,7 +34,7 @@ export const LinesGradientMaskExample = () => {
 			<Legend alignment={"end"} position={"top"} />
 			<YAxis />
 			<GridLines horizontal vertical border />
-			<Lines curve={"natural"} />
+			<Lines curve={"natural"} joints={true} />
 			<Lines.Tooltip />
 			<XAxis
 				ticks={{ jumps: "every 1 months" }}
@@ -85,7 +85,7 @@ export const LinesGradientMaskExample = () => {
 			<Legend alignment={"end"} position={"top"} />
 			<YAxis />
 			<GridLines horizontal vertical border />
-			<Lines curve={"natural"} />
+			<Lines curve={"natural"} joints={true} />
 			<Lines.Tooltip />
 			<XAxis
 				ticks={{ jumps: "every 1 months" }}

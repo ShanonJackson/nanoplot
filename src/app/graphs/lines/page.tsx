@@ -20,7 +20,7 @@ import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } fr
 import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "natural" });
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
