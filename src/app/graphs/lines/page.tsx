@@ -18,6 +18,7 @@ import { LinesSiteTraffic, LinesSiteTrafficCode } from "./components/LinesSiteTr
 import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components/LinesSiteTrafficPinned";
 import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } from "./components/TimeSeriesCustomTooltipExample";
 import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
+import { LinesPredictionExample, LinesPredictionExampleCode } from "./components/LinesPredictionExample";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
@@ -62,6 +63,11 @@ export default function Page() {
 						name: "Line graph with gradient mask with 'ticks' and gradient",
 						code: LinesGradientMaskExampleCode,
 						component: LinesGradientMaskExample,
+					},
+					{
+						name: "Line Graph Prediction Two Tone Line",
+						code: LinesPredictionExampleCode,
+						component: LinesPredictionExample,
 					},
 				]}
 			>
