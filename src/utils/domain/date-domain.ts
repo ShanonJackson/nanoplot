@@ -4,6 +4,12 @@ import { XAxis } from "../../components/XAxis/XAxis";
 type Jumps = NonNullable<ComponentProps<typeof XAxis>["ticks"]>["jumps"];
 type TimeseriesFormats = NonNullable<Exclude<Jumps, number | "auto">>;
 
+/*
+Logic for ceil:
+	- If we're already rounded (i.e "every 1 years" and we're 2024-01-01) then return same date.
+	- If unit is 0, we round to closest possible unit.
+	- If unit is 1, we round to next unit.
+ */
 export const times = {
 	milliseconds: {
 		getter: "getMilliseconds",
@@ -171,13 +177,38 @@ export const times = {
 		getter: "getMonth",
 		setter: "setMonth",
 		toFloor: (dte: Date, unit: number) => new Date(dte.getFullYear(), dte.getMonth() - unit, 1, 0, 0, 0, 0),
-		toCeil: (dte: Date, unit: number) => new Date(dte.getFullYear(), dte.getMonth() + unit + 1, 1, 0, 0, 0, 0),
+		toCeil: (dte: Date, unit: number) => {
+			if (
+				unit === 0 &&
+				dte.getSeconds() === 0 &&
+				dte.getMinutes() === 0 &&
+				dte.getHours() === 0 &&
+				dte.getMilliseconds() === 0 &&
+				dte.getDate() === 1
+			) {
+				return dte;
+			}
+			return new Date(dte.getFullYear(), dte.getMonth() + Math.max(unit, 1), 1, 0, 0, 0, 0);
+		},
 	},
 	years: {
 		getter: "getFullYear",
 		setter: "setFullYear",
 		toFloor: (dte: Date, unit: number) => new Date(dte.getFullYear() - unit, 0, 1, 0, 0, 0, 0),
-		toCeil: (date: Date, unit: number) => new Date(Date.UTC(date.getUTCFullYear() + unit + 1, 0, 0, 0, 0, 0, 0)),
+		toCeil: (date: Date, unit: number) => {
+			if (
+				unit === 0 &&
+				date.getSeconds() === 0 &&
+				date.getMinutes() === 0 &&
+				date.getHours() === 0 &&
+				date.getMilliseconds() === 0 &&
+				date.getDate() === 1 &&
+				date.getMonth() === 0
+			) {
+				return date;
+			}
+			return new Date(Date.UTC(date.getUTCFullYear() + Math.max(unit, 1), 0, 1, 0, 0, 0, 0));
+		},
 	},
 } as const;
 
@@ -193,22 +224,15 @@ export const SUPPORTED_TIMES: Array<keyof typeof times> = [
 ];
 const regex = new RegExp(`^every\\s*(\\d+)?\\s*(${SUPPORTED_TIMES.join("|")})s?$`, "i");
 export const dateRange = (every: TimeseriesFormats, min: Date, max: Date) => {
-	const [, unit, interval] = every.match(regex) || ["", "1", "days"];
-	const { getter, setter, toFloor } = times[interval as keyof typeof times];
-	const MIN = new Date(new Date(min)[setter](min[getter]()));
-	const MAX = new Date(new Date(max)[setter](max[getter]()));
-	const floored = toFloor(MIN, 0);
-	const rangeStart = new Date(
-		new Date(Date.UTC(floored.getFullYear(), floored.getMonth(), floored.getDate(), 0, 0, 0, 0)).toISOString().replace("Z", ""),
-	);
-
+	const [, , interval] = every.match(regex) || ["", "1", "days"];
+	const { toFloor, toCeil } = times[interval as keyof typeof times];
+	const floored = toFloor(min, 0);
+	const ceiled = toCeil(max, 0);
 	return (function range(dte: Date): Date[] {
-		if (dte > MAX) return [dte];
-		const next = new Date(new Date(dte)[setter](dte[getter]() + parseFloat(unit)));
-		const utc = Date.UTC(next.getFullYear(), next.getMonth(), next.getDate(), 0, 0, 0, 0);
-		const stored = new Date(new Date(utc).toISOString().replace("Z", ""));
-		return [dte].concat(range(stored));
-	})(rangeStart);
+		if (dte >= ceiled) return [dte];
+		const next = toCeil(new Date(dte.getTime() + 1), 0); /* just add 1, and ceil it to next */
+		return [dte].concat(range(next));
+	})(floored);
 };
 
 export const DateDomain = {
@@ -217,14 +241,15 @@ export const DateDomain = {
 		return interval;
 	},
 	floor: ({ date, unit, interval }: { date: Date; unit: number; interval: string }) => {
-		const { getter, setter, toFloor } = times[interval as keyof typeof times];
-		return toFloor(new Date(new Date(date)[setter](date[getter]())), unit);
+		const { toFloor } = times[interval as keyof typeof times];
+		return toFloor(date, unit);
 	},
 	ceil: ({ date, unit, interval }: { date: Date; unit: number; interval: string }) => {
-		const { getter, setter, toCeil } = times[interval as keyof typeof times];
-		return toCeil(new Date(new Date(date)[setter](date[getter]())), unit);
+		const { toCeil } = times[interval as keyof typeof times];
+		return toCeil(date, unit);
 	},
 	domainFor: ({ min, max, jumps }: { min: Date; max: Date; jumps: TimeseriesFormats }) => {
 		return dateRange(jumps, min, max);
 	},
+	jumpsFor: ({}: { jumps: Jumps }) => {},
 };

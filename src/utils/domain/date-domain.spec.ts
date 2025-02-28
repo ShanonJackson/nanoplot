@@ -4,8 +4,9 @@ import { DateDomain } from "./date-domain";
 describe("src/utils/domain/domain", () => {
 	describe("DateDomain.floor", () => {
 		it.each([
-			["2024-04-04", 2, "years", "2022-01-01"],
+			["2024-04-04", 0, "years", "2024-01-01"],
 			["2024-04-04", 1, "years", "2023-01-01"],
+			["2024-04-04", 2, "years", "2022-01-01"],
 			["2024-04-04", 3, "years", "2021-01-01"],
 			["2024-04-04", 4, "years", "2020-01-01"],
 			["2024-04-04", 5, "years", "2019-01-01"],
@@ -21,6 +22,7 @@ describe("src/utils/domain/domain", () => {
 			expect(result).toEqual(new Date(expected));
 		});
 		it.each([
+			["2024-01-01", 0, "months", "2024-01-01"],
 			["2024-04-04", 1, "months", "2024-03-01"],
 			["2024-04-04", 2, "months", "2024-02-01"],
 			["2024-04-04", 3, "months", "2024-01-01"],
@@ -38,40 +40,45 @@ describe("src/utils/domain/domain", () => {
 			expect(result).toEqual(new Date(expected));
 		});
 	});
-
 	describe("DateDomain.ceil", () => {
 		it.each([
-			["2024-04-04", 0, "years", "2024-12-31"],
-			["2024-04-04", 1, "years", "2025-12-31"],
-			["2024-04-04", 2, "years", "2026-12-31"],
-			["2024-04-04", 3, "years", "2027-12-31"],
-			["2024-04-04", 4, "years", "2028-12-31"],
-			["2024-04-04", 5, "years", "2029-12-31"],
-			["2024-04-04", 6, "years", "2030-12-31"],
-			["2024-04-04", 7, "years", "2031-12-31"],
-			["2024-04-04", 8, "years", "2032-12-31"],
-			["2024-04-04", 9, "years", "2033-12-31"],
-			["2024-04-04", 10, "years", "2034-12-31"],
-			["2024-04-04", 11, "years", "2035-12-31"],
-			["2024-04-04", 12, "years", "2036-12-31"],
-		])("Should 'ceil' correctly for years", (date, unit, interval, expected) => {
+			["2024-01-01", 0, "years", "2024-01-01"] /* if it's already ceiled no rounding required */,
+			["2024-01-01", 2, "years", "2026-01-01"],
+			["2024-01-01", 1, "years", "2025-01-01"],
+			["2024-04-04", 0, "years", "2025-01-01"],
+			["2024-04-04", 1, "years", "2025-01-01"],
+			["2024-04-04", 2, "years", "2026-01-01"],
+			["2024-04-04", 3, "years", "2027-01-01"],
+			["2024-04-04", 4, "years", "2028-01-01"],
+			["2024-04-04", 5, "years", "2029-01-01"],
+			["2024-04-04", 6, "years", "2030-01-01"],
+			["2024-04-04", 7, "years", "2031-01-01"],
+			["2024-04-04", 8, "years", "2032-01-01"],
+			["2024-04-04", 9, "years", "2033-01-01"],
+			["2024-04-04", 10, "years", "2034-01-01"],
+			["2024-04-04", 11, "years", "2035-01-01"],
+			["2024-04-04", 12, "years", "2036-01-01"],
+		])("Should 'ceil' correctly for years %s %i", (date, unit, interval, expected) => {
 			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
 		});
 
 		it.each([
+			["2024-01-01", 0, "months", "2024-01-01"] /* if it's already ceiled no rounding required */,
+			["2024-01-01", 2, "months", "2024-03-01"],
+			["2024-01-01", 1, "months", "2024-02-01"],
 			["2024-04-04", 0, "months", "2024-05-01"],
-			["2024-04-04", 1, "months", "2024-06-01"],
-			["2024-04-04", 2, "months", "2024-07-01"],
-			["2024-04-04", 3, "months", "2024-08-01"],
-			["2024-04-04", 4, "months", "2024-09-01"],
-			["2024-04-04", 5, "months", "2024-10-01"],
-			["2024-04-04", 6, "months", "2024-11-01"],
-			["2024-04-04", 7, "months", "2024-12-01"],
-			["2024-04-04", 8, "months", "2025-01-01"],
-			["2024-04-04", 9, "months", "2025-02-01"],
-			["2024-04-04", 10, "months", "2025-03-01"],
-			["2024-04-04", 11, "months", "2025-04-01"],
-			["2024-04-04", 12, "months", "2025-05-01"],
+			["2024-04-04", 1, "months", "2024-05-01"],
+			["2024-04-04", 2, "months", "2024-06-01"],
+			["2024-04-04", 3, "months", "2024-07-01"],
+			["2024-04-04", 4, "months", "2024-08-01"],
+			["2024-04-04", 5, "months", "2024-09-01"],
+			["2024-04-04", 6, "months", "2024-10-01"],
+			["2024-04-04", 7, "months", "2024-11-01"],
+			["2024-04-04", 8, "months", "2024-12-01"],
+			["2024-04-04", 9, "months", "2025-01-01"],
+			["2024-04-04", 10, "months", "2025-02-01"],
+			["2024-04-04", 11, "months", "2025-03-01"],
+			["2024-04-04", 12, "months", "2025-04-01"],
 		])("Should 'ceil' correctly for months %s %i", (date, unit, interval, expected) => {
 			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
 		});
@@ -182,6 +189,43 @@ describe("src/utils/domain/domain", () => {
 			["2025-04-04T00:00:00.000Z", 12, "milliseconds", "2025-04-04T00:00:00.012Z"],
 		])("Should 'ceil' correctly for milliseconds", (date, unit, interval, expected) => {
 			expect(DateDomain.ceil({ date: new Date(date), unit, interval })).toEqual(new Date(expected));
+		});
+	});
+	describe("DateDomain.domainFor", () => {
+		it("Should return month sequence for every month starting on start - end", () => {
+			const result = DateDomain.domainFor({ min: new Date("2024-01-01"), max: new Date("2024-12-01"), jumps: "every 1 months" });
+			expect(result).toEqual([
+				new Date("2024-01-01"),
+				new Date("2024-02-01"),
+				new Date("2024-03-01"),
+				new Date("2024-04-01"),
+				new Date("2024-05-01"),
+				new Date("2024-06-01"),
+				new Date("2024-07-01"),
+				new Date("2024-08-01"),
+				new Date("2024-09-01"),
+				new Date("2024-10-01"),
+				new Date("2024-11-01"),
+				new Date("2024-12-01"),
+			]);
+		});
+		it("Should return month sequence for every month starting on floored(start) and ceiled(end)", () => {
+			const result = DateDomain.domainFor({ min: new Date("2024-01-05"), max: new Date("2024-12-31"), jumps: "every 1 months" });
+			expect(result).toEqual([
+				new Date("2024-01-01"),
+				new Date("2024-02-01"),
+				new Date("2024-03-01"),
+				new Date("2024-04-01"),
+				new Date("2024-05-01"),
+				new Date("2024-06-01"),
+				new Date("2024-07-01"),
+				new Date("2024-08-01"),
+				new Date("2024-09-01"),
+				new Date("2024-10-01"),
+				new Date("2024-11-01"),
+				new Date("2024-12-01"),
+				new Date("2025-01-01"),
+			]);
 		});
 	});
 });

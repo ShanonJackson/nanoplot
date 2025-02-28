@@ -4,32 +4,10 @@ import { Graph } from "../Graph/Graph";
 import { DomainUtils } from "../../utils/domain/domain";
 import { MathUtils } from "../../utils/math/math";
 import { cx } from "../../utils/cx/cx";
-
-type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
-type From =
-	| "auto"
-	| "min"
-	| `min - ${number}`
-	| `min + ${number}`
-	| `min + ${number}%`
-	| `min - ${number}%`
-	| `min - ${number} ${interval}`
-	| `min + ${number} ${interval}`
-	| number;
-type To =
-	| "auto"
-	| "max"
-	| `max - ${number}`
-	| `max + ${number}`
-	| `max + ${number}%`
-	| `max - ${number}%`
-	| `max - ${number} ${interval}`
-	| `max + ${number} ${interval}`
-	| number;
-type Jumps = "auto" | `every ${number} ${interval}` | number;
+import { FromToJumps } from "../../models/domain/domain";
 
 type Props = {
-	ticks?: { from?: From; to?: To; jumps?: Jumps };
+	ticks?: FromToJumps;
 	title?: ReactNode;
 	description?: ReactNode;
 	display?: (tick: number | string | Date) => ReactNode;
