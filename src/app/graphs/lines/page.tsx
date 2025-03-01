@@ -65,7 +65,7 @@ export default function Page() {
 						component: LinesGradientMaskExample,
 					},
 					{
-						name: "Line Graph Prediction Two Tone Line",
+						name: "Line Graph Date Gradient + Prediction Line",
 						code: LinesPredictionExampleCode,
 						component: LinesPredictionExample,
 					},

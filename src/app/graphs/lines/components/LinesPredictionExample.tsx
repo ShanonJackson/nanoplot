@@ -26,7 +26,7 @@ export const LinesPredictionExample = () => {
 		},
 	];
 	return (
-		<Graph data={data}>
+		<Graph data={data} gap={{ top: 15, right: 20 }}>
 			<YAxis />
 			<GridLines border horizontal vertical />
 			<Lines />

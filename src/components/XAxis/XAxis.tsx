@@ -66,7 +66,6 @@ export const XAxis = ({ display, title, description }: Props) => {
 									>
 										{label}
 									</div>
-									<div className={"xaxis__tick opacity-0 text-nowrap"}>{label}</div>
 								</React.Fragment>
 							);
 						})}

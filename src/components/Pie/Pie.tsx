@@ -15,11 +15,12 @@ type Props = {
 	donut?: boolean | number /* radius as percentage */;
 	labels?: boolean;
 	glow?: boolean;
+	total?: number;
 	className?: string;
 	children?: ReactNode;
 };
 
-export const Pie = ({ glow = true, donut, labels = true, loading, className, children }: Props) => {
+export const Pie = ({ glow = true, donut, labels = true, total, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
 	const { data, viewbox, colorFor } = useGraph();
@@ -31,7 +32,7 @@ export const Pie = ({ glow = true, donut, labels = true, loading, className, chi
 	const CX = viewbox.x / 2;
 	const CY = viewbox.y / 2;
 	const isSinglePie = data.length === 1;
-	const total = data.reduce((sum, { value }) => sum + Number(value), 0);
+	const sum = total ?? data.reduce((sum, { value }) => sum + Number(value), 0);
 
 	if (loading) {
 		return <PieLoading donut={Boolean(donut)} center={DONUT_RADIUS} radius={PIE_RADIUS} className={className} />;
@@ -52,9 +53,9 @@ export const Pie = ({ glow = true, donut, labels = true, loading, className, chi
 				...segment,
 				previousTotalDegrees: segments
 					.slice(0, i)
-					.map(({ value }) => MathUtils.scale(value, total, 360))
+					.map(({ value }) => MathUtils.scale(value, sum, 360))
 					.reduce((sum, value) => sum + value, 180),
-				degrees: MathUtils.scale(segment.value, total, 360),
+				degrees: MathUtils.scale(segment.value, sum, 360),
 			};
 		})
 		.map((segment, i, dataset) => {
@@ -122,7 +123,7 @@ export const Pie = ({ glow = true, donut, labels = true, loading, className, chi
 							<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
 							<tspan dx={25}>
 								{new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(
-									(segment.value / total) * 100,
+									(segment.value / sum) * 100,
 								)}
 								%
 							</tspan>
@@ -162,6 +163,21 @@ export const Pie = ({ glow = true, donut, labels = true, loading, className, chi
 	return (
 		<>
 			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
+			<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("h-full w-full [grid-area:graph]", className)}>
+				<g className={"transform origin-center rotate-180"}>
+					{donut && (
+						<mask id={maskId}>
+							<rect width="80%" height="80%" fill="white" />
+							<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
+						</mask>
+					)}
+					<path
+						className={cx(`origin-center fill-gray-200 dark:fill-dark-priority-100`)}
+						d={PathUtils.describeArc(CX, CX, PIE_RADIUS, 0, 360) + ` L ${CX} ${CX} Z`}
+						mask={donut ? `url(#${maskId})` : undefined}
+					/>
+				</g>
+			</svg>
 			{paths.map(({ path, label, id }, i) => {
 				return (
 					<svg

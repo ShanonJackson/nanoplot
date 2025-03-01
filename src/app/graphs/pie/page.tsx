@@ -8,6 +8,7 @@ import { PieCollisionExample, PieCollisionExampleCode } from "./examples/PieColl
 import { Graph } from "../../../components/Graph/Graph";
 import { Pie } from "../../../components/Pie/Pie";
 import { DonutRadiusExample, DonutRadiusExampleCode } from "./examples/DonutRadiusExample";
+import { DonutProgressBarExample, DonutProgressBarExampleCode } from "./examples/DonutProgressBarExample";
 
 export default function Page() {
 	const [pie, setPie] = useState<PieControls>({
@@ -28,6 +29,7 @@ export default function Page() {
 					{ name: "Pie Empty", code: PieEmptyExampleCode, component: PieEmptyExample },
 					{ name: "Pie Collision", code: PieCollisionExampleCode, component: PieCollisionExample },
 					{ name: "Donut Custom Radius", code: DonutRadiusExampleCode, component: DonutRadiusExample },
+					{ name: "Donut Progress Bar 90/100", code: DonutProgressBarExampleCode, component: DonutProgressBarExample },
 				]}
 				code={`
 const data = ${JSON.stringify(MOCK_DATA, null, 4)};
