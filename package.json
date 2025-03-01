@@ -2,6 +2,7 @@
 	"name": "nanoplot",
 	"version": "0.0.27",
 	"private": false,
+	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"exports": {
 		"./styles.css": "./dist/index.css",
 		"./Area": {
