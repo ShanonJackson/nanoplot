@@ -10,7 +10,8 @@ import { MathUtils } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ObjectUtils } from "../../../utils/object/object";
 import { GradientUtils } from "../../../utils/gradient/gradient";
-import { cx, tw } from "../../../utils/cx/cx";
+import { tw } from "../../../utils/cx/cx";
+import { HydrateContext } from "../../HydrateContext/HydrateContext";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
 	tooltip?: (
@@ -21,7 +22,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 const TOOLTIP_MARGIN = 20;
-export const LinesTooltip = ({ tooltip, joints = true, ...rest }: Props) => {
+const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 	const ref = useRef<SVGSVGElement>(null);
 	const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>();
 	const mouse = useMouseCoordinates(ref);
@@ -29,10 +30,10 @@ export const LinesTooltip = ({ tooltip, joints = true, ...rest }: Props) => {
 		data,
 		domain,
 		viewbox,
-		colorFor,
+		colors,
 		interactions: { pinned, hovered },
+		...rrez
 	} = useGraph();
-
 	if (!GraphUtils.isXYData(data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
@@ -80,7 +81,7 @@ export const LinesTooltip = ({ tooltip, joints = true, ...rest }: Props) => {
 							domain,
 						});
 					}
-					return line.stroke ?? colorFor(i, lines.length);
+					return line.stroke ?? colors[i] ?? colors.at(-1);
 				})();
 
 				return {
@@ -229,3 +230,5 @@ export const LinesTooltip = ({ tooltip, joints = true, ...rest }: Props) => {
 		</>
 	);
 };
+
+export const LinesTooltip = HydrateContext(LinesTooltipComponent);

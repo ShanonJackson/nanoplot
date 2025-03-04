@@ -128,7 +128,7 @@ const data = [
 ];
 
 export const Sunburst = ({ loading }: Props) => {
-	const { viewbox } = useGraph();
+	const { viewbox, colors } = useGraph();
 	const [activeRing, setActiveRing] = useState<Sunburst[number]>();
 	const dataset = data.toSorted((a, b) => b.value - a.value);
 
@@ -178,7 +178,7 @@ export const Sunburst = ({ loading }: Props) => {
 				);
 			})();
 
-			const stroke = color || ColorUtils.colorFor(i);
+			const stroke = color ?? colors[i] ?? colors.at(-1);
 			if (activeRing && !isActiveRing && ring === 1) return null;
 
 			return (

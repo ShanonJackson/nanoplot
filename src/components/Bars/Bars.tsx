@@ -14,6 +14,6 @@ export const Bars = ({ horizontal, ...props }: VerticalProps | HorizontalProps) 
 Bars.context = (ctx: GraphContext): GraphContext => {
 	return {
 		...ctx,
-		colorFor: ColorUtils.schemes.segmented,
+		colors: ColorUtils.scheme.contrast,
 	};
 };

@@ -8,6 +8,7 @@ import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { Portal } from "../../Portal/Portal";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
 import { Tooltip } from "../../Tooltip/Tooltip";
+import { HydrateContext } from "../../HydrateContext/HydrateContext";
 
 type Point = Omit<CartesianDataset[number], "data"> & {
 	data: CartesianDataset[number]["data"][number];
@@ -17,7 +18,7 @@ type Props = {
 	tooltip: (point: Point) => ReactNode;
 };
 
-export const ScatterTooltip = ({ tooltip }: Props) => {
+const ScatterTooltipComponent = ({ tooltip }: Props) => {
 	const ref = useRef<SVGSVGElement>(null);
 	const rect = useBoundingBox(ref) ?? { width: 0, height: 0, left: 0, top: 0 };
 	const shadowId = useId();
@@ -121,3 +122,5 @@ export const ScatterTooltip = ({ tooltip }: Props) => {
 		</>
 	);
 };
+
+export const ScatterTooltip = HydrateContext(ScatterTooltipComponent);

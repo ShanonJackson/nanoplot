@@ -13,74 +13,9 @@ const COLORS = [
 ];
 
 export const ColorUtils = {
-	schemes: {
-		sunset: (index: number) => {
-			return ["#fecf03", "#fea81f", "#f48444", "#e4655f", "#cf4478", "#b32492", "#9224a5", "#6a22aa", "#421da0", "#0a1789"][index];
-		},
-		segmented: (index: number) => ColorUtils.colorFor(index) /* don't take into account length of dataset */,
-		regular: (index: number, length: number) => ColorUtils.colorFor(index, length),
-	},
-	colorFor: (index: number, length?: number) => {
-		if (length) {
-			/* When length is provided, the goal is to pick colors that contrast well with each other for that many data points.*/
-			switch (length) {
-				case 1:
-					return [COLORS[6].fill][index];
-				case 2:
-					return [COLORS[6].fill, COLORS[4].fill][index];
-				case 3:
-					return [COLORS[0].fill, COLORS[5].fill, COLORS[7].fill][index];
-				case 4:
-					return [COLORS[0].fill, COLORS[3].fill, COLORS[6].fill, COLORS[8].fill][index];
-				case 5:
-					return [COLORS[0].fill, COLORS[3].fill, COLORS[5].fill, COLORS[6].fill, COLORS[8].fill][index];
-				case 6:
-					return [COLORS[0].fill, COLORS[3].fill, COLORS[5].fill, COLORS[6].fill, COLORS[7].fill, COLORS[8].fill][index];
-				case 7:
-					return [COLORS[0].fill, COLORS[2].fill, COLORS[3].fill, COLORS[5].fill, COLORS[6].fill, COLORS[7].fill, COLORS[8].fill][
-						index
-					];
-				case 8:
-					return [
-						COLORS[0].fill,
-						COLORS[2].fill,
-						COLORS[3].fill,
-						COLORS[4].fill,
-						COLORS[5].fill,
-						COLORS[6].fill,
-						COLORS[7].fill,
-						COLORS[8].fill,
-					][index];
-				case 9:
-					return [
-						COLORS[0].fill,
-						COLORS[1].fill,
-						COLORS[2].fill,
-						COLORS[3].fill,
-						COLORS[4].fill,
-						COLORS[5].fill,
-						COLORS[6].fill,
-						COLORS[7].fill,
-						COLORS[8].fill,
-					][index];
-				case 10:
-					return [
-						COLORS[0].fill,
-						COLORS[1].fill,
-						COLORS[2].fill,
-						COLORS[3].fill,
-						COLORS[4].fill,
-						COLORS[5].fill,
-						COLORS[6].fill,
-						COLORS[7].fill,
-						COLORS[8].fill,
-						COLORS[9].fill,
-					][index];
-				default:
-					return "#9844fc";
-			}
-		}
-		return COLORS.map(({ fill }) => fill)[index] || "#9844fc";
+	scheme: {
+		sunset: ["#fecf03", "#fea81f", "#f48444", "#e4655f", "#cf4478", "#b32492", "#9224a5", "#6a22aa", "#421da0", "#0a1789"],
+		contrast: COLORS.map((c) => c.fill),
 	},
 	between: (color1: string, color2: string, percent: number) => {
 		/* Give two colors and a percent 0-1, return the color between the two colors at that % */

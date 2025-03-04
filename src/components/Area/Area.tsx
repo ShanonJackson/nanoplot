@@ -5,7 +5,6 @@ import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { cx } from "../../utils/cx/cx";
 import { LinesTooltip } from "../Lines/components/LinesTooltip";
-import { LinesLoading } from "../Lines/components/LinesLoading";
 import { ObjectUtils } from "../../utils/object/object";
 import { Line } from "../Lines/components/Line";
 import { ColorUtils } from "../../utils/color/color";
@@ -22,7 +21,7 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 		data,
 		viewbox,
 		domain,
-		colorFor,
+		colors,
 	} = useGraph();
 
 	if (!GraphUtils.isXYData(data)) return null;
@@ -61,7 +60,7 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 						return {
 							...line,
 							data,
-							stroke: line.stroke ?? colorFor(i, i + index),
+							stroke: line.stroke ?? colors[i] ?? colors.at(-1),
 							path: CurveUtils[curve](data),
 						};
 					})
@@ -101,7 +100,7 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 Area.context = (ctx: GraphContext): GraphContext => {
 	return {
 		...ctx,
-		colorFor: ColorUtils.schemes.sunset,
+		colors: ColorUtils.scheme.sunset,
 	};
 };
 

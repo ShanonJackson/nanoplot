@@ -16,7 +16,6 @@ export const Line = ({ stroke, d, disabled, fill, className }: Props) => {
 	const isGradientFill = fill?.includes("linear-gradient");
 	const isGradientStroke = stroke?.includes("linear-gradient");
 	const isMaskStroke = stroke?.includes("mask");
-	console.log({ isGradientStroke, stroke, disabled });
 	return (
 		<>
 			{isGradientFill && !disabled && fill && <LinearGradient id={fillId} gradient={fill} />}

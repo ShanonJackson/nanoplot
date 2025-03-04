@@ -23,7 +23,7 @@ type Props = {
 export const Pie = ({ glow = true, donut, labels = true, total, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
-	const { data, viewbox, colorFor } = useGraph();
+	const { data, viewbox, colors } = useGraph();
 
 	if (!GraphUtils.isSegmentData(data)) return null;
 
@@ -43,10 +43,10 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 
 	const paths = data
 		.toSorted((a, b) => Number(b.value) - Number(a.value))
-		.map((segment, i, segments) => ({
+		.map((segment, i) => ({
 			...segment,
 			value: Number(segment.value),
-			fill: colorFor(i, segments.length),
+			fill: colors[i],
 		}))
 		.map((segment, i, segments) => {
 			return {
@@ -212,6 +212,6 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 Pie.context = (ctx: GraphContext): GraphContext => {
 	return {
 		...ctx,
-		colorFor: ColorUtils.schemes.segmented,
+		colors: ColorUtils.scheme.contrast,
 	};
 };

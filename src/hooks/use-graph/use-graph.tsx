@@ -1,6 +1,4 @@
 import { HTMLAttributes } from "react";
-import { GraphContextServer, useGraphServer } from "./use-server-graph";
-import { GraphContextClient, useGraphClient } from "./use-client-graph";
 
 export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -37,8 +35,19 @@ export type GraphContext = {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;
 		y: Array<{ coordinate: number; tick: string | number | Date }>;
 	};
-	colorFor: (index: number, datapoints: number) => string;
+	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
+};
+
+const isISODateString = (value: unknown): value is string => {
+	return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && !isNaN(Date.parse(value));
+};
+export const contextFromParse = (json: string): GraphContext => {
+	function reviver(key: string, value: unknown) {
+		if ((key === "x" || key === "tick") && isISODateString(value)) return new Date(value);
+		return value;
+	}
+	return JSON.parse(json, reviver);
 };
 
 export const useGraphColumn = (ctx: GraphContext) => {
@@ -47,5 +56,7 @@ export const useGraphColumn = (ctx: GraphContext) => {
 	return ctx.layout.columns.split(" ").findIndex((col) => col.includes("[graph]")) + 1;
 };
 
-export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;
-export const useGraph: () => GraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;
+export const GraphContextProvider =
+	typeof window === "undefined" ? require("./use-server-graph").GraphContextServer : require("./use-client-graph").GraphContextClient;
+export const useGraph: () => GraphContext =
+	typeof window === "undefined" ? require("./use-server-graph").useGraphServer : require("./use-client-graph").useGraphClient;

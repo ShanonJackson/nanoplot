@@ -17,6 +17,9 @@ const componentExports = [
 	"./src/components/Radar/Radar.tsx",
 	"./src/components/Legend/Legend.tsx",
 	"./src/components/Graph/Graph.tsx",
+	"./src/components/Tooltip/Tooltip.tsx",
+	"./src/components/Tooltip/Popup.tsx",
+	"./src/components/Overlay/Overlay.tsx",
 ];
 
 await esbuild
@@ -39,36 +42,18 @@ await esbuild
 				}),
 			}), // Process SCSS
 			postCssPlugin({
-				plugins: [require("tailwindcss")(path.resolve(__dirname, "tailwind.config.ts")), require("autoprefixer")()],
+				plugins: [require("autoprefixer")()],
 			}),
 		],
-	})
-	.catch(() => process.exit(1));
-
-await esbuild
-	.build({
-		entryPoints: ["./src/styles/library-global.css"],
-		bundle: true,
-		outdir: "./dist",
-		loader: { ".scss": "css" }, // Handle SCSS files
-		plugins: [
-			postCssPlugin({
-				plugins: [require("tailwindcss")(path.resolve(__dirname, "tailwind.config.ts")), require("autoprefixer")()],
-				modules: {
-					generateScopedName: "[name]__[local]___[hash:base64:5]", // Scoped class names for CSS Modules
-				},
-			}),
-		],
-		minify: true, // Minify the CSS output
 	})
 	.catch(() => process.exit(1));
 
 const fs = require("fs");
 
 // rename ./dist/library-global.css to ./dist/index.css
-fs.renameSync("./dist/library-global.css", "./dist/index.css");
 fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Worldmap/Worldmap.css", "utf-8"));
-fs.unlinkSync("./dist/Worldmap/Worldmap.css");
+fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Tooltip/Tooltip.css", "utf-8"));
+// fs.unlinkSync("./dist/Worldmap/Worldmap.css");
 
 // delete everything in ./dist except index.css
 const index = fs.readFileSync("./dist/index.css", "utf-8");

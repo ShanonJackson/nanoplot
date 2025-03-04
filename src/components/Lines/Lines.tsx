@@ -23,7 +23,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 		data,
 		viewbox,
 		domain,
-		colorFor,
+		colors,
 	} = useGraph();
 	if (!GraphUtils.isXYData(data)) return null;
 
@@ -33,7 +33,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 		return {
 			...line,
 			id: String(line.id),
-			stroke: line.stroke ?? colorFor(i, lines.length),
+			stroke: line.stroke ?? colors[i] ?? colors.at(-1),
 			fill: String(line.fill),
 			data: line.data.map((xy) => ({
 				x: xForValue(xy.x),

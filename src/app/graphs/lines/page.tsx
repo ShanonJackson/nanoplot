@@ -136,7 +136,6 @@ export default function Page() {
 							return months[x.getMonth()];
 						}}
 					/>
-
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

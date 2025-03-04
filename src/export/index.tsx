@@ -16,3 +16,7 @@ export { Legend } from "../components/Legend/Legend";
 export { Graph } from "../components/Graph/Graph";
 
 export { ColorUtils } from "../utils/color/color";
+export { GraphContextServer } from "../hooks/use-graph/use-server-graph";
+export { GraphContextClient } from "../hooks/use-graph/use-client-graph";
+export { useGraphServer } from "../hooks/use-graph/use-server-graph";
+export { useGraphClient } from "../hooks/use-graph/use-client-graph";

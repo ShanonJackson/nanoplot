@@ -38,7 +38,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 		return d.data.map(({ x, y }) => ({
 			x: xForValue(x),
 			y: yForValue(y),
-			stroke: d.stroke ?? ColorUtils.colorFor(i, set.length),
+			stroke: d.stroke ?? context.colors[i] ?? context.colors.at(-1),
 		}));
 	});
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);

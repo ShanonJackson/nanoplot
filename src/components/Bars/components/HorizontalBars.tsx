@@ -25,10 +25,10 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
 
-	const bars = context.data.flatMap((bar, i, bars) =>
+	const bars = context.data.flatMap((bar, i) =>
 		bar.data.map((xy) => ({
 			...bar,
-			fill: bar.fill ?? bar.stroke ?? context.colorFor(i, bars.length),
+			fill: bar.fill ?? bar.stroke ?? context.colors[i] ?? context.colors.at(-1),
 			group: bar.group ?? bar.id ?? bar.name,
 			data: xy,
 		})),

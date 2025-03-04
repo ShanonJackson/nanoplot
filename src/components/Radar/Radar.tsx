@@ -17,7 +17,7 @@ type Props = {
 };
 
 export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loading, className }: Props) => {
-	const { data, viewbox, colorFor } = useGraph();
+	const { data, viewbox, colors } = useGraph();
 	const pointGlowId = useId();
 	const radarDotId = useId();
 	const radarShapeId = useId();
@@ -145,7 +145,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 							.join(" ")
 							.concat(" Z");
 
-						const filled = fill ?? stroke ?? colorFor(i, data.length);
+						const filled = fill ?? stroke ?? colors[i] ?? colors.at(-1);
 						return (
 							<React.Fragment key={i}>
 								<radialGradient id={radarShapeId + i} cx={viewbox.x / 2} cy={viewbox.y / 2} gradientUnits="userSpaceOnUse">

@@ -26,7 +26,7 @@ const MOCK_CONTEXT: GraphContext = {
 			{ coordinate: 1_000, tick: 0 },
 		],
 	},
-	colorFor: () => "",
+	colors: [],
 	interactions: { hovered: [], pinned: [] },
 };
 

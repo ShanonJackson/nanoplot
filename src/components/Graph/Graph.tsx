@@ -33,13 +33,35 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 			y: DomainUtils.y.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
 		},
-		colorFor: ColorUtils.colorFor,
+		colors: ColorUtils.scheme.contrast,
 		interactions: { hovered: interactions?.hovered ?? [], pinned: interactions?.pinned ?? [] },
 	});
+
+	const colorized = {
+		...ctx,
+		data: GraphUtils.isXYData(data)
+			? data.map((dp, i, dps) => {
+					return {
+						id: dp.id ?? dp.name,
+						stroke: typeof dp.fill === "string" && !dp.stroke ? dp.fill : (dp.stroke ?? ctx.colors[i] ?? ctx.colors.at(-1)),
+						...dp,
+					};
+				})
+			: [...data]
+					.sort((a, b) => Number(b.value) - Number(a.value))
+					.map((dp, i, dps) => {
+						return {
+							id: dp.id ?? dp.name,
+							stroke: typeof dp.fill === "string" && !dp.stroke ? dp.fill : (dp.stroke ?? ctx.colors[i] ?? ctx.colors.at(-1)),
+							...dp,
+						};
+					}),
+	};
 
 	return (
 		<div
 			id={id}
+			data-ctx={"graph"}
 			{...ctx.attributes}
 			style={{
 				...style,
@@ -50,34 +72,8 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			}}
 			className={tw(ctx.attributes.className, className)}
 		>
-			<GraphContextProvider
-				value={{
-					...ctx,
-					data: GraphUtils.isXYData(data)
-						? data.map((dp, i, dps) => {
-								return {
-									id: dp.id ?? dp.name,
-									stroke:
-										typeof dp.fill === "string" && !dp.stroke ? dp.fill : (dp.stroke ?? ctx.colorFor(i, dps.length)),
-									...dp,
-								};
-							})
-						: [...data]
-								.sort((a, b) => Number(b.value) - Number(a.value))
-								.map((dp, i, dps) => {
-									return {
-										id: dp.id ?? dp.name,
-										stroke:
-											typeof dp.fill === "string" && !dp.stroke
-												? dp.fill
-												: (dp.stroke ?? ctx.colorFor(i, dps.length)),
-										...dp,
-									};
-								}),
-				}}
-			>
-				{children}
-			</GraphContextProvider>
+			<script id={id + "-context"} type={"application/json"} dangerouslySetInnerHTML={{ __html: JSON.stringify(colorized) }} />
+			<GraphContextProvider value={colorized}>{children}</GraphContextProvider>
 		</div>
 	);
 };

@@ -7,11 +7,12 @@ import { GraphUtils } from "../../../utils/graph/graph";
 import { useRef } from "react";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { useMounted } from "../../../hooks/use-mounted";
+import { HydrateContext } from "../../HydrateContext/HydrateContext";
 
 type Props = {};
 
 const LABEL_X_MARGIN = 8; /* 8px */
-export const ScatterLabels = () => {
+const ScatterLabelsComponent = () => {
 	const ref = useRef<SVGSVGElement>(null);
 	const { id, data, viewbox, domain } = useGraph();
 	const mounted = useMounted();
@@ -73,3 +74,5 @@ export const ScatterLabels = () => {
 		</>
 	);
 };
+
+export const ScatterLabels = HydrateContext(ScatterLabelsComponent);
