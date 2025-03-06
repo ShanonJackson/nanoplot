@@ -1,6 +1,6 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.33",
+	"version": "0.0.37",
 	"private": false,
 	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"exports": {
@@ -82,8 +82,7 @@
 		"start": "next start",
 		"test": "bun test --watch",
 		"test:ci": "bun test --ci",
-		"cypress": "cypress open",
-		"postinstall": "bun run build:library"
+		"cypress": "cypress open"
 	},
 	"devDependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",

@@ -4,7 +4,9 @@ import { ClientContext, GraphContextClient } from "../../hooks/use-graph/use-cli
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
 import { contextFromParse } from "../../hooks/use-graph/use-graph";
 
-export const HydrateContext = <PROPS extends Record<any, unknown>>(Component: React.FC<PROPS>) => {
+export const HydrateContext = <PROPS extends Record<string | number | symbol, any>>(
+	Component: React.ComponentType<PROPS>,
+): React.ComponentType<PROPS> => {
 	return (props: PROPS) => {
 		const client = useContext(ClientContext);
 		const [ref, setRef] = useStatefulRef<HTMLDivElement>(); /* remount after set-ref */

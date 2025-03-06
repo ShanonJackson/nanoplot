@@ -30,7 +30,27 @@ export const range = (
 		}));
 	}
 
-	const min = Math.min(...data.flatMap((line) => line.data.map((d) => +d[dimension])));
+	const min = (() => {
+		const grouped = data.some((d) => Boolean(d.group));
+		if (!grouped || isDateTime) return Math.min(...data.flatMap((line) => line.data.map((d) => +d[dimension])));
+		/*
+			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
+			This is the case for stacked-bars.
+			groupBy group; then group by x
+			Math.min(Sum y)
+		*/
+		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((min1, [, values]) => {
+			const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
+			const minForDataset = Object.entries(dataset).reduce((min2, [, values2]) => {
+				return Math.min(
+					min2,
+					(values2 ?? []).reduce((total, dp) => total + +[dp[dimension]], 0),
+				);
+			}, Infinity);
+			return Math.min(min1, minForDataset);
+		}, Infinity);
+	})();
+
 	const max = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
 		if (!grouped || isDateTime) return Math.max(...data.flatMap((line) => line.data.map((d) => +d[dimension])));
@@ -51,6 +71,7 @@ export const range = (
 			return Math.max(max1, maxForDataset);
 		}, 0);
 	})();
+
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
 	const MIN = (() => {
 		if (from === "min" || from === "auto") {

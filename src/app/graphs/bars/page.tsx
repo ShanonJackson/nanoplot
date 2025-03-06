@@ -72,72 +72,29 @@ export default function Page() {
 					data={[
 						{
 							name: "Male",
-							fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
 							data: [
-								{ x: "Jan", y: 5_000 },
-								{ x: "Feb", y: 20_000 },
-								{ x: "Mar", y: 45_000 },
-								{ x: "Apr", y: 20_000 },
+								{ y: "Jan", x: -5_000 },
+								{ y: "Feb", x: 20_000 },
+								{ y: "Mar", x: 45_000 },
+								{ y: "Apr", x: 20_000 },
 							],
 						},
 						{
 							name: "Female",
-							fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
 							data: [
-								{ x: "Jan", y: 45_000 },
-								{ x: "Feb", y: 10_000 },
-								{ x: "Mar", y: 15_000 },
-								{ x: "Apr", y: 30_000 },
+								{ y: "Jan", x: 45_000 },
+								{ y: "Feb", x: 10_000 },
+								{ y: "Mar", x: 15_000 },
+								{ y: "Apr", x: 30_000 },
 							],
 						},
-					].map((dp) => {
-						return {
-							...dp,
-							data: dp.data.map((d) => {
-								return { x: d.x, y: d.y };
-							}),
-						};
-					})}
+					]}
 					gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 				>
-					{legend.position === "top" && <Legend {...legend} />}
-					{legend.position === "left" && <Legend {...legend} />}
-					<YAxis
-						{...yaxis}
-						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
-						description={
-							yaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					<GridLines {...gridline} />
-					<Bars
-						{...bars}
-						horizontal={false}
-						labels={{
-							position: "above",
-							collision: true,
-							display: (v) => {
-								return new Intl.NumberFormat("en", {
-									notation: "compact",
-									compactDisplay: "short",
-									maximumFractionDigits: 2,
-								}).format(Number(v));
-							},
-						}}
-					/>
-					{legend.position === "right" && <Legend {...legend} />}
-					<XAxis
-						{...xaxis}
-						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
-						description={
-							xaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					{legend.position === "bottom" && <Legend {...legend} />}
+					<YAxis />
+					<GridLines border horizontal />
+					<Bars horizontal labels={{ position: "center", display: (v) => v.toString() }} />
+					<XAxis />
 				</Graph>
 			</GraphPanel>
 		</>

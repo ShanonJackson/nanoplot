@@ -17,7 +17,7 @@ export const GraphPanel: FC<Props> = ({ examples = [], code, children, className
 		<>
 			<div
 				className={cx(
-					"flex flex-col h-full border-dotted border border-black dark:border-white overflow-hidden resize row-start-1 min-h-[400px] md:min-h-[unset] md:row-start-[unset]",
+					"flex flex-col h-full border-solid border border-black dark:border-white overflow-hidden resize row-start-1 min-h-[400px] md:min-h-[unset] md:row-start-[unset]",
 					className,
 				)}
 			>

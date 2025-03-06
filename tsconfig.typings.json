@@ -5,7 +5,7 @@
     "outDir": "./dist/",
     "allowJs": false,
     "noEmit": false,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "emitDeclarationOnly": false,
     "moduleResolution": "bundler",
     "skipLibCheck": true,

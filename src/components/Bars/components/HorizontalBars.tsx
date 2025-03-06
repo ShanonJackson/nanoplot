@@ -13,13 +13,14 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 	children?: React.ReactNode;
 	size?: number;
 	radius?: number;
+	anchor?: number;
 	labels?:
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
 };
 
-export const HorizontalBars = ({ children, labels, size = 50, radius = 0, className }: Props) => {
+export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor = 0, className }: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -48,18 +49,18 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 					?.map((bar) => {
 						return {
 							...bar,
-							x1: 0,
+							x1: xForValue(anchor),
 							x2: xForValue(bar.data.x),
 							y1,
 							y2: y1 + BAR_WIDTH,
 						};
 					})
 					.map((segment, i, segments) => {
-						const previousX = segments.slice(0, i).reduce((acc, { x2 }) => acc + x2, 0);
+						const previousX = segments.slice(0, i).reduce((acc, { x2 }) => acc + x2, xForValue(anchor));
 						return {
 							...segment,
 							x1: previousX,
-							x2: segment.x2 + previousX,
+							x2: segment.x2 - previousX ? segment.x2 : segment.x2 + previousX,
 							radius: i === segments.length - 1 ? radius : undefined,
 						};
 					});
@@ -114,7 +115,10 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, classN
 							style={{
 								width,
 								height: height + "%",
-								left: position === "above" ? "unset" : 0,
+								left:
+									position === "above"
+										? "unset"
+										: MathUtils.scale(Math.min(bar.x1, bar.x2), context.viewbox.x, 100) + "%",
 								right: position === "above" ? 0 : "unset",
 								top: top + "%",
 							}}

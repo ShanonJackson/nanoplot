@@ -8,7 +8,6 @@ import { PathUtils } from "../../utils/path/path";
 import { cx } from "../../utils/cx/cx";
 import { overlay } from "../Overlay/Overlay";
 import { ColorUtils } from "../../utils/color/color";
-import { Bars } from "../Bars/Bars";
 
 type Props = {
 	loading?: boolean;
