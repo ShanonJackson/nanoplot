@@ -33,7 +33,7 @@ export const HorizontalBarsExample = () => {
 			<YAxis />
 			<GridLines border horizontal />
 			<Bars horizontal labels={{ position: "center", display: (v) => v.toString() }} />
-			<XAxis ticks={{ from: -10_000, to: 50_000, jumps: 10 }} />
+			<XAxis />
 		</Graph>
 	);
 };

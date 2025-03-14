@@ -15,11 +15,11 @@ export const range = (
 	},
 	dimension: "x" | "y",
 ) => {
-	const inverse = dimension === "y" ? "x" : "y";
-	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
-
 	if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
+	const inverse = dimension === "y" ? "x" : "y";
+	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
+	const values = data.flatMap((line) => line.data.map((d) => +d[dimension])); /* do this once for large dataset optimizations */
 
 	if (typeof data[0]?.data?.[0]?.[dimension] === "string" /* Categorical */) {
 		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension]))));
@@ -32,7 +32,7 @@ export const range = (
 
 	const min = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return Math.min(...data.flatMap((line) => line.data.map((d) => +d[dimension])));
+		if (!grouped || isDateTime) return MathUtils.min(values);
 		/*
 			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 			This is the case for stacked-bars.
@@ -44,7 +44,10 @@ export const range = (
 			const minForDataset = Object.entries(dataset).reduce((min2, [, values2]) => {
 				return Math.min(
 					min2,
-					(values2 ?? []).reduce((total, dp) => total + +[dp[dimension]], 0),
+					(values2 ?? []).reduce((total, dp) => {
+						if (+dp[dimension] > 0) return total; // only sum negative values togeather for min.
+						return total + +[dp[dimension]];
+					}, 0),
 				);
 			}, Infinity);
 			return Math.min(min1, minForDataset);
@@ -53,7 +56,7 @@ export const range = (
 
 	const max = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return Math.max(...data.flatMap((line) => line.data.map((d) => +d[dimension])));
+		if (!grouped || isDateTime) return MathUtils.max(values);
 		/*
 			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 			This is the case for stacked-bars.
@@ -65,7 +68,10 @@ export const range = (
 			const maxForDataset = Object.entries(dataset).reduce((max2, [, values2]) => {
 				return Math.max(
 					max2,
-					(values2 ?? []).reduce((total, dp) => total + +[dp[dimension]], 0),
+					(values2 ?? []).reduce((total, dp) => {
+						if (+dp[dimension] < 0) return total; // only sum positive values togeather for min.
+						return total + +[dp[dimension]];
+					}, 0),
 				);
 			}, 0);
 			return Math.max(max1, maxForDataset);
@@ -73,33 +79,6 @@ export const range = (
 	})();
 
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
-	const MIN = (() => {
-		if (from === "min" || from === "auto") {
-			if (isDateTime) {
-				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
-				return from === "auto" ? new Date(min) : DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
-			}
-			return from === "min" ? min : DomainUtils.autoMinFor(min);
-		}
-		if (typeof from === "number") return from;
-		const operator = from.match(/(\+|-)/)?.[0];
-		const isPercentage = from.includes("%");
-		const value = +from.replace(/[^0-9]/g, "");
-		const interval = from.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
-		if (operator === "+") {
-			if (interval) {
-				return DateDomain.floor({ date: new Date(min), unit: value, interval });
-			}
-			return isPercentage ? min + (min * value) / 100 : min + value;
-		}
-		if (operator === "-") {
-			if (interval) {
-				return DateDomain.floor({ date: new Date(min), unit: value, interval });
-			}
-			return isPercentage ? min - (min * value) / 100 : min - value;
-		}
-		return min;
-	})();
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
 			if (isDateTime) {
@@ -129,18 +108,69 @@ export const range = (
 		return max;
 	})();
 
+	const MIN = (() => {
+		if (from === "min" || from === "auto") {
+			if (isDateTime) {
+				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
+				return from === "auto" ? new Date(min) : DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
+			}
+			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: +MAX });
+		}
+		if (typeof from === "number") return from;
+		const operator = from.match(/(\+|-)/)?.[0];
+		const isPercentage = from.includes("%");
+		const value = +from.replace(/[^0-9]/g, "");
+		const interval = from.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+		if (operator === "+") {
+			if (interval) {
+				return DateDomain.floor({ date: new Date(min), unit: value, interval });
+			}
+			return isPercentage ? min + (min * value) / 100 : min + value;
+		}
+		if (operator === "-") {
+			if (interval) {
+				return DateDomain.floor({ date: new Date(min), unit: value, interval });
+			}
+			return isPercentage ? min - (min * value) / 100 : min - value;
+		}
+		return min;
+	})();
+
 	if (typeof jumps === "number" || jumps === "auto") {
 		const mx = Number(MAX);
 		const mn = Number(MIN);
 		const JUMPS = (() => {
 			const distance = mx - mn;
 			if (jumps === "auto") {
-				/* pick number of jumps that doesn't result in a 'tick' being a decimal value if possible */
-				return ([6, 5, 7, 8, 9, 5, 4, 10, 11].find((jump) => distance % jump === 0) ?? 9) + 1;
+				const digits = Math.max(0, Math.round(distance).toString().replace("-", "").length - 2);
+				const jump =
+					[
+						parseInt("1" + "0".repeat(digits + 1)) /* i.e for max of 50_000 min of 0 */,
+						parseInt(
+							"2" + "5" + "0".repeat(Math.max(0, digits - 1)),
+						) /* If distance is 1_000_000 this would check if it's divisible by 250_000 */,
+						parseInt("2" + "0".repeat(digits)),
+						parseInt("5" + "0".repeat(digits)),
+						parseInt("3" + "0".repeat(digits)),
+						6,
+						5,
+						7,
+						8,
+						9,
+						5,
+						4,
+						10,
+						11,
+					]
+						.map((jump) => distance / jump)
+						.find((jump) => {
+							if (jump % 1 !== 0) return false;
+							return distance % jump === 0 && jump <= 11 && jump >= 5;
+						}) ?? 9;
+				return jump + 1;
 			}
 			return jumps;
 		})();
-
 		return Array.from({ length: JUMPS }, (_, i) => ({
 			tick: MathUtils.scale(i, [0, JUMPS - 1], [mn, mx]),
 			coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewb]),

@@ -27,7 +27,9 @@ export const DomainUtils = {
 				to: "auto",
 				jumps: "auto",
 			},
-		) => range({ data, viewbox }, { from, to, jumps }, "x"),
+		) => {
+			return range({ data, viewbox }, { from, to, jumps }, "x");
+		},
 	},
 	y: {
 		ticks: (
@@ -41,5 +43,4 @@ export const DomainUtils = {
 			return range({ data, viewbox }, { from, to, jumps }, "y").map((tick) => ({ ...tick, coordinate: viewbox.y - tick.coordinate }));
 		},
 	},
-	expression: (expression: NonNullable<ComponentProps<typeof XAxis>["ticks"]>["from"]) => {},
 };

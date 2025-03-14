@@ -136,29 +136,33 @@ export const times = {
 	hours: {
 		getter: "getHours",
 		setter: "setHours",
-		toFloor: (dte: Date, unit: number) => {
-			const utc = Date.UTC(dte.getUTCFullYear(), dte.getUTCMonth(), dte.getUTCDate(), dte.getUTCHours(), 0, 0, 0);
-			const stored = new Date(new Date(utc).toISOString().replace("Z", ""));
-			return new Date(stored.getUTCFullYear(), stored.getUTCMonth(), stored.getUTCDate(), stored.getUTCHours() - unit, 0, 0, 0);
+		toFloor: (date: Date, unit: number) => {
+			if (date.getSeconds() === 0 && date.getMinutes() === 0 && date.getMilliseconds() === 0) {
+				return date;
+			}
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() - Math.min(1, unit), 0, 0, 0);
 		},
-		toCeil: (dte: Date, unit: number) => {
-			const utc = Date.UTC(dte.getUTCFullYear(), dte.getUTCMonth(), dte.getUTCDate(), dte.getUTCHours(), 0, 0, 0);
-			const stored = new Date(new Date(utc).toISOString().replace("Z", ""));
-			return new Date(stored.getUTCFullYear(), stored.getUTCMonth(), stored.getUTCDate(), stored.getUTCHours() + unit, 0, 0, 0);
+		toCeil: (date: Date, unit: number) => {
+			if (date.getSeconds() === 0 && date.getMinutes() === 0 && date.getMilliseconds() === 0) {
+				return date;
+			}
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours() + Math.max(1, unit), 0, 0, 0);
 		},
 	},
 	days: {
 		getter: "getDate",
 		setter: "setDate",
-		toFloor: (dte: Date, unit: number) => {
-			const utc = Date.UTC(dte.getUTCFullYear(), dte.getUTCMonth(), dte.getUTCDate(), 0, 0, 0, 0);
-			const stored = new Date(new Date(utc).toISOString().replace("Z", ""));
-			return new Date(stored.getUTCFullYear(), stored.getUTCMonth(), stored.getUTCDate() - unit, 0, 0, 0, 0);
+		toFloor: (date: Date, unit: number) => {
+			if (date.getSeconds() === 0 && date.getMinutes() === 0 && date.getHours() === 0 && date.getMilliseconds() === 0) {
+				return date;
+			}
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate() - Math.min(1, unit), 0, 0, 0, 0);
 		},
-		toCeil: (dte: Date, unit: number) => {
-			const utc = Date.UTC(dte.getUTCFullYear(), dte.getUTCMonth(), dte.getUTCDate(), 0, 0, 0, 0);
-			const stored = new Date(new Date(utc).toISOString().replace("Z", ""));
-			return new Date(stored.getUTCFullYear(), stored.getUTCMonth(), stored.getUTCDate() + unit, 0, 0, 0, 0);
+		toCeil: (date: Date, unit: number) => {
+			if (date.getSeconds() === 0 && date.getMinutes() === 0 && date.getHours() === 0 && date.getMilliseconds() === 0) {
+				return date;
+			}
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate() + Math.max(1, unit), 0, 0, 0, 0);
 		},
 	},
 	weeks: {
@@ -228,11 +232,16 @@ export const dateRange = (every: TimeseriesFormats, min: Date, max: Date) => {
 	const { toFloor, toCeil } = times[interval as keyof typeof times];
 	const floored = toFloor(min, 0);
 	const ceiled = toCeil(max, 0);
-	return (function range(dte: Date): Date[] {
-		if (dte >= ceiled) return [dte];
-		const next = toCeil(new Date(dte.getTime() + 1), 0); /* just add 1, and ceil it to next */
-		return [dte].concat(range(next));
-	})(floored);
+
+	const result: Date[] = [];
+	let dte = floored;
+	let count = 0;
+	while (dte < ceiled) {
+		result.push(dte);
+		dte = toCeil(new Date(dte.getTime() + 1), 0); /* just add 1, and ceil it to next */
+	}
+	result.push(ceiled);
+	return result;
 };
 
 export const DateDomain = {

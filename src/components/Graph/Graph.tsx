@@ -1,10 +1,11 @@
-import React, { CSSProperties, HTMLAttributes, ReactNode, useId } from "react";
+import React, { CSSProperties, HTMLAttributes, memo, ReactNode, useId } from "react";
 import { GraphContext, GraphContextProvider } from "../../hooks/use-graph/use-graph";
 import { ChildrenUtils } from "../../utils/children/children";
 import { GraphUtils } from "../../utils/graph/graph";
 import { ColorUtils } from "../../utils/color/color";
 import { DomainUtils } from "../../utils/domain/domain";
 import { cx, tw } from "../../utils/cx/cx";
+import { useIsServerComponent } from "../../hooks/use-is-server-component";
 
 type Props = {
 	data?: GraphContext["data"];
@@ -15,11 +16,11 @@ type Props = {
 	className?: string;
 };
 
-export const Graph = ({ data = [], gap, children, interactions, style, className }: Props) => {
+const GraphComponent = ({ data = [], gap, children, interactions, style, className }: Props) => {
 	const id = useId();
 	const X_SCALE = 3000;
 	const Y_SCALE = 3000;
-
+	const isServerComponent = useIsServerComponent();
 	const ctx: GraphContext = ChildrenUtils.context(children, {
 		id,
 		layout: { rows: "[graph] auto", columns: "[graph] auto" },
@@ -30,17 +31,20 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			className: "@container/graph nanoplot relative grid h-full w-full isolate",
 		},
 		domain: {
-			x: DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
-			y: DomainUtils.y.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
+			x: [],
+			y: [],
 		},
 		colors: ColorUtils.scheme.contrast,
 		interactions: { hovered: interactions?.hovered ?? [], pinned: interactions?.pinned ?? [] },
 	});
-
 	const colorized = {
 		...ctx,
+		domain: {
+			x: ctx.domain.x ?? DomainUtils.x.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
+			y: ctx.domain.y ?? DomainUtils.y.ticks({ data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
+		},
 		data: GraphUtils.isXYData(data)
-			? data.map((dp, i, dps) => {
+			? data.map((dp, i) => {
 					return {
 						id: dp.id ?? dp.name,
 						stroke: typeof dp.fill === "string" && !dp.stroke ? dp.fill : (dp.stroke ?? ctx.colors[i] ?? ctx.colors.at(-1)),
@@ -49,7 +53,7 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 				})
 			: [...data]
 					.sort((a, b) => Number(b.value) - Number(a.value))
-					.map((dp, i, dps) => {
+					.map((dp, i) => {
 						return {
 							id: dp.id ?? dp.name,
 							stroke: typeof dp.fill === "string" && !dp.stroke ? dp.fill : (dp.stroke ?? ctx.colors[i] ?? ctx.colors.at(-1)),
@@ -72,20 +76,24 @@ export const Graph = ({ data = [], gap, children, interactions, style, className
 			}}
 			className={tw(ctx.attributes.className, className)}
 		>
-			<script id={id + "-context"} type={"application/json"} dangerouslySetInnerHTML={{ __html: JSON.stringify(colorized) }} />
+			{isServerComponent && (
+				/* Server components */
+				<script id={id + "-context"} type={"application/json"} dangerouslySetInnerHTML={{ __html: JSON.stringify(colorized) }} />
+			)}
 			<GraphContextProvider value={colorized}>{children}</GraphContextProvider>
 		</div>
 	);
 };
 
-Graph.Row = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-	return (
-		<div {...rest} className={cx("col-span-full", rest.className)}>
-			{children}
-		</div>
-	);
-};
-
-Graph.Column = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-	return <div {...rest}>{children}</div>;
-};
+export const Graph = Object.assign(GraphComponent, {
+	Row: ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+		return (
+			<div {...rest} className={cx("col-span-full", rest.className)}>
+				{children}
+			</div>
+		);
+	},
+	Column: ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+		return <div {...rest}>{children}</div>;
+	},
+});

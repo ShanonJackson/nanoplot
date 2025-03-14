@@ -1,6 +1,6 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.37",
+	"version": "0.0.38",
 	"private": false,
 	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"exports": {
@@ -85,6 +85,7 @@
 		"cypress": "cypress open"
 	},
 	"devDependencies": {
+		"@codesandbox/sandpack-react": "^2.20.0",
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
 		"@happy-dom/global-registrator": "^15.11.7",
 		"@number-flow/react": "^0.5.5",

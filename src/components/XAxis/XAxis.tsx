@@ -7,7 +7,7 @@ import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
 
 type Props = {
-	ticks?: FromToJumps;
+	ticks?: FromToJumps | Array<Date | string | number>;
 	title?: ReactNode;
 	description?: ReactNode;
 	display?: (tick: number | string | Date) => ReactNode;
@@ -83,6 +83,15 @@ export const XAxis = ({ display, title, description }: Props) => {
 };
 
 XAxis.context = (ctx: GraphContext, props: Props) => {
+	const domain = (() => {
+		if (Array.isArray(props.ticks)) {
+			const tcks = props.ticks;
+			return props.ticks.map((tick, i) => {
+				return { tick, coordinate: (i / (tcks.length - 1)) * ctx.viewbox.x };
+			});
+		}
+		return DomainUtils.x.ticks(ctx, props.ticks);
+	})();
 	return {
 		...ctx,
 		layout: {
@@ -93,7 +102,7 @@ XAxis.context = (ctx: GraphContext, props: Props) => {
 		domain: {
 			...ctx.domain,
 			y: ctx.domain.y,
-			x: DomainUtils.x.ticks(ctx, props.ticks),
+			x: domain,
 		},
 	};
 };

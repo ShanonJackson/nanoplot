@@ -19,6 +19,12 @@ export const Href = {
 	RADAR: "/graphs/radar",
 	WORLDMAP: "/graphs/worldmap",
 	SUNBURST: "/graphs/sunburst",
+	DOCUMENTATION: {
+		["V1_0_0"]: {
+			INDEX: "/documentation/1.0.0",
+			GETTING_STARTED: "/documentation/1.0.0/getting-started",
+		},
+	},
 };
 
 export const Routes = [

@@ -1,15 +1,12 @@
-const roundUp = (num: number, nearest: number) => Math.ceil(num / nearest) * nearest;
-const roundDown = (num: number, nearest: number) => Math.floor(num / nearest) * nearest;
-export const autoMax = (value: number) => {
-	const digits = Math.round(value).toString().length;
-	const max = (() => {
-		const suggested = parseInt("1" + "0".repeat(Math.max(0, digits - 1)));
-		if ((roundUp(value, suggested) - value) / value > 0.35) {
-			// increase is too large from original number.
-			return parseInt("1" + "0".repeat(Math.max(0, digits - 2)));
-		}
-		if (suggested === value) return value + parseInt("1" + "0".repeat(Math.max(0, digits - 2)));
-		return suggested;
-	})();
-	return roundUp(roundUp(value, max), parseInt("2" + "0".repeat(Math.max(0, digits - 2)))); /* Prime number avoider */
+const roundUp = (num: number, nearest: number): number => (num % nearest === 0 ? num + nearest : Math.ceil(num / nearest) * nearest);
+
+export const autoMax = (value: number): number => {
+	const thresholds = [0.5, 0.25, 0.2] as const;
+	const base = 10 ** Math.floor(Math.log10(value));
+
+	return (
+		thresholds
+			.map((factor) => ({ factor, nearest: base * factor, rounded: roundUp(value, base * factor) }))
+			.find(({ rounded }) => (rounded - value) / value <= 0.2)?.rounded ?? value + value / 10
+	);
 };

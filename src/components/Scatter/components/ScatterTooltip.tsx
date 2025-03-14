@@ -70,8 +70,8 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 				<Portal>
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-						className={"[grid-area:graph] h-full w-full"}
-						style={{ width: rect.width, height: rect.height, position: "absolute", left: rect.left, top: rect.top }}
+						className={"[grid-area:graph] h-full w-full absolute"}
+						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 						preserveAspectRatio={"none"}
 					>
 						<filter id={shadowId} filterUnits="userSpaceOnUse">

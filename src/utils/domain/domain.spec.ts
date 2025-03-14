@@ -51,7 +51,6 @@ describe("src/utils/domain/domain", () => {
 			expect(xDomain[14].tick).toBe(100);
 		});
 	});
-
 	describe("DomainUtils.x.ticks - 'to' parameter", () => {
 		it("Should work when 'to' is + percentage", () => {
 			const xDomain = DomainUtils.x.ticks(context, { from: 0, to: "max + 10%", jumps: 10 });
@@ -72,7 +71,6 @@ describe("src/utils/domain/domain", () => {
 			expect(xDomain[14].tick).toBe(3.6);
 		});
 	});
-
 	describe("DomainUtils.y.ticks", () => {
 		it("Should follow min/max/jumps", () => {
 			const yDomain = DomainUtils.y.ticks(context, { from: 0, to: 10, jumps: 10 });
@@ -119,6 +117,7 @@ describe("src/utils/domain/domain", () => {
 				},
 				{ from: "auto", to: "auto", jumps: "auto" },
 			);
+
 			const min = Math.min(...yDomain.map(({ tick }) => +tick));
 			const max = Math.max(...yDomain.map(({ tick }) => +tick));
 			expect(yDomain.every(({ tick }) => +tick % 1 === 0)).toBe(true); /* all whole numbers */
@@ -145,7 +144,71 @@ describe("src/utils/domain/domain", () => {
 			const min = Math.min(...yDomain.map(({ tick }) => +tick));
 			const max = Math.max(...yDomain.map(({ tick }) => +tick));
 			expect(min).toBe(0);
-			expect(max).toBe(2);
+			expect(max).toBe(1.25);
+		});
+	});
+
+	describe("DomainUtils.y.ticks", () => {
+		it("Should return 12 for autoMaxFor(10)", () => {
+			expect(DomainUtils.autoMaxFor(10)).toBe(12);
+		});
+		it("Should return 175_000 (quart) for autoMaxFor(150_000)", () => {
+			expect(DomainUtils.autoMaxFor(150_000)).toBe(175_000);
+		});
+		it("Should return 50_000 (tenth) for autoMaxFor(40_000)", () => {
+			expect(DomainUtils.autoMaxFor(45_000)).toBe(50_000);
+		});
+		it("Should round to nearest 'quart' when max of dataset is 1_550_000 (1_750_000)", () => {
+			const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			const data = [
+				{
+					name: "Revenue",
+					fill: "#f43f5e",
+					group: "financials",
+					data: [
+						{ x: new Date(2025, 0, 1), y: -100_000 },
+						{ x: new Date(2025, 1, 1), y: -120_000 },
+						{ x: new Date(2025, 2, 1), y: -110_000 },
+						{ x: new Date(2025, 3, 1), y: -130_000 },
+						{ x: new Date(2025, 4, 1), y: -90_000 },
+						{ x: new Date(2025, 5, 1), y: -140_000 },
+						{ x: new Date(2025, 6, 1), y: -80_000 },
+						{ x: new Date(2025, 7, 1), y: -110_000 },
+						{ x: new Date(2025, 8, 1), y: -150_000 },
+						{ x: new Date(2025, 9, 1), y: -120_000 },
+						{ x: new Date(2025, 10, 1), y: -100_000 },
+						{ x: new Date(2025, 11, 1), y: -110_000 },
+					].map(({ x, y }) => ({ x: months[x.getMonth()], y })),
+				},
+				{
+					name: "Churn",
+					fill: "#8249f0",
+					group: "financials",
+					data: [
+						{ x: new Date(2025, 0, 1), y: 1_200_000 },
+						{ x: new Date(2025, 1, 1), y: 1_300_000 },
+						{ x: new Date(2025, 2, 1), y: 1_350_000 },
+						{ x: new Date(2025, 3, 1), y: 1_250_000 },
+						{ x: new Date(2025, 4, 1), y: 1_450_000 },
+						{ x: new Date(2025, 5, 1), y: 1_500_000 },
+						{ x: new Date(2025, 6, 1), y: 1_150_000 },
+						{ x: new Date(2025, 7, 1), y: 1_400_000 },
+						{ x: new Date(2025, 8, 1), y: 1_550_000 },
+						{ x: new Date(2025, 9, 1), y: 1_480_000 },
+						{ x: new Date(2025, 10, 1), y: 1_380_000 },
+						{ x: new Date(2025, 11, 1), y: 1_280_000 },
+					].map(({ x, y }) => ({ x: months[x.getMonth()], y })),
+				},
+			];
+			const yDomain = DomainUtils.y.ticks(
+				{
+					...context,
+					data,
+				},
+				{ from: "auto", to: "auto", jumps: "auto" },
+			);
+			expect(Math.min(...yDomain.map(({ tick }) => +tick))).toBe(-250_000);
+			expect(Math.max(...yDomain.map(({ tick }) => +tick))).toBe(1_750_000);
 		});
 	});
 });

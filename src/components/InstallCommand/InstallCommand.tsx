@@ -1,85 +1,47 @@
 "use client";
-
 import { useState } from "react";
+import { cx } from "../../utils/cx/cx";
 
-const packageManagers = {
-	npm: "npm install nanoplot",
-	pnpm: "pnpm add nanoplot",
-	yarn: "yarn add nanoplot",
-	bun: "bun install nanoplot",
-} as const;
-
-export const InstallCommand = () => {
-	const [selectedPackageManager, setSelectedPackageManager] = useState<keyof typeof packageManagers>("npm");
-	const [open, setOpen] = useState(false);
-	const [copied, setCopied] = useState(false);
+export const InstallCommand = ({ className }: { className?: string }) => {
+	const [selectedManager, setSelectedManager] = useState("npm");
+	const packageName = "nanoplot";
+	const getInstallCommand = () => {
+		switch (selectedManager) {
+			case "npm":
+				return `npm install ${packageName}`;
+			case "yarn":
+				return `yarn add ${packageName}`;
+			case "pnpm":
+				return `pnpm add ${packageName}`;
+			case "bun":
+				return `bun i ${packageName}`;
+			default:
+				return `pnpm add ${packageName}`;
+		}
+	};
 
 	return (
-		<div className="mb-8 max-w-3xl w-full">
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-gray-200 dark:text-gray-400 mb-4">
-				<div className="relative">
-					<button
-						onClick={() => setOpen(!open)}
-						className="flex items-center gap-2 hover:text-blue-300 text-blue-400 transition-colors bg-gray-800/50 rounded-lg px-4 py-2"
-					>
-						<span className="font-medium">Install via {selectedPackageManager}</span>
-						<svg
-							className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
+		<div className={cx("max-w-3xl", className)}>
+			<div className="border-b border-gray-200 dark:border-gray-700">
+				<nav className="-mb-px flex">
+					{["npm", "yarn", "pnpm", "bun"].map((manager) => (
+						<button
+							key={manager}
+							onClick={() => setSelectedManager(manager)}
+							className={`py-4 px-6 text-sm font-medium ${
+								selectedManager === manager
+									? "border-b-2 border-green-500 text-green-600 dark:text-green-400"
+									: "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+							}`}
 						>
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-						</svg>
-					</button>
-					{open && (
-						<div className="absolute top-full left-0 mt-2 w-40 bg-gray-800 rounded-lg shadow-lg py-1 z-10 border border-gray-700">
-							{Object.keys(packageManagers).map((pm) => (
-								<button
-									key={pm}
-									onClick={() => {
-										setSelectedPackageManager(pm as keyof typeof packageManagers);
-										setOpen(false);
-									}}
-									className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-700 transition-colors text-blue-400 ${
-										selectedPackageManager === pm ? "text-blue-400 bg-gray-700/50" : "text-blue-400"
-									}`}
-								>
-									{pm}
-								</button>
-							))}
-						</div>
-					)}
-				</div>
-				<button
-					onClick={() => {
-						navigator.clipboard.writeText(packageManagers[selectedPackageManager]);
-						setCopied(true);
-						setTimeout(() => setCopied(false), 2000);
-					}}
-					className={`text-blue-400 hover:text-gray-200 transition-colors flex items-center gap-2 bg-gray-800/50 rounded-lg px-4 py-2 ${
-						copied ? "text-green-400" : ""
-					}`}
-					aria-label="Copy to clipboard"
-				>
-					<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						{copied ? (
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-						) : (
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-							/>
-						)}
-					</svg>
-					{copied ? "Copied!" : "Copy Command"}
-				</button>
+							{manager}
+						</button>
+					))}
+				</nav>
 			</div>
-			<div className="rounded-lg bg-gray-900 dark:bg-gray-800 p-4 relative group">
-				<div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-				<code className="text-white font-mono text-sm relative z-10">{packageManagers[selectedPackageManager]}</code>
+
+			<div className="mt-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
+				<div className="font-mono text-sm text-gray-800 dark:text-gray-200">{getInstallCommand()}</div>
 			</div>
 		</div>
 	);

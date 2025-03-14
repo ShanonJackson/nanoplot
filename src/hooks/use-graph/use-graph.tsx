@@ -39,17 +39,6 @@ export type GraphContext = {
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
 };
 
-const isISODateString = (value: unknown): value is string => {
-	return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && !isNaN(Date.parse(value));
-};
-export const contextFromParse = (json: string): GraphContext => {
-	function reviver(key: string, value: unknown) {
-		if ((key === "x" || key === "tick") && isISODateString(value)) return new Date(value);
-		return value;
-	}
-	return JSON.parse(json, reviver);
-};
-
 export const useGraphColumn = (ctx: GraphContext) => {
 	// parse grid-template-columns finding the column index + 1 with the name [graph]
 	// return the column index + 1

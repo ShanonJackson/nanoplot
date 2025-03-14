@@ -27,16 +27,13 @@ export const useMouseCoordinates = (
 					setPoint(undefined);
 					return setXY(undefined);
 				}
-
 				setXY({ x, y });
 				setPoint(point);
 			},
 			{ signal: controller.signal },
 		);
 		svg.addEventListener("mouseleave", () => setPoint(undefined), { signal: controller.signal });
-		return () => {
-			controller.abort();
-		};
+		return () => controller.abort();
 	}, [ref.current]);
 
 	if (!point || !xy) return null;

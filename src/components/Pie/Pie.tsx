@@ -94,11 +94,10 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 				segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 			);
 			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, viewbox.x, 100) > 50;
-
 			const label = labels && (
 				<>
 					<path
-						className={`stroke-[5] fill-transparent group-hover:stroke-[15] transform origin-center rotate-180 pie__segment-${segment.name}-path`}
+						className={`stroke-[5] fill-transparent group-hover:stroke-[15] transform origin-center [rotate:180deg] pie__segment-${segment.name}-path`}
 						key={segment.name}
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
@@ -107,7 +106,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 					/>
 					<g
 						className={cx(
-							`text-7xl font-bold pointer-events-auto transform origin-center rotate-180 pie__segment-${segment.name}-label`,
+							`text-7xl font-bold pointer-events-auto transform origin-center [rotate:180deg] pie__segment-${segment.name}-label`,
 						)}
 					>
 						<text
@@ -132,11 +131,11 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 			);
 
 			const path = (
-				<g className={"transform origin-center rotate-180"} key={i}>
+				<g className={"transform origin-center [rotate:180deg]"} key={i}>
 					<path
 						className={cx(
-							`transition-all duration-200 ease-in-out scale-100 origin-center pointer-events-auto pie__segment-${segment.name}-path`,
-							!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:scale-[1.02]`,
+							`transition-all duration-200 ease-in-out [scale:1] origin-center pointer-events-auto pie__segment-${segment.name}-path`,
+							!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:[scale:1.02]`,
 						)}
 						d={
 							PathUtils.describeArc(
@@ -163,7 +162,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 		<>
 			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
 			<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("h-full w-full [grid-area:graph]", className)}>
-				<g className={"transform origin-center rotate-180"}>
+				<g className={"transform origin-center [rotate:180deg]"}>
 					{donut && (
 						<mask id={maskId}>
 							<rect width="80%" height="80%" fill="white" />
