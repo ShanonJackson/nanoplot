@@ -10,7 +10,7 @@ import { XAxis } from "../../../../../components/XAxis/XAxis";
 import { useMounted } from "../../../../../hooks/use-mounted";
 
 const now = new Date();
-const generateInitialData = (min, max) => {
+const generateInitialData = (min: number, max: number) => {
 	return Array.from({ length: 6 * 60 * 60 }, (_, i) => ({
 		x: new Date(now.getTime() - (6 * 60 * 60 - i) * 1000),
 		y: Math.random() * (max - min) + min,

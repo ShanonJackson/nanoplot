@@ -7,7 +7,7 @@ import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
 
 type Props = {
-	ticks?: FromToJumps | Array<Date | string | number>;
+	ticks?: FromToJumps;
 	title?: ReactNode;
 	description?: ReactNode;
 	display?: (tick: number | string | Date) => ReactNode;

@@ -7,11 +7,17 @@
 const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
 export const CurveUtils = {
 	linear: (coordinates: Array<{ x: number; y: number }>) => {
-		/* Yes, this is equivilent to .map .join; However this is roughly 4x faster. */
+		/* This code is a hot-path for high-performance rendering - Benchmark if touched. */
 		if (coordinates.length === 0) return "";
 		let path = `M ${coordinates[0].x} ${coordinates[0].y}`;
+		let prevX = coordinates[0].x;
+		let prevY = coordinates[0].y;
 		for (let i = 1, len = coordinates.length; i < len; i++) {
-			path += ` L ${coordinates[i].x} ${coordinates[i].y}`;
+			const dx = coordinates[i].x - prevX;
+			const dy = coordinates[i].y - prevY;
+			path += ` l${dx} ${dy}`;
+			prevX = coordinates[i].x;
+			prevY = coordinates[i].y;
 		}
 		return path;
 	},

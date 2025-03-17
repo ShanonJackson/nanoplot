@@ -15,6 +15,7 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	loading?: boolean;
 }
 
+
 export const Area = ({ className, curve = "linear", children, loading }: Props) => {
 	const {
 		interactions: { pinned, hovered },
@@ -40,6 +41,8 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 			})),
 		};
 	});
+	
+	
 	const grouped = Object.entries(ObjectUtils.groupBy(lines, ({ group, id }) => group ?? id));
 
 	return (

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useState, useTransition } from "react";
 import { MathUtils } from "../utils/math/math";
 
 export const useMouseCoordinates = (

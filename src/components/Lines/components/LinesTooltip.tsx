@@ -25,6 +25,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 				title: (x: number | string | Date) => React.ReactNode;
 				display: (point: CartesianDataset[number]["data"][number]) => React.ReactNode;
 		  };
+	
 	joints?: boolean;
 };
 
@@ -42,7 +43,6 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 		interactions: { pinned, hovered },
 	} = useGraph();
 	if (!GraphUtils.isXYData(data)) return null;
-	console.time("tooltip");
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
 
@@ -61,8 +61,6 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 		}
 		return values;
 	}, [data]);
-
-	console.time("closest");
 	const closest = (() => {
 		/*
 			This is critically performance sensitive code.
@@ -85,7 +83,6 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 			}
 			return closestTick;
 		}
-
 		if (datapoints.length === 0) return undefined;
 		// Binary search for closest value (lower bound)
 		let left = 0;
@@ -100,7 +97,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 			? datapoints[left - 1]
 			: datapoints[left];
 	})();
-	console.timeEnd("closest");
+
 
 	const points = (() => {
 		/* Turn dataset into a dataset with a single point instead of line of points where that point === value near mouse */
@@ -177,7 +174,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 		},
 	);
 	const ordered = points?.sort((a, b) => +b.data.y - +a.data.y);
-	console.timeEnd("tooltip");
+
 	return (
 		<>
 			<svg
