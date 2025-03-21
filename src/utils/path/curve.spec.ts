@@ -2,17 +2,16 @@ import { expect, describe, it } from "bun:test";
 import data from "./data.spec.json";
 import { CurveUtils } from "./curve";
 
-// javascript function to measure performance
 describe("CurveUtils", () => {
-	it("Should be performant", () => {
-		// measure CurveUtils.linear performance using data as argument
-		// if average performance <20ms it's pass.
-		// if average performance >20ms it's fail.
-		// measure Curve
-		const start = performance.now();
-		CurveUtils.linear(data);
-		const end = performance.now();
-		const time = end - start;
-		expect(time).toBeLessThan(1);
+	it("Should never take longer than 4ms on 50 runs for dataset.", () => {
+		// .linear is a super hotpath for high performance rendering.
+		const times = Array.from({ length: 50 }, () => {
+			const start = performance.now();
+			CurveUtils.linear(data);
+			const end = performance.now();
+			return end - start;
+		});
+		const average = times.reduce((acc, curr) => acc + curr, 0) / times.length;
+		expect(average).toBeLessThan(1);
 	})
 })

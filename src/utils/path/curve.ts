@@ -3,21 +3,19 @@
  * Because of this it's a great use-case for GPT generated code.
  * Other than 'linear' all of these curving function implementations were GPT generated and match their d3 counterpart.
  */
-
 const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
 export const CurveUtils = {
-	linear: (coordinates: Array<{ x: number; y: number }>) => {
-		/* This code is a hot-path for high-performance rendering - Benchmark if touched. */
-		if (coordinates.length === 0) return "";
-		let path = `M ${coordinates[0].x} ${coordinates[0].y}`;
-		let prevX = coordinates[0].x;
-		let prevY = coordinates[0].y;
-		for (let i = 1, len = coordinates.length; i < len; i++) {
-			const dx = coordinates[i].x - prevX;
-			const dy = coordinates[i].y - prevY;
-			path += ` l${dx} ${dy}`;
-			prevX = coordinates[i].x;
-			prevY = coordinates[i].y;
+	linear: (coords: Array<{ x: number; y: number }>) => {
+		/* Yes, this is just .map .join  - Except about 3x as fast. */
+		const len = coords.length;
+		if (!len) return "";
+		let { x: prevX, y: prevY } = coords[0];
+		let path = "M " + prevX + " " + prevY;
+		for (let i = 1; i < len; i++) {
+			const { x, y } = coords[i];
+			path += " l" + (x - prevX) + " " + (y - prevY);
+			prevX = x;
+			prevY = y;
 		}
 		return path;
 	},

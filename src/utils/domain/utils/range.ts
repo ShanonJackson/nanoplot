@@ -19,7 +19,8 @@ export const range = (
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
 	const inverse = dimension === "y" ? "x" : "y";
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
-	const values = data.flatMap((line) => line.data.map((d) => +d[dimension])); /* do this once for large dataset optimizations */
+	
+
 
 	if (typeof data[0]?.data?.[0]?.[dimension] === "string" /* Categorical */) {
 		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension]))));
@@ -30,17 +31,30 @@ export const range = (
 		}));
 	}
 
+	
+	/* get min/max of dataset in stack safe AND performant way. i.e Math.min(...values) will stack overflow >129_000 or so */
+	let datasetMin = Infinity;
+	let datasetMax = -Infinity;
+	for (const line of data) {
+		for (const d of line.data) {
+			/* This code is hyper hyper hyper critical */
+			const value = isDateTime ? (d[dimension] as Date).getTime() : (d[dimension] as number);
+			if (value < datasetMin) datasetMin = value;
+			if (value > datasetMax) datasetMax = value;
+		}
+	}
+	
 	const min = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return MathUtils.min(values);
+		if (!grouped || isDateTime) return datasetMin;
 		/*
 			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 			This is the case for stacked-bars.
 			groupBy group; then group by x
 			Math.min(Sum y)
 		*/
-		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((min1, [, values]) => {
-			const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
+		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((min1, [, v]) => {
+			const dataset = ObjectUtils.groupBy(v?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
 			const minForDataset = Object.entries(dataset).reduce((min2, [, values2]) => {
 				return Math.min(
 					min2,
@@ -56,15 +70,16 @@ export const range = (
 
 	const max = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return MathUtils.max(values);
+		if (!grouped || isDateTime) return datasetMax;
+		
 		/*
 			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 			This is the case for stacked-bars.
 			groupBy group; then group by x
 			Math.max(Sum y)
 		*/
-		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, values]) => {
-			const dataset = ObjectUtils.groupBy(values?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
+		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, v]) => {
+			const dataset = ObjectUtils.groupBy(v?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
 			const maxForDataset = Object.entries(dataset).reduce((max2, [, values2]) => {
 				return Math.max(
 					max2,
