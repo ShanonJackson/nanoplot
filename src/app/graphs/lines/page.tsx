@@ -19,25 +19,9 @@ import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components
 import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } from "./components/TimeSeriesCustomTooltipExample";
 import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
 import { LinesPredictionExample, LinesPredictionExampleCode } from "./components/LinesPredictionExample";
-import data from "./data.json";
-import { format } from "../../../utils/date/date-format";
-
-const dataset = data.slice(1, 4).map((d, i) => ({
-	name: (() => {
-		if (i === 1) return "CPU";
-		if (i === 2) return "RAM";
-		return "TCP Out";
-	})(),
-	data: data[0]
-		.map((xy, ii) => ({
-			x: new Date(xy * 1000),
-			y: d[ii],
-		}))
-		.slice(0, 55_000),
-}));
 
 export default function Page() {
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: false });
+	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
@@ -87,7 +71,47 @@ export default function Page() {
 					},
 				]}
 			>
-				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset}>
+				<Graph
+					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+					data={[
+						{
+							name: "New Users",
+							stroke: "#FF4B4B",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+							],
+						},
+						{
+							name: "Registered Users",
+							stroke: "#33D4FF",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+							],
+						},
+					]}
+				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
@@ -101,16 +125,18 @@ export default function Page() {
 					/>
 					<GridLines {...gridline} />
 					<Lines {...line} />
-					<Lines.Tooltip tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }} />
+					<Lines.Tooltip />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
-						ticks={{ jumps: "every 2 days" }}
+						ticks={{ jumps: "every 1 months" }}
 						display={(x) => {
+							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return format(x, "mm/dd");
+							return months[x.getMonth()];
 						}}
 					/>
+
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

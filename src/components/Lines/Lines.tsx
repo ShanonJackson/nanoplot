@@ -37,6 +37,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
+
 	const lines = data.map((line, i) => {
 		return {
 			...line,
@@ -52,9 +53,6 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 		};
 	});
 
-
-
-	
 	if (loading) return <LinesLoading />;
 	return (
 		<svg
@@ -63,12 +61,15 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 			className={cx("lines h-full w-full [grid-area:graph] will-change-transform [transform:translateZ(0)]", className)}
 		>
 			{lines.map(({ id, stroke, data: points }, i) => {
-				const isChunkingCandidate = !stroke.includes("linear-gradient") && curve === "linear"; /* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
+				const isChunkingCandidate =
+					!stroke.includes("linear-gradient") &&
+					curve ===
+						"linear"; /* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
 				const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled);
 				const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
-				
+
 				return (
 					<React.Fragment key={i}>
 						{filled && !disabled && (
@@ -77,18 +78,20 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 								<stop offset="95%" stopColor={stroke} stopOpacity={"0"} />
 							</linearGradient>
 						)}
-						{isChunkingCandidate ? chunk(points, 1000 /* chunk size determined by GPU benchmarking */).map((chunk, i) => {
-							const chunkedPath = CurveUtils[curve](chunk);
-							return (
-								<Line
-									key={i}
-									d={chunkedPath}
-									stroke={stroke}
-									fill={"transparent"}
-									className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
-								/>
-							);
-						}) : (
+						{isChunkingCandidate ? (
+							chunk(points, 1000 /* chunk size determined by GPU benchmarking */).map((chunk, i) => {
+								const chunkedPath = CurveUtils[curve](chunk);
+								return (
+									<Line
+										key={i}
+										d={chunkedPath}
+										stroke={stroke}
+										fill={"transparent"}
+										className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
+									/>
+								);
+							})
+						) : (
 							<>
 								<Line
 									d={path}
@@ -111,12 +114,12 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 							points.map(({ x, y, xValue, yValue }, i) => {
 								const color = stroke.includes("linear-gradient")
 									? GradientUtils.gradientColorFromValue({
-										viewbox,
-										domain,
-										point: { x: xValue, y: yValue },
-										gradient: stroke,
-										dataset: points,
-									})
+											viewbox,
+											domain,
+											point: { x: xValue, y: yValue },
+											gradient: stroke,
+											dataset: points,
+										})
 									: stroke;
 								return (
 									<path

@@ -25,7 +25,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 				title: (x: number | string | Date) => React.ReactNode;
 				display: (point: CartesianDataset[number]["data"][number]) => React.ReactNode;
 		  };
-	
+
 	joints?: boolean;
 };
 
@@ -49,6 +49,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 	const { width: tooltipWidth, height: tooltipHeight } = tooltipRef.current?.getBoundingClientRect() ?? { width: 0, height: 0 };
 	const { width, height } = ref.current?.getBoundingClientRect() ?? { width: 0, height: 0 };
 
+	const isDateTimeAxis = domain.x[0]?.tick instanceof Date;
 	const datapoints = useMemo(() => {
 		/* data wont change while mouse is moving, but will change when parent re-renders with new object identity */
 		const max = data.reduce((max, { data }) => Math.max(max, data.length), 0);
@@ -56,11 +57,12 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 		let index = 0;
 		for (const dataset of data) {
 			for (const { x } of dataset.data) {
-				values[index++] = +x;
+				values[index++] = x instanceof Date ? x.getTime() : (x as number);
 			}
 		}
 		return values;
 	}, [data]);
+
 	const closest = (() => {
 		/*
 			This is critically performance sensitive code.
@@ -92,12 +94,13 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 			if (xForValue(datapoints[mid]) < mouseX) left = mid + 1;
 			else right = mid;
 		}
-		// Get closest of left or left-1
-		return left > 0 && Math.abs(xForValue(datapoints[left - 1]) - mouseX) < Math.abs(xForValue(datapoints[left]) - mouseX)
-			? datapoints[left - 1]
-			: datapoints[left];
+		const element =
+			left > 0 && Math.abs(xForValue(datapoints[left - 1]) - mouseX) < Math.abs(xForValue(datapoints[left]) - mouseX)
+				? datapoints[left - 1]
+				: datapoints[left];
+		if (isDateTimeAxis) return new Date(element);
+		return element;
 	})();
-
 
 	const points = (() => {
 		/* Turn dataset into a dataset with a single point instead of line of points where that point === value near mouse */
@@ -187,7 +190,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 						className={"[grid-area:graph] h-full w-full absolute pointer-events-none"}
-						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top, border: "2px solid red" }}
+						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 						preserveAspectRatio={"none"}
 					>
 						{closest != null && (

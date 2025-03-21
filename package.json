@@ -1,6 +1,6 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.39",
+	"version": "0.0.40",
 	"private": false,
 	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"exports": {

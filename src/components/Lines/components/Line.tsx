@@ -6,16 +6,17 @@ type Props = JSX.IntrinsicElements["path"] & {
 	stroke: string;
 	fill?: string;
 	disabled?: boolean;
+	points?: Array<{ x: number; y: number }>;
 };
 
-export const Line = ({ stroke, d, disabled, fill, className }: Props) => {
+export const Line = ({ stroke, d, disabled, fill, className, points }: Props) => {
 	const strokeId = useId();
 	const fillId = useId();
 	const clipId = useId();
-
 	const isGradientFill = fill?.includes("linear-gradient");
 	const isGradientStroke = stroke?.includes("linear-gradient");
 	const isMaskStroke = stroke?.includes("mask");
+
 	return (
 		<>
 			{isGradientFill && !disabled && fill && <LinearGradient id={fillId} gradient={fill} />}
