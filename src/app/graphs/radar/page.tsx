@@ -6,6 +6,7 @@ import { Control } from "../../../components/Docs/Control/Control";
 import { BooleanControl } from "../../../components/Docs/Control/components/BooleanControl/BooleanControl";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
+import { RadarMultipleSpreadsExample, RadarMultipleSpreadsExampleCode } from "./examples/RadarMultipleSpreadsExample";
 
 export default function Page() {
 	const [radar, setRadar] = useState<ComponentProps<typeof Radar>>({
@@ -24,7 +25,11 @@ export default function Page() {
 					/>
 				</Control>
 			</ControlPanel>
-			<GraphPanel>
+			<GraphPanel
+				examples={[
+					{ name: "Radar with Multiple Spreads", code: RadarMultipleSpreadsExampleCode, component: RadarMultipleSpreadsExample },
+				]}
+			>
 				<Graph gap={{ top: 30 }} data={MOCK_DATA}>
 					<Radar {...radar} />
 				</Graph>
