@@ -209,7 +209,9 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 					return (
 						<path
 							key={i}
-							className={"[vector-effect:non-scaling-stroke] dark:fill-white [fill-opacity:0] [stroke-opacity:0]"}
+							className={
+								"[vector-effect:non-scaling-stroke] dark:fill-white [fill-opacity:0] [stroke-opacity:0] hover:[fill-opacity:0.2] "
+							}
 							d={
 								PathUtils.describeArc(
 									viewbox.x / 2,
