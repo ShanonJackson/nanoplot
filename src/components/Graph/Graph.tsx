@@ -77,7 +77,7 @@ const GraphComponent = ({ data = [], gap, children, interactions, style, classNa
 			className={tw(ctx.attributes.className, className)}
 		>
 			{isServerComponent && (
-				/* Server components */
+				/* CTX for server components. */
 				<script id={id + "-context"} type={"application/json"} dangerouslySetInnerHTML={{ __html: JSON.stringify(colorized) }} />
 			)}
 			<GraphContextProvider value={colorized}>{children}</GraphContextProvider>

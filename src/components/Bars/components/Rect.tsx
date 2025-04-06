@@ -26,7 +26,6 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 	const isFillMasked = rest.fill?.includes("mask");
 	const isGradientStroke = rest.stroke?.includes("gradient");
 	const path = PathUtils.borderRadius({ x: x1, y: y1 }, { x: x2, y: y2 }, radius ?? 0, horizontal);
-	const height = MathUtils.scale(y2 - y1, viewbox.y, 100);
 	return (
 		<>
 			{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}

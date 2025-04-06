@@ -4,20 +4,86 @@
  * Other than 'linear' all of these curving function implementations were GPT generated and match their d3 counterpart.
  */
 const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
+const decoder = new TextDecoder();
 export const CurveUtils = {
-	linear: (coords: Array<{ x: number; y: number }>) => {
-		/* Yes, this is just .map .join  - Except about 3x as fast. */
-		const len = coords.length;
-		if (!len) return "";
-		let { x: prevX, y: prevY } = coords[0];
-		let path = "M " + prevX + " " + prevY;
-		for (let i = 1; i < len; i++) {
+	linear: (coords: Array<{ x: number; y: number }>): string => {
+		/*
+			This code is essentially just .map .join but about 5x the performance
+		*/
+		if (coords.length === 0) return "";
+		const buffer = new Uint8Array(coords.length * 16);
+		let offset = 0;
+		let prevX = 0;
+		let prevY = 0;
+		for (let i = 0; i < coords.length; i++) {
+			const isFirst = i === 0;
 			const { x, y } = coords[i];
-			path += " l" + (x - prevX) + " " + (y - prevY);
+			buffer[offset++] = isFirst ? 77 : 108; // 'M' or 'l'
+			const dx = isFirst ? x : x - prevX;
+			const dy = isFirst ? y : y - prevY;
+			let n = dx;
+			if (n < 0) {
+				buffer[offset++] = 45; // '-'
+				n = -n;
+			}
+			const scaledX = (n * 100 + 0.5) | 0;
+			const intX = (scaledX / 100) | 0;
+			const fracX = scaledX % 100;
+			if (intX > 999) {
+				buffer[offset++] = 48 + ((intX / 1000) | 0);
+				buffer[offset++] = 48 + (((intX % 1000) / 100) | 0);
+				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intX % 10);
+			} else if (intX > 99) {
+				buffer[offset++] = 48 + ((intX / 100) | 0);
+				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intX % 10);
+			} else if (intX > 9) {
+				buffer[offset++] = 48 + ((intX / 10) | 0);
+				buffer[offset++] = 48 + (intX % 10);
+			} else {
+				buffer[offset++] = 48 + intX;
+			}
+			if (fracX !== 0) {
+				buffer[offset++] = 46;
+				buffer[offset++] = 48 + ((fracX / 10) | 0);
+				buffer[offset++] = 48 + (fracX % 10);
+			}
+			buffer[offset++] = 32; // ' '
+			n = dy;
+			if (n < 0) {
+				buffer[offset++] = 45; // '-'
+				n = -n;
+			}
+			const scaledY = (n * 100 + 0.5) | 0;
+			const intY = (scaledY / 100) | 0;
+			const fracY = scaledY % 100;
+			if (intY > 999) {
+				buffer[offset++] = 48 + ((intY / 1000) | 0);
+				buffer[offset++] = 48 + (((intY % 1000) / 100) | 0);
+				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intY % 10);
+			} else if (intY > 99) {
+				buffer[offset++] = 48 + ((intY / 100) | 0);
+				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intY % 10);
+			} else if (intY > 9) {
+				buffer[offset++] = 48 + ((intY / 10) | 0);
+				buffer[offset++] = 48 + (intY % 10);
+			} else {
+				buffer[offset++] = 48 + intY;
+			}
+			if (fracY !== 0) {
+				buffer[offset++] = 46;
+				buffer[offset++] = 48 + ((fracY / 10) | 0);
+				buffer[offset++] = 48 + (fracY % 10);
+			}
 			prevX = x;
 			prevY = y;
 		}
-		return path;
+		// Convert to string and fix first command
+		buffer[0] = 77; // Ensure first command is 'M'
+		return decoder.decode(buffer.subarray(0, offset));
 	},
 	natural: (coordinates: Array<{ x: number; y: number }>) => {
 		if (coordinates.length < 2) {
