@@ -10,11 +10,14 @@ type Props<T extends Record<string, unknown>> = {
 
 export const DocumentationTable = <T extends Record<string, unknown>>({ columns, data, renderers }: Props<T>) => {
 	return (
-		<table className={"w-full"}>
+		<table className={"w-full text-neutral-700 dark:text-neutral-300"}>
 			<thead>
 				<tr>
 					{columns.map((col, i) => (
-						<td key={i} className={"border border-gray-200 px-4 py-2 font-semibold text-center"}>
+						<td
+							key={i}
+							className={"border border-gray-200 dark:bg-slate-800 dark:border-slate-600 px-4 py-2 font-semibold text-center"}
+						>
 							{col.toString()}
 						</td>
 					))}
@@ -23,10 +26,10 @@ export const DocumentationTable = <T extends Record<string, unknown>>({ columns,
 			<tbody>
 				{data.map((row, i) => {
 					return (
-						<tr key={i} className={"odd:bg-[#f6f8fa]"}>
+						<tr key={i} className={"odd:bg-[#f6f8fa] dark:bg-slate-800 odd:dark:bg-slate-700"}>
 							{columns.map((col, i) => (
-								<td key={i} className={"border border-gray-200 px-4 py-2"}>
-									{renderers?.[col] ? renderers[col](row[col]) : row[col]}
+								<td key={i} className={"border border-gray-200 dark:border-slate-600 px-4 py-2"}>
+									{renderers?.[col] ? renderers[col](row[col]) : String(row[col])}
 								</td>
 							))}
 						</tr>
