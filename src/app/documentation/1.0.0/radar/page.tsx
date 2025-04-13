@@ -6,13 +6,10 @@ import { DocumentationTable } from "../../../../components/Documentation/Documen
 export default function Page() {
 	return (
 		<div className={"p-8"}>
-			<DocumentationNote
-				noteContent={
-					"Radar graphs are best used for comparing multiple variables across categories with a shared scale, i.e. performance metrics or feature comparisons."
-				}
-			/>
-			<br />
-			<br />
+			<DocumentationNote>
+				Radar graphs are best used for comparing multiple variables across categories with a shared scale, i.e. performance metrics
+				or feature comparisons.
+			</DocumentationNote>
 			<DocumentationTable
 				columns={["Name", "Description", "Type", "Required"]}
 				data={data}
