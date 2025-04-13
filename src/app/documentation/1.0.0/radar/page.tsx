@@ -2,10 +2,12 @@
 import * as React from "react";
 import { DocumentationNote } from "../../../../components/Documentation/DocumentationNote/DocumentationNote";
 import { DocumentationTable } from "../../../../components/Documentation/DocumentationTable/DocumentationTable";
+import { DocumentationHeading } from "../../../../components/Documentation/DocumentationHeading/DocumentationHeading";
 
 export default function Page() {
 	return (
 		<div className={"p-8"}>
+			<DocumentationHeading level={2}>Radar Chart</DocumentationHeading>
 			<DocumentationNote>
 				Radar graphs are best used for comparing multiple variables across categories with a shared scale, i.e. performance metrics
 				or feature comparisons.
