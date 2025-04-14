@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
@@ -15,6 +15,7 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	curve?: keyof typeof CurveUtils;
 	joints?: boolean;
 	loading?: boolean;
+	dataset?: string;
 }
 
 const chunk = (points: Array<{ x: number; y: number }>, size: number) => {
@@ -25,14 +26,12 @@ const chunk = (points: Array<{ x: number; y: number }>, size: number) => {
 	return chunks;
 };
 
-export const Lines = ({ className, curve = "linear", joints, children, loading }: Props) => {
+export const Lines = ({ className, curve = "linear", joints, children, loading, dataset }: Props) => {
 	const {
 		interactions: { pinned, hovered },
-		data,
 		viewbox,
-		domain,
-		colors,
 	} = useGraph();
+	const { data, domain, colors } = useDataset(dataset);
 	if (!GraphUtils.isXYData(data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
@@ -52,7 +51,6 @@ export const Lines = ({ className, curve = "linear", joints, children, loading }
 			})),
 		};
 	});
-
 	if (loading) return <LinesLoading />;
 	return (
 		<svg

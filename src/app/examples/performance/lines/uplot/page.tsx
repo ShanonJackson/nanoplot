@@ -11,8 +11,8 @@ import { useState } from "react";
 
 const dataset = data.slice(1, 4).map((d, i) => ({
 	name: (() => {
-		if (i === 1) return "CPU";
-		if (i === 2) return "RAM";
+		if (i === 1) return "RAM";
+		if (i === 2) return "CPU";
 		return "TCP Out";
 	})(),
 	data: data[0].map((xy, ii) => ({
@@ -22,28 +22,38 @@ const dataset = data.slice(1, 4).map((d, i) => ({
 }));
 
 export default function Page() {
-	const [count, setCount] = useState(0);
-	console.log("page re-render");
-
+	const [mount, setMount] = useState(false);
 	return (
 		<div>
-			<button onClick={() => setCount((c) => c + 1)}>Re-render graph count: {count}</button>
-			<div className={"mx-auto w-[90%] h-[800px] resize overflow-hidden"}>
-				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset}>
-					<Legend position={"top"} />
-					<YAxis />
-					<GridLines />
-					<Lines />
-					<Lines.Tooltip tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }} />
-					<XAxis
-						ticks={{ jumps: "every 2 days" }}
-						display={(x) => {
-							if (typeof x === "number" || typeof x === "string") return null;
-							return format(x, "mm/dd");
+			<button onClick={() => setMount((m) => !m)}>{mount ? "Unmount" : "Mount"}</button>
+			{mount && (
+				<div className={"mx-auto w-[90%] h-[800px] resize overflow-hidden"}>
+					<Graph
+						gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+						data={dataset.filter((d) => d.name !== "TCP Out")}
+						datasets={{
+							TCP: dataset.filter((d) => d.name === "TCP Out").map((c) => ({ ...c, stroke: "rgb(255, 0, 0)" })),
 						}}
-					/>
-				</Graph>
-			</div>
+					>
+						<Legend position={"top"} />
+						<YAxis />
+						<GridLines />
+						<Lines />
+						<Lines dataset={"TCP"} />
+						<Lines.Tooltip
+							tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }}
+						/>
+						<YAxis dataset={"TCP"} position={"right"} display={(t) => t.toString() + " MB"} />
+						<XAxis
+							ticks={{ jumps: "every 2 days" }}
+							display={(x) => {
+								if (typeof x === "number" || typeof x === "string") return null;
+								return format(x, "mm/dd");
+							}}
+						/>
+					</Graph>
+				</div>
+			)}
 		</div>
 	);
 }

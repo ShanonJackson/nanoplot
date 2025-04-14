@@ -2,7 +2,6 @@ import { HTMLAttributes } from "react";
 import { GraphContextServer, useGraphServer } from "./use-server-graph";
 import { GraphContextClient, useGraphClient } from "./use-client-graph";
 
-
 export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
 	name: string;
@@ -40,13 +39,22 @@ export type GraphContext = {
 	};
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
+	datasets: Record<string, Pick<GraphContext, "domain" | "colors" | "data">>;
 };
 
-export const useGraphColumn = (ctx: GraphContext) => {
-	return ctx.layout.columns.split(" ").findIndex((col) => col.includes("[graph]")) + 1;
+export const useGraphColumn = () => {
+	const ctx = useGraph();
+	const columns = ctx.layout.columns.split(" ");
+	return {
+		column: columns.findIndex((col) => col.includes("[graph]")) + 1,
+		left: columns.findIndex((col) => col.includes("[graph]")),
+		right: columns.length - (columns.findIndex((col) => col.includes("[graph]")) + 1),
+	};
 };
 
-export const GraphContextProvider =
-	typeof window === "undefined" ? GraphContextServer : GraphContextClient
-export const useGraph: () => GraphContext =
-	typeof window === "undefined" ? useGraphServer :useGraphClient
+export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;
+export const useGraph: () => GraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;
+export const useDataset = (dataset?: string) => {
+	const context = useGraph();
+	return dataset ? context.datasets[dataset] : context;
+};

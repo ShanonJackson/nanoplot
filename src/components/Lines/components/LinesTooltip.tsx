@@ -51,6 +51,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 
 	const isDateTimeAxis = domain.x[0]?.tick instanceof Date;
 	const datapoints = useMemo(() => {
+		if (!mouse) return [];
 		/* data wont change while mouse is moving, but will change when parent re-renders with new object identity */
 		const max = data.reduce((max, { data }) => Math.max(max, data.length), 0);
 		let values = new Float64Array(data.length * max);
@@ -61,7 +62,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 			}
 		}
 		return values;
-	}, [data]);
+	}, [data, Boolean(mouse)]);
 
 	const closest = (() => {
 		/*
@@ -211,7 +212,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 										stroke={stroke}
 										fill={stroke}
 										d={`M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`}
-										strokeWidth={"10"}
+										strokeWidth={"8"}
 										strokeLinecap={"round"}
 										vectorEffect={"non-scaling-stroke"}
 									/>

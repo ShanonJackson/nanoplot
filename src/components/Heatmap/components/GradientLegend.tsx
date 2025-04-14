@@ -13,7 +13,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 export const GradientLegend = ({ position, alignment = "center", gradient, scalars, labels = true, ...rest }: Props) => {
 	const context = useGraph();
-	const column = useGraphColumn(context);
+	const column = useGraphColumn().column;
 
 	const ticks = scalars.map((tick, i, ticks) => {
 		if (typeof tick === "number") return { label: tick, left: MathUtils.scale(i, ticks.length - 1, 100) + "%" };

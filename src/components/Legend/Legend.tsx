@@ -13,7 +13,6 @@ type Props = {
 export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 	const context = useGraph();
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
-	const column = useGraphColumn(context);
 	const {
 		viewbox,
 		domain,
@@ -33,7 +32,6 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 				alignment === "end" && "justify-end",
 				alignment === "center" && "justify-center",
 			)}
-			style={position === "top" || position === "bottom" ? { gridColumn: column } : undefined}
 		>
 			{context.data
 				.map((dp) => ({ ...dp, group: dp.group ?? "" }))

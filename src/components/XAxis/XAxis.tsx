@@ -15,7 +15,6 @@ type Props = {
 
 export const XAxis = ({ display, title, description }: Props) => {
 	const context = useGraph();
-	const column = useGraphColumn(context);
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
 	const labels = context.domain.x.map(({ tick, coordinate }) => {
@@ -31,7 +30,7 @@ export const XAxis = ({ display, title, description }: Props) => {
 	const breakpoint = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].find((bp) => bp >= characters);
 
 	return (
-		<Graph.Row className={"xaxis items-center relative pt-2 text-xs font-normal select-none"} style={{ gridColumn: column }}>
+		<Graph.Row className={"xaxis items-center relative pt-2 text-xs font-normal select-none"}>
 			<div className={"xaxis__ticks flex relative"}>
 				{labels.map(({ label }, i) => {
 					return (

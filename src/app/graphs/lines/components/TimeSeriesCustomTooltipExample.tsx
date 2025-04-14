@@ -40,7 +40,6 @@ export const TimeSeriesCustomTooltipExample = () => {
 					});
 					const percents = newData.map((line) => {
 						return line.data.find((point) => {
-							console.log({ px: point.x, x, pxt: point.x.getTime(), xt: x.getTime() });
 							return point.x.getTime() === x.getTime();
 						})?.percent;
 					});
@@ -130,7 +129,6 @@ export const TimeSeriesCustomTooltipExample = () => {
 					});
 					const percents = newData.map((line) => {
 						return line.data.find((point) => {
-							console.log({ px: point.x, x, pxt: point.x.getTime(), xt: x.getTime() });
 							return point.x.getTime() === x.getTime();
 						})?.percent;
 					});

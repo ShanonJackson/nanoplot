@@ -8,7 +8,8 @@ const decoder = new TextDecoder();
 export const CurveUtils = {
 	linear: (coords: Array<{ x: number; y: number }>): string => {
 		/*
-			This code is essentially just .map .join but about 5x the performance
+			This code is essentially just .map .join but about 5-10x the performance, (also outputs relative path syntax)
+			I.E coords.map(({x, y}, i) => `${i === 0 ? 'M' : 'L'} ${x} ${y}`).join(' ')
 		*/
 		if (coords.length === 0) return "";
 		const buffer = new Uint8Array(coords.length * 16);

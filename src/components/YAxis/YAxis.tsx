@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import { GraphContext, useDataset, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { MathUtils } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
@@ -13,10 +13,13 @@ type Props = {
 	title?: ReactNode;
 	display?: (tick: string | number | Date) => ReactNode;
 	description?: ReactNode;
+	position?: "top" | "bottom" | "left" | "right";
+	dataset?: string /* dataset property key */;
 };
 
-export const YAxis = ({ title, description, display }: Props) => {
+export const YAxis = ({ title, description, display, dataset, position = "left" }: Props) => {
 	const context = useGraph();
+	const { domain } = useDataset(dataset);
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
 		<Graph.Column className={"yaxis flex relative text-xs font-normal select-none"}>
@@ -29,7 +32,7 @@ export const YAxis = ({ title, description, display }: Props) => {
 				</div>
 			)}
 			<div className={"yaxis__ticks mr-2"}>
-				{context.domain.y.map(({ tick, coordinate }, i) => {
+				{domain.y.map(({ tick, coordinate }, i) => {
 					const label = (() => {
 						if (display) return display(tick);
 						if (typeof tick === "number") return formatter.format(tick);
@@ -54,18 +57,37 @@ export const YAxis = ({ title, description, display }: Props) => {
 	);
 };
 
-YAxis.context = (ctx: GraphContext, props: Props) => {
+YAxis.context = (ctx: GraphContext, props: Props): GraphContext => {
 	return {
 		...ctx,
 		layout: {
 			...ctx.layout,
 			rows: ctx.layout.rows,
-			columns: "min-content " + ctx.layout.columns,
+			columns: props.position === "right" ? ctx.layout.columns + " min-content" : "min-content " + ctx.layout.columns,
 		},
-		domain: {
-			...ctx.domain,
-			x: ctx.domain.x,
-			y: DomainUtils.y.ticks(ctx, props.ticks),
-		},
+		domain: props.dataset
+			? ctx.domain
+			: {
+					...ctx.domain,
+					x: ctx.domain.x,
+					y: DomainUtils.y.ticks(ctx, props.ticks),
+				},
+		datasets: Object.fromEntries(
+			Object.entries(ctx.datasets).map(([datasetId, dataset]) => {
+				if (datasetId === props.dataset)
+					return [
+						datasetId,
+						{
+							...dataset,
+							domain: {
+								...dataset.domain,
+								x: dataset.domain.x,
+								y: DomainUtils.y.ticks({ viewbox: ctx.viewbox, data: dataset.data }, props.ticks),
+							},
+						},
+					];
+				return [datasetId, dataset];
+			}),
+		),
 	};
 };
