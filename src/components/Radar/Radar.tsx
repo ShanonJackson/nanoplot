@@ -51,7 +51,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 
 	return (
 		<>
-			<svg className={cx("radar h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
+			<svg className={cx("h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
 				<filter id={pointGlowId} filterUnits="userSpaceOnUse">
 					<feDropShadow dx="0" dy="0" stdDeviation="20" floodColor="white" floodOpacity="1" />
 				</filter>
