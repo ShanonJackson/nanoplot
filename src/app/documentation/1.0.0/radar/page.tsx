@@ -105,7 +105,7 @@ const MOCK_DATA = [
 						if (val.href) {
 							return (
 								<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
-									{val.tag === "code" ? <Code>{val.value}</Code> : val.value}
+									{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
 								</a>
 							);
 						}
