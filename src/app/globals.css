@@ -12,3 +12,9 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.25;
 }
 
+code {
+    background: #818b981f;
+    border-radius: 0.2em;
+    padding: 0.2em;
+}
+

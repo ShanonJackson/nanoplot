@@ -86,6 +86,7 @@
 	},
 	"devDependencies": {
 		"@codesandbox/sandpack-react": "^2.20.0",
+		"@codesandbox/sandpack-themes": "^2.0.21",
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
 		"@happy-dom/global-registrator": "^15.11.7",
 		"@number-flow/react": "^0.5.5",
