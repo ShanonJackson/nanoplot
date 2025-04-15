@@ -10,7 +10,7 @@ type Props<T extends Record<string, unknown>> = {
 
 export const DocumentationTable = <T extends Record<string, unknown>>({ columns, data, renderers }: Props<T>) => {
 	return (
-		<table className={"w-full text-neutral-700 dark:text-neutral-300"}>
+		<table className={"w-full my-6 text-neutral-700 dark:text-neutral-100"}>
 			<thead>
 				<tr>
 					{columns.map((col, i) => (
