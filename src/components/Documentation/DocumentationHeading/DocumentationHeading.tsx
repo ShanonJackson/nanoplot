@@ -10,11 +10,14 @@ export const DocumentationHeading = ({ level = 2, children }: Props) => {
 	const Tag: `h${1 | 2 | 3}` = `h${level}`;
 	return (
 		<div
-			className={cx(`flex items-center gap-1 group relative my-2`, {
-				"text-3xl": level === 1,
-				"text-2xl": level === 2,
-				"text-lg": level === 3,
-			})}
+			className={cx(
+				`flex items-center gap-1 group relative text-neutral-700 dark:text-neutral-100 font-semibold leading-tight tracking-wide`,
+				{
+					"text-3xl mb-4": level === 1,
+					"text-2xl mt-12 mb-4": level === 2,
+					"text-lg mt-4 mb-2": level === 3,
+				},
+			)}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

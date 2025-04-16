@@ -11,10 +11,14 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	return (
 		<SandpackLibrary
 			{...props}
+			key={isLight.toString()}
 			theme={isLight ? "light" : "dark"}
 			options={{
 				...props.options,
-				externalResources: ["https://unpkg.com/@tailwindcss/browser@4.0.12"],
+				externalResources: [
+					"https://unpkg.com/@tailwindcss/browser@4.0.12",
+					`http://localhost:3000/sandpack-${isLight ? "light" : "dark"}-global.css`,
+				],
 			}}
 		/>
 	);
