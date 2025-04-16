@@ -3,14 +3,18 @@ import * as React from "react";
 import { DocumentationNote } from "../../../../components/Documentation/DocumentationNote/DocumentationNote";
 import { DocumentationTable } from "../../../../components/Documentation/DocumentationTable/DocumentationTable";
 import { DocumentationHeading } from "../../../../components/Documentation/DocumentationHeading/DocumentationHeading";
+import { DocumentationParagraph } from "../../../../components/Documentation/DocumentationParagraph/DocumentationParagraph";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
-import { useTheme } from "../../../../hooks/use-theme";
+import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 
 export default function Page() {
-	const theme = useTheme();
 	return (
-		<div className={"p-8"}>
+		<div className={"p-4 md:p-8"}>
 			<DocumentationHeading level={1}>Radar Chart</DocumentationHeading>
+			<DocumentationParagraph>
+				Radar charts are ideal for comparing multivariate data across shared categories. This chart helps clearly highlight patterns
+				and gaps between datasets at a glance.
+			</DocumentationParagraph>
 			<Sandpack
 				template="react"
 				options={{
@@ -22,8 +26,7 @@ export default function Page() {
 				}}
 				// Consume dependencies as usual
 				files={{
-					"App.js": `
-import { Radar } from "nanoplot/Radar";
+					"App.js": `import { Radar } from "nanoplot/Radar";
 import { Graph } from "nanoplot/Graph";
 
 export default () => {
@@ -38,7 +41,7 @@ export default () => {
 
 const MOCK_DATA = [
 	{
-		name: "Jasons Progress",
+		name: "Jason's Progress",
 		stroke: "#11ACAE",
 		data: [
 			{ x: "Fighting", y: 70 },
@@ -63,49 +66,82 @@ const MOCK_DATA = [
 `,
 				}}
 			/>
-			<DocumentationNote>
-				Radar graphs are best used for comparing multiple variables across categories with a shared scale, i.e. performance metrics
-				or feature comparisons.
-			</DocumentationNote>
+
 			<DocumentationHeading>Props</DocumentationHeading>
 			<DocumentationTable
-				columns={["Name", "Description", "Type", "Required"]}
-				data={data}
+				columns={["Name", "Description", "Type", "Required", "Default"]}
+				data={[
+					{
+						Name: { value: "loading", href: "/", tag: "code" },
+						Description: "Displays a loading skeleton",
+						Type: "boolean",
+						Required: "No",
+						Default: "-",
+					},
+					{
+						Name: { value: "scalars", href: "", tag: "code" },
+						Description: "Specifies the values for chart rings",
+						Type: "number[]",
+						Required: "No",
+						Default: "[0, 20, 40, 60, 80, 100]",
+					},
+					{
+						Name: { value: "className", href: "", tag: "code" },
+						Description: "Applies a custom class",
+						Type: "string",
+						Required: "No",
+						Default: "-",
+					},
+					{
+						Name: { value: "labels", href: "", tag: "code" },
+						Description: "Displays axis labels",
+						Type: "boolean",
+						Required: "No",
+						Default: "true",
+					},
+				]}
 				renderers={{
-					Name: (val) => (
-						<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
-							{val.tag === "code" ? <code>{val.value}</code> : val.value}
-						</a>
-					),
-					Type: (val) => (val.tag === "code" ? <code>{val.value}</code> : val.value),
+					Name: (val) => {
+						if (val.href) {
+							return (
+								<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
+									{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
+								</a>
+							);
+						}
+						return val.tag === "code" ? <Code>{val.value}</Code> : val.value;
+					},
+					Type: (val) => <Code>{val}</Code>,
+					Default: (val) => <Code>{val}</Code>,
 				}}
+			/>
+			<DocumentationNote>All values are expected to be on a shared scale for meaningful comparison across axes.</DocumentationNote>
+			<DocumentationHeading>Styling</DocumentationHeading>
+			<DocumentationParagraph>
+				Custom styling may be applied by targeting the class names listed below. Each corresponds to a specific element within the
+				graph structure, allowing for flexible theming and style overrides.
+			</DocumentationParagraph>
+			<DocumentationTable
+				columns={["Class Name", "Element"]}
+				data={[
+					{
+						"Class Name": "BEM Class",
+						Element: "Which element the class targets.",
+					},
+					{
+						"Class Name": "BEM Class",
+						Element: "Which element the class targets.",
+					},
+					{
+						"Class Name": "BEM Class",
+						Element: "Which element the class targets.",
+					},
+					{
+						"Class Name": "BEM Class",
+						Element: "Which element the class targets.",
+					},
+				]}
 			/>
 		</div>
 	);
 }
-const data = [
-	{
-		Name: { value: "loading", href: "/graphs/radar", tag: "code" },
-		Description: "Displays a loading skeleton",
-		Type: { value: "boolean", tag: "code" },
-		Required: "No",
-	},
-	{
-		Name: { value: "scalars", href: "/graphs/radar", tag: "code" },
-		Description: "Specifies the values for chart rings",
-		Type: { value: "boolean", tag: "code" },
-		Required: "No",
-	},
-	{
-		Name: { value: "className", href: "/graphs/radar", tag: "code" },
-		Description: "Applies a custom class",
-		Type: { value: "boolean", tag: "code" },
-		Required: "No",
-	},
-	{
-		Name: { value: "labels", href: "/graphs/radar", tag: "code" },
-		Description: "Displays axis labels",
-		Type: { value: "boolean", tag: "code" },
-		Required: "No",
-	},
-];
