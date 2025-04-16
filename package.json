@@ -1,6 +1,6 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.41",
+	"version": "0.0.43",
 	"private": false,
 	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"exports": {
@@ -78,6 +78,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"build:library": "bun run build:tailwind && bun run esbuild.js && tsc --p ./tsconfig.typings.json && bun run ./scripts/post-build.js",
+		"prepublish": "bun run build:library",
 		"build:tailwind": "npx tailwindcss -c tailwind-library.config.ts -i ./src/styles/library-global.css -o ./dist/index.css",
 		"start": "next start",
 		"test": "bun test --watch",

@@ -11,8 +11,8 @@ type MenuItem = {
 export const DocumentationNavigation = () => {
 	/* GPT Generated */
 	return (
-		<div className="w-64 border-r border-gray-200 dark:border-gray-800 h-screen overflow-y-auto bg-white dark:bg-gray-950">
-			<nav className="py-2">
+		<div className="w-[220px] mr-[22px]">
+			<nav className="fixed top-[65px] w-[220px] py-2 border-r border-gray-200 dark:border-gray-800 h-screen overflow-y-auto bg-white dark:bg-gray-950">
 				{documentationNavigation.map((section, sectionIndex) => (
 					<div key={sectionIndex} className="mb-4">
 						{section.title && (
@@ -23,7 +23,7 @@ export const DocumentationNavigation = () => {
 								<DocumentationNavigationMenuItem
 									key={itemIndex}
 									item={item}
-									defaultOpen={sectionIndex === 0 && itemIndex === 1} // Open "About Stripe payments" by default
+									defaultOpen={sectionIndex === 0 && itemIndex === 1}
 								/>
 							))}
 						</ul>

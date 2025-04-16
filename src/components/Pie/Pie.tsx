@@ -97,7 +97,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 			const label = labels && (
 				<>
 					<path
-						className={`stroke-[5] fill-transparent group-hover:stroke-[15] transform origin-center [rotate:180deg] pie__segment-${segment.name}-path`}
+						className={`stroke-[5] fill-transparent group-hover:stroke-[15] [rotate:180deg] transform origin-center pie__segment-${segment.name}-path`}
 						key={segment.name}
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
@@ -192,7 +192,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 							<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
 								{path}
 							</g>
-							<g className={"transform origin-center rotate-180 invisible @[width:400px]:!visible "}>{label}</g>
+							<g className={"transform origin-center [rotate:180deg] invisible @[width:400px]:!visible "}>{label}</g>
 						</g>
 						{donut && (
 							<mask id={maskId}>

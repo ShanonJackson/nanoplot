@@ -23,6 +23,13 @@ export const Href = {
 		["V1_0_0"]: {
 			INDEX: "/documentation/1.0.0",
 			GETTING_STARTED: "/documentation/1.0.0/getting-started",
+			GRAPHS: {
+				LINES: {
+					INDEX: "/documentation/1.0.0/lines",
+					PLAYGROUND: "/documentation/1.0.0/lines/playground",
+					TOOLTIP: "/documentation/1.0.0/lines/tooltip",
+				},
+			},
 		},
 	},
 };

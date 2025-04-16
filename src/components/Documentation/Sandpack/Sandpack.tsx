@@ -7,11 +7,11 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	/* No SSR / Hydration issues */
 	const mounted = useMounted();
 	if (!mounted) return null;
-	const isDarkMode = document.cookie.includes("theme=dark");
+	const isLight = document.cookie.includes("theme=light");
 	return (
 		<SandpackLibrary
 			{...props}
-			theme={isDarkMode ? "dark" : "light"}
+			theme={isLight ? "light" : "dark"}
 			options={{
 				...props.options,
 				externalResources: ["https://unpkg.com/@tailwindcss/browser@4.0.12"],

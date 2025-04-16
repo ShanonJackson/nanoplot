@@ -15,11 +15,9 @@ export default function Page() {
 					options={{
 						editorHeight: 500,
 					}}
-					// Set the dependencies; for example, this is a private package from GitHub packages
 					customSetup={{
-						dependencies: { nanoplot: "latest" },
+						dependencies: { nanoplot: "0.0.43" },
 					}}
-					// Consume dependencies as usual
 					files={{
 						"App.js": `import {Pie} from "nanoplot/Pie";
 import {Graph} from "nanoplot/Graph";
@@ -57,7 +55,7 @@ export default function App() {
 		</div>
 	);
 };
-						`,
+`,
 					}}
 				/>
 			</div>

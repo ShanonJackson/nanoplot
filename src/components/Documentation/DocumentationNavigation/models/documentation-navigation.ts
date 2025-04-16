@@ -6,13 +6,14 @@ type MenuItem = {
 	children?: MenuItem[];
 };
 
+const Hrefs = Href.DOCUMENTATION.V1_0_0;
 export const documentationNavigation: Array<{ title: string; items: MenuItem[] }> = [
 	{
 		title: "",
 		items: [
 			{
 				title: "Get Started",
-				href: Href.DOCUMENTATION.V1_0_0.GETTING_STARTED,
+				href: Hrefs.GETTING_STARTED,
 			},
 		],
 	},
@@ -29,11 +30,15 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 				children: [
 					{
 						title: "Overview",
-						href: "#",
+						href: Hrefs.GRAPHS.LINES.INDEX,
 					},
 					{
 						title: "Lines.Tooltip",
-						href: "#",
+						href: Hrefs.GRAPHS.LINES.TOOLTIP,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.LINES.PLAYGROUND,
 					},
 				],
 			},

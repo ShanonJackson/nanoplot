@@ -55,12 +55,6 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 	});
 
 	const setDefaults = <T extends Pick<GraphContext, "data" | "colors" | "domain">>(dataset: T): T => {
-		console.log(
-			"Y",
-			dataset.domain.y.length === 0,
-			DomainUtils.y.ticks({ data: dataset.data, viewbox: { x: X_SCALE, y: Y_SCALE } }),
-			dataset.domain.y,
-		);
 		return {
 			...dataset,
 			domain: {
@@ -100,7 +94,6 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 						}),
 			datasets: Object.fromEntries(
 				Object.entries("datasets" in dataset ? dataset["datasets"] : {}).map(([datasetId, dctx]) => {
-					console.log(setDefaults(dctx));
 					return [datasetId, setDefaults(dctx)];
 				}),
 			),
