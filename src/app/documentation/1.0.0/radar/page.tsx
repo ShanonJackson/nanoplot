@@ -118,29 +118,50 @@ const MOCK_DATA = [
 			<DocumentationNote>All values are expected to be on a shared scale for meaningful comparison across axes.</DocumentationNote>
 			<DocumentationHeading>Styling</DocumentationHeading>
 			<DocumentationParagraph>
-				Custom styling may be applied by targeting the class names listed below. Each corresponds to a specific element within the
-				graph structure, allowing for flexible theming and style overrides.
+				Custom styling can be applied by targeting the class names below. Each class corresponds to a specific element for precise
+				theming and overrides.
 			</DocumentationParagraph>
 			<DocumentationTable
 				columns={["Class Name", "Element"]}
 				data={[
 					{
-						"Class Name": "BEM Class",
-						Element: "Which element the class targets.",
+						"Class Name": "radar__data-fill",
+						Element: "Filled polygon showing the dataset",
 					},
 					{
-						"Class Name": "BEM Class",
-						Element: "Which element the class targets.",
+						"Class Name": "radar__data-point",
+						Element: "Each visible point of the data shape",
 					},
 					{
-						"Class Name": "BEM Class",
-						Element: "Which element the class targets.",
+						"Class Name": "radar__data-point-glow",
+						Element: "Drop shadow behind each data point",
 					},
 					{
-						"Class Name": "BEM Class",
-						Element: "Which element the class targets.",
+						"Class Name": "radar__axis-label",
+						Element: "Labels for each axis/category around the outer ring",
+					},
+					{
+						"Class Name": "radar__axis-dot",
+						Element: "Small dot next to each axis label on the outer ring",
+					},
+					{
+						"Class Name": "radar__tick-label",
+						Element: "Numeric scale values shown at each ring level",
+					},
+					{
+						"Class Name": "radar__ring-odd",
+						Element: "Background rings",
+					},
+					{
+						"Class Name": "radar__ring-even",
+						Element: "Alternate background rings",
+					},
+					{
+						"Class Name": "radar__wedge",
+						Element: "Hoverable wedge-shaped segment between axes",
 					},
 				]}
+				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
 		</div>
 	);
