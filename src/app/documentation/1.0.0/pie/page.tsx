@@ -10,10 +10,10 @@ import { DocumentationCode as Code } from "../../../../components/Documentation/
 export default function Page() {
 	return (
 		<div className={"p-4 md:p-8"}>
-			<DocumentationHeading level={1}>Radar Chart</DocumentationHeading>
+			<DocumentationHeading level={1}>Pie Chart</DocumentationHeading>
 			<DocumentationParagraph>
-				Radar charts are ideal for comparing multivariate data across shared categories. This chart helps clearly highlight patterns
-				and gaps between datasets at a glance.
+				Pie charts provide a quick, intuitive view of proportions, making it easy to compare the relative sizes of categories at a
+				glance.
 			</DocumentationParagraph>
 			<Sandpack
 				template="react"
@@ -26,14 +26,14 @@ export default function Page() {
 				}}
 				// Consume dependencies as usual
 				files={{
-					"App.js": `import { Radar } from "nanoplot/Radar";
+					"App.js": `import { Pie } from "nanoplot/Pie";
 import { Graph } from "nanoplot/Graph";
 
 export default () => {
 	return (
 		<div className={"h-[350px] w-[100%] m-auto dark:bg-black"}>
-			<Graph gap={{ top: 30 }} data={MOCK_DATA}>
-				<Radar />
+			<Graph data={MOCK_DATA}>
+				<Pie />
 			</Graph>
 		</div>
 	);
@@ -41,26 +41,24 @@ export default () => {
 
 const MOCK_DATA = [
 	{
-		name: "Jason's Progress",
-		stroke: "#11ACAE",
-		data: [
-			{ x: "Fighting", y: 70 },
-			{ x: "Farming", y: 8 },
-			{ x: "Supporting", y: 300 },
-			{ x: "Pushing", y: 90 },
-			{ x: "Versatility", y: 60 },
-		],
+		name: "elixir",
+		value: 333,
 	},
 	{
-		name: "Alex's Progress",
-		stroke: "#E63946",
-		data: [
-			{ x: "Fighting", y: 50 },
-			{ x: "Farming", y: 95 },
-			{ x: "Supporting", y: 60 },
-			{ x: "Pushing", y: 50 },
-			{ x: "Versatility", y: 90 },
-		],
+		name: "stylus",
+		value: 257,
+	},
+	{
+		name: "css",
+		value: 30,
+	},
+	{
+		name: "haskell",
+		value: 192,
+	},
+	{
+		name: "python",
+		value: 283,
 	},
 ];
 `,
@@ -79,11 +77,11 @@ const MOCK_DATA = [
 						Default: "false",
 					},
 					{
-						Name: { value: "scalars", href: "", tag: "code" },
-						Description: "Specifies the values for chart rings",
-						Type: "number[]",
+						Name: { value: "donut", href: "", tag: "code" },
+						Description: "Gives the chart a hollow centre",
+						Type: "boolean | number",
 						Required: "No",
-						Default: "[0, 20, 40, 60, 80, 100]",
+						Default: "false",
 					},
 					{
 						Name: { value: "className", href: "", tag: "code" },
@@ -98,6 +96,27 @@ const MOCK_DATA = [
 						Type: "boolean",
 						Required: "No",
 						Default: "true",
+					},
+					{
+						Name: { value: "glow", href: "", tag: "code" },
+						Description: "Adds a glow effect around the chart",
+						Type: "boolean",
+						Required: "No",
+						Default: "true",
+					},
+					{
+						Name: { value: "total", href: "", tag: "code" },
+						Description: "Sets a maximum value for a progress donut chart",
+						Type: "number",
+						Required: "No",
+						Default: "-",
+					},
+					{
+						Name: { value: "children", href: "", tag: "code" },
+						Description: "Custom content rendered within the donut centre",
+						Type: "ReactNode",
+						Required: "No",
+						Default: "-",
 					},
 				]}
 				renderers={{
@@ -115,54 +134,9 @@ const MOCK_DATA = [
 					Default: (val) => <Code>{val}</Code>,
 				}}
 			/>
-			<DocumentationNote>All values are expected to be on a shared scale for meaningful comparison across axes.</DocumentationNote>
-			<DocumentationHeading>Styling</DocumentationHeading>
-			<DocumentationParagraph>
-				Custom styling can be applied by targeting the class names below. Each class corresponds to a specific element for precise
-				theming and overrides.
-			</DocumentationParagraph>
-			<DocumentationTable
-				columns={["Class Name", "Element"]}
-				data={[
-					{
-						"Class Name": "radar__data-fill",
-						Element: "Filled polygon showing the dataset",
-					},
-					{
-						"Class Name": "radar__data-point",
-						Element: "Each visible point of the data shape",
-					},
-					{
-						"Class Name": "radar__data-point-glow",
-						Element: "Drop shadow behind each data point",
-					},
-					{
-						"Class Name": "radar__axis-label",
-						Element: "Labels for each axis/category around the outer ring",
-					},
-					{
-						"Class Name": "radar__axis-dot",
-						Element: "Small dot next to each axis label on the outer ring",
-					},
-					{
-						"Class Name": "radar__tick-label",
-						Element: "Numeric scale values shown at each ring level",
-					},
-					{
-						"Class Name": "radar__ring-odd",
-						Element: "Background rings",
-					},
-					{
-						"Class Name": "radar__ring-even",
-						Element: "Alternate background rings",
-					},
-					{
-						"Class Name": "radar__wedge",
-						Element: "Hoverable wedge-shaped segment between axes",
-					},
-				]}
-				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
-			/>
+			<DocumentationNote>
+				The <Code>total</Code> and <Code>children</Code> props are designed for use with donut charts.
+			</DocumentationNote>
 		</div>
 	);
 }
