@@ -53,7 +53,14 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 		<>
 			<svg className={cx("h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
 				<filter id={pointGlowId} filterUnits="userSpaceOnUse">
-					<feDropShadow dx="0" dy="0" stdDeviation="20" floodColor="white" floodOpacity="1" />
+					<feDropShadow
+						dx="0"
+						dy="0"
+						stdDeviation="20"
+						floodColor="white"
+						floodOpacity="1"
+						className={"radar__data-point-glow"}
+					/>
 				</filter>
 				<radialGradient id={radarDotId}>
 					<stop offset="30%" stopColor={"white"} stopOpacity={0.3} />
@@ -63,7 +70,10 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 					<stop offset="80%" stopColor={"white"} stopOpacity={0.06} />
 					<stop offset="100%" stopColor={"white"} stopOpacity={0.03} />
 				</radialGradient>
-				<path d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)} className={"fill-[#efefef] dark:fill-[#111111]"} />
+				<path
+					d={PathUtils.circleArc(viewbox.x / 2, viewbox.y / 2, radius)}
+					className={"radar__ring-odd fill-[#efefef] dark:fill-[#111111]"}
+				/>
 				<path
 					d={rings
 						.slice(0, isEmpty ? 2 : Infinity)
@@ -71,7 +81,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 						.join(" ")}
 					fillRule="evenodd"
 					className={
-						"fill-[#dfdfdf] dark:fill-[#1b1b1b] [vector-effect:non-scaling-stroke] stroke-1 stroke-gray-300 dark:stroke-[#2d2d2d]"
+						"radar__ring-even fill-[#dfdfdf] dark:fill-[#1b1b1b] [vector-effect:non-scaling-stroke] stroke-1 stroke-gray-300 dark:stroke-[#2d2d2d]"
 					}
 				/>
 				{isEmpty ? (
@@ -108,6 +118,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									key={index}
 									x={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * edges[index], 90).x}
 									y={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y + 135}
+									className={"radar__tick-label dark:fill-gray-400 [font-size-adjust:0.2]"}
 								>
 									{multiplier}
 								</text>
@@ -156,12 +167,18 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									<stop offset="80%" stopColor={filled} stopOpacity={0.3} />
 									<stop offset="100%" stopColor={filled} stopOpacity={0.2} />
 								</radialGradient>
-								<path d={glow} strokeOpacity="0" fillOpacity={0.5} filter={`url(#${pointGlowId})`} />
+								<path
+									d={glow}
+									strokeOpacity="0"
+									fillOpacity={0.5}
+									filter={`url(#${pointGlowId})`}
+									className={"radar__data-point"}
+								/>
 								<path
 									stroke={stroke}
 									d={path}
 									fill={`url(#${radarShapeId + i}`}
-									className={"stroke-[10] [fill-opacity:0.7]"}
+									className={"radar__data-fill stroke-[10] [fill-opacity:0.7]"}
 								/>
 							</React.Fragment>
 						);
@@ -190,7 +207,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									y={labelY}
 									fontSize={"50px"}
 									className={cx(
-										"dark:fill-gray-400 [font-size-adjust:0.12]",
+										"radar__axis-label dark:fill-gray-400 [font-size-adjust:0.12]",
 										side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
 										side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
 										side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
@@ -201,7 +218,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 								>
 									{points[i]}
 								</text>
-								<circle cx={x1} cy={y1} r={viewbox.x * 0.005} className={"fill-gray-500 dark:fill-white"} />
+								<circle cx={x1} cy={y1} r={viewbox.x * 0.005} className={"radar__axis-dot fill-gray-500 dark:fill-white"} />
 							</React.Fragment>
 						);
 					})}
@@ -210,7 +227,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 						<path
 							key={i}
 							className={
-								"[vector-effect:non-scaling-stroke] dark:fill-white [fill-opacity:0] [stroke-opacity:0] hover:[fill-opacity:0.2] "
+								"radar__wedge [vector-effect:non-scaling-stroke] dark:fill-white [fill-opacity:0] [stroke-opacity:0] hover:[fill-opacity:0.2]"
 							}
 							d={
 								PathUtils.describeArc(

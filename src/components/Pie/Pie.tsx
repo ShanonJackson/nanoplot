@@ -97,18 +97,14 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 			const label = labels && (
 				<>
 					<path
-						className={`stroke-[5] fill-transparent group-hover:stroke-[15] [rotate:180deg] transform origin-center pie__segment-${segment.name}-path`}
+						className={`stroke-[5] fill-transparent group-hover:stroke-[15] [rotate:180deg] transform origin-center pie__label-connector`}
 						key={segment.name}
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
 						}`}
 						stroke={String(segment.fill)}
 					/>
-					<g
-						className={cx(
-							`text-7xl font-bold pointer-events-auto transform origin-center [rotate:180deg] pie__segment-${segment.name}-label`,
-						)}
-					>
+					<g className={cx(`text-7xl font-bold pointer-events-auto transform origin-center [rotate:180deg] pie__label`)}>
 						<text
 							aria-label={`${segment.name}-label`}
 							y={endLabelLine.y}
@@ -131,25 +127,23 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 			);
 
 			const path = (
-				<g className={"transform origin-center [rotate:180deg]"} key={i}>
-					<path
-						className={cx(
-							`transition-all duration-200 ease-in-out [scale:1] origin-center pointer-events-auto pie__segment-${segment.name}-path`,
-							!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:[scale:1.02]`,
-						)}
-						d={
-							PathUtils.describeArc(
-								CX,
-								CX,
-								PIE_RADIUS,
-								segment.previousTotalDegrees,
-								segment.previousTotalDegrees + segment.degrees,
-							) + ` L ${CX} ${CX} Z`
-						}
-						fill={String(segment.fill)}
-						data-degrees={segment.degrees}
-					/>
-				</g>
+				<path
+					className={cx(
+						`pie__segment transition-all duration-200 ease-in-out [scale:1] origin-center pointer-events-auto`,
+						!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:[scale:1.02]`,
+					)}
+					d={
+						PathUtils.describeArc(
+							CX,
+							CX,
+							PIE_RADIUS,
+							segment.previousTotalDegrees,
+							segment.previousTotalDegrees + segment.degrees,
+						) + ` L ${CX} ${CX} Z`
+					}
+					fill={String(segment.fill)}
+					data-degrees={segment.degrees}
+				/>
 			);
 			return {
 				id: segment.id,
@@ -160,40 +154,44 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 
 	return (
 		<>
-			{donut && <overlay.div className="absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
-			<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("h-full w-full [grid-area:graph]", className)}>
-				<g className={"transform origin-center [rotate:180deg]"}>
-					{donut && (
-						<mask id={maskId}>
-							<rect width="80%" height="80%" fill="white" />
-							<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
-						</mask>
-					)}
-					<path
-						className={cx(`origin-center fill-gray-200 dark:fill-dark-priority-100`)}
-						d={PathUtils.describeArc(CX, CX, PIE_RADIUS, 0, 360) + ` L ${CX} ${CX} Z`}
-						mask={donut ? `url(#${maskId})` : undefined}
-					/>
-				</g>
-			</svg>
+			{donut && <overlay.div className="pie__children absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
+			{total !== undefined && (
+				<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("pie__track h-full w-full [grid-area:graph]", className)}>
+					<g className={"transform origin-center [rotate:180deg]"}>
+						{donut && (
+							<mask id={maskId}>
+								<rect width="80%" height="80%" fill="white" />
+								<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
+							</mask>
+						)}
+						<path
+							className={cx(`origin-center fill-gray-200 dark:fill-dark-priority-100`)}
+							d={PathUtils.describeArc(CX, CX, PIE_RADIUS, 0, 360) + ` L ${CX} ${CX} Z`}
+							mask={donut ? `url(#${maskId})` : undefined}
+						/>
+					</g>
+				</svg>
+			)}
 			{paths.map(({ path, label, id }, i) => {
 				return (
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 						role={"img"}
 						className={cx(
-							"transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110 pie__segment",
+							"pie__segment-group group transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
 							className,
 						)}
 						key={i}
 					>
 						{glow && <use xlinkHref={`#${glowId + id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />}
-						<g className={"pie__slice group"}>
-							<g className={`pie__segment-${id}`} id={glowId + id} mask={donut ? `url(#${maskId})` : undefined}>
-								{path}
-							</g>
-							<g className={"transform origin-center [rotate:180deg] invisible @[width:400px]:!visible "}>{label}</g>
+						<g
+							className={"transform origin-center [rotate:180deg]"}
+							id={glowId + id}
+							mask={donut ? `url(#${maskId})` : undefined}
+						>
+							{path}
 						</g>
+						<g className={"transform origin-center [rotate:180deg] invisible @[width:400px]:!visible"}>{label}</g>
 						{donut && (
 							<mask id={maskId}>
 								<rect width="80%" height="80%" fill="white" />
