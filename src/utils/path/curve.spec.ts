@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import data from "./data.spec.json";
 import { CurveUtils } from "./curve";
+import * as fs from "node:fs";
 
 describe("CurveUtils", () => {
 	it("Should never take longer than 4ms on 50 runs for dataset.", () => {
@@ -12,6 +13,6 @@ describe("CurveUtils", () => {
 			return end - start;
 		});
 		const average = times.reduce((acc, curr) => acc + curr, 0) / times.length;
-		expect(average).toBeLessThan(1.25);
+		expect(average).toBeLessThan(0.001);
 	});
 });

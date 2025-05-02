@@ -51,6 +51,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 			})),
 		};
 	});
+
 	if (loading) return <LinesLoading />;
 	return (
 		<svg

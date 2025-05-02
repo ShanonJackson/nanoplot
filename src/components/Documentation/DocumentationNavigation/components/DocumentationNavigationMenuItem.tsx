@@ -3,6 +3,7 @@ import { ChevronDown } from "../../../../assets/Icons/ChevronDown";
 import { ChevronRight } from "../../../../assets/Icons/ChevronRight";
 import { cx } from "../../../../utils/cx/cx";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 type MenuItem = {
 	title: string;
@@ -20,9 +21,11 @@ export const DocumentationNavigationMenuItem = ({
 	defaultOpen?: boolean;
 }) => {
 	/* GPT Generated */
+	const pathname = usePathname();
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 	const hasChildren = item.children && item.children.length > 0;
 	const isLink = Boolean(item.href);
+	const isActive = isLink && pathname === item.href;
 
 	const content = (
 		<>
@@ -50,6 +53,7 @@ export const DocumentationNavigationMenuItem = ({
 							level === 0
 								? "text-blue-600 dark:text-blue-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-900"
 								: "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 pl-8",
+							isActive && "bg-gray-100 dark:bg-gray-900",
 						)}
 						onClick={() => hasChildren && setIsOpen(!isOpen)}
 					>
@@ -63,6 +67,7 @@ export const DocumentationNavigationMenuItem = ({
 							level === 0
 								? "text-blue-600 dark:text-blue-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-900"
 								: "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 pl-8",
+							isActive && "bg-gray-100 dark:bg-gray-900",
 						)}
 						onClick={() => hasChildren && setIsOpen(!isOpen)}
 					>

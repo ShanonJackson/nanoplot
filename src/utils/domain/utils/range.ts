@@ -19,8 +19,6 @@ export const range = (
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
 	const inverse = dimension === "y" ? "x" : "y";
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
-	
-
 
 	if (typeof data[0]?.data?.[0]?.[dimension] === "string" /* Categorical */) {
 		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension]))));
@@ -31,7 +29,6 @@ export const range = (
 		}));
 	}
 
-	
 	/* get min/max of dataset in stack safe AND performant way. i.e Math.min(...values) will stack overflow >129_000 or so */
 	let datasetMin = Infinity;
 	let datasetMax = -Infinity;
@@ -43,7 +40,7 @@ export const range = (
 			if (value > datasetMax) datasetMax = value;
 		}
 	}
-	
+
 	const min = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
 		if (!grouped || isDateTime) return datasetMin;
@@ -71,7 +68,7 @@ export const range = (
 	const max = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
 		if (!grouped || isDateTime) return datasetMax;
-		
+
 		/*
 			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
 			This is the case for stacked-bars.
@@ -96,10 +93,12 @@ export const range = (
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
+			console.log("to is max or auto");
 			if (isDateTime) {
 				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
 				return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
 			}
+			console.log("auto max for", { max });
 			return to === "max" ? max : DomainUtils.autoMaxFor(max);
 		}
 		if (typeof to === "number") return to;
@@ -158,6 +157,9 @@ export const range = (
 			const distance = mx - mn;
 			if (jumps === "auto") {
 				const digits = Math.max(0, Math.round(distance).toString().replace("-", "").length - 2);
+				if (dimension === "y") {
+					console.log({ digits, jumps, mx, mn });
+				}
 				const jump =
 					[
 						parseInt("1" + "0".repeat(digits + 1)) /* i.e for max of 50_000 min of 0 */,

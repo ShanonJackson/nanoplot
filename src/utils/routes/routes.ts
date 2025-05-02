@@ -29,6 +29,15 @@ export const Href = {
 					PLAYGROUND: "/documentation/1.0.0/lines/playground",
 					TOOLTIP: "/documentation/1.0.0/lines/tooltip",
 				},
+				SCATTER: {
+					INDEX: "/documentation/1.0.0/scatter",
+					PLAYGROUND: "/documentation/1.0.0/scatter/playground",
+					TOOLTIP: "/documentation/1.0.0/scatter/tooltip",
+				},
+				RADAR: {
+					INDEX: "/documentation/1.0.0/radar",
+					PLAYGROUND: "/documentation/1.0.0/radar/playground",
+				},
 			},
 		},
 	},

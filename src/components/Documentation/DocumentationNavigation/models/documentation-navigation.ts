@@ -26,7 +26,7 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 			},
 			{
 				title: "Lines",
-				href: "#",
+				href: Hrefs.GRAPHS.LINES.INDEX,
 				children: [
 					{
 						title: "Overview",
@@ -44,15 +44,19 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 			},
 			{
 				title: "Scatter",
-				href: "#",
+				href: Hrefs.GRAPHS.SCATTER.INDEX,
 				children: [
 					{
 						title: "Overview",
-						href: "#",
+						href: Hrefs.GRAPHS.SCATTER.INDEX,
 					},
 					{
 						title: "Scatter.Tooltip",
-						href: "#",
+						href: Hrefs.GRAPHS.SCATTER.TOOLTIP,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.SCATTER.PLAYGROUND,
 					},
 				],
 			},
@@ -62,7 +66,7 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 			},
 			{
 				title: "Radar",
-				href: "#",
+				href: Hrefs.GRAPHS.RADAR.INDEX,
 			},
 			{
 				title: "Pie",

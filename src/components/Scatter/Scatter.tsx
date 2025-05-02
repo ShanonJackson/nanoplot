@@ -34,13 +34,14 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
 
-	const points = context.data.flatMap((d, i, set) => {
+	const points = context.data.flatMap((d, i) => {
 		return d.data.map(({ x, y }) => ({
 			x: xForValue(x),
 			y: yForValue(y),
 			stroke: d.stroke ?? context.colors[i] ?? context.colors.at(-1),
 		}));
 	});
+	console.log({ points });
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);
 
 	return (

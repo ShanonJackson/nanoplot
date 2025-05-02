@@ -8,16 +8,22 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	const mounted = useMounted();
 	if (!mounted) return null;
 	const isLight = document.cookie.includes("theme=light");
+	const domain = window.location.hostname;
 	return (
 		<SandpackLibrary
 			{...props}
+			template={"react"}
 			key={isLight.toString()}
 			theme={isLight ? "light" : "dark"}
+			customSetup={{
+				dependencies: { ...props.customSetup?.dependencies, nanoplot: "latest" },
+			}}
 			options={{
+				editorHeight: 500,
 				...props.options,
 				externalResources: [
 					"https://unpkg.com/@tailwindcss/browser@4.0.12",
-					`http://localhost:3000/sandpack-${isLight ? "light" : "dark"}-global.css`,
+					`${window.location.origin}/sandpack-${isLight ? "light" : "dark"}-global.css`,
 				],
 			}}
 		/>

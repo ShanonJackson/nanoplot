@@ -30,6 +30,7 @@ export const CurveUtils = {
 			const scaledX = (n * 100 + 0.5) | 0;
 			const intX = (scaledX / 100) | 0;
 			const fracX = scaledX % 100;
+
 			if (intX > 999) {
 				buffer[offset++] = 48 + ((intX / 1000) | 0);
 				buffer[offset++] = 48 + (((intX % 1000) / 100) | 0);

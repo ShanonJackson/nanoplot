@@ -9,60 +9,52 @@ import { DocumentationCode as Code } from "../../../../components/Documentation/
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8"}>
+		<div className={"p-4 md:p-8 max-w-[1500px]"}>
 			<DocumentationHeading level={1}>Radar Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Radar charts are ideal for comparing multivariate data across shared categories. This chart helps clearly highlight patterns
 				and gaps between datasets at a glance.
 			</DocumentationParagraph>
 			<Sandpack
-				template="react"
-				options={{
-					editorHeight: 500,
-				}}
-				// Set the dependencies; for example, this is a private package from GitHub packages
-				customSetup={{
-					dependencies: { nanoplot: "latest" },
-				}}
-				// Consume dependencies as usual
 				files={{
 					"App.js": `import { Radar } from "nanoplot/Radar";
 import { Graph } from "nanoplot/Graph";
 
-export default () => {
+export default function App() {
 	return (
 		<div className={"h-[350px] w-[100%] m-auto dark:bg-black"}>
-			<Graph gap={{ top: 30 }} data={MOCK_DATA}>
+			<Graph
+				data={[
+					{
+						name: "Jason's Progress",
+						stroke: "#11ACAE",
+						data: [
+							{ x: "Fighting", y: 70 },
+							{ x: "Farming", y: 8 },
+							{ x: "Supporting", y: 300 },
+							{ x: "Pushing", y: 90 },
+							{ x: "Versatility", y: 60 },
+						],
+					},
+					{
+						name: "Alex's Progress",
+						stroke: "#E63946",
+						data: [
+							{ x: "Fighting", y: 50 },
+							{ x: "Farming", y: 95 },
+							{ x: "Supporting", y: 60 },
+							{ x: "Pushing", y: 50 },
+							{ x: "Versatility", y: 90 },
+						],
+					},
+				]}
+			>
 				<Radar />
 			</Graph>
 		</div>
 	);
 };
 
-const MOCK_DATA = [
-	{
-		name: "Jason's Progress",
-		stroke: "#11ACAE",
-		data: [
-			{ x: "Fighting", y: 70 },
-			{ x: "Farming", y: 8 },
-			{ x: "Supporting", y: 300 },
-			{ x: "Pushing", y: 90 },
-			{ x: "Versatility", y: 60 },
-		],
-	},
-	{
-		name: "Alex's Progress",
-		stroke: "#E63946",
-		data: [
-			{ x: "Fighting", y: 50 },
-			{ x: "Farming", y: 95 },
-			{ x: "Supporting", y: 60 },
-			{ x: "Pushing", y: 50 },
-			{ x: "Versatility", y: 90 },
-		],
-	},
-];
 `,
 				}}
 			/>
