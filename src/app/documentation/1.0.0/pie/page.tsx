@@ -6,6 +6,7 @@ import { DocumentationHeading } from "../../../../components/Documentation/Docum
 import { DocumentationParagraph } from "../../../../components/Documentation/DocumentationParagraph/DocumentationParagraph";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
+import { JSX } from "react";
 
 export default function Page() {
 	return (
@@ -137,6 +138,46 @@ const MOCK_DATA = [
 			<DocumentationNote>
 				The <Code>total</Code> and <Code>children</Code> props are designed for use with donut charts.
 			</DocumentationNote>
+
+			<DocumentationHeading>Styling</DocumentationHeading>
+			<DocumentationParagraph>
+				Custom styling can be applied by targeting the class names below. Each class corresponds to a specific element for precise
+				theming and overrides.
+			</DocumentationParagraph>
+			<DocumentationTable
+				columns={["Class Name", "Element"]}
+				data={[
+					{
+						"Class Name": "pie__segment-group",
+						Element: "Wraps each pie segment and its corresponding label",
+					},
+					{
+						"Class Name": "pie__segment",
+						Element: "Each slice of the pie",
+					},
+					{
+						"Class Name": "pie__label",
+						Element: "The label of each segment",
+					},
+					{
+						"Class Name": "pie__label__connector",
+						Element: "The line connecting each segment to its label",
+					},
+					{
+						"Class Name": "pie__track",
+						Element: "Background track under the progress ring on a progress chart",
+					},
+					{
+						"Class Name": "pie__children",
+						Element: (
+							<>
+								The element that can be rendered in the center of a donut chart (using the <Code>children</Code> prop),
+							</>
+						),
+					},
+				]}
+				renderers={{ "Class Name": (val) => <Code>{val}</Code>, Element: (v: JSX.Element | string) => v }}
+			/>
 		</div>
 	);
 }
