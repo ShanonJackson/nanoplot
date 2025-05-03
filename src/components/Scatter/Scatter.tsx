@@ -2,7 +2,6 @@ import React from "react";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../utils/graph/graph";
 import { ScatterLoading } from "./components/ScatterLoading";
-import { ColorUtils } from "../../utils/color/color";
 import { PathUtils } from "../../utils/path/path";
 import { ScatterTooltip } from "./components/ScatterTooltip";
 import { useGraph } from "../../hooks/use-graph/use-graph";
@@ -57,6 +56,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 							strokeLinecap={"round"}
 							strokeLinejoin={"round"}
 							vectorEffect={"non-scaling-stroke"}
+							className={"scatter__points"}
 						/>
 					);
 				});
@@ -65,7 +65,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 				<path
 					strokeWidth={3}
 					strokeDasharray={"4,4"}
-					className={"stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
+					className={"scatter__trendline stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
 					d={PathUtils.trend(points, context.viewbox)}
 				/>
 			)}
