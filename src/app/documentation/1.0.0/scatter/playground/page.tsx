@@ -28,7 +28,6 @@ const MOCK_DATA = new Array(1000).fill(null).map(() => {
 export default function Page() {
 	const mounted = useMounted();
 	const [scatter, setScatter] = useState<ComponentProps<typeof Scatter>>({});
-	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true, vertical: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
@@ -38,7 +37,6 @@ export default function Page() {
 		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[40%_1fr] p-8"}>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
-				<LinesControlGroup state={line} onChange={setLine} />
 				<LegendControlGroup state={legend} onChange={setLegend} />
 				<GridLinesControlGroup state={gridline} onChange={setGridline} />
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />

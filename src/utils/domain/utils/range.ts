@@ -93,12 +93,10 @@ export const range = (
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
-			console.log("to is max or auto");
 			if (isDateTime) {
 				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
 				return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
 			}
-			console.log("auto max for", { max });
 			return to === "max" ? max : DomainUtils.autoMaxFor(max);
 		}
 		if (typeof to === "number") return to;
@@ -157,9 +155,6 @@ export const range = (
 			const distance = mx - mn;
 			if (jumps === "auto") {
 				const digits = Math.max(0, Math.round(distance).toString().replace("-", "").length - 2);
-				if (dimension === "y") {
-					console.log({ digits, jumps, mx, mn });
-				}
 				const jump =
 					[
 						parseInt("1" + "0".repeat(digits + 1)) /* i.e for max of 50_000 min of 0 */,
@@ -179,7 +174,9 @@ export const range = (
 						10,
 						11,
 					]
-						.map((jump) => distance / jump)
+						.map((jump) => {
+							return distance / jump;
+						})
 						.find((jump) => {
 							if (jump % 1 !== 0) return false;
 							return distance % jump === 0 && jump <= 11 && jump >= 5;

@@ -41,7 +41,6 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 			stroke: d.stroke ?? context.colors[i] ?? context.colors.at(-1),
 		}));
 	});
-	console.log({ points });
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);
 
 	return (
