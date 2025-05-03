@@ -86,7 +86,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 										d={chunkedPath}
 										stroke={stroke}
 										fill={"transparent"}
-										className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
+										className={cx("lines__stroke", disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 									/>
 								);
 							})
@@ -96,7 +96,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 									d={path}
 									stroke={stroke}
 									fill={"transparent"}
-									className={cx(disabled && "lines__stroke stroke-black dark:stroke-white [stroke-opacity:0.1]")}
+									className={cx("lines__stroke", disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 								/>
 								{filled && points[0] && (
 									<Line
@@ -129,6 +129,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 										strokeLinecap={"round"}
 										strokeLinejoin={"round"}
 										vectorEffect={"non-scaling-stroke"}
+										className={"lines__joints"}
 									/>
 								);
 							})}
