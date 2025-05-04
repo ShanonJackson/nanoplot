@@ -11,7 +11,7 @@ import { JSX } from "react";
 export default function Page() {
 	return (
 		<div className={"p-4 md:p-8"}>
-			<DocumentationHeading level={1}>Area Graph</DocumentationHeading>
+			<DocumentationHeading level={1}>Area Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				An area chart displays trends over time. In stacked versions, each series is layered to highlight cumulative trends and
 				combined totals.
@@ -177,13 +177,6 @@ export default () => {
 				columns={["Name", "Description", "Type", "Required", "Default"]}
 				data={[
 					{
-						Name: { value: "children", href: "", tag: "code" },
-						Description: "Custom SVG element rendered inside the graph",
-						Type: <Code>ReactNode</Code>,
-						Required: "No",
-						Default: "-",
-					},
-					{
 						Name: { value: "curve", href: "", tag: "code" },
 						Description: "Sets the curve type used to render the line path between data points",
 						Type: (
@@ -194,6 +187,13 @@ export default () => {
 						),
 						Required: "No",
 						Default: "'linear'",
+					},
+					{
+						Name: { value: "children", href: "", tag: "code" },
+						Description: "Custom SVG element rendered inside the graph",
+						Type: <Code>ReactNode</Code>,
+						Required: "No",
+						Default: "-",
 					},
 					{
 						Name: { value: "loading", href: "", tag: "code" },
