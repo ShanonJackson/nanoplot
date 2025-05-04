@@ -77,6 +77,7 @@ return (
 					],
 				},
 			]}
+			className={"dark"}
 		>
 			<Legend alignment={"end"} position={"top"} />
 			<YAxis />

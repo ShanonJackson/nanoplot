@@ -9,6 +9,7 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	if (!mounted) return null;
 	const isLight = document.cookie.includes("theme=light");
 	const domain = window.location.hostname;
+	const test = props.files;
 	return (
 		<SandpackLibrary
 			{...props}
@@ -17,6 +18,10 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 			theme={isLight ? "light" : "dark"}
 			customSetup={{
 				dependencies: { ...props.customSetup?.dependencies, nanoplot: "latest" },
+			}}
+			files={{
+				...(typeof props.files === "object" ? props.files : {}),
+				"theme.js": `document.body.classList.add("${isLight ? "light" : "dark"}");`,
 			}}
 			options={{
 				editorHeight: 500,
