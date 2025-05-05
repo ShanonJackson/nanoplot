@@ -66,6 +66,7 @@ export default () => {
 					}}
 				/>
 
+				<DocumentationNote>Bar charts are versatile and can support stacked bars for cumulative totals, 100% stacked bars to compare relative proportions, and differential bars showing positive and negative changes relative to an anchor value.</DocumentationNote>
 				<DocumentationHeading>Props</DocumentationHeading>
 				<DocumentationTable
 					columns={["Name", "Description", "Type", "Required", "Default"]}
@@ -105,21 +106,21 @@ export default () => {
 							Default: "50",
 						},
 						{
-							Name: { value: "radius", href: "", tag: "code" },
+							Name: { value: "radius", tag: "code" },
 							Description: "Radius of the bars as an angle (0-360)",
 							Type: "number",
 							Required: "No",
 							Default: "0",
 						},
 						{
-							Name: { value: "glow", href: "", tag: "code" },
+							Name: { value: "glow", tag: "code" },
 							Description: "Adds a glow effect around the bars",
 							Type: "boolean",
 							Required: "No",
 							Default: "false",
 						},
 						{
-							Name: { value: "children", href: "", tag: "code" },
+							Name: { value: "children", tag: "code" },
 							Description: "Custom element rendered within the chart",
 							Type: "ReactNode",
 							Required: "No",
