@@ -98,7 +98,7 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 							stroke={bar.stroke}
 							radius={bar.radius}
 							glow={glow}
-							className={"horizontal-bars__rect"}
+							className={"bars__bar"}
 						/>
 					);
 				})}
@@ -128,7 +128,7 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 					return (
 						<overlay.div
 							key={i}
-							className={"horizontal-bars__label @container-[size] absolute text-center"}
+							className={"bars__label @container-[size] absolute text-center"}
 							style={{
 								width,
 								height: Math.abs(height - (position === "above" ? 100 : 0)) + "%",
@@ -139,7 +139,7 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"horizontal-bars__label-text text-xs absolute",
+										"bars__label-text text-xs absolute",
 										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
 										position === "above" && "text-black dark:text-white bottom-0 left-[50%] transform -translate-x-1/2",
 										collision && "invisible",

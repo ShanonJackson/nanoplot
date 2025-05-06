@@ -88,7 +88,7 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 							radius={bar.radius}
 							glow={false}
 							horizontal={true}
-							className={"horizontal-bars__rect"}
+							className={"bars__bar"}
 						/>
 					);
 				})}
@@ -111,7 +111,7 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 					return (
 						<overlay.div
 							key={i}
-							className={"horizontal-bars__label @container-[size] absolute text-center"}
+							className={"bars__label @container-[size] absolute text-center"}
 							style={{
 								width,
 								height: height + "%",
@@ -126,7 +126,7 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"text-xs horizontal-bars__label-text absolute",
+										"text-xs bars__label-text absolute",
 										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
 										position === "above" && "top-[50%] left-2 transform -translate-y-1/2",
 										collision && "invisible",
