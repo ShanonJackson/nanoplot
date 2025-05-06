@@ -31,29 +31,7 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel
-				code={`
-<Graph
-	data={[
-		{
-			name: "Hours studed vs Grades",
-			data: MOCK_DATA.map((dp) => ({ y: dp.test_score, x: dp.hours_studied })),
-		},
-	]}
-	gap={{ top: 15, left: 15, right: 36, bottom: 15 }}
->
-	{legend.position === "top" && <Legend {...legend} />}
-	{legend.position === "left" && <Legend {...legend} />}
-	<YAxis {...yaxis} />
-	<GridLines {...gridline} />
-	<Scatter {...scatter} />
-	<Scatter.Tooltip tooltip={(point) => \`\${point.data.x} \${point.data.y}\`} />
-	{legend.position === "right" && <Legend {...legend} />}
-	<XAxis {...xaxis} />
-	{legend.position === "bottom" && <Legend {...legend} />}
-</Graph>
-`}
-			>
+			<GraphPanel>
 				<Graph
 					data={[
 						{
@@ -67,7 +45,7 @@ export default function Page() {
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis {...yaxis} />
 					<GridLines {...gridline} />
-					<Scatter {...scatter} />
+					<Scatter {...scatter} trendline={true} />
 					<Scatter.Tooltip tooltip={(point) => `${point.data.x} ${point.data.y}`} />
 					<Scatter.Labels />
 					{legend.position === "right" && <Legend {...legend} />}
