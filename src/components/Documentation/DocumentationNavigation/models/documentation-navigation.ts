@@ -62,15 +62,77 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 			},
 			{
 				title: "Bars",
-				href: "#",
+				href: Hrefs.GRAPHS.BARS.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.BARS.INDEX,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.BARS.PLAYGROUND,
+					},
+				],
+			},
+			{
+				title: "Pie",
+				href: Hrefs.GRAPHS.PIE.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.PIE.INDEX,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.PIE.PLAYGROUND,
+					},
+				],
+			},
+			{
+				title: "Area",
+				href: Hrefs.GRAPHS.AREA.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.AREA.INDEX,
+					},
+					{
+						title: "Area.Tooltip",
+						href: Hrefs.GRAPHS.AREA.TOOLTIP,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.AREA.PLAYGROUND,
+					},
+				],
 			},
 			{
 				title: "Radar",
 				href: Hrefs.GRAPHS.RADAR.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.RADAR.INDEX,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.RADAR.PLAYGROUND,
+					},
+				],
 			},
 			{
-				title: "Pie",
-				href: "#",
+				title: "Heatmap",
+				href: Hrefs.GRAPHS.HEATMAP.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.HEATMAP.INDEX,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.HEATMAP.PLAYGROUND,
+					},
+				],
 			},
 		],
 	},

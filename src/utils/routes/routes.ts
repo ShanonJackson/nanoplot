@@ -26,17 +26,34 @@ export const Href = {
 			GRAPHS: {
 				LINES: {
 					INDEX: "/documentation/1.0.0/lines",
-					PLAYGROUND: "/documentation/1.0.0/lines/playground",
 					TOOLTIP: "/documentation/1.0.0/lines/tooltip",
+					PLAYGROUND: "/documentation/1.0.0/lines/playground",
 				},
 				SCATTER: {
 					INDEX: "/documentation/1.0.0/scatter",
-					PLAYGROUND: "/documentation/1.0.0/scatter/playground",
 					TOOLTIP: "/documentation/1.0.0/scatter/tooltip",
+					PLAYGROUND: "/documentation/1.0.0/scatter/playground",
+				},
+				BARS: {
+					INDEX: "/documentation/1.0.0/bars",
+					PLAYGROUND: "/documentation/1.0.0/bars/playground",
+				},
+				PIE: {
+					INDEX: "/documentation/1.0.0/pie",
+					PLAYGROUND: "/documentation/1.0.0/pie/playground",
+				},
+				AREA: {
+					INDEX: "/documentation/1.0.0/area",
+					TOOLTIP: "/documentation/1.0.0/area/tooltip",
+					PLAYGROUND: "/documentation/1.0.0/area/playground",
 				},
 				RADAR: {
 					INDEX: "/documentation/1.0.0/radar",
 					PLAYGROUND: "/documentation/1.0.0/radar/playground",
+				},
+				HEATMAP: {
+					INDEX: "/documentation/1.0.0/heatmap",
+					PLAYGROUND: "/documentation/1.0.0/heatmap/playground",
 				},
 			},
 		},

@@ -8,8 +8,6 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	const mounted = useMounted();
 	if (!mounted) return null;
 	const isLight = document.cookie.includes("theme=light");
-	const domain = window.location.hostname;
-	const test = props.files;
 	return (
 		<SandpackLibrary
 			{...props}
@@ -17,17 +15,14 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 			key={isLight.toString()}
 			theme={isLight ? "light" : "dark"}
 			customSetup={{
-				dependencies: { ...props.customSetup?.dependencies, nanoplot: "latest" },
-			}}
-			files={{
-				...(typeof props.files === "object" ? props.files : {}),
-				"theme.js": `document.body.classList.add("${isLight ? "light" : "dark"}");`,
+				dependencies: { ...props.customSetup?.dependencies, nanoplot: "0.0.44" },
 			}}
 			options={{
 				editorHeight: 500,
 				...props.options,
 				externalResources: [
 					"https://unpkg.com/@tailwindcss/browser@4.0.12",
+					`${window.location.origin}/sandpack-${isLight ? "light" : "dark"}.js`,
 					`${window.location.origin}/sandpack-${isLight ? "light" : "dark"}-global.css`,
 				],
 			}}

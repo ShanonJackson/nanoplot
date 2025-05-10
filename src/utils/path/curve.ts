@@ -10,6 +10,7 @@ export const CurveUtils = {
 		/*
 			This code is essentially just .map .join but about 5-10x the performance, (also outputs relative path syntax)
 			I.E coords.map(({x, y}, i) => `${i === 0 ? 'M' : 'L'} ${x} ${y}`).join(' ')
+			This code is written in a way that assumes x/y coordinates are never > 4 digits. (9999)
 		*/
 		if (coords.length === 0) return "";
 		const buffer = new Uint8Array(coords.length * 16);
@@ -17,11 +18,10 @@ export const CurveUtils = {
 		let prevX = 0;
 		let prevY = 0;
 		for (let i = 0; i < coords.length; i++) {
-			const isFirst = i === 0;
 			const { x, y } = coords[i];
-			buffer[offset++] = isFirst ? 77 : 108; // 'M' or 'l'
-			const dx = isFirst ? x : x - prevX;
-			const dy = isFirst ? y : y - prevY;
+			buffer[offset++] = 108; // 'M' or 'l'
+			const dx = x - prevX;
+			const dy = y - prevY;
 			let n = dx;
 			if (n < 0) {
 				buffer[offset++] = 45; // '-'
@@ -83,7 +83,6 @@ export const CurveUtils = {
 			prevX = x;
 			prevY = y;
 		}
-		// Convert to string and fix first command
 		buffer[0] = 77; // Ensure first command is 'M'
 		return decoder.decode(buffer.subarray(0, offset));
 	},
