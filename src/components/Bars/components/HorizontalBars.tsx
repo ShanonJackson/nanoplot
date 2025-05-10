@@ -126,9 +126,9 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"text-xs bars__label-text absolute",
-										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
-										position === "above" && "top-[50%] left-2 transform -translate-y-1/2",
+										"bars__label-text text-xs absolute",
+										position === "center" && "top-[50%] left-[50%] [transform:translate(-50%,-50%)]",
+										position === "above" && "top-[50%] left-2 [transform:translate(0,-50%)]",
 										collision && "invisible",
 										breakpoint === 2 && collision && "@[width:2ch|height:1.25em]:!visible",
 										breakpoint === 4 && collision && "@[width:4ch|height:1.25em]:!visible",

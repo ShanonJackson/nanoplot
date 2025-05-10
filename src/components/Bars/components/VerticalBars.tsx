@@ -140,8 +140,9 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 								<span
 									className={cx(
 										"bars__label-text text-xs absolute",
-										position === "center" && "top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
-										position === "above" && "text-black dark:text-white bottom-0 left-[50%] transform -translate-x-1/2",
+										position === "center" && "top-[50%] left-[50%] [transform:translate(-50%,-50%)]",
+										position === "above" &&
+											"text-black dark:text-white bottom-0 left-[50%] [transform:translate(-50%,0)]",
 										collision && "invisible",
 										breakpoint === 2 && collision && "@[width:2ch|height:1.25em]:!visible",
 										breakpoint === 4 && collision && "@[width:4ch|height:1.25em]:!visible",

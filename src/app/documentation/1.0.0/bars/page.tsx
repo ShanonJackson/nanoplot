@@ -28,6 +28,11 @@ export default function Page() {
 						"App.js": `
 import { Bars } from "nanoplot/Bars";
 import { Graph } from "nanoplot/Graph";
+import { Legend } from "nanoplot/Legend";
+import { GridLines } from "nanoplot/GridLines";
+import { XAxis } from "nanoplot/XAxis";
+import { YAxis } from "nanoplot/YAxis";
+import "nanoplot/styles.css";
 
 export default () => {
 	return (
@@ -56,9 +61,25 @@ export default () => {
 					},
 				]}
 			>
-				<Bars />
+					<Legend position={"top"} />
+					<YAxis/>
+					<GridLines />
+					<Bars
+						horizontal={false}
+						labels={{
+							position: "above",
+							collision: true,
+							display: (v) => {
+								return new Intl.NumberFormat("en", {
+									notation: "compact",
+									compactDisplay: "short",
+									maximumFractionDigits: 2,
+								}).format(Number(v));
+							},
+						}}
+					/>
+					<XAxis/>
 			</Graph>
-
 		</div>
 	);
 };
@@ -66,7 +87,10 @@ export default () => {
 					}}
 				/>
 
-				<DocumentationNote>Bar charts are versatile and can support stacked bars for cumulative totals, 100% stacked bars to compare relative proportions, and differential bars showing positive and negative changes relative to an anchor value.</DocumentationNote>
+				<DocumentationNote>
+					Bar charts are versatile and can support stacked bars for cumulative totals, 100% stacked bars to compare relative
+					proportions, and differential bars showing positive and negative changes relative to an anchor value.
+				</DocumentationNote>
 				<DocumentationHeading>Props</DocumentationHeading>
 				<DocumentationTable
 					columns={["Name", "Description", "Type", "Required", "Default"]}
@@ -76,8 +100,9 @@ export default () => {
 							Description: "Adds chart labels and defines their position",
 							Type: (
 								<>
-									<Code>boolean</Code><br/>
-									| <Code>(value: string | number | Date) => string</Code><br/>|
+									<Code>boolean</Code>
+									<br />| <Code>(value: string | number | Date) ={">"} string</Code>
+									<br />|
 									<Code>{`{position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string;}`}</Code>
 								</>
 							),
@@ -159,7 +184,11 @@ export default () => {
 					data={[
 						{
 							"Class Name": "bars__bar",
-							Element: <>The <Code>rect</Code> element representing each bar</>,
+							Element: (
+								<>
+									The <Code>rect</Code> element representing each bar
+								</>
+							),
 						},
 						{
 							"Class Name": "bars__label",

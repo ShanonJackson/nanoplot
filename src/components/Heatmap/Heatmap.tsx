@@ -88,7 +88,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"text-xs horizontal-bars__label-text absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2",
+										"horizontal-bars__label-text text-xs absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)]",
 										collision && "invisible",
 										breakpoint === 2 && collision && "@[width:2ch|height:1.25em]:!visible",
 										breakpoint === 4 && collision && "@[width:4ch|height:1.25em]:!visible",

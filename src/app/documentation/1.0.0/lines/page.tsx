@@ -31,15 +31,16 @@ import { Lines } from "nanoplot/Lines";
 import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
 import { GridLines } from "nanoplot/GridLines";
-import "nanoplot/styles.css";
 import { Legend } from "nanoplot/Legend";
+import "nanoplot/styles.css";
 
-export default () => {
-return (
-<Graph
-			gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
-			interactions={{ hovered: ["New Users", "Registered Users"] }}
-			data={[
+export default function App() {
+	return (
+		<div className={"h-[70vh] w-[100%]"}>
+			<Graph
+				gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+				interactions={{ hovered: ["New Users", "Registered Users"] }}
+				data={[
 				{
 					name: "New Users",
 					stroke: "#FF4B4B",
@@ -76,23 +77,25 @@ return (
 						{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
 					],
 				},
-			]}
-			className={"dark"}
-		>
-			<Legend alignment={"end"} position={"top"} />
-			<YAxis />
-			<GridLines border horizontal vertical />
-			<Lines curve={"natural"} />
-			<Lines.Tooltip/>
-			<XAxis
-				ticks={{ from: "min - 1 months", jumps: "every 1 months" }}
-				display={(x) => {
-					const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-					if (typeof x === "number" || typeof x === "string") return null;
-					return months[x.getMonth()];
-				}}
-			/>
-		</Graph>)}
+				]}
+			>
+				<Legend alignment={"end"} position={"top"} />
+				<YAxis />
+				<GridLines border horizontal vertical />
+				<Lines curve={"natural"} />
+				<Lines.Tooltip/>
+				<XAxis
+					ticks={{ from: "min - 1 months", jumps: "every 1 months" }}
+					display={(x) => {
+						const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+						if (typeof x === "number" || typeof x === "string") return null;
+						return months[x.getMonth()];
+					}}
+				/>
+			</Graph>
+		</div>
+	)
+}
 `,
 				}}
 			/>

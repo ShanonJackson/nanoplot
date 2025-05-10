@@ -97,14 +97,16 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 			const label = labels && (
 				<>
 					<path
-						className={`stroke-[5] fill-transparent group-hover:stroke-[15] [rotate:180deg] transform origin-center pie__label-connector`}
+						className={
+							"pie__label-connector stroke-[5] fill-transparent group-hover:stroke-[15] [rotate:180deg] transform origin-center"
+						}
 						key={segment.name}
 						d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 							isRightAligned ? "l 100 0" : "l -100 0"
 						}`}
 						stroke={String(segment.fill)}
 					/>
-					<g className={cx(`text-7xl font-bold pointer-events-auto transform origin-center [rotate:180deg] pie__label`)}>
+					<g className={"pie__label text-7xl font-bold pointer-events-auto transform origin-center [rotate:180deg]"}>
 						<text
 							aria-label={`${segment.name}-label`}
 							y={endLabelLine.y}
