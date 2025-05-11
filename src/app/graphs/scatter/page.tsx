@@ -13,7 +13,6 @@ import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControl
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { Legend } from "../../../components/Legend/Legend";
 import { useMounted } from "../../../hooks/use-mounted";
-import { PopupNew } from "../../../components/PopupNew/PopupNew";
 
 export default function Page() {
 	const mounted = useMounted();

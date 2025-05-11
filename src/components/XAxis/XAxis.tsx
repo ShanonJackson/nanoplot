@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { DomainUtils } from "../../utils/domain/domain";
 import { MathUtils } from "../../utils/math/math";
@@ -48,18 +48,28 @@ export const XAxis = ({ display, title, description }: Props) => {
 								<React.Fragment key={i}>
 									<div
 										className={cx(
-											"xaxis__tick absolute top-0 -translate-x-1/2 text-gray-700 dark:text-gray-300 text-nowrap",
-											"rotate-[-60deg] translate-y-calc(-100% - 5px)",
-											breakpoint === 10 && "@[width:10ch]:!rotate-0",
-											breakpoint === 20 && "@[width:20ch]:!rotate-0",
-											breakpoint === 30 && "@[width:30ch]:!rotate-0",
-											breakpoint === 40 && "@[width:40ch]:!rotate-0",
-											breakpoint === 50 && "@[width:50ch]:!rotate-0",
-											breakpoint === 60 && "@[width:60ch]:!rotate-0",
-											breakpoint === 70 && "@[width:70ch]:!rotate-0",
-											breakpoint === 80 && "@[width:80ch]:!rotate-0",
-											breakpoint === 90 && "@[width:90ch]:!rotate-0",
-											breakpoint === 100 && "@[width:100ch]:!rotate-0",
+											"xaxis__tick absolute top-0 text-gray-700 dark:text-gray-300 text-nowrap",
+											"[writing-mode:vertical-lr] [transform:rotate(20deg)_translateX(50%)_scale(-1,_-1)_translateY(calc(-100%_-_5px))] [transform-origin:0_0]",
+											breakpoint === 10 &&
+												"@[width:10ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:10ch]:![writing-mode:unset]",
+											breakpoint === 20 &&
+												"@[width:20ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:20ch]:![writing-mode:unset]",
+											breakpoint === 30 &&
+												"@[width:30ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:30ch]:![writing-mode:unset]",
+											breakpoint === 40 &&
+												"@[width:40ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:40ch]:![writing-mode:unset]",
+											breakpoint === 50 &&
+												"@[width:50ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:50ch]:![writing-mode:unset]",
+											breakpoint === 60 &&
+												"@[width:60ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:60ch]:![writing-mode:unset]",
+											breakpoint === 70 &&
+												"@[width:70ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:70ch]:![writing-mode:unset]",
+											breakpoint === 80 &&
+												"@[width:80ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:80ch]:![writing-mode:unset]",
+											breakpoint === 90 &&
+												"@[width:90ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:90ch]:![writing-mode:unset]",
+											breakpoint === 100 &&
+												"@[width:100ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:100ch]:![writing-mode:unset]",
 										)}
 										style={{ left: `${x}%` }}
 									>

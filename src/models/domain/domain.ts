@@ -1,19 +1,20 @@
 export type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
 export type MinMax = "min" | "max";
+export type ISODuration = `P${string}`;
 export type Expression =
 	| "auto"
 	| "min"
 	| "max"
 	| `${MinMax} - ${number}`
 	| `${MinMax} - ${number}%`
-	| `${MinMax} - ${number} ${interval}`
+	| `${MinMax} - ${ISODuration}`
 	| `${MinMax} + ${number}%`
 	| `${MinMax} + ${number}`
-	| `${MinMax} + ${number} ${interval}`
+	| `${MinMax} + ${ISODuration}`
 	| number;
 type From = "auto" | Expression | number;
 type To = "auto" | Expression | number;
-type Jumps = "auto" | `every ${number} ${interval}` | number;
+type Jumps = "auto" | ISODuration | number;
 
 export type FromToJumps = {
 	from?: From;

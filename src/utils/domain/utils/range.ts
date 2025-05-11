@@ -5,6 +5,7 @@ import { DateDomain } from "../date-domain";
 import { DomainUtils } from "../domain";
 import { MathUtils } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
+import { getCeilDateFromDuration, getDateDomain, getDurationFromRange } from "./date-domain";
 
 export const range = (
 	{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
@@ -94,8 +95,10 @@ export const range = (
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
 			if (isDateTime) {
-				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
-				return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
+				const duration = getDurationFromRange(new Date(data[0].data[0][dimension]), new Date(data[0].data[1][dimension]));
+				return to === "auto"
+					? new Date(max)
+					: getCeilDateFromDuration(new Date(max), typeof jumps === "number" || jumps === "auto" ? duration : jumps);
 			}
 			return to === "max" ? max : DomainUtils.autoMaxFor(max);
 		}
@@ -123,8 +126,15 @@ export const range = (
 	const MIN = (() => {
 		if (from === "min" || from === "auto") {
 			if (isDateTime) {
-				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
-				return from === "auto" ? new Date(min) : DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
+				const duration = getDurationFromRange(new Date(data[0].data[0][dimension]), new Date(data[0].data[1][dimension]));
+				console.log("PARAMS", {
+					min: new Date(min),
+					duration,
+					jumps: typeof jumps === "number" || jumps === "auto" ? duration : jumps,
+				});
+				return from === "auto"
+					? new Date(min)
+					: getCeilDateFromDuration(new Date(min), typeof jumps === "number" || jumps === "auto" ? duration : jumps);
 			}
 			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: +MAX });
 		}
@@ -199,13 +209,16 @@ export const range = (
 		max === "max" -> end the graph at the ceiling date.
 		max === "max + 1 month" -> end the graph at the ceiling date + 1 month.
 	 */
-	const domain = DateDomain.domainFor({
+	const domain = getDateDomain({
 		min: new Date(MIN),
 		max: new Date(MAX),
-		jumps: jumps,
+		duration: jumps,
 	});
-	return domain.map((tick) => ({
+
+	const res = domain.map((tick) => ({
 		tick,
 		coordinate: MathUtils.scale(tick.getTime(), [new Date(MIN).getTime(), new Date(MAX).getTime()], [0, viewb]),
 	}));
+	console.log(res);
+	return res;
 };

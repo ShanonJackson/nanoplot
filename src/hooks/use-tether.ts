@@ -7,7 +7,7 @@ type Props = {
 	tetherRef: RefObject<Element | null>;
 	targetPosition?: Position;
 	tetherPosition?: Position;
-	offset?: { y: number };
+	offset?: { y: number; x: number };
 	boundingContainer?: React.RefObject<Element>;
 	onCollision?: (props: Collision) => Positions;
 };
@@ -33,50 +33,53 @@ const getXY = ({
 	tetherPosition: { side: tetherSide, alignment: tetherAlignment },
 	targetCoords: targetRect,
 	tetherCoords: tetherRect,
-	offset,
+	offset: { x: offsetX, y: offsetY },
 }: {
 	targetCoords: DOMRect;
 	tetherCoords: Pick<DOMRect, "width" | "height">;
 	tetherPosition: { side: "left" | "right" | "top" | "bottom" | "center"; alignment: "top" | "bottom" | "center" | "right" | "left" };
 	targetPosition: { side: "left" | "right" | "top" | "bottom" | "center"; alignment: "top" | "bottom" | "center" | "right" | "left" };
-	offset: number;
+	offset: { x: number; y: number };
 }): { left: number; top: number } => {
+	const { left: tleft, width: twidth, top: ttop, height: theight } = targetRect;
+	const { width, height } = tetherRect;
+
 	const x = (() => {
-		if (targetSide === "left") return targetRect.left;
-		if (targetSide === "right") return targetRect.left + targetRect.width;
-		if (targetAlignment === "left") return targetRect.left;
-		if (targetAlignment === "right") return targetRect.left + targetRect.width;
-		return targetRect.left + targetRect.width / 2;
+		if (targetSide === "left") return tleft;
+		if (targetSide === "right") return tleft + twidth;
+		if (targetAlignment === "left") return tleft;
+		if (targetAlignment === "right") return tleft + twidth;
+		return tleft + twidth / 2;
 	})();
 
 	const y = (() => {
-		if (targetSide === "top") return targetRect.top;
-		if (targetSide === "bottom") return targetRect.top + targetRect.height;
-		if (targetAlignment === "top") return targetRect.top;
-		if (targetAlignment === "bottom") return targetRect.top + targetRect.height;
-		if (targetAlignment === "center") return targetRect.top + targetRect.height / 2;
-		return targetRect.top + targetRect.width / 2;
+		if (targetSide === "top") return ttop;
+		if (targetSide === "bottom") return ttop + theight;
+		if (targetAlignment === "top") return ttop;
+		if (targetAlignment === "bottom") return ttop + theight;
+		if (targetAlignment === "center") return ttop + theight / 2;
+		return ttop + twidth / 2;
 	})();
 
 	const tetherXModifier = (() => {
 		if (tetherSide === "left") return 0;
-		if (tetherSide === "right") return -tetherRect.width;
+		if (tetherSide === "right") return -width;
 		if (tetherAlignment === "left") return 0;
-		if (tetherAlignment === "right") return -tetherRect.width;
-		return -tetherRect.width / 2;
+		if (tetherAlignment === "right") return -width;
+		return -width / 2;
 	})();
 
 	const tetherYModifier = (() => {
 		if (tetherSide === "top") return 0;
-		if (tetherSide === "bottom") return -tetherRect.height;
+		if (tetherSide === "bottom") return -height;
 		if (tetherAlignment === "top") return 0;
-		if (tetherAlignment === "bottom") return -tetherRect.height;
-		return -tetherRect.height / 2;
+		if (tetherAlignment === "bottom") return -height;
+		return -height / 2;
 	})();
 
 	return {
-		left: x + tetherXModifier + window.scrollX,
-		top: y + tetherYModifier + window.scrollY,
+		left: x + tetherXModifier + window.scrollX + offsetX,
+		top: y + tetherYModifier + window.scrollY - offsetY,
 	};
 };
 
@@ -128,15 +131,11 @@ export function useTether<T extends Element>({
 	tetherPosition = { alignment: "center", side: "bottom" },
 	targetRef,
 	tetherRef,
-	offset: { y } = { y: Y_OFFSET },
+	offset: { y, x } = { y: 0, x: 0 },
 	boundingContainer,
 	onCollision = flip,
 }: Props) {
 	const [positions, setPositions] = useState<Positions>({ tetherPosition, targetPosition });
-	useEffect(
-		() => setPositions({ tetherPosition, targetPosition }),
-		[tetherPosition?.side, tetherPosition?.alignment, targetPosition?.side, targetPosition?.alignment],
-	);
 	const [styles, setStyles] = useState<{ left?: number; top?: number; zIndex?: number; position?: "absolute" }>({});
 
 	const getPositionCollision = (collision: Collision) => {
@@ -156,7 +155,7 @@ export function useTether<T extends Element>({
 			tetherCoords: { width: tooltipWidth, height: tooltipHeight },
 			tetherPosition,
 			targetPosition,
-			offset: y,
+			offset: { y, x },
 		};
 		const initial = getXY(options);
 		const collision = {
@@ -174,7 +173,7 @@ export function useTether<T extends Element>({
 					: window.scrollY + document.documentElement.clientHeight),
 		};
 		const pos = getPositionCollision({ tetherPosition, targetPosition, collision });
-		const xy = getXY({ ...options, ...pos, offset: y });
+		const xy = getXY({ ...options, ...pos, offset: { y, x } });
 		const css = { zIndex: getZIndex(target), left: xy.left, top: xy.top, position: "absolute" } as const;
 		/* update if required */
 		if (styles.left !== css.left || styles.top !== css.top || styles.zIndex !== css.zIndex) {
@@ -187,5 +186,9 @@ export function useTether<T extends Element>({
 		window.addEventListener("resize", onCalculate, { passive: true });
 		return () => window.removeEventListener("resize", onCalculate);
 	}, []);
+	useEffect(
+		() => setPositions({ tetherPosition, targetPosition }),
+		[tetherPosition?.side, tetherPosition?.alignment, targetPosition?.side, targetPosition?.alignment],
+	);
 	return { styles, positions };
 }

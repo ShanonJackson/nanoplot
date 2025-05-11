@@ -1,58 +1,60 @@
-import React, { HTMLAttributes, JSX, Ref } from "react";
+import React, { ComponentProps, CSSProperties, forwardRef, ReactNode } from "react";
 import { cx } from "../../utils/cx/cx";
 import { Position } from "../../hooks/use-tether";
-import styles from "./Tooltip.module.scss";
 
-type Props = HTMLAttributes<HTMLDivElement> & {
-	target: Position;
-	border?: string /* border color */;
-	ref?: Ref<HTMLDivElement>;
+type Props = ComponentProps<"div"> & {
+	radius?: number;
+	border?: string;
+	background?: string;
+	target?: Position;
+	children?: ReactNode;
 };
 
-export const Popup = ({ ref, target: { side, alignment }, border, children, ...rest }: Props) => {
-	const transform = (() => {
-		if (alignment === "left") return "translate(-10%, 0)";
-		if (alignment === "right") return "translate(10%, 0)";
-		if (alignment === "top") return "translate(0, -10%)";
-		if (alignment === "bottom") return "translate(0, 10%)";
-	})();
-
-	const tooltipPositionStyles = (() => {
-		if (side === "top" && alignment === "center") return styles.innerTopCenter;
-		if (side === "top" && alignment === "left") return styles.innerTopLeft;
-		if (side === "top" && alignment === "right") return styles.innerTopRight;
-		if (side === "bottom" && alignment === "center") return styles.innerBottomCenter;
-		if (side === "bottom" && alignment === "left") return styles.innerBottomLeft;
-		if (side === "bottom" && alignment === "right") return styles.innerBottomRight;
-		if (side === "left" && alignment === "center") return styles.innerLeftCenter;
-		if (side === "left" && alignment === "top") return styles.innerLeftTop;
-		if (side === "left" && alignment === "bottom") return styles.innerLeftBottom;
-		if (side === "right" && alignment === "center") return styles.innerRightCenter;
-		if (side === "right" && alignment === "top") return styles.innerRightTop;
-		if (side === "right" && alignment === "bottom") return styles.innerRightBottom;
-	})();
-
-	const innerStyle = (() => {
-		if (side === "top") return styles.innerTop;
-		if (side === "bottom") return styles.innerBottom;
-		if (side === "right") return styles.innerRight;
-		if (side === "left") return styles.innerLeft;
-		if (alignment === "left" && side === "center") return styles.innerLeftMiddle;
-		if (alignment === "right" && side === "center") return styles.innerRightMiddle;
-	})();
-	return (
-		<div
-			ref={ref}
-			{...rest}
-			className={cx(styles.base, tooltipPositionStyles, rest.className)}
-			style={{
-				...rest.style,
-				transform,
-				background: border,
-				boxShadow: `inset 0 0 0 1px ${border}`,
-			}}
-		>
-			<div className={cx(styles.inner, innerStyle, tooltipPositionStyles)}>{children}</div>
-		</div>
-	);
-};
+export const POPUP_TRIANGLE_HEIGHT_PX = 12;
+export const Popup = forwardRef<HTMLDivElement, Props>(
+	(
+		{ radius = 5, children, border, background, target: { side, alignment } = { side: "bottom", alignment: "center" }, ...props },
+		ref,
+	) => {
+		return (
+			<div
+				{...props}
+				className={cx(
+					"popup",
+					"pseudo-bg-inherit w-max text-white [--a:90deg] [--h:8px] [--p:50%] [--b:1px] p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
+					"before:content-[''] before:absolute before:z-[-1] before:[background-size:0_0,_100%_100%]",
+					"after:content-[''] after:absolute after:z-[-1] after:[border:inherit] after:[background-size:100%_100%,0_0]",
+					side === "top" &&
+						"[background-size:100%_calc(100%+var(--h))] [background-position:bottom] [border-radius:min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_var(--r)_var(--r)/var(--r)]",
+					side === "top" &&
+						"before:[inset:calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] before:[clip-path:polygon(min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(var(--h)+var(--b)),min(100%,var(--p)+var(--h)*tan(var(--a)/2))_var(--h),var(--p)_0,max(0%,var(--p)-var(--h)*tan(var(--a)/2))_var(--h),max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(var(--h)+var(--b)))]",
+					side === "top" &&
+						"after:[inset:calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] after:[clip-path:polygon(min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4))_calc(var(--h)+var(--b)),var(--p)_calc(var(--b)/sin(var(--a)/2)),max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4))_calc(var(--h)+var(--b)),50%_50%)]",
+					side === "bottom" &&
+						"[background-size:100%_calc(100%+var(--h))] [border-radius:var(--r)_var(--r)_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))/var(--r)]",
+					side === "bottom" &&
+						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] before:[clip-path:polygon(min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(100%-var(--h)-var(--b)),min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(100%-var(--h)),var(--p)_100%,max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(100%-var(--h)),max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(100%-var(--h)-var(--b)))]",
+					side === "bottom" &&
+						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] after:[clip-path:polygon(min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4))_calc(100%-var(--h)-var(--b)),var(--p)_calc(100%-var(--b)/sin(var(--a)/2)),max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4))_calc(100%-var(--h)-var(--b)),50%_50%)]",
+					side === "left" &&
+						"[background-size:calc(100%+var(--h))_100%] [background-position:right] [border-radius:var(--r)/min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_var(--r)_var(--r)_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))]",
+					side === "left" &&
+						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] before:[clip-path:polygon(calc(var(--h)+var(--b))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),var(--h)_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),0_var(--p),var(--h)_max(0%,var(--p)-var(--h)*tan(var(--a)/2)),calc(var(--h)+var(--b))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)))]",
+					side === "left" &&
+						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] after:[clip-path:polygon(calc(var(--h)+var(--b))_min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4)),calc(var(--b)/sin(var(--a)/2))_var(--p),calc(var(--h)+var(--b))_max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4)),50%_50%)]",
+					side === "right" &&
+						"[background-size:calc(100%+var(--h))_100%] [border-radius:var(--r)/var(--r)_min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_var(--r)]",
+					side === "right" &&
+						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] before:[clip-path:polygon(calc(100%-var(--h)-var(--b))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),calc(100%-var(--h))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),100%_var(--p),calc(100%-var(--h))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)),calc(100%-var(--h)-var(--b))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)))]",
+					side === "right" &&
+						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] after:[clip-path:polygon(calc(100%-var(--h)-var(--b))_min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4)),calc(100%-var(--b)/sin(var(--a)/2))_var(--p),calc(100%-var(--h)-var(--b))_max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4)),50%_50%)]",
+					props.className,
+				)}
+				style={{ ...props.style, "--r": radius + "px" } as CSSProperties}
+				ref={ref}
+			>
+				{children}
+			</div>
+		);
+	},
+);

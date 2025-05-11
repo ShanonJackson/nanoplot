@@ -43,21 +43,24 @@ const MOCK_DATA = new Array(1000).fill(null).map(() => {
 	};
 });
 export default function App ()  {
-return (
-		<Graph
-			data={[
-				{
-					name: "Hours studed vs Grades",
-					data: MOCK_DATA.map((dp) => ({ y: dp.test_score, x: dp.hours_studied })),
-				},
-			]}
-		>
-			<Legend alignment={"end"} position={"top"} />
-			<YAxis />
-			<GridLines border horizontal vertical />
-			<Scatter />
-			<XAxis />
-		</Graph>
+	return (
+		<div className={"h-[70vh] w-[100%] p-4 px-10"}>
+			<Graph
+				data={[
+					{
+						name: "Hours studed vs Grades",
+						data: MOCK_DATA.map((dp) => ({ y: dp.test_score, x: dp.hours_studied })),
+					},
+				]}
+			>
+				<Legend alignment={"end"} position={"top"} />
+				<YAxis ticks={{ to: 100 }}/>
+				<GridLines border horizontal vertical />
+				<Scatter />
+				<Scatter.Tooltip tooltip={(point) => \`\${point.data.x} \${point.data.y}\`} />
+				<XAxis ticks={{ to: 50 }} />
+			</Graph>
+		</div>
 	);
 }
 `,

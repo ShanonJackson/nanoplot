@@ -7,6 +7,7 @@ import { Popup } from "../Tooltip/Popup";
 import styles from "./Worldmap.module.scss";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { GraphUtils } from "../../utils/graph/graph";
+import { WorldmapTooltip } from "./components/WorldmapTooltip";
 
 type Props = {
 	translate?: { x: number; y: number; scale: number };
@@ -93,6 +94,8 @@ export const Worldmap = ({ tooltips, translate, gradient, className, children }:
 		</>
 	);
 };
+
+Worldmap.Tooltip = WorldmapTooltip;
 
 Worldmap.context = (ctx: GraphContext) => {
 	return {
