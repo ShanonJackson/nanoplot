@@ -33,35 +33,33 @@ import { Graph } from "nanoplot/Graph";
 export default () => {
 	return (
 		<div className={"h-[350px] w-[100%] m-auto dark:bg-black"}>
-			<Graph data={MOCK_DATA}>
+			<Graph data={[
+				{
+					name: "elixir",
+					value: 333,
+				},
+				{
+					name: "stylus",
+					value: 257,
+				},
+				{
+					name: "css",
+					value: 30,
+				},
+				{
+					name: "haskell",
+					value: 192,
+				},
+				{
+					name: "python",
+					value: 283,
+				},
+			]}>
 				<Pie />
 			</Graph>
 		</div>
 	);
 };
-
-const MOCK_DATA = [
-	{
-		name: "elixir",
-		value: 333,
-	},
-	{
-		name: "stylus",
-		value: 257,
-	},
-	{
-		name: "css",
-		value: 30,
-	},
-	{
-		name: "haskell",
-		value: 192,
-	},
-	{
-		name: "python",
-		value: 283,
-	},
-];
 `,
 				}}
 			/>

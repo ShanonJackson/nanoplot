@@ -50,12 +50,6 @@ await esbuild
 
 const fs = require("fs");
 
-// rename ./dist/library-global.css to ./dist/index.css
-fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Worldmap/Worldmap.css", "utf-8"));
-fs.appendFileSync("./dist/index.css", fs.readFileSync("./dist/Tooltip/Tooltip.css", "utf-8"));
-// fs.unlinkSync("./dist/Worldmap/Worldmap.css");
-
-// delete everything in ./dist except index.css
 const index = fs.readFileSync("./dist/index.css", "utf-8");
 fs.rmdirSync("./dist", { recursive: true });
 fs.mkdirSync("./dist");

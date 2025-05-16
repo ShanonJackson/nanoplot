@@ -76,7 +76,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 				}}
 			/>
 			<XAxis
-				ticks={{ jumps: "every 1 months" }}
+				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
@@ -168,7 +168,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 				}}
 			/>
 			<XAxis
-				ticks={{ jumps: "every 1 months" }}
+				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return \`\${x.getFullYear()}-\${x.getMonth() + 1}-\${x.getDate()}\`;

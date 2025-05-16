@@ -42,13 +42,16 @@ export default plugin(
 				})();
 				const isHeight = value.includes("height");
 				const isWidth = value.includes("width");
+				const isMaxHeight = value.includes("mheight");
+				const isMaxWidth = value.includes("mwidth");
 				let pwidth = width ? parseValue(width) : null;
 				let pheight = height ? parseValue(height) : null;
 				const selector = (() => {
-					if (!isHeight && !isWidth) return `(min-width: ${width})`;
-					if (isHeight && isWidth) return `(min-width:${width}) and (min-height:${height})`;
+					const w = isMaxWidth ? "max-width" : "min-width";
+					if (!isHeight && !isWidth) return `(${w}: ${width})`;
+					if (isHeight && isWidth) return `(${w}:${width}) and (min-height:${height})`;
 					if (isHeight) return `(min-height:${height})`;
-					return `(min-width:${width})`;
+					return `(${w}:${width})`;
 				})();
 				return pwidth !== null || pheight !== null ? `@container ${modifier ?? ""} ${selector}` : [];
 			},

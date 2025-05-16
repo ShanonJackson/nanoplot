@@ -18,7 +18,6 @@ type Props = {
 };
 
 export const YAxis = ({ title, description, display, dataset, position = "left" }: Props) => {
-	const context = useGraph();
 	const { domain } = useDataset(dataset);
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
@@ -41,7 +40,7 @@ export const YAxis = ({ title, description, display, dataset, position = "left" 
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={`yaxis__tick absolute right-2 -translate-y-1/2 text-gray-700 dark:text-gray-300`}
+								className={`yaxis__tick absolute right-2 [transform:translateY(-50%)] text-gray-700 dark:text-gray-300`}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
 								{label}

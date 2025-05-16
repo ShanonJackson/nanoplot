@@ -2,6 +2,7 @@
 import { Sandpack as SandpackLibrary } from "@codesandbox/sandpack-react";
 import { ComponentProps } from "react";
 import { useMounted } from "../../../hooks/use-mounted";
+import pkg from "../../../../package.json";
 
 export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	/* No SSR / Hydration issues */
@@ -15,7 +16,7 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 			key={isLight.toString()}
 			theme={isLight ? "light" : "dark"}
 			customSetup={{
-				dependencies: { ...props.customSetup?.dependencies, nanoplot: "0.0.44" },
+				dependencies: { ...props.customSetup?.dependencies, nanoplot: pkg.version },
 			}}
 			options={{
 				editorHeight: 500,

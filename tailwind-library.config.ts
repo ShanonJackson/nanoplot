@@ -1,7 +1,26 @@
 const container = require("./tailwind-container-queries");
+const plugin = require("tailwindcss/plugin");
 
 export default {
-	content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}"],
+	content: [
+		"./src/components/Legend/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Heatmap/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Pie/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Worldmap/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Area/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Lines/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Tooltip/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Bars/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/XAxis/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/YAxis/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Graph/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Overlay/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Radar/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Scatter/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Sunburst/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/LinearGradient/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/GridLines/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	corePlugins: {
 		preflight: true,
 	},
@@ -29,6 +48,17 @@ export default {
 			},
 		},
 	},
-	plugins: [container],
+	plugins: [
+		container,
+		plugin(function ({ addComponents }: any) {
+			addComponents({
+				".pseudo-bg-inherit": {
+					"&::before, &::after": {
+						background: "inherit",
+					},
+				},
+			});
+		}),
+	],
 	darkMode: "selector",
 };

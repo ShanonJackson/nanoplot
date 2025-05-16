@@ -37,7 +37,7 @@ export const LinesTimeslotExample = () => {
 				<div className="transform -rotate-180 text-white text-xs py-4 [writing-mode:vertical-rl]">TRAFFIC BLOCKED</div>
 			</overlay.rect>
 			<XAxis
-				ticks={{ jumps: "every 1 months" }}
+				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
@@ -89,7 +89,7 @@ export const LinesTimeslotExample = () => {
 				</div>
 			</overlay.rect>
 			<XAxis
-				ticks={{ jumps: "every 1 months" }}
+				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return \`\${x.getFullYear()}-\${x.getMonth() + 1}-\${x.getDate()}\`;
