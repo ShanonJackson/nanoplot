@@ -5,7 +5,6 @@ import { Portal } from "../Portal/Portal";
 import { useOnClickOutside } from "../../hooks/use-on-click-outside";
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
 import { Popup } from "./Popup";
-import { mergeRefs } from "../../utils/refs/merge-refs";
 
 export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onDragStart" | "onDragEnd" | "onDrag" | "ref"> & {
 	active?: boolean;
@@ -18,6 +17,7 @@ export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onD
 	children?: React.ReactNode;
 	bounds?: React.RefObject<Element> /* collision detection will be relative to this box OR window */;
 	contain?: React.RefObject<Element> /* if the tooltip renders outside this box, will render null */;
+	triangle?: { x: number }; // % of triangle's x location i.e 50% would be center.
 	border?: string;
 	collision?: boolean;
 };
@@ -38,13 +38,14 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 			onClose = Object,
 			bounds,
 			contain,
+			triangle,
 			collision = true,
 			...rest
 		},
 		ref,
 	) => {
 		const target = useRef<Element>(null);
-		const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>();
+		const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>([ref]);
 		const [isInsideTooltip, setIsInsideTooltip] = useState(false);
 
 		const {
@@ -64,7 +65,6 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 			},
 			onCollision: (collides) => {
 				if (!collision) return { targetPosition: position.target, tetherPosition: position.tooltip };
-				console.log(collides);
 				return { targetPosition: position.target, tetherPosition: position.tooltip };
 			},
 		});
@@ -79,7 +79,6 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 			rect && tooltip
 				? rect.left < tooltip.left && rect.right > tooltip.right && rect.top < tooltip.top && rect.bottom > tooltip.bottom
 				: true;
-
 		return (
 			<>
 				{trigger(target as RefObject<never>, open)}
@@ -88,12 +87,13 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 						{open && Boolean(children) && (
 							<Popup
 								{...rest}
-								ref={mergeRefs(setTooltipRef, ref)}
+								ref={setTooltipRef}
 								style={{ ...tetherStyles, ...style }}
 								border={border}
 								target={{ side, alignment }}
 								onMouseEnter={() => setIsInsideTooltip(true)}
 								onMouseLeave={() => setIsInsideTooltip(false)}
+								triangle={triangle}
 								className={className}
 							>
 								{children}

@@ -4,7 +4,6 @@ import { DocumentationParagraph } from "../../../../components/Documentation/Doc
 import * as React from "react";
 import { GradientLegend } from "../../../../components/Heatmap/components/GradientLegend";
 import { Worldmap } from "../../../../components/Worldmap/Worldmap";
-import Image from "next/image";
 import { Graph } from "../../../../components/Graph/Graph";
 
 export default function Page() {
@@ -16,38 +15,16 @@ export default function Page() {
 				<br />
 				allowing for quick comparison of regional differences in metrics like population, economy, or health.
 			</DocumentationParagraph>
-
 			<Graph data={MOCK_DATA}>
 				<GradientLegend
 					position={"top"}
 					gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
 					scalars={[Math.min(...MOCK_DATA.map((d) => d.value)), Math.max(...MOCK_DATA.map((d) => d.value))]}
 				/>
-				<Worldmap
-					gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
-					tooltips={Object.fromEntries(
-						MOCK_DATA.map((data, i) => {
-							return [
-								data.name,
-								<div className={"flex items-center"}>
-									<div>{i + 1}</div>
-									<Image
-										src={`https://cdn-fastly.parrotanalytics.com/flags/${data.name.toLowerCase()}.png?quality=85&width=32`}
-										alt={""}
-										unoptimized={true}
-										height={14}
-										width={20}
-									/>
-									{data.name}
-									<div>{data.value}</div>
-								</div>,
-							];
-						}),
-					)}
-				/>
+				<Worldmap gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"} />
 				<Worldmap.Tooltip
 					tooltip={(dp) => {
-						return <div>{dp.name + dp.name + "2".repeat(20)}</div>;
+						return <div>{dp.name + " " + dp.value}</div>;
 					}}
 				/>
 			</Graph>

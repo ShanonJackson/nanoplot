@@ -49,7 +49,7 @@ export default function Page() {
 				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset}>
 					<Legend position={"top"} />
 					<YAxis />
-					<GridLines />
+					<GridLines border />
 					<Lines />
 					<Lines.Tooltip
 						tooltip={{
@@ -58,10 +58,10 @@ export default function Page() {
 						}}
 					/>
 					<XAxis
-						ticks={{ jumps: "every 2 hours" }}
+						ticks={{ jumps: "PT2H" }}
 						display={(x) => {
 							if (typeof x === "number" || typeof x === "string") return null;
-							return format(x, "hh:mm");
+							return format(x, "hh:MM");
 						}}
 					/>
 				</Graph>

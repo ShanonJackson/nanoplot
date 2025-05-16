@@ -21,14 +21,18 @@ export const HydrateContext = <PROPS extends Record<string | number | symbol, an
 	return (props: PROPS) => {
 		const client = useContext(ClientContext);
 		const [ref, setRef] = useStatefulRef<HTMLDivElement>(); /* remount after set-ref */
-		const ctx = useMemo(() => {
+
+		const content = (() => {
 			if (!ref.current) return null;
 			if (client) return client; /* <Graph/> was rendered in a browser context, no need to serialize/deserialize */
 			/* If Graph didn't send down it's javascript code, (i.e as server component, it's sent us the JSON for context in a script tag */
-			const context = document.getElementById(ref.current?.closest("[data-ctx=graph]")?.id + "-context")?.innerText;
-			if (!context) return null;
-			return contextFromParse(context);
-		}, [ref.current]);
+			return document.getElementById(ref.current?.closest("[data-ctx=graph]")?.id + "-context")?.innerText;
+		})();
+		const ctx = useMemo(() => {
+			if (typeof content === "string") return contextFromParse(content);
+			return content;
+		}, [content]);
+
 		return (
 			<>
 				<div className={"[grid-area:graph]"} ref={setRef} />

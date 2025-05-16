@@ -119,7 +119,7 @@ export default function Page() {
 					<Lines curve={"natural"} />
 					<Lines.Tooltip />
 					<XAxis
-						ticks={{ from: "min - P2M", jumps: "P1M" }}
+						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {
 							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;

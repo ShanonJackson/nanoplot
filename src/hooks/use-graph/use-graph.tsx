@@ -1,6 +1,7 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useLayoutEffect } from "react";
 import { GraphContextServer, useGraphServer } from "./use-server-graph";
 import { GraphContextClient, useGraphClient } from "./use-client-graph";
+import { useStatefulRef } from "../use-stateful-ref";
 
 export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -57,4 +58,14 @@ export const useGraph: () => GraphContext = typeof window === "undefined" ? useG
 export const useDataset = (dataset?: string) => {
 	const context = useGraph();
 	return dataset ? context.datasets[dataset] : context;
+};
+export const useGraphRef = () => {
+	const [ref, setRef] = useStatefulRef<HTMLDivElement>();
+	const { id } = useGraph();
+	useLayoutEffect(() => {
+		const element = document.getElementById(id);
+		if (!element || !(element instanceof HTMLDivElement)) return;
+		setRef(element);
+	}, []);
+	return ref;
 };

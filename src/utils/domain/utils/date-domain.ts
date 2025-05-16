@@ -128,86 +128,83 @@ export const getCeilDateFromDuration = (d: Date, duration: string): Date => {
 	const dur = parseDuration(duration);
 	type Unit = keyof typeof dur;
 	const units: Unit[] = ["years", "months", "days", "hours", "minutes", "seconds"];
-	const largestUnit = units.find((u) => dur[u] > 0);
-	if (!largestUnit) throw new Error("Duration must have at least one non-zero component");
+	const largestUnit = units.find((u) => dur[u]! > 0);
+	if (!largestUnit) throw new Error("Duration must have at least one non‑zero component");
 
-	// Extract UTC components
-	const Y = d.getUTCFullYear();
-	const M = d.getUTCMonth();
-	const D = d.getUTCDate();
-	const h = d.getUTCHours();
-	const m_ = d.getUTCMinutes();
-	const s = d.getUTCSeconds();
+	const Y = d.getFullYear();
+	const M = d.getMonth(); // 0–11
+	const D = d.getDate(); // 1–31
+	const h = d.getHours(); // 0–23
+	const m_ = d.getMinutes(); // 0–59
+	const s = d.getSeconds(); // 0–59
 
-	let y = Y,
-		mo = M,
-		da = D,
-		hh = h,
-		mm = m_,
-		ss = s;
+	let result: Date;
 
 	switch (largestUnit) {
 		case "years": {
 			const N = dur.years!;
-			// If already at exact boundary, keep. Otherwise, move to next block.
-			const base = Math.floor((Y - 1) / N) * N + 1;
-			y = base + (Y % N === 1 && M === 0 && D === 1 && h === 0 && m_ === 0 && s === 0 ? 0 : N);
-			mo = 0;
-			da = 1;
-			hh = 0;
-			mm = 0;
-			ss = 0;
+			// e.g. ceil(2024 / 5) * 5 = 2025 if N=5
+			const nextYear = Math.ceil(Y / N) * N;
+			result = new Date(nextYear, 0, 1, 0, 0, 0);
 			break;
 		}
+
 		case "months": {
 			const N = dur.months!;
-			// floor month block, then if not exact on 1st 00:00:00, advance one block
-			const block = Math.floor(M / N) * N;
-			const isExact = M === block && D === 1 && h === 0 && m_ === 0 && s === 0;
-			mo = isExact ? block : block + N;
-			da = 1;
-			hh = 0;
-			mm = 0;
-			ss = 0;
+			const monthNo = M + 1; // 1–12
+			const blockEnd = Math.ceil(monthNo / N) * N; // e.g. ceil(12/5)*5=15
+			if (blockEnd <= 12) {
+				result = new Date(Y, blockEnd - 1, 1, 0, 0, 0);
+			} else {
+				// overflow into next year
+				result = new Date(Y + 1, blockEnd - 12 - 1, 1, 0, 0, 0);
+			}
 			break;
 		}
+
 		case "days": {
 			const N = dur.days!;
-			const offset = Math.floor((D - 1) / N) * N + 1;
-			const isExact = D === offset && h === 0 && m_ === 0 && s === 0;
-			da = isExact ? offset : offset + N;
-			hh = 0;
-			mm = 0;
-			ss = 0;
+			// if not exactly at 00:00, treat as one day later
+			const effDay = D + (h || m_ || s ? 1 : 0);
+			// next multiple of N
+			const nextMultiple = Math.ceil(effDay / N) * N;
+			// let JS roll over month/year
+			result = new Date(Y, M, nextMultiple, 0, 0, 0);
 			break;
 		}
+
 		case "hours": {
 			const N = dur.hours!;
-			const offset = Math.floor(h / N) * N;
-			const isExact = h === offset && m_ === 0 && s === 0;
-			hh = isExact ? offset : offset + N;
-			mm = 0;
-			ss = 0;
+			const blockEnd = Math.ceil(h / N) * N; // e.g. ceil(23/5)*5=25
+			const overflowDays = Math.floor(blockEnd / 24);
+			const hour = blockEnd % 24;
+			result = new Date(Y, M, D + overflowDays, hour, 0, 0);
 			break;
 		}
+
 		case "minutes": {
 			const N = dur.minutes!;
-			const offset = Math.floor(m_ / N) * N;
-			const isExact = m_ === offset && s === 0;
-			mm = isExact ? offset : offset + N;
-			ss = 0;
+			const blockEnd = Math.ceil(m_ / N) * N;
+			const overflowHours = Math.floor(blockEnd / 60);
+			const minute = blockEnd % 60;
+			result = new Date(Y, M, D, h + overflowHours, minute, 0);
 			break;
 		}
+
 		case "seconds": {
 			const N = dur.seconds!;
-			const offset = Math.floor(s / N) * N;
-			const isExact = s === offset;
-			ss = isExact ? offset : offset + N;
+			const blockEnd = Math.ceil(s / N) * N;
+			const overflowMinutes = Math.floor(blockEnd / 60);
+			const second = blockEnd % 60;
+			result = new Date(Y, M, D, h, m_ + overflowMinutes, second);
 			break;
 		}
+
+		default:
+			throw new Error(`Unsupported unit: ${largestUnit}`);
 	}
 
-	return new Date(y, mo, da, hh, mm, ss);
+	return result;
 };
 
 export function getDurationFromRange(start: Date, end: Date): string {
@@ -268,3 +265,43 @@ export function getDurationFromRange(start: Date, end: Date): string {
 	if (seconds) iso += `${seconds}S`;
 	return iso === "P" ? "P0D" : iso;
 }
+
+export const removeDurationFromDate = (dte: Date, duration: string): Date => {
+	const dur = parseDuration(duration);
+	type Unit = keyof typeof dur;
+	const units: Unit[] = ["years", "months", "days", "hours", "minutes", "seconds"];
+	const largestUnit = units.find((u) => dur[u] > 0);
+	if (!largestUnit) throw new Error("Duration must have at least one non-zero component");
+
+	// We subtract the entire duration from the given date
+	const newDate = new Date(dte.getTime());
+
+	if (dur.years) newDate.setFullYear(newDate.getFullYear() - dur.years);
+	if (dur.months) newDate.setMonth(newDate.getMonth() - dur.months);
+	if (dur.days) newDate.setDate(newDate.getDate() - dur.days);
+	if (dur.hours) newDate.setHours(newDate.getHours() - dur.hours);
+	if (dur.minutes) newDate.setMinutes(newDate.getMinutes() - dur.minutes);
+	if (dur.seconds) newDate.setSeconds(newDate.getSeconds() - dur.seconds);
+
+	return newDate;
+};
+
+export const addDurationToDate = (dte: Date, duration: string): Date => {
+	const dur = parseDuration(duration);
+	type Unit = keyof typeof dur;
+	const units: Unit[] = ["years", "months", "days", "hours", "minutes", "seconds"];
+	const largestUnit = units.find((u) => dur[u] > 0);
+	if (!largestUnit) throw new Error("Duration must have at least one non-zero component");
+
+	// Add each part of the duration
+	const newDate = new Date(dte.getTime());
+
+	if (dur.years) newDate.setFullYear(newDate.getFullYear() + dur.years);
+	if (dur.months) newDate.setMonth(newDate.getMonth() + dur.months);
+	if (dur.days) newDate.setDate(newDate.getDate() + dur.days);
+	if (dur.hours) newDate.setHours(newDate.getHours() + dur.hours);
+	if (dur.minutes) newDate.setMinutes(newDate.getMinutes() + dur.minutes);
+	if (dur.seconds) newDate.setSeconds(newDate.getSeconds() + dur.seconds);
+
+	return newDate;
+};

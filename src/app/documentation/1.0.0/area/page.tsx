@@ -154,7 +154,7 @@ export default () => {
 				<Area />
 				<Area.Tooltip className={"bg-white dark:!bg-black"} />
 				<XAxis
-					ticks={{ jumps: "every 1 months" }}
+					ticks={{ jumps: "P1M" }}
 					display={(x) => {
 						const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 						if (typeof x === "number" || typeof x === "string") return null;

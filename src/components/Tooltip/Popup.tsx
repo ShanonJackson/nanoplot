@@ -1,11 +1,12 @@
 import React, { ComponentProps, CSSProperties, forwardRef, ReactNode } from "react";
-import { cx } from "../../utils/cx/cx";
+import { tw } from "../../utils/cx/cx";
 import { Position } from "../../hooks/use-tether";
 
 type Props = ComponentProps<"div"> & {
 	radius?: number;
 	border?: string;
 	background?: string;
+	triangle?: { x: number }; // % of triangle's x location i.e 50% would be center.
 	target?: Position;
 	children?: ReactNode;
 };
@@ -13,15 +14,23 @@ type Props = ComponentProps<"div"> & {
 export const POPUP_TRIANGLE_HEIGHT_PX = 12;
 export const Popup = forwardRef<HTMLDivElement, Props>(
 	(
-		{ radius = 5, children, border, background, target: { side, alignment } = { side: "bottom", alignment: "center" }, ...props },
+		{
+			radius = 5,
+			children,
+			border,
+			background,
+			target: { side, alignment } = { side: "bottom", alignment: "center" },
+			triangle,
+			...props
+		},
 		ref,
 	) => {
 		return (
 			<div
 				{...props}
-				className={cx(
+				className={tw(
 					"popup",
-					"pseudo-bg-inherit w-max text-white [--a:90deg] [--h:8px] [--p:50%] [--b:1px] p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
+					"relative isolate pseudo-bg-inherit w-max text-white [--a:90deg] [--h:8px] [--p:50%] [--b:1px] [--p:50%] p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
 					"before:content-[''] before:absolute before:z-[-1] before:[background-size:0_0,_100%_100%]",
 					"after:content-[''] after:absolute after:z-[-1] after:[border:inherit] after:[background-size:100%_100%,0_0]",
 					side === "top" &&
@@ -50,7 +59,16 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] after:[clip-path:polygon(calc(100%-var(--h)-var(--b))_min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4)),calc(100%-var(--b)/sin(var(--a)/2))_var(--p),calc(100%-var(--h)-var(--b))_max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4)),50%_50%)]",
 					props.className,
 				)}
-				style={{ ...props.style, "--r": radius + "px" } as CSSProperties}
+				style={
+					{
+						...props.style,
+						"--h": "8px",
+						"--a": "90deg",
+						"--r": `${radius}px`,
+						"--b": "1px",
+						"--p": `${triangle ? triangle.x * 100 : 50}%`,
+					} as CSSProperties
+				}
 				ref={ref}
 			>
 				{children}
