@@ -15,9 +15,9 @@ export default async function RootLayout({
 	return (
 		<div>
 			<DocumentationHeader />
-			<div className={"flex gap-1"}>
+			<div className={"flex"}>
 				<DocumentationNavigation />
-				<div className={"w-full"}>{children}</div>
+				<div className={""}>{children}</div>
 			</div>
 		</div>
 	);
