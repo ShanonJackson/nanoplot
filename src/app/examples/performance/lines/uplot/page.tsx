@@ -45,7 +45,7 @@ export default function Page() {
 						/>
 						<YAxis dataset={"TCP"} position={"right"} display={(t) => t.toString() + " MB"} />
 						<XAxis
-							ticks={{ jumps: "every 2 days" }}
+							ticks={{ jumps: "P2D" }}
 							display={(x) => {
 								if (typeof x === "number" || typeof x === "string") return null;
 								return format(x, "mm/dd");

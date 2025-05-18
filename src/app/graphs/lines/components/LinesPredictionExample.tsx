@@ -32,7 +32,7 @@ export const LinesPredictionExample = () => {
 			<Lines />
 			<Lines.Tooltip />
 			<XAxis
-				ticks={{ jumps: "every 1 years" }}
+				ticks={{ jumps: "P1Y" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return `${x.getFullYear()}`;
@@ -77,7 +77,7 @@ export const LinesPredictionExample = () => {
 			<Lines />
 			<Lines.Tooltip />
 			<XAxis
-				ticks={{ jumps: "every 1 years" }}
+				ticks={{ jumps: "P1Y" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
 					return \`\${x.getFullYear()}\`;

@@ -2,21 +2,19 @@ import React, { ReactNode, useId } from "react";
 import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { MathUtils } from "../../utils/math/math";
-import { PathUtils } from "../../utils/path/path";
-import { Popup } from "../Tooltip/Popup";
 import styles from "./Worldmap.module.scss";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { GraphUtils } from "../../utils/graph/graph";
+import { WorldmapTooltip } from "./components/WorldmapTooltip";
 
 type Props = {
 	translate?: { x: number; y: number; scale: number };
 	gradient?: `linear-gradient(${string})`;
-	tooltips?: Record<string, ReactNode>; // can't be a function because not serializable.
 	className?: string;
 	children?: ReactNode;
 };
 
-export const Worldmap = ({ tooltips, translate, gradient, className, children }: Props) => {
+export const Worldmap = ({ translate, gradient, className, children }: Props) => {
 	const { data, viewbox, domain } = useGraph();
 	const id = useId();
 	if (!GraphUtils.isSegmentData(data)) return null;
@@ -59,40 +57,12 @@ export const Worldmap = ({ tooltips, translate, gradient, className, children }:
 					);
 				})}
 			</svg>
-			<div
-				className={"aspect-[1090/539] absolute [grid-area:graph] pointer-events-none h-full w-auto"}
-				style={{ left: `${translate?.x ?? 0}px` }}
-			>
-				<div className={"relative h-full w-full"}>
-					{Object.entries(countries).map(([iso, path], i) => {
-						const { x, y } = PathUtils.center(path);
-						if (!dataset[iso]) return null;
-						const left = MathUtils.scale(x, 1090, 100);
-						const top = MathUtils.scale(y, 539, 100);
-						return (
-							<Popup
-								key={i}
-								target={{ side: "bottom", alignment: "center" }}
-								style={{
-									left: left > 85 ? undefined : left + "%",
-									right: left > 85 ? 100 - left + "%" : undefined,
-									top: top > 85 ? undefined : top + "%",
-									bottom: top > 85 ? 100 - top + "%" : undefined,
-								}}
-								border={"rgb(45, 45, 45)"}
-								className={cx(`bg-black pointer-events-none`, styles.tooltip)}
-								data-iso={iso}
-							>
-								<div>{tooltips?.[iso] ? tooltips[iso] : iso}</div>
-							</Popup>
-						);
-					})}
-				</div>
-			</div>
 			{children}
 		</>
 	);
 };
+
+Worldmap.Tooltip = WorldmapTooltip;
 
 Worldmap.context = (ctx: GraphContext) => {
 	return {

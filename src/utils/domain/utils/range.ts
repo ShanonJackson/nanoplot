@@ -1,10 +1,17 @@
 import { GraphContext } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
-import { DateDomain } from "../date-domain";
 import { DomainUtils } from "../domain";
 import { MathUtils } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
+import {
+	addDurationToDate,
+	getCeilDateFromDuration,
+	getDateDomain,
+	getDurationFromRange,
+	getFloorDateFromDuration,
+	removeDurationFromDate,
+} from "./date-domain";
 
 export const range = (
 	{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
@@ -17,6 +24,15 @@ export const range = (
 ) => {
 	if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
+	const duration = (() => {
+		/* ISO 8601 Duration Format - https://en.wikipedia.org/wiki/ISO_8601#Durations */
+		if (!isDateTime) return "";
+		if (jumps === "auto" || typeof jumps === "number") {
+			return getDurationFromRange(new Date(data[0].data[0][dimension]), new Date(data[0].data[1][dimension]));
+		}
+		return jumps;
+	})();
+
 	const inverse = dimension === "y" ? "x" : "y";
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
 
@@ -94,8 +110,7 @@ export const range = (
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
 			if (isDateTime) {
-				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
-				return to === "auto" ? new Date(max) : DateDomain.ceil({ date: new Date(max), unit: 0, interval: jumpsInterval });
+				return to === "auto" ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
 			}
 			return to === "max" ? max : DomainUtils.autoMaxFor(max);
 		}
@@ -103,17 +118,19 @@ export const range = (
 		const operator = to.match(/(\+|-)/)?.[0];
 		const isPercentage = to.includes("%");
 		const value = +to.replace(/[^0-9]/g, "");
-		const interval = to.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+		const modifyDuration = to.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0];
 
 		if (operator === "+") {
-			if (interval) {
-				return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+			if (modifyDuration) {
+				const dte = getCeilDateFromDuration(new Date(max), duration);
+				return addDurationToDate(dte, modifyDuration);
 			}
 			return isPercentage ? max + (max * value) / 100 : max + value;
 		}
 		if (operator === "-") {
-			if (interval) {
-				return DateDomain.ceil({ date: new Date(max), unit: value, interval });
+			if (modifyDuration) {
+				const dte = getFloorDateFromDuration(new Date(max), duration);
+				return removeDurationFromDate(dte, modifyDuration);
 			}
 			return isPercentage ? max - (max * value) / 100 : max - value;
 		}
@@ -123,8 +140,7 @@ export const range = (
 	const MIN = (() => {
 		if (from === "min" || from === "auto") {
 			if (isDateTime) {
-				const jumpsInterval = typeof jumps === "string" ? DateDomain.intervalForJumps(jumps) : "days";
-				return from === "auto" ? new Date(min) : DateDomain.floor({ date: new Date(min), unit: 0, interval: jumpsInterval });
+				return from === "auto" ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
 			}
 			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: +MAX });
 		}
@@ -132,23 +148,25 @@ export const range = (
 		const operator = from.match(/(\+|-)/)?.[0];
 		const isPercentage = from.includes("%");
 		const value = +from.replace(/[^0-9]/g, "");
-		const interval = from.match(/(?<=\d+\s)\w+/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+		const modifyDuration = from.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
 		if (operator === "+") {
-			if (interval) {
-				return DateDomain.floor({ date: new Date(min), unit: value, interval });
+			if (modifyDuration) {
+				const dte = getCeilDateFromDuration(new Date(min), duration);
+				return addDurationToDate(dte, modifyDuration);
 			}
 			return isPercentage ? min + (min * value) / 100 : min + value;
 		}
 		if (operator === "-") {
-			if (interval) {
-				return DateDomain.floor({ date: new Date(min), unit: value, interval });
+			if (modifyDuration) {
+				const dte = getFloorDateFromDuration(new Date(min), duration);
+				return removeDurationFromDate(dte, modifyDuration);
 			}
 			return isPercentage ? min - (min * value) / 100 : min - value;
 		}
 		return min;
 	})();
 
-	if (typeof jumps === "number" || jumps === "auto") {
+	if (typeof jumps === "number" || (jumps === "auto" && !isDateTime)) {
 		const mx = Number(MAX);
 		const mn = Number(MIN);
 		const JUMPS = (() => {
@@ -194,16 +212,17 @@ export const range = (
 		Datetime Domain.
 		min === "auto" -> start the graph from the first datapoint in the dataset. (touching the side of graph)
 		min === "min" -> start the graph from the floored date.
-		min === "min - 1 month" -> start the graph from the floored date - 1 month.
+		min === "min - P1M" -> start the graph from the floored date - 1 month.
 		max === "auto" -> end the graph at the last datapoint in the dataset (touching the side of graph)
 		max === "max" -> end the graph at the ceiling date.
-		max === "max + 1 month" -> end the graph at the ceiling date + 1 month.
+		max === "max + P1M" -> end the graph at the ceiling date + 1 month.
 	 */
-	const domain = DateDomain.domainFor({
+	const domain = getDateDomain({
 		min: new Date(MIN),
 		max: new Date(MAX),
-		jumps: jumps,
+		duration,
 	});
+
 	return domain.map((tick) => ({
 		tick,
 		coordinate: MathUtils.scale(tick.getTime(), [new Date(MIN).getTime(), new Date(MAX).getTime()], [0, viewb]),

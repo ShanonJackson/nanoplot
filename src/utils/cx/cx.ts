@@ -10,12 +10,20 @@ export const cx = (...args: (StringOrFalsey | Record<string, StringOrFalsey | bo
 		.join(" ");
 };
 
-/* deduplicates tailwind classes - localized mutation for perf. */
+const unique: Record<string, string> = {
+	absolute: "position",
+	relative: "position",
+	static: "position",
+};
+
+/* deduplicates tailwind classes - localized mutation for perf, perf version */
 export const tw = (...args: (StringOrFalsey | Record<string, StringOrFalsey | boolean>)[]) => {
 	const result: Record<string, string> = {};
 	cx(...args)
 		.replace(/\s+/g, " ")
 		.split(" ")
-		.forEach((cls) => (result[cls.split("-")[0]] = cls));
+		.forEach((cls) => {
+			return (result[unique[cls] || cls.split("-")[0]] = cls);
+		});
 	return Object.values(result).join(" ");
 };

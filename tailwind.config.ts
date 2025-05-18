@@ -1,4 +1,5 @@
 const container = require("./tailwind-container-queries");
+const plugin = require('tailwindcss/plugin');
 
 export default {
 	content: [
@@ -34,6 +35,17 @@ export default {
 			},
 		},
 	},
-	plugins: [container],
+	plugins: [
+		container,
+		plugin(function ({ addComponents }: any) {
+			addComponents({
+				'.pseudo-bg-inherit': {
+					'&::before, &::after': {
+						background: 'inherit',
+					},
+				},
+			});
+		}),
+	],
 	darkMode: "selector",
 };

@@ -100,7 +100,10 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 								/>
 								{filled && points[0] && (
 									<Line
-										d={path + `L ${viewbox.x} ${viewbox.y} L 0 ${viewbox.y} L ${points[0].x} ${viewbox.y} Z`}
+										d={
+											path +
+											`L ${points[points.length - 1]?.x ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0].x} ${viewbox.y} Z`
+										}
 										stroke={"transparent"}
 										fill={`linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
 										strokeOpacity={0}

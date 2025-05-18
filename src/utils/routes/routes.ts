@@ -55,6 +55,10 @@ export const Href = {
 					INDEX: "/documentation/1.0.0/heatmap",
 					PLAYGROUND: "/documentation/1.0.0/heatmap/playground",
 				},
+				WORLDMAP: {
+					INDEX: "/documentation/1.0.0/worldmap",
+					PLAYGROUND: "/documentation/1.0.0/worldmap/playground",
+				},
 			},
 		},
 	},

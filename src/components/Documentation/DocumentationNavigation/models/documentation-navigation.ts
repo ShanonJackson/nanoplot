@@ -134,6 +134,20 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 					},
 				],
 			},
+			{
+				title: "Worldmap",
+				href: Hrefs.GRAPHS.WORLDMAP.INDEX,
+				children: [
+					{
+						title: "Overview",
+						href: Hrefs.GRAPHS.WORLDMAP.INDEX,
+					},
+					{
+						title: "Playground",
+						href: Hrefs.GRAPHS.WORLDMAP.PLAYGROUND,
+					},
+				],
+			},
 		],
 	},
 	{

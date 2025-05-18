@@ -73,6 +73,7 @@ export default function Page() {
 			>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+					interactions={{ hovered: ["New Users", "Registered Users"] }}
 					data={[
 						{
 							name: "New Users",
@@ -112,32 +113,19 @@ export default function Page() {
 						},
 					]}
 				>
-					{legend.position === "top" && <Legend {...legend} />}
-					{legend.position === "left" && <Legend {...legend} />}
-					<YAxis
-						{...yaxis}
-						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
-						description={
-							yaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					<GridLines {...gridline} />
-					<Lines {...line} />
+					<Legend alignment={"end"} position={"top"} />
+					<YAxis />
+					<GridLines border horizontal vertical />
+					<Lines curve={"natural"} />
 					<Lines.Tooltip />
-					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
-						{...xaxis}
-						ticks={{ jumps: "every 1 months" }}
+						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {
 							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
 							return months[x.getMonth()];
 						}}
 					/>
-
-					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
 		</>

@@ -16,6 +16,12 @@ export const CoordinatesUtils = {
 		const crange = coordinates[length - 1] - coordinates[0];
 		const isDateTime = domain.x[0]?.tick instanceof Date;
 		const isNumericalScale = typeof domain.x[0]?.tick === "number";
+		const isCategoricalScale = typeof domain.x[0]?.tick === "string";
+		if (isCategoricalScale) {
+			return (value: number | string | Date) => {
+				return domain.x.find((d) => d.tick === value)?.coordinate ?? 0;
+			};
+		}
 		if (isLinearScale && (isDateTime || isNumericalScale)) {
 			return (value: number | string | Date) => {
 				const v = (
@@ -58,7 +64,12 @@ export const CoordinatesUtils = {
 		const crange = coordinates[length - 1] - coordinates[0];
 		const isNumericalScale = typeof domain.y[0]?.tick === "number";
 		const isDateTimeScale = domain.y[0]?.tick instanceof Date;
-
+		const isCategoricalScale = typeof domain.y[0]?.tick === "string";
+		if (isCategoricalScale) {
+			return (value: number | string | Date) => {
+				return domain.y.find((d) => d.tick === value)?.coordinate ?? 0;
+			};
+		}
 		if (isLinearScale && (isNumericalScale || isDateTimeScale)) {
 			return (value: number | string | Date) => {
 				const v = (
