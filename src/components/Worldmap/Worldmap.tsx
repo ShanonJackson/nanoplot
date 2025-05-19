@@ -2,7 +2,6 @@ import React, { ReactNode, useId } from "react";
 import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { MathUtils } from "../../utils/math/math";
-import styles from "./Worldmap.module.scss";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { GraphUtils } from "../../utils/graph/graph";
 import { WorldmapTooltip } from "./components/WorldmapTooltip";
@@ -67,7 +66,7 @@ Worldmap.Tooltip = WorldmapTooltip;
 Worldmap.context = (ctx: GraphContext) => {
 	return {
 		...ctx,
-		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-full", styles.base) },
+		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-full") },
 	};
 };
 

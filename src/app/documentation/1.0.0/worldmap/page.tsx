@@ -2,13 +2,13 @@
 import { DocumentationHeading } from "../../../../components/Documentation/DocumentationHeading/DocumentationHeading";
 import { DocumentationParagraph } from "../../../../components/Documentation/DocumentationParagraph/DocumentationParagraph";
 import * as React from "react";
-import { GradientLegend } from "../../../../components/Heatmap/components/GradientLegend";
+import { GradientLegend } from "../../../../components/GradientLegend/GradientLegend";
 import { Worldmap } from "../../../../components/Worldmap/Worldmap";
 import { Graph } from "../../../../components/Graph/Graph";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8"}>
+		<div className={"p-8"}>
 			<DocumentationHeading level={1}>Worldmap</DocumentationHeading>
 			<DocumentationParagraph>
 				A heatmap world map chart highlights countries with varying colors to easily visualize global data trends and patterns,

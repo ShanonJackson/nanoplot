@@ -11,7 +11,7 @@ import { JSX } from "react";
 export default function Page() {
 	return (
 		<>
-			<div className={"p-4 md:p-8"}>
+			<div className={"p-8"}>
 				<DocumentationHeading level={1}>Bar Chart</DocumentationHeading>
 				<DocumentationParagraph>Bar charts are used to compare discrete values across categories.</DocumentationParagraph>
 				<Sandpack

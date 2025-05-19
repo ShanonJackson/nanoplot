@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Href, Routes } from "../../../utils/routes/routes";
 import { ThemeToggle } from "../../ThemeToggle/ThemeToggle";
+import { NavToggle } from "../../NavToggle/NavToggle";
 
 type Props = {};
 
@@ -18,26 +19,7 @@ export const DocumentationHeader = ({}: Props) => {
 				</div>
 				<div className="flex items-center gap-4">
 					<ThemeToggle />
-					<button
-						className="md:hidden rounded-full p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-						aria-label="Toggle menu"
-					>
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="h-5 w-5"
-						>
-							<line x1="4" x2="20" y1="12" y2="12"></line>
-							<line x1="4" x2="20" y1="6" y2="6"></line>
-							<line x1="4" x2="20" y1="18" y2="18"></line>
-						</svg>
-					</button>
+					<NavToggle />
 				</div>
 			</div>
 		</header>

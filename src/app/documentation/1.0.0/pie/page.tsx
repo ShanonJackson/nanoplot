@@ -10,7 +10,7 @@ import { JSX } from "react";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8"}>
+		<div className={"p-8"}>
 			<DocumentationHeading level={1}>Pie Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Pie charts provide a quick, intuitive view of proportions, making it easy to compare the relative sizes of categories at a
