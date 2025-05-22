@@ -49,7 +49,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 					return (
 						<path
 							key={i + "|" + ii}
-							d={points?.map(({ x, y }) => `M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`).join(" ")}
+							d={points?.map(({ x, y }) => `M ${x} ${y} h 0.001`).join(" ")}
 							strokeWidth={10}
 							stroke={color}
 							strokeLinecap={"round"}

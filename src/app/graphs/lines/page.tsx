@@ -141,7 +141,7 @@ export default function Page() {
 					/>
 					<YAxis />
 					<GridLines border vertical horizontal />
-					<Lines curve={"natural"} />
+					<Lines curve={"natural"} joints />
 					<Lines.Tooltip />
 					<ZoomSlider.Y onChange={setZoom} />
 					<XAxis

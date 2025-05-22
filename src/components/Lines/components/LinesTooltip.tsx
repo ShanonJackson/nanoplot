@@ -211,7 +211,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 										key={i}
 										stroke={stroke}
 										fill={stroke}
-										d={`M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`}
+										d={`M ${x} ${y} h 0.001`}
 										strokeWidth={"8"}
 										strokeLinecap={"round"}
 										vectorEffect={"non-scaling-stroke"}

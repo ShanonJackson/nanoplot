@@ -126,7 +126,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 								return (
 									<path
 										key={i}
-										d={`M ${x} ${y} A 0 0 0 0 1 ${x} ${y}`}
+										d={`M ${x} ${y} h 0.001`}
 										strokeWidth={7}
 										stroke={color}
 										strokeLinecap={"round"}

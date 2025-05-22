@@ -1,12 +1,12 @@
 "use client";
 import { ComponentProps, useState } from "react";
-import { ControlPanel } from "../../../components/Panels/ControlPanel";
-import { GraphPanel } from "../../../components/Panels/GraphPanel";
-import { Graph } from "../../../components/Graph/Graph";
-import { Heatmap } from "../../../components/Heatmap/Heatmap";
-import { YAxis } from "../../../components/YAxis/YAxis";
-import { XAxis } from "../../../components/XAxis/XAxis";
-import { GradientLegend } from "../../../components/GradientLegend/GradientLegend";
+import { ControlPanel } from "../../../../../components/Panels/ControlPanel";
+import { GraphPanel } from "../../../../../components/Panels/GraphPanel";
+import { Graph } from "../../../../../components/Graph/Graph";
+import { GradientLegend } from "../../../../../components/GradientLegend/GradientLegend";
+import { YAxis } from "../../../../../components/YAxis/YAxis";
+import { Heatmap } from "../../../../../components/Heatmap/Heatmap";
+import { XAxis } from "../../../../../components/XAxis/XAxis";
 
 export default function Page() {
 	const [heatmap, setHeatmap] = useState<Pick<ComponentProps<typeof Heatmap>, "gradient" | "scalars">>({
@@ -14,9 +14,8 @@ export default function Page() {
 			`linear-gradient(to right, rgb(165, 0, 38) 0%, rgb(175, 10, 38) 2%, rgb(185, 19, 39) 4%, rgb(194, 29, 40) 6%, rgb(203, 40, 41) 8%, rgb(212, 0, 44) 10%, rgb(219, 61, 47) 12%, rgb(226, 73, 51) 14%, rgb(231, 85, 56) 16%, rgb(236, 97, 62) 18%, rgb(241, 110, 67) 20%, rgb(244, 122, 73) 22%, rgb(247, 135, 79) 24%, rgb(249, 148, 86) 26%, rgb(250, 160, 92) 28%, rgb(252, 172, 100) 30%, rgb(253, 183, 108) 32%, rgb(253, 193, 116) 34%, rgb(254, 203, 125) 36%, rgb(254, 212, 135) 38%, rgb(254, 221, 144) 40%, rgb(254, 229, 153) 42%, rgb(254, 235, 163) 44%, rgb(253, 241, 173) 46%, rgb(252, 245, 182) 48%, rgb(250, 248, 193) 50%, rgb(246, 249, 203) 52%, rgb(241, 249, 213) 54%, rgb(235, 247, 223) 56%, rgb(228, 244, 230) 58%, rgb(220, 241, 236) 60%, rgb(212, 237, 239) 62%, rgb(202, 232, 239) 64%, rgb(192, 227, 238) 66%, rgb(181, 221, 235) 68%, rgb(171, 214, 232) 70%, rgb(160, 207, 227) 72%, rgb(149, 199, 223) 74%, rgb(138, 190, 218) 76%, rgb(128, 181, 213) 78%, rgb(117, 171, 208) 80%, rgb(107, 161, 203) 82%, rgb(98, 150, 197) 84%, rgb(89, 139, 191) 86%, rgb(81, 128, 186) 88%, rgb(74, 116, 180) 90%, rgb(67, 104, 174) 92%, rgb(62, 92, 168) 94%, rgb(57, 79, 161) 96%, rgb(53, 67, 155) 98%, rgb(49, 54, 149) 100%)` as const,
 		scalars: [-100_000, -80_000, -60_000, -40_000, -20_000, 0, 20_000, 40_000, 60_000, 80_000, 100_000],
 	});
-
 	return (
-		<>
+		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[40%_1fr] p-8"}>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>Heatmap</h1>
 			</ControlPanel>
@@ -116,6 +115,6 @@ export default function Page() {
 					<XAxis />
 				</Graph>
 			</GraphPanel>
-		</>
+		</div>
 	);
 }

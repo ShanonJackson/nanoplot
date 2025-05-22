@@ -66,7 +66,7 @@ export const Legend = ({ position = "top", alignment = "center", onClick, onMous
 							key={i}
 							className={cx(
 								"flex items-center",
-								(onClick || onMouseEnter || onMouseLeave || onMouseMove) && "cursor-pointer",
+								(onClick || onMouseEnter || onMouseLeave || onMouseMove) && "cursor-pointer user-select-none",
 							)}
 							onClick={() => onClick?.(datapoint)}
 							onMouseEnter={() => onMouseEnter?.(datapoint)}
