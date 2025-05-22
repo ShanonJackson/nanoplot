@@ -6,7 +6,7 @@ import { Graph } from "../../../components/Graph/Graph";
 import { Heatmap } from "../../../components/Heatmap/Heatmap";
 import { YAxis } from "../../../components/YAxis/YAxis";
 import { XAxis } from "../../../components/XAxis/XAxis";
-import { GradientLegend } from "../../../components/Heatmap/components/GradientLegend";
+import { GradientLegend } from "../../../components/GradientLegend/GradientLegend";
 
 export default function Page() {
 	const [heatmap, setHeatmap] = useState<Pick<ComponentProps<typeof Heatmap>, "gradient" | "scalars">>({

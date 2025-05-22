@@ -27,6 +27,7 @@ export const Href = {
 				LINES: {
 					INDEX: "/documentation/1.0.0/lines",
 					TOOLTIP: "/documentation/1.0.0/lines/tooltip",
+					EXAMPLES: "/documentation/1.0.0/lines/examples",
 					PLAYGROUND: "/documentation/1.0.0/lines/playground",
 				},
 				SCATTER: {

@@ -19,6 +19,7 @@ import { LinesSiteTrafficPinned, LinesSiteTrafficPinnedCode } from "./components
 import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } from "./components/TimeSeriesCustomTooltipExample";
 import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
 import { LinesPredictionExample, LinesPredictionExampleCode } from "./components/LinesPredictionExample";
+import { ZoomSlider } from "../../../components/ZoomSlider/ZoomSlider";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
@@ -26,6 +27,10 @@ export default function Page() {
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({});
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
+
+	const [hovered, setHovered] = useState<string[]>([]);
+	const [pinned, setPinned] = useState<string[]>([]);
+	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
 
 	return (
 		<>
@@ -73,7 +78,8 @@ export default function Page() {
 			>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
-					interactions={{ hovered: ["New Users", "Registered Users"] }}
+					interactions={{ hovered, pinned }}
+					zoom={zoom}
 					data={[
 						{
 							name: "New Users",
@@ -113,11 +119,31 @@ export default function Page() {
 						},
 					]}
 				>
-					<Legend alignment={"end"} position={"top"} />
+					<ZoomSlider.X onChange={setZoom} />
+					<Legend
+						alignment={"end"}
+						position={"top"}
+						onClick={(dp) => {
+							setPinned((p) => {
+								if (p.includes(dp.id)) return p.filter((pin) => pin !== dp.id);
+								return [...p, dp.id];
+							});
+						}}
+						onMouseEnter={(dp) => {
+							setHovered((h) => {
+								if (h.includes(dp.id)) return h.filter((hov) => hov !== dp.id);
+								return [...h, dp.id];
+							});
+						}}
+						onMouseLeave={(dp) => {
+							setHovered((h) => h.filter((hov) => hov !== dp.id));
+						}}
+					/>
 					<YAxis />
-					<GridLines border horizontal vertical />
+					<GridLines border vertical horizontal />
 					<Lines curve={"natural"} />
 					<Lines.Tooltip />
+					<ZoomSlider.Y onChange={setZoom} />
 					<XAxis
 						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {

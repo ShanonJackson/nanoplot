@@ -33,8 +33,8 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 						href: Hrefs.GRAPHS.LINES.INDEX,
 					},
 					{
-						title: "Lines.Tooltip",
-						href: Hrefs.GRAPHS.LINES.TOOLTIP,
+						title: "Examples",
+						href: Hrefs.GRAPHS.LINES.EXAMPLES,
 					},
 					{
 						title: "Playground",

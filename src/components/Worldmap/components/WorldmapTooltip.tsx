@@ -1,9 +1,10 @@
 "use client";
-import { ReactNode, useEffect, useState } from "react";
-import { SegmentDataset, useGraph, useGraphRef } from "../../../hooks/use-graph/use-graph";
+import React, { ReactNode, useEffect, useState } from "react";
+import { SegmentDataset, useGraph } from "../../../hooks/use-graph/use-graph";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { TooltipMouse } from "../../Tooltip/TooltipMouse";
+import { useGraphRef } from "../../../hooks/use-graph/use-graph-ref";
 
 type Props = {
 	tooltip: (datapoint: SegmentDataset[number]) => ReactNode;

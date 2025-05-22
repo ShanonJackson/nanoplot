@@ -17,17 +17,17 @@ export const CoordinatesUtils = {
 		const isDateTime = domain.x[0]?.tick instanceof Date;
 		const isNumericalScale = typeof domain.x[0]?.tick === "number";
 		const isCategoricalScale = typeof domain.x[0]?.tick === "string";
-		if (isCategoricalScale) {
-			return (value: number | string | Date) => {
-				return domain.x.find((d) => d.tick === value)?.coordinate ?? 0;
-			};
-		}
 		if (isLinearScale && (isDateTime || isNumericalScale)) {
 			return (value: number | string | Date) => {
 				const v = (
 					value instanceof Date ? value.getTime() : value
 				) as number; /* .getTime() on date's required; Performance improvement */
 				return coordinates[0] + (v - min) * rrange * crange;
+			};
+		}
+		if (isCategoricalScale) {
+			return (value: number | string | Date) => {
+				return domain.x.find((d) => d.tick === value)?.coordinate ?? 0;
 			};
 		}
 		return (value: number | string | Date) => {
@@ -65,17 +65,17 @@ export const CoordinatesUtils = {
 		const isNumericalScale = typeof domain.y[0]?.tick === "number";
 		const isDateTimeScale = domain.y[0]?.tick instanceof Date;
 		const isCategoricalScale = typeof domain.y[0]?.tick === "string";
-		if (isCategoricalScale) {
-			return (value: number | string | Date) => {
-				return domain.y.find((d) => d.tick === value)?.coordinate ?? 0;
-			};
-		}
 		if (isLinearScale && (isNumericalScale || isDateTimeScale)) {
 			return (value: number | string | Date) => {
 				const v = (
 					value instanceof Date ? value.getTime() : value
 				) as number; /* .getTime() on date's required; Performance improvement */
 				return coordinates[0] + (v - min) * rrange * crange;
+			};
+		}
+		if (isCategoricalScale) {
+			return (value: number | string | Date) => {
+				return domain.y.find((d) => d.tick === value)?.coordinate ?? 0;
 			};
 		}
 		return (value: number | string | Date) => {

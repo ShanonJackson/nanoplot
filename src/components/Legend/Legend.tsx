@@ -1,16 +1,27 @@
-import React, { ReactNode } from "react";
+import React, { JSX, ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
-import { GraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import {
+	CartesianDataset,
+	CartesianDatasetDefaulted,
+	GraphContext,
+	SegmentDataset,
+	SegmentDatasetDefaulted,
+	useGraph,
+} from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
-type Props = {
+type Props = Omit<JSX.IntrinsicElements["div"], "onClick" | "onMouseEnter" | "onMouseLeave"> & {
 	position?: "top" | "bottom" | "left" | "right";
 	alignment?: "center" | "start" | "end";
+	onClick?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
+	onMouseEnter?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
+	onMouseLeave?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
+	onMouseMove?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
 	children?: ReactNode;
 };
 
-export const Legend = ({ position = "top", alignment = "center" }: Props) => {
+export const Legend = ({ position = "top", alignment = "center", onClick, onMouseEnter, onMouseMove, onMouseLeave, ...rest }: Props) => {
 	const context = useGraph();
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	const {
@@ -21,6 +32,7 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 
 	return (
 		<Element
+			{...rest}
 			className={cx(
 				"flex gap-3",
 				(position === "left" || position === "right") && "flex-col",
@@ -31,12 +43,14 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 				alignment === "start" && "justify-start",
 				alignment === "end" && "justify-end",
 				alignment === "center" && "justify-center",
+				rest.className,
 			)}
 		>
 			{context.data
 				.map((dp) => ({ ...dp, group: dp.group ?? "" }))
 				.sort((a, b) => a.group.localeCompare(b.group))
-				.map(({ id, name, fill, stroke, ...datapoint }, i, datapoints) => {
+				.map((datapoint, i, datapoints) => {
+					const { id, name, fill, stroke } = datapoint;
 					const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
 					const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
 					const bg = fill ?? stroke;
@@ -48,7 +62,17 @@ export const Legend = ({ position = "top", alignment = "center" }: Props) => {
 							})
 						: bg;
 					return (
-						<div key={i} className={"flex items-center"}>
+						<div
+							key={i}
+							className={cx(
+								"flex items-center",
+								(onClick || onMouseEnter || onMouseLeave || onMouseMove) && "cursor-pointer",
+							)}
+							onClick={() => onClick?.(datapoint)}
+							onMouseEnter={() => onMouseEnter?.(datapoint)}
+							onMouseLeave={() => onMouseLeave?.(datapoint)}
+							onMouseMove={() => onMouseMove?.(datapoint)}
+						>
 							<div
 								className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
 								style={disabled ? undefined : { background: deserialized }}

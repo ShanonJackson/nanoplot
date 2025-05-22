@@ -4,23 +4,7 @@ const { sassPlugin, postcssModules } = require("esbuild-sass-plugin");
 
 const path = require("path");
 
-const componentExports = [
-	"./src/components/Sunburst/Sunburst.tsx",
-	"./src/components/Bars/Bars.tsx",
-	"./src/components/Lines/Lines.tsx",
-	"./src/components/Pie/Pie.tsx",
-	"./src/components/Scatter/Scatter.tsx",
-	"./src/components/Worldmap/Worldmap.tsx",
-	"./src/components/XAxis/XAxis.tsx",
-	"./src/components/YAxis/YAxis.tsx",
-	"./src/components/GridLines/GridLines.tsx",
-	"./src/components/Radar/Radar.tsx",
-	"./src/components/Legend/Legend.tsx",
-	"./src/components/Graph/Graph.tsx",
-	"./src/components/Tooltip/Tooltip.tsx",
-	"./src/components/Tooltip/Popup.tsx",
-	"./src/components/Overlay/Overlay.tsx",
-];
+const componentExports = ["./src/components/GradientLegend/GradientLegend.tsx"];
 
 await esbuild
 	.build({

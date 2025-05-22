@@ -8,6 +8,7 @@ import { GridLines } from "../../../../../components/GridLines/GridLines";
 import { format } from "../../../../../utils/date/date-format";
 import { XAxis } from "../../../../../components/XAxis/XAxis";
 import { useMounted } from "../../../../../hooks/use-mounted";
+import { ZoomSlider } from "../../../../../components/ZoomSlider/ZoomSlider";
 
 const now = new Date();
 const generateInitialData = (min: number, max: number) => {
@@ -27,6 +28,9 @@ const createInitialDataset = () => [
 
 export default function Page() {
 	const [dataset, setDataset] = useState(createInitialDataset);
+	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
+	const [pinned, setPinned] = useState<string[]>([]);
+	const [hovered, setHovered] = useState<string[]>([]);
 	const mounted = useMounted();
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -46,8 +50,26 @@ export default function Page() {
 	return (
 		<div>
 			<div className={"mx-auto w-[90%] h-[800px] resize overflow-hidden"}>
-				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset}>
-					<Legend position={"top"} />
+				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset} zoom={zoom} interactions={{ hovered, pinned }}>
+					<ZoomSlider.X onChange={setZoom} />
+					<Legend
+						position={"top"}
+						onClick={(dp) => {
+							setPinned((p) => {
+								if (p.includes(dp.id)) return p.filter((pin) => pin !== dp.id);
+								return [...p, dp.id];
+							});
+						}}
+						onMouseEnter={(dp) => {
+							setHovered((h) => {
+								if (h.includes(dp.id)) return h.filter((hov) => hov !== dp.id);
+								return [...h, dp.id];
+							});
+						}}
+						onMouseLeave={(dp) => {
+							setHovered((h) => h.filter((hov) => hov !== dp.id));
+						}}
+					/>
 					<YAxis />
 					<GridLines border />
 					<Lines />

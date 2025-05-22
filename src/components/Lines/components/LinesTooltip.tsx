@@ -235,7 +235,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 										"text-[14px] leading-[14px] rounded border bg-opacity-60 shadow-md backdrop-blur-sm w-[250px] pb-1.5 border-gray-200 dark-border-[#454545]"
 									}
 								>
-									<div className="font-medium bg-gradient-to-b from-transparent to-[#CFCFCF] dark:to-[#3C3C3C] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
+									<div className="font-medium [background:linear-gradient(transparent,#CFCFCF)] dark:[background:linear-gradient(transparent,#3C3C3C)] pl-2 pr-2 pt-1.5 pb-1 mb-1.5">
 										{(() => {
 											if (tooltip?.title) return tooltip.title(closest);
 											if (closest instanceof Date) {
