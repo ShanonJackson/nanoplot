@@ -1,10 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DocumentationNavigation } from "../Documentation/DocumentationNavigation/DocumentationNavigation";
 
 export const NavToggle = () => {
 	const [open, setOpen] = useState(false);
 	// IF YOU go back to a breakpoint where button is invisible
 	// set open false.
+
+	useEffect(() => {
+		const onResize = () => {
+			const breakpoint = window.matchMedia("(max-width: 768px)");
+			if (!breakpoint.matches) {
+				setOpen(false);
+			}
+		};
+		window.addEventListener("resize", onResize);
+
+		return () => window.removeEventListener("resize", onResize);
+	}, []);
 
 	return (
 		<div>
