@@ -3,8 +3,6 @@ import { DocumentationNavigation } from "../Documentation/DocumentationNavigatio
 
 export const NavToggle = () => {
 	const [open, setOpen] = useState(false);
-	// IF YOU go back to a breakpoint where button is invisible
-	// set open false.
 
 	useEffect(() => {
 		const onResize = () => {
@@ -14,7 +12,6 @@ export const NavToggle = () => {
 			}
 		};
 		window.addEventListener("resize", onResize);
-
 		return () => window.removeEventListener("resize", onResize);
 	}, []);
 
@@ -33,7 +30,7 @@ export const NavToggle = () => {
 					</g>
 				</svg>
 			</button>
-			{open && <DocumentationNavigation className={"fixed w-full h-full block top-[65px] left-0"} />}
+			{open && <DocumentationNavigation onClick={() => setOpen(false)} className={"fixed w-full h-full block top-[65px] left-0"} />}
 		</div>
 	);
 };

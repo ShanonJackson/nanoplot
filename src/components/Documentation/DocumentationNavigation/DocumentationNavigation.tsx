@@ -10,11 +10,11 @@ type MenuItem = {
 };
 
 type Props = {
-	onClose?: () => void;
+	onClick?: () => void;
 	className?: string;
 };
 
-export const DocumentationNavigation = ({ className }: Props) => {
+export const DocumentationNavigation = ({ onClick, className }: Props) => {
 	/* GPT Generated */
 	return (
 		<div className={tw("w-[220px] hidden md:block", className)}>
@@ -29,6 +29,7 @@ export const DocumentationNavigation = ({ className }: Props) => {
 								<DocumentationNavigationMenuItem
 									key={itemIndex}
 									item={item}
+									onClick={onClick}
 									defaultOpen={sectionIndex === 0 && itemIndex === 1}
 								/>
 							))}
