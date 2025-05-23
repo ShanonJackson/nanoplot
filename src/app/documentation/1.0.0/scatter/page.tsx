@@ -9,7 +9,7 @@ import { JSX } from "react";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
 			<DocumentationHeading level={1}>Scatter Graph</DocumentationHeading>
 			<DocumentationParagraph>
 				Scatter plots are used to visualise individual data points, highlighting relationships, distributions, and potential

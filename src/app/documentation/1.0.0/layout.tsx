@@ -17,7 +17,7 @@ export default async function RootLayout({
 			<DocumentationHeader />
 			<div className={"flex"}>
 				<DocumentationNavigation />
-				<div className={""}>{children}</div>
+				<div className={"w-full"}>{children}</div>
 			</div>
 		</div>
 	);

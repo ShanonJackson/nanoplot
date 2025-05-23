@@ -10,7 +10,7 @@ import { DocumentationCode as Code } from "../../../../components/Documentation/
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
 			<DocumentationHeading level={1}>Area Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				An area chart displays trends over time. In stacked versions, each series is layered to highlight cumulative trends and

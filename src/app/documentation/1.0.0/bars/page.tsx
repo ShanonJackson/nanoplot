@@ -11,7 +11,7 @@ import { JSX } from "react";
 export default function Page() {
 	return (
 		<>
-			<div className={"p-4 md:p-8 max-w-[1500px]"}>
+			<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
 				<DocumentationHeading level={1}>Bar Chart</DocumentationHeading>
 				<DocumentationParagraph>Bar charts are used to compare discrete values across categories.</DocumentationParagraph>
 				<Sandpack files={{ "App.js": barsExample }} />

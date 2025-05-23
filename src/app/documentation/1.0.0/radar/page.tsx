@@ -9,7 +9,7 @@ import { DocumentationCode as Code } from "../../../../components/Documentation/
 
 export default function Page() {
 	return (
-		<div className={"p-8 max-w-[1500px]"}>
+		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
 			<DocumentationHeading level={1}>Radar Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Radar charts are ideal for comparing multivariate data across shared categories. This chart helps clearly highlight patterns
