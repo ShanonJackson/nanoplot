@@ -51,33 +51,6 @@ export default function Page() {
 					{ name: "Horizontal Bars", code: HorizontalBarsExampleCode, component: HorizontalBarsExample },
 					{ name: "Bars percent / 100", code: BarsPercentExampleCode, component: BarsPercentExample },
 				]}
-				code={`<Graph
-	data={[
-		{
-			name: "Male",
-			fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
-			data: [
-				{ x: "Jan", y: 5_000 },
-				{ x: "Feb", y: 20_000 },
-				{ x: "Mar", y: 45_000 },
-				{ x: "Apr", y: 20_000 },
-			],
-		},
-		{
-			name: "Female",
-			fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
-			data: [
-				{ x: "Jan", y: 45_000 },
-				{ x: "Feb", y: 10_000 },
-				{ x: "Mar", y: 15_000 },
-				{ x: "Apr", y: 30_000 },
-			],
-		},
-	]}
->
-	<Bars${bars.example?.props ? bars.example.props : ""}/>
-</Graph>
-`}
 			>
 				<Graph
 					data={[

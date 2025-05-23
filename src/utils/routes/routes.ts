@@ -27,38 +27,53 @@ export const Href = {
 				LINES: {
 					INDEX: "/documentation/1.0.0/lines",
 					TOOLTIP: "/documentation/1.0.0/lines/tooltip",
+					EXAMPLES: "/documentation/1.0.0/lines/examples",
 					PLAYGROUND: "/documentation/1.0.0/lines/playground",
 				},
 				SCATTER: {
 					INDEX: "/documentation/1.0.0/scatter",
 					TOOLTIP: "/documentation/1.0.0/scatter/tooltip",
+					EXAMPLES: "/documentation/1.0.0/scatter/examples",
 					PLAYGROUND: "/documentation/1.0.0/scatter/playground",
 				},
 				BARS: {
 					INDEX: "/documentation/1.0.0/bars",
+					EXAMPLES: "/documentation/1.0.0/bars/examples",
 					PLAYGROUND: "/documentation/1.0.0/bars/playground",
 				},
 				PIE: {
 					INDEX: "/documentation/1.0.0/pie",
+					EXAMPLES: "/documentation/1.0.0/pie/examples",
 					PLAYGROUND: "/documentation/1.0.0/pie/playground",
 				},
 				AREA: {
 					INDEX: "/documentation/1.0.0/area",
 					TOOLTIP: "/documentation/1.0.0/area/tooltip",
+					EXAMPLES: "/documentation/1.0.0/area/examples",
 					PLAYGROUND: "/documentation/1.0.0/area/playground",
 				},
 				RADAR: {
 					INDEX: "/documentation/1.0.0/radar",
+					EXAMPLES: "/documentation/1.0.0/radar/examples",
 					PLAYGROUND: "/documentation/1.0.0/radar/playground",
 				},
 				HEATMAP: {
 					INDEX: "/documentation/1.0.0/heatmap",
+					EXAMPLES: "/documentation/1.0.0/heatmap/examples",
 					PLAYGROUND: "/documentation/1.0.0/heatmap/playground",
 				},
 				WORLDMAP: {
 					INDEX: "/documentation/1.0.0/worldmap",
+					EXAMPLES: "/documentation/1.0.0/worldmap/examples",
 					PLAYGROUND: "/documentation/1.0.0/worldmap/playground",
 				},
+			},
+			CARTESIAN: {
+				GRIDLINES: "/documentation/1.0.0/cartesian/gridlines",
+				Y_AXIS: "/documentation/1.0.0/cartesian/y-axis",
+				X_AXIS: "/documentation/1.0.0/cartesian/x-axis",
+				LEGEND: "/documentation/1.0.0/cartesian/legend",
+				ZOOM_SLIDER: "/documentation/1.0.0/cartesian/zoom-slider",
 			},
 		},
 	},

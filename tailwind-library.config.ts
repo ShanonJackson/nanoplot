@@ -20,6 +20,8 @@ export default {
 		"./src/components/Sunburst/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/LinearGradient/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/GridLines/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/Tooltip/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/GradientLegend/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	corePlugins: {
 		preflight: true,

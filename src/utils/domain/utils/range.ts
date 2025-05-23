@@ -1,4 +1,4 @@
-import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { GraphContext, GraphContextRaw } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
 import { DomainUtils } from "../domain";
@@ -14,7 +14,7 @@ import {
 } from "./date-domain";
 
 export const range = (
-	{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
+	{ data, viewbox }: Pick<GraphContextRaw, "data" | "viewbox">,
 	{ from = "auto", to = "auto", jumps = "auto" }: FromToJumps = {
 		from: "auto",
 		to: "auto",

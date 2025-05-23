@@ -16,7 +16,7 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 			key={isLight.toString()}
 			theme={isLight ? "light" : "dark"}
 			customSetup={{
-				dependencies: { ...props.customSetup?.dependencies, nanoplot: pkg.version },
+				dependencies: { ...props.customSetup?.dependencies, nanoplot: pkg.version, "@number-flow/react": "latest" },
 			}}
 			options={{
 				editorHeight: 500,

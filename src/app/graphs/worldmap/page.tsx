@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import React, { ComponentProps, useState } from "react";
 import { ControlPanel } from "../../../components/Panels/ControlPanel";
 import { Control } from "../../../components/Docs/Control/Control";
@@ -7,8 +6,8 @@ import { Worldmap } from "../../../components/Worldmap/Worldmap";
 import { SliderControl } from "../../../components/Docs/Control/components/SliderControl/SliderControl";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
-import { ColorUtils } from "../../../utils/color/color";
-import { GradientLegend } from "../../../components/Heatmap/components/GradientLegend";
+import { GradientLegend } from "../../../components/GradientLegend/GradientLegend";
+import Image from "next/image";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
@@ -44,28 +43,27 @@ export default function Page() {
 						gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
 						scalars={[Math.min(...MOCK_DATA.map((d) => d.value)), Math.max(...MOCK_DATA.map((d) => d.value))]}
 					/>
-					<Worldmap
-						gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
-						tooltips={Object.fromEntries(
-							MOCK_DATA.map((data, i) => {
-								return [
-									data.name,
+					<Worldmap gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"} {...map} />
+					<Worldmap.Tooltip
+						tooltip={(dp) => {
+							return (
+								<div>
 									<div className={"flex items-center"}>
-										<div>{i + 1}</div>
 										<Image
-											src={`https://cdn-fastly.parrotanalytics.com/flags/${data.name.toLowerCase()}.png?quality=85&width=32`}
+											src={`https://flagcdn.com/w40/${dp.name.toLowerCase()}.png`}
 											alt={""}
-											unoptimized={true}
-											height={14}
-											width={20}
+											width={30}
+											height={20}
+											className={"shrink-0 block"}
+											unoptimized
 										/>
-										{data.name}
-										<div>{data.value}</div>
-									</div>,
-								];
-							}),
-						)}
-						{...map}
+										<div className={"mx-[4px] text-sm font-bold"}>{dp.name}</div>
+										<div className={"mx-[4px] text-sm font-bold"}>{dp.value.toString()}</div>
+									</div>
+									<div className={"h-[3px] w-[64px] mt-[4px]"} style={{ background: dp.fill }} />
+								</div>
+							);
+						}}
 					/>
 				</Graph>
 			</GraphPanel>

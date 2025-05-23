@@ -3,6 +3,7 @@ import { GraphContext, useDataset, useGraph, useGraphColumn } from "../../hooks/
 import { Graph } from "../Graph/Graph";
 import { MathUtils } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
+import { cx } from "../../utils/cx/cx";
 
 type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
 type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
@@ -19,6 +20,7 @@ type Props = {
 
 export const YAxis = ({ title, description, display, dataset, position = "left" }: Props) => {
 	const { domain } = useDataset(dataset);
+	const { viewbox } = useGraph();
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
 		<Graph.Column className={"yaxis flex relative text-xs font-normal select-none"}>
@@ -37,10 +39,15 @@ export const YAxis = ({ title, description, display, dataset, position = "left" 
 						if (typeof tick === "number") return formatter.format(tick);
 						return tick.toString();
 					})();
+					const isVisible = Math.round(coordinate) >= 0 && Math.round(coordinate) <= viewbox.y;
 					return (
 						<React.Fragment key={i}>
 							<div
-								className={`yaxis__tick absolute right-2 [transform:translateY(-50%)] text-gray-700 dark:text-gray-300`}
+								className={cx(
+									`yaxis__tick absolute right-2 [transform:translateY(-50%)] text-gray-700 dark:text-gray-300`,
+									!isVisible && "opacity-0",
+								)}
+								data-coordinate={coordinate}
 								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
 							>
 								{label}

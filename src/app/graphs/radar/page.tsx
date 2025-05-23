@@ -30,24 +30,25 @@ export default function Page() {
 					{ name: "Radar with Multiple Spreads", code: RadarMultipleSpreadsExampleCode, component: RadarMultipleSpreadsExample },
 				]}
 			>
-				<Graph gap={{ top: 30 }} data={MOCK_DATA}>
+				<Graph
+					gap={{ top: 30 }}
+					data={[
+						{
+							name: "Jasons Progress",
+							stroke: "#11ACAE",
+							data: [
+								{ x: "Fighting", y: 70 },
+								{ x: "Farming", y: 8 },
+								{ x: "Supporting", y: 300 },
+								{ x: "Pushing", y: 90 },
+								{ x: "Versatility", y: 60 },
+							],
+						},
+					]}
+				>
 					<Radar {...radar} />
 				</Graph>
 			</GraphPanel>
 		</>
 	);
 }
-
-const MOCK_DATA = [
-	{
-		name: "Jasons Progress",
-		stroke: "#11ACAE",
-		data: [
-			{ x: "Fighting", y: 70 },
-			{ x: "Farming", y: 8 },
-			{ x: "Supporting", y: 300 },
-			{ x: "Pushing", y: 90 },
-			{ x: "Versatility", y: 60 },
-		],
-	},
-];

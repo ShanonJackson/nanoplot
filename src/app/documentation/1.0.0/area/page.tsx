@@ -10,24 +10,92 @@ import { DocumentationCode as Code } from "../../../../components/Documentation/
 
 export default function Page() {
 	return (
-		<div className={"p-8"}>
+		<div className={"p-4 md:p-8 max-w-[1500px]"}>
 			<DocumentationHeading level={1}>Area Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				An area chart displays trends over time. In stacked versions, each series is layered to highlight cumulative trends and
 				combined totals.
 			</DocumentationParagraph>
 			<Sandpack
-				template="react"
-				options={{
-					editorHeight: 500,
-				}}
-				// Set the dependencies; for example, this is a private package from GitHub packages
-				customSetup={{
-					dependencies: { nanoplot: "latest" },
-				}}
-				// Consume dependencies as usual
 				files={{
-					"App.js": `import { Graph } from "nanoplot/Graph";
+					"App.js": areaExample,
+				}}
+			/>
+
+			<DocumentationNote>
+				Stacked area charts are a common use case, as shown in the example above, used to visualise cumulative trends over time.
+			</DocumentationNote>
+
+			<DocumentationHeading>Props</DocumentationHeading>
+			<DocumentationTable
+				columns={["Name", "Description", "Type", "Required", "Default"]}
+				data={[
+					{
+						Name: { value: "curve", href: "", tag: "code" },
+						Description: "Sets the curve type used to render the line path between data points",
+						Type: (
+							<>
+								<Code>'linear'</Code> | <Code>'natural'</Code> | <Code>'monotoneX'</Code> | <Code>'stepBefore'</Code> |{" "}
+								<Code>'stepAfter'</Code>
+							</>
+						),
+						Required: "No",
+						Default: "'linear'",
+					},
+					{
+						Name: { value: "children", href: "", tag: "code" },
+						Description: "Custom SVG element rendered inside the graph",
+						Type: <Code>ReactNode</Code>,
+						Required: "No",
+						Default: "-",
+					},
+					{
+						Name: { value: "loading", href: "", tag: "code" },
+						Description: "Displays a loading skeleton",
+						Type: <Code>boolean</Code>,
+						Required: "No",
+						Default: "false",
+					},
+				]}
+				renderers={{
+					Name: (val) => {
+						if (val.href) {
+							return (
+								<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
+									{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
+								</a>
+							);
+						}
+						return val.tag === "code" ? <Code>{val.value}</Code> : val.value;
+					},
+					Type: (v: JSX.Element | string) => v,
+					Default: (val) => <Code>{val}</Code>,
+				}}
+			/>
+
+			<DocumentationHeading>Styling</DocumentationHeading>
+			<DocumentationParagraph>
+				Custom styling can be applied to the area chart by targeting the class names below.
+			</DocumentationParagraph>
+			<DocumentationTable
+				columns={["Class Name", "Element"]}
+				data={[
+					{
+						"Class Name": "area__stroke",
+						Element: "The line path",
+					},
+					{
+						"Class Name": "area__fill",
+						Element: "Filled area beneath the line",
+					},
+				]}
+				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
+			/>
+		</div>
+	);
+}
+
+const areaExample = `import { Graph } from "nanoplot/Graph";
 import { Area } from "nanoplot/Area";
 import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
@@ -165,79 +233,4 @@ export default () => {
 		</div>
 	);
 };
-`,
-				}}
-			/>
-
-			<DocumentationNote>
-				Stacked area charts are a common use case, as shown in the example above, used to visualise cumulative trends over time.
-			</DocumentationNote>
-
-			<DocumentationHeading>Props</DocumentationHeading>
-			<DocumentationTable
-				columns={["Name", "Description", "Type", "Required", "Default"]}
-				data={[
-					{
-						Name: { value: "curve", href: "", tag: "code" },
-						Description: "Sets the curve type used to render the line path between data points",
-						Type: (
-							<>
-								<Code>'linear'</Code> | <Code>'natural'</Code> | <Code>'monotoneX'</Code> | <Code>'stepBefore'</Code> |{" "}
-								<Code>'stepAfter'</Code>
-							</>
-						),
-						Required: "No",
-						Default: "'linear'",
-					},
-					{
-						Name: { value: "children", href: "", tag: "code" },
-						Description: "Custom SVG element rendered inside the graph",
-						Type: <Code>ReactNode</Code>,
-						Required: "No",
-						Default: "-",
-					},
-					{
-						Name: { value: "loading", href: "", tag: "code" },
-						Description: "Displays a loading skeleton",
-						Type: <Code>boolean</Code>,
-						Required: "No",
-						Default: "false",
-					},
-				]}
-				renderers={{
-					Name: (val) => {
-						if (val.href) {
-							return (
-								<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
-									{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
-								</a>
-							);
-						}
-						return val.tag === "code" ? <Code>{val.value}</Code> : val.value;
-					},
-					Type: (v: JSX.Element | string) => v,
-					Default: (val) => <Code>{val}</Code>,
-				}}
-			/>
-
-			<DocumentationHeading>Styling</DocumentationHeading>
-			<DocumentationParagraph>
-				Custom styling can be applied to the area chart by targeting the class names below.
-			</DocumentationParagraph>
-			<DocumentationTable
-				columns={["Class Name", "Element"]}
-				data={[
-					{
-						"Class Name": "area__stroke",
-						Element: "The line path",
-					},
-					{
-						"Class Name": "area__fill",
-						Element: "Filled area beneath the line",
-					},
-				]}
-				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
-			/>
-		</div>
-	);
-}
+`;

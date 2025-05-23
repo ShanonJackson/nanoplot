@@ -9,7 +9,7 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	vertical?: boolean;
 }
 
-export const GridLines = ({ border, horizontal, vertical, className }: Props) => {
+export const GridLines = ({ border = true, horizontal = true, vertical = true, className }: Props) => {
 	const context = useGraph();
 	const { x, y } = context.viewbox;
 	const { domain } = context;

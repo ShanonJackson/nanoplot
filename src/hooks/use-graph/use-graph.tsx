@@ -16,7 +16,6 @@ export type CartesianDataset = Array<{
 		z?: number | string | Date;
 	}>;
 }>;
-
 export type SegmentDataset = Array<{
 	id?: string /* name is id, if undefined */;
 	name: string;
@@ -27,13 +26,17 @@ export type SegmentDataset = Array<{
 	value: string | number | Date;
 }>;
 
+export type CartesianDatasetDefaulted = Array<Omit<CartesianDataset[number], "id"> & { id: string }>;
+export type SegmentDatasetDefaulted = Array<Omit<SegmentDataset[number], "id"> & { id: string }>;
+
 export type GraphContext = {
 	id: string;
 	attributes: HTMLAttributes<HTMLDivElement>;
 	gap: { top: number; right: number; bottom: number; left: number };
 	viewbox: { x: number; y: number };
-	data: CartesianDataset | SegmentDataset;
+	data: CartesianDatasetDefaulted | SegmentDatasetDefaulted;
 	layout: { rows: string; columns: string };
+	zoom: { x: [number, number]; y: [number, number] };
 	domain: {
 		x: Array<{ coordinate: number; tick: string | number | Date }>;
 		y: Array<{ coordinate: number; tick: string | number | Date }>;
@@ -41,6 +44,23 @@ export type GraphContext = {
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
 	datasets: Record<string, Pick<GraphContext, "domain" | "colors" | "data">>;
+};
+
+export type GraphContextRaw = {
+	id: string;
+	attributes: HTMLAttributes<HTMLDivElement>;
+	gap: { top: number; right: number; bottom: number; left: number };
+	viewbox: { x: number; y: number };
+	data: CartesianDataset | SegmentDataset;
+	layout: { rows: string; columns: string };
+	zoom: { x: [number, number]; y: [number, number] };
+	domain: {
+		x: Array<{ coordinate: number; tick: string | number | Date }>;
+		y: Array<{ coordinate: number; tick: string | number | Date }>;
+	};
+	colors: string[];
+	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
+	datasets: Record<string, Pick<GraphContextRaw, "domain" | "colors" | "data">>;
 };
 
 export const useGraphColumn = () => {
@@ -58,14 +78,4 @@ export const useGraph: () => GraphContext = typeof window === "undefined" ? useG
 export const useDataset = (dataset?: string) => {
 	const context = useGraph();
 	return dataset ? context.datasets[dataset] : context;
-};
-export const useGraphRef = () => {
-	const [ref, setRef] = useStatefulRef<HTMLDivElement>();
-	const { id } = useGraph();
-	useLayoutEffect(() => {
-		const element = document.getElementById(id);
-		if (!element || !(element instanceof HTMLDivElement)) return;
-		setRef(element);
-	}, []);
-	return ref;
 };

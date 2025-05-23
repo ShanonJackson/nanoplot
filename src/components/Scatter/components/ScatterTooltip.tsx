@@ -87,7 +87,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 						</filter>
 						{closest && (
 							<path
-								d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} A 0 0 0 0 1 ${closest?.coordinates.x} ${closest?.coordinates.y}`}
+								d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} h 0.001`}
 								strokeWidth={12}
 								stroke={"white"}
 								strokeLinecap={"round"}
@@ -101,7 +101,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 							trigger={(ref) => {
 								return (
 									<path
-										d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} A 0 0 0 0 1 ${closest?.coordinates.x} ${closest?.coordinates.y}`}
+										d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} h 0.001`}
 										strokeWidth={10}
 										stroke={closest?.stroke}
 										strokeLinecap={"round"}

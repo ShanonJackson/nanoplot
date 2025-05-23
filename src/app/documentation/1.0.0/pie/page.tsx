@@ -10,57 +10,16 @@ import { JSX } from "react";
 
 export default function Page() {
 	return (
-		<div className={"p-8"}>
+		<div className={"p-4 md:p-8 max-w-[1500px]"}>
 			<DocumentationHeading level={1}>Pie Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Pie charts provide a quick, intuitive view of proportions, making it easy to compare the relative sizes of categories at a
 				glance.
 			</DocumentationParagraph>
 			<Sandpack
-				template="react"
-				options={{
-					editorHeight: 500,
-				}}
-				// Set the dependencies; for example, this is a private package from GitHub packages
-				customSetup={{
-					dependencies: { nanoplot: "latest" },
-				}}
 				// Consume dependencies as usual
 				files={{
-					"App.js": `import { Pie } from "nanoplot/Pie";
-import { Graph } from "nanoplot/Graph";
-
-export default () => {
-	return (
-		<div className={"h-[350px] w-[100%] m-auto dark:bg-black"}>
-			<Graph data={[
-				{
-					name: "elixir",
-					value: 333,
-				},
-				{
-					name: "stylus",
-					value: 257,
-				},
-				{
-					name: "css",
-					value: 30,
-				},
-				{
-					name: "haskell",
-					value: 192,
-				},
-				{
-					name: "python",
-					value: 283,
-				},
-			]}>
-				<Pie />
-			</Graph>
-		</div>
-	);
-};
-`,
+					"App.js": pieExample,
 				}}
 			/>
 
@@ -69,49 +28,49 @@ export default () => {
 				columns={["Name", "Description", "Type", "Required", "Default"]}
 				data={[
 					{
-						Name: { value: "loading", href: "/", tag: "code" },
+						Name: { value: "loading", tag: "code" },
 						Description: "Displays a loading skeleton",
 						Type: "boolean",
 						Required: "No",
 						Default: "false",
 					},
 					{
-						Name: { value: "donut", href: "", tag: "code" },
+						Name: { value: "donut", tag: "code" },
 						Description: "Gives the chart a hollow centre",
 						Type: "boolean | number",
 						Required: "No",
 						Default: "false",
 					},
 					{
-						Name: { value: "className", href: "", tag: "code" },
+						Name: { value: "className", tag: "code" },
 						Description: "Applies a custom class",
 						Type: "string",
 						Required: "No",
 						Default: "-",
 					},
 					{
-						Name: { value: "labels", href: "", tag: "code" },
+						Name: { value: "labels", tag: "code" },
 						Description: "Displays axis labels",
 						Type: "boolean",
 						Required: "No",
 						Default: "true",
 					},
 					{
-						Name: { value: "glow", href: "", tag: "code" },
+						Name: { value: "glow", tag: "code" },
 						Description: "Adds a glow effect around the chart",
 						Type: "boolean",
 						Required: "No",
 						Default: "true",
 					},
 					{
-						Name: { value: "total", href: "", tag: "code" },
+						Name: { value: "total", tag: "code" },
 						Description: "Sets a maximum value for a progress donut chart",
 						Type: "number",
 						Required: "No",
 						Default: "-",
 					},
 					{
-						Name: { value: "children", href: "", tag: "code" },
+						Name: { value: "children", tag: "code" },
 						Description: "Custom content rendered within the donut centre",
 						Type: "ReactNode",
 						Required: "No",
@@ -120,13 +79,6 @@ export default () => {
 				]}
 				renderers={{
 					Name: (val) => {
-						if (val.href) {
-							return (
-								<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
-									{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
-								</a>
-							);
-						}
 						return val.tag === "code" ? <Code>{val.value}</Code> : val.value;
 					},
 					Type: (val) => <Code>{val}</Code>,
@@ -179,3 +131,39 @@ export default () => {
 		</div>
 	);
 }
+
+const pieExample = `import { Pie } from "nanoplot/Pie";
+import { Graph } from "nanoplot/Graph";
+import "nanoplot/styles.css";
+
+export default function App() {
+	return (
+		<div className={"h-[500px] w-[100%] m-auto dark:bg-black"}>
+			<Graph data={[
+				{
+					name: "elixir",
+					value: 333,
+				},
+				{
+					name: "stylus",
+					value: 257,
+				},
+				{
+					name: "css",
+					value: 30,
+				},
+				{
+					name: "haskell",
+					value: 192,
+				},
+				{
+					name: "python",
+					value: 283,
+				},
+			]}>
+				<Pie labels={false} />
+			</Graph>
+		</div>
+	);
+};
+`;

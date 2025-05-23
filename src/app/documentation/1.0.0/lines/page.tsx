@@ -15,15 +15,6 @@ export default function Page() {
 				Line graphs are used to visualise continuous datasets, showing patterns, trends, and changes over time.
 			</DocumentationParagraph>
 			<Sandpack
-				template="react"
-				options={{
-					editorHeight: 500,
-				}}
-				// Set the dependencies; for example, this is a private package from GitHub packages
-				customSetup={{
-					dependencies: { nanoplot: "latest" },
-				}}
-				// Consume dependencies as usual
 				files={{
 					"App.js": `
 import { Graph } from "nanoplot/Graph";
@@ -97,7 +88,6 @@ export default function App() {
 `,
 				}}
 			/>
-
 			<DocumentationHeading>Props</DocumentationHeading>
 			<DocumentationTable
 				columns={["Name", "Description", "Type", "Required", "Default"]}

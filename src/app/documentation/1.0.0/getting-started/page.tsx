@@ -11,13 +11,6 @@ export default function Page() {
 			<InstallCommand className={"my-2"} />
 			<div className={"w-[90%] my-4"}>
 				<Sandpack
-					template="react"
-					options={{
-						editorHeight: 500,
-					}}
-					customSetup={{
-						dependencies: { nanoplot: "0.0.43" },
-					}}
 					files={{
 						"App.js": `import {Pie} from "nanoplot/Pie";
 import {Graph} from "nanoplot/Graph";

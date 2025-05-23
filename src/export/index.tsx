@@ -14,6 +14,9 @@ export { GridLines } from "../components/GridLines/GridLines";
 export { Radar } from "../components/Radar/Radar";
 export { Legend } from "../components/Legend/Legend";
 export { Graph } from "../components/Graph/Graph";
+export { ZoomSlider } from "../components/ZoomSlider/ZoomSlider";
+export { HydrateContext } from "../components/HydrateContext/HydrateContext";
+export { GradientLegend } from "../components/GradientLegend/GradientLegend";
 
 export { ColorUtils } from "../utils/color/color";
 export { GraphContextServer } from "../hooks/use-graph/use-server-graph";
