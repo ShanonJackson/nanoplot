@@ -1,4 +1,3 @@
-export type interval = "days" | "months" | "years" | "hours" | "minutes" | "seconds" | "milliseconds";
 export type MinMax = "min" | "max";
 export type ISODuration = `P${string}`;
 export type Expression =

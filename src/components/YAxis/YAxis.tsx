@@ -1,20 +1,17 @@
 import React, { ReactNode } from "react";
-import { GraphContext, useDataset, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import { GraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { MathUtils } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
 import { cx } from "../../utils/cx/cx";
-
-type From = "auto" | "min" | `min - ${number}` | `min + ${number}` | `min + ${number}%` | `min - ${number}%` | number;
-type To = "auto" | "max" | `max - ${number}` | `max + ${number}` | `max + ${number}%` | `max - ${number}%` | number;
-type Jumps = "auto" | number;
+import { FromToJumps } from "../../models/domain/domain";
 
 type Props = {
-	ticks?: { from?: From; to?: To; jumps?: Jumps };
+	ticks?: FromToJumps;
 	title?: ReactNode;
 	display?: (tick: string | number | Date) => ReactNode;
 	description?: ReactNode;
-	position?: "top" | "bottom" | "left" | "right";
+	position?: "left" | "right";
 	dataset?: string /* dataset property key */;
 };
 

@@ -23,8 +23,9 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 				...props.options,
 				externalResources: [
 					"https://unpkg.com/@tailwindcss/browser@4.0.12",
-					`${window.location.origin}/sandpack-${isLight ? "light" : "dark"}.js`,
-					`${window.location.origin}/sandpack-${isLight ? "light" : "dark"}-global.css`,
+					`${window.location.origin}/sandpack/sandpack.js`,
+					`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}.js`,
+					`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}-global.css`,
 				],
 			}}
 		/>
