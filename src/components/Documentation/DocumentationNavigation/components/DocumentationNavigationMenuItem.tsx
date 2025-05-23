@@ -11,15 +11,14 @@ type MenuItem = {
 	children?: MenuItem[];
 };
 
-export const DocumentationNavigationMenuItem = ({
-	item,
-	level = 0,
-	defaultOpen = false,
-}: {
+type Props = {
 	item: MenuItem;
 	level?: number;
 	defaultOpen?: boolean;
-}) => {
+	onClick?: () => void;
+};
+
+export const DocumentationNavigationMenuItem = ({ item, level = 0, defaultOpen = false, onClick }: Props) => {
 	/* GPT Generated */
 	const pathname = usePathname();
 	const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -44,7 +43,7 @@ export const DocumentationNavigationMenuItem = ({
 	return (
 		<li>
 			<div className="grid grid-cols-1 cursor-pointer">
-				{item.href ? (
+				{item.href && !hasChildren ? (
 					<Link
 						href={item.href}
 						className={cx(
@@ -55,7 +54,10 @@ export const DocumentationNavigationMenuItem = ({
 								: "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 pl-8",
 							isActive && "bg-gray-100 dark:bg-gray-900",
 						)}
-						onClick={() => hasChildren && setIsOpen(!isOpen)}
+						onClick={() => {
+							if (hasChildren) return setIsOpen(!isOpen);
+							onClick?.();
+						}}
 					>
 						{content}
 					</Link>
@@ -69,7 +71,10 @@ export const DocumentationNavigationMenuItem = ({
 								: "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 pl-8",
 							isActive && "bg-gray-100 dark:bg-gray-900",
 						)}
-						onClick={() => hasChildren && setIsOpen(!isOpen)}
+						onClick={() => {
+							if (hasChildren) return setIsOpen(!isOpen);
+							onClick?.();
+						}}
 					>
 						{content}
 					</div>
@@ -79,7 +84,7 @@ export const DocumentationNavigationMenuItem = ({
 						<div className="overflow-hidden">
 							<ul className="space-y-1 py-1">
 								{item.children?.map((child, index) => (
-									<DocumentationNavigationMenuItem key={index} item={child} level={level + 1} />
+									<DocumentationNavigationMenuItem key={index} item={child} level={level + 1} onClick={onClick} />
 								))}
 							</ul>
 						</div>

@@ -14,6 +14,8 @@ const unique: Record<string, string> = {
 	absolute: "position",
 	relative: "position",
 	static: "position",
+	block: "display",
+	hidden: "display",
 };
 
 /* deduplicates tailwind classes - localized mutation for perf, perf version */

@@ -1,6 +1,7 @@
 "use client";
 import { DocumentationNavigationMenuItem } from "./components/DocumentationNavigationMenuItem";
 import { documentationNavigation } from "./models/documentation-navigation";
+import { tw } from "../../../utils/cx/cx";
 
 type MenuItem = {
 	title: string;
@@ -8,11 +9,16 @@ type MenuItem = {
 	children?: MenuItem[];
 };
 
-export const DocumentationNavigation = () => {
+type Props = {
+	onClick?: () => void;
+	className?: string;
+};
+
+export const DocumentationNavigation = ({ onClick, className }: Props) => {
 	/* GPT Generated */
 	return (
-		<div className="w-[220px] mr-[22px]">
-			<nav className="fixed top-[65px] w-[220px] py-2 border-r border-gray-200 dark:border-gray-800 h-screen overflow-y-auto bg-white dark:bg-gray-950">
+		<div className={tw("w-[220px] hidden md:block", className)}>
+			<nav className="sticky top-[65px] w-[inherit] h-full py-2 border-r border-gray-200 dark:border-gray-800 h-screen overflow-y-auto bg-white dark:bg-gray-950">
 				{documentationNavigation.map((section, sectionIndex) => (
 					<div key={sectionIndex} className="mb-4">
 						{section.title && (
@@ -23,6 +29,7 @@ export const DocumentationNavigation = () => {
 								<DocumentationNavigationMenuItem
 									key={itemIndex}
 									item={item}
+									onClick={onClick}
 									defaultOpen={sectionIndex === 0 && itemIndex === 1}
 								/>
 							))}

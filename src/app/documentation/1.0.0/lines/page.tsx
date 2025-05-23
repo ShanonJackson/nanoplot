@@ -9,7 +9,7 @@ import { JSX } from "react";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8"}>
+		<div className={"p-8"}>
 			<DocumentationHeading level={1}>Line Graph</DocumentationHeading>
 			<DocumentationParagraph>
 				Line graphs are used to visualise continuous datasets, showing patterns, trends, and changes over time.
