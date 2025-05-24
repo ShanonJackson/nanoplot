@@ -43,7 +43,7 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);
 
 	return (
-		<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full"} preserveAspectRatio={"none"}>
+		<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full absolute overflow-visible"} preserveAspectRatio={"none"}>
 			{Object.entries(colors).flatMap(([color, points], i) => {
 				return chunk(points ?? [], 3000).map((points, ii) => {
 					return (

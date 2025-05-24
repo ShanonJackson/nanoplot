@@ -13,7 +13,7 @@ import { GradientUtils } from "../../utils/gradient/gradient";
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
 	curve?: keyof typeof CurveUtils;
-	joints?: boolean;
+	joints?: boolean | { border: boolean };
 	loading?: boolean;
 	dataset?: string;
 }
@@ -57,16 +57,17 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			preserveAspectRatio={"none"}
-			className={cx("lines h-full w-full [grid-area:graph] will-change-transform [transform:translateZ(0)]", className)}
+			className={cx(
+				"absolute overflow-visible lines h-full w-full [grid-area:graph] will-change-transform [transform:translateZ(0)]",
+				className,
+			)}
 		>
-			{lines.map(({ id, stroke, data: points }, i) => {
-				const isChunkingCandidate =
-					!stroke.includes("linear-gradient") &&
-					curve ===
-						"linear"; /* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
+			{lines.map(({ id, stroke, fill, data: points }, i) => {
+				/* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
+				const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
 				const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
-				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled);
+				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled) || fill;
 				const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
 
 				return (
@@ -124,16 +125,28 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 										})
 									: stroke;
 								return (
-									<path
-										key={i}
-										d={`M ${x} ${y} h 0.001`}
-										strokeWidth={7}
-										stroke={color}
-										strokeLinecap={"round"}
-										strokeLinejoin={"round"}
-										vectorEffect={"non-scaling-stroke"}
-										className={"lines__joints"}
-									/>
+									<React.Fragment key={i}>
+										{typeof joints === "object" && joints.border && (
+											<path
+												d={`M ${x} ${y} h 0.001`}
+												strokeWidth={8}
+												stroke={"white"}
+												strokeLinecap={"round"}
+												strokeLinejoin={"round"}
+												vectorEffect={"non-scaling-stroke"}
+												className={"lines__joints"}
+											/>
+										)}
+										<path
+											d={`M ${x} ${y} h 0.001`}
+											strokeWidth={7}
+											stroke={color}
+											strokeLinecap={"round"}
+											strokeLinejoin={"round"}
+											vectorEffect={"non-scaling-stroke"}
+											className={"lines__joints"}
+										/>
+									</React.Fragment>
 								);
 							})}
 					</React.Fragment>

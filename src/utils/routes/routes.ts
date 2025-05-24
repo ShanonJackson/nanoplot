@@ -70,8 +70,8 @@ export const Href = {
 			},
 			CARTESIAN: {
 				GRIDLINES: "/documentation/1.0.0/cartesian/gridlines",
-				Y_AXIS: "/documentation/1.0.0/cartesian/y-axis",
-				X_AXIS: "/documentation/1.0.0/cartesian/x-axis",
+				Y_AXIS: "/documentation/1.0.0/cartesian/yaxis",
+				X_AXIS: "/documentation/1.0.0/cartesian/xaxis",
 				LEGEND: "/documentation/1.0.0/cartesian/legend",
 				ZOOM_SLIDER: "/documentation/1.0.0/cartesian/zoom-slider",
 			},

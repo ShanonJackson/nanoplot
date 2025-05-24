@@ -24,13 +24,13 @@ export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
 	const x1 = (() => {
 		if (!x) return undefined;
 		if ("coordinate" in x) return MathUtils.scale(x.coordinate, viewbox.x, 100) + "%";
-		if ("tick" in x) return xForValue(x.tick);
+		if ("tick" in x) return MathUtils.scale(xForValue(x.tick), viewbox.x, 100) + "%";
 		return undefined;
 	})();
 	const y1 = (() => {
 		if (!y) return undefined;
 		if ("coordinate" in y) return MathUtils.scale(y.coordinate, viewbox.y, 100) + "%";
-		if ("tick" in y) return yForValue(y.tick);
+		if ("tick" in y) return MathUtils.scale(yForValue(y.tick), viewbox.y, 100) + "%";
 		return undefined;
 	})();
 

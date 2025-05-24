@@ -2,6 +2,8 @@
 import { DocumentationNavigationMenuItem } from "./components/DocumentationNavigationMenuItem";
 import { documentationNavigation } from "./models/documentation-navigation";
 import { tw } from "../../../utils/cx/cx";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 type MenuItem = {
 	title: string;
@@ -15,6 +17,14 @@ type Props = {
 };
 
 export const DocumentationNavigation = ({ onClick, className }: Props) => {
+	const pathname = usePathname();
+	const [open, setOpen] = useState<MenuItem | undefined>((): MenuItem | undefined => {
+		return documentationNavigation.reduce<MenuItem | undefined>(function find(selected, item): MenuItem | undefined {
+			if (selected) return selected;
+			if (item.items?.some((i) => i.href === pathname)) return item;
+			return item.items?.reduce<MenuItem | undefined>(find as any, undefined);
+		}, undefined);
+	});
 	/* GPT Generated */
 	return (
 		<div className={tw("w-[220px] hidden md:block", className)}>
@@ -25,12 +35,15 @@ export const DocumentationNavigation = ({ onClick, className }: Props) => {
 							<div className="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400">{section.title}</div>
 						)}
 						<ul className="space-y-1">
-							{section.items.map((item, itemIndex) => (
+							{section.items.map((item, index) => (
 								<DocumentationNavigationMenuItem
-									key={itemIndex}
+									key={index}
 									item={item}
-									onClick={onClick}
-									defaultOpen={sectionIndex === 0 && itemIndex === 1}
+									active={open}
+									onClick={(nextItem) => {
+										if (!nextItem.children?.length) onClick?.();
+										setOpen((o) => (o === nextItem ? undefined : nextItem));
+									}}
 								/>
 							))}
 						</ul>

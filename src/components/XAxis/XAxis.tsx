@@ -14,10 +14,10 @@ type Props = {
 };
 
 export const XAxis = ({ display, title, description }: Props) => {
-	const context = useGraph();
+	const { domain, viewbox } = useGraph();
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
-	const labels = context.domain.x.map(({ tick, coordinate }) => {
+	const labels = domain.x.map(({ tick, coordinate }) => {
 		const label = (() => {
 			if (display) return display(tick);
 			if (typeof tick === "number") return formatter.format(tick);
@@ -26,8 +26,11 @@ export const XAxis = ({ display, title, description }: Props) => {
 		return { tick, coordinate, label };
 	});
 
-	const characters = labels.reduce((acc, { label }) => acc + (typeof label === "string" ? label.length : 0), 0);
-	const breakpoint = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].find((bp) => bp >= characters);
+	const characters = labels.reduce((acc, { label, coordinate }) => {
+		if (coordinate > viewbox.x || coordinate < 0) return acc;
+		return acc + (typeof label === "string" ? label.length : 0);
+	}, 0);
+	const breakpoint = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 130, 160, 190].find((bp) => bp >= characters);
 
 	return (
 		<Graph.Row className={"xaxis items-center relative pt-2 text-xs font-normal select-none"}>
@@ -70,6 +73,12 @@ export const XAxis = ({ display, title, description }: Props) => {
 												"@[width:90ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:90ch]:![writing-mode:unset]",
 											breakpoint === 100 &&
 												"@[width:100ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:100ch]:![writing-mode:unset]",
+											breakpoint === 130 &&
+												"@[width:130ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:130ch]:![writing-mode:unset]",
+											breakpoint === 160 &&
+												"@[width:160ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:160ch]:![writing-mode:unset]",
+											breakpoint === 190 &&
+												"@[width:190ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:190ch]:![writing-mode:unset]",
 										)}
 										style={{ left: `${x}%` }}
 									>

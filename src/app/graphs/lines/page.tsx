@@ -20,7 +20,12 @@ import { TimeSeriesCustomTooltipExample, TimeSeriesCustomTooltipExampleCode } fr
 import { LinesGradientMaskExample, LinesGradientMaskExampleCode } from "./components/LinesGradientMaskExample";
 import { LinesPredictionExample, LinesPredictionExampleCode } from "./components/LinesPredictionExample";
 import { ZoomSlider } from "../../../components/ZoomSlider/ZoomSlider";
+import { Area } from "../../../components/Area/Area";
+import { overlay } from "../../../components/Overlay/Overlay";
 
+const roundDownToNearest = (num: number, nearest: number) => {
+	return nearest > 0 ? Math.floor(num / nearest) * nearest : Math.ceil(num / nearest) * nearest;
+};
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
@@ -31,7 +36,25 @@ export default function Page() {
 	const [hovered, setHovered] = useState<string[]>([]);
 	const [pinned, setPinned] = useState<string[]>([]);
 	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
-
+	const data = [
+		{
+			name: "Competitive Rating",
+			stroke: "#316ff2",
+			fill: "linear-gradient(to bottom, #316ff2 0%, transparent 100%)",
+			data: [
+				{ x: 1747267200, y: 5035.43797916793, new_level: 21 },
+				{ x: 1747353600, y: 5167.7744424106795, new_level: 22 },
+				{ x: 1747699200, y: 5217.9121094837765, new_level: 23 },
+				{ x: 1747785600, y: 5196.531665265145, new_level: 23 },
+				{ x: 1747872000, y: 5230.115903859852, new_level: 23 },
+				{ x: 1747958400, y: 5297.261800936303, new_level: 23 },
+			].map(({ x, y, new_level }) => ({ x: new Date(x * 1000), y, new_level })),
+		},
+	];
+	const eachUniqueNewLevel = data[0].data.filter((datapoint, i) => {
+		return data[0].data.findIndex((dp) => dp.new_level === datapoint.new_level) === i;
+	});
+	console.log({ eachUniqueNewLevel });
 	return (
 		<>
 			<ControlPanel>
@@ -42,114 +65,43 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel
-				examples={[
-					{
-						name: "Timeseries with 'Registered Users' interactions: 'hovered'",
-						code: LinesSiteTrafficCode,
-						component: LinesSiteTraffic,
-					},
-					{
-						name: "Timeseries with 'New Users' interactions: 'pinned'",
-						code: LinesSiteTrafficPinnedCode,
-						component: LinesSiteTrafficPinned,
-					},
-					{
-						name: "Timeseries with timeslot",
-						code: LinesTimeslotExampleCode,
-						component: LinesTimeslotExample,
-					},
-					{
-						name: "Time Series with Custom Tooltip",
-						code: TimeSeriesCustomTooltipExampleCode,
-						component: TimeSeriesCustomTooltipExample,
-					},
-					{
-						name: "Line graph with gradient mask with 'ticks' and gradient",
-						code: LinesGradientMaskExampleCode,
-						component: LinesGradientMaskExample,
-					},
-					{
-						name: "Line Graph Date Gradient + Prediction Line",
-						code: LinesPredictionExampleCode,
-						component: LinesPredictionExample,
-					},
-				]}
-			>
-				<Graph
-					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
-					interactions={{ hovered, pinned }}
-					zoom={zoom}
-					data={[
-						{
-							name: "New Users",
-							stroke: "#FF4B4B",
-							data: [
-								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
-								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
-								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
-								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
-							],
-						},
-						{
-							name: "Registered Users",
-							stroke: "#33D4FF",
-							data: [
-								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
-								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
-								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
-								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
-								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
-								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
-								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
-								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
-							],
-						},
-					]}
-				>
-					<ZoomSlider.X onChange={setZoom} />
-					<Legend
-						alignment={"end"}
-						position={"top"}
-						onClick={(dp) => {
-							setPinned((p) => {
-								if (p.includes(dp.id)) return p.filter((pin) => pin !== dp.id);
-								return [...p, dp.id];
-							});
-						}}
-						onMouseEnter={(dp) => {
-							setHovered((h) => {
-								if (h.includes(dp.id)) return h.filter((hov) => hov !== dp.id);
-								return [...h, dp.id];
-							});
-						}}
-						onMouseLeave={(dp) => {
-							setHovered((h) => h.filter((hov) => hov !== dp.id));
+			<GraphPanel className={"bg-[#191937]"}>
+				<Graph data={data} gap={{ top: 30, left: 30, right: 30, bottom: 30 }}>
+					<YAxis ticks={{ from: roundDownToNearest(Math.min(...data.flatMap((d) => d.data.map((xy) => xy.y))), 100) }} />
+					<GridLines
+						border
+						className={{
+							root: "[stroke-dasharray:4,4]",
+							vertical: "[stroke:#316ff2]",
+							horizontal: "[stroke:#316ff2]",
+							border: {
+								left: "[stroke:#316ff2] [stroke-dasharray:1,0] [stroke-width:2]",
+								right: "[stroke:#316ff2]",
+								top: "[stroke:#316ff2]",
+								bottom: "[stroke:#316ff2] [stroke-dasharray:1,0] [stroke-width:2]",
+							},
 						}}
 					/>
-					<YAxis />
-					<GridLines border vertical horizontal />
-					<Lines curve={"natural"} joints />
+					<Lines curve="linear" joints={{ border: true }} />
+					{eachUniqueNewLevel.map((datapoint) => {
+						return (
+							<overlay.div x={{ tick: datapoint.x }} y={{ tick: datapoint.y }} className="[transform:translate(-50%,-100%)]">
+								<div className="flex flex-col items-center">
+									<div
+										className="w-8 h-8 rounded-full flex items-center justify-center"
+										style={{ border: "2px solid #316ff2" }}
+									></div>
+									<div className="w-1 h-3" style={{ backgroundColor: "#316ff2", borderRadius: "2px" }} />
+								</div>
+							</overlay.div>
+						);
+					})}
 					<Lines.Tooltip />
-					<ZoomSlider.Y onChange={setZoom} />
 					<XAxis
-						ticks={{ from: "min", to: "max", jumps: "P2M" }}
+						ticks={{ from: "auto - P1D", to: "auto + P1D", jumps: "P3D" }}
 						display={(x) => {
-							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return months[x.getMonth()];
+							return `${x.getDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun"][x.getMonth()]}`;
 						}}
 					/>
 				</Graph>

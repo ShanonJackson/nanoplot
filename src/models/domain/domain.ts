@@ -1,4 +1,4 @@
-export type MinMax = "min" | "max";
+export type MinMax = "min" | "max" | "auto";
 export type ISODuration = `P${string}`;
 export type Expression =
 	| "auto"

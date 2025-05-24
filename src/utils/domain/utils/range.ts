@@ -107,14 +107,45 @@ export const range = (
 	})();
 
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
+	const MIN = (() => {
+		if (from === "min" || from === "auto") {
+			if (isDateTime) {
+				return from === "auto" ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
+			}
+			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: max });
+		}
+		if (typeof from === "number") return from;
+		const isAuto = from.includes("auto");
+		const operator = from.match(/(\+|-)/)?.[0];
+		const isPercentage = from.includes("%");
+		const value = +from.replace(/[^0-9]/g, "");
+		const modifyDuration = from.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
+		if (operator === "+") {
+			if (modifyDuration) {
+				const dte = isAuto ? new Date(min) : getCeilDateFromDuration(new Date(min), duration);
+				return addDurationToDate(dte, modifyDuration);
+			}
+			return isPercentage ? min + (min * value) / 100 : min + value;
+		}
+		if (operator === "-") {
+			if (modifyDuration) {
+				const dte = isAuto ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
+				return removeDurationFromDate(dte, modifyDuration);
+			}
+			return isPercentage ? min - (min * value) / 100 : min - value;
+		}
+		return min;
+	})();
+
 	const MAX = (() => {
 		if (to === "max" || to === "auto") {
 			if (isDateTime) {
 				return to === "auto" ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
 			}
-			return to === "max" ? max : DomainUtils.autoMaxFor(max);
+			return to === "max" ? max : DomainUtils.autoMaxFor({ max, min: +MIN });
 		}
 		if (typeof to === "number") return to;
+		const isAuto = to.includes("auto");
 		const operator = to.match(/(\+|-)/)?.[0];
 		const isPercentage = to.includes("%");
 		const value = +to.replace(/[^0-9]/g, "");
@@ -122,14 +153,14 @@ export const range = (
 
 		if (operator === "+") {
 			if (modifyDuration) {
-				const dte = getCeilDateFromDuration(new Date(max), duration);
+				const dte = isAuto ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
 				return addDurationToDate(dte, modifyDuration);
 			}
 			return isPercentage ? max + (max * value) / 100 : max + value;
 		}
 		if (operator === "-") {
 			if (modifyDuration) {
-				const dte = getFloorDateFromDuration(new Date(max), duration);
+				const dte = isAuto ? new Date(max) : getFloorDateFromDuration(new Date(max), duration);
 				return removeDurationFromDate(dte, modifyDuration);
 			}
 			return isPercentage ? max - (max * value) / 100 : max - value;
@@ -137,34 +168,7 @@ export const range = (
 		return max;
 	})();
 
-	const MIN = (() => {
-		if (from === "min" || from === "auto") {
-			if (isDateTime) {
-				return from === "auto" ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
-			}
-			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: +MAX });
-		}
-		if (typeof from === "number") return from;
-		const operator = from.match(/(\+|-)/)?.[0];
-		const isPercentage = from.includes("%");
-		const value = +from.replace(/[^0-9]/g, "");
-		const modifyDuration = from.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
-		if (operator === "+") {
-			if (modifyDuration) {
-				const dte = getCeilDateFromDuration(new Date(min), duration);
-				return addDurationToDate(dte, modifyDuration);
-			}
-			return isPercentage ? min + (min * value) / 100 : min + value;
-		}
-		if (operator === "-") {
-			if (modifyDuration) {
-				const dte = getFloorDateFromDuration(new Date(min), duration);
-				return removeDurationFromDate(dte, modifyDuration);
-			}
-			return isPercentage ? min - (min * value) / 100 : min - value;
-		}
-		return min;
-	})();
+	if (MIN === MAX) return [{ tick: MIN, coordinate: viewb / 2 }];
 
 	if (typeof jumps === "number" || (jumps === "auto" && !isDateTime)) {
 		const mx = Number(MAX);

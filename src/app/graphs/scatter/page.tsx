@@ -43,7 +43,7 @@ export default function Page() {
 				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
-					<YAxis {...yaxis} />
+					<YAxis {...yaxis} ticks={{ to: 100 }} />
 					<GridLines {...gridline} />
 					<Scatter {...scatter} trendline={true} />
 					<Scatter.Tooltip tooltip={(point) => `${point.data.x} ${point.data.y}`} />

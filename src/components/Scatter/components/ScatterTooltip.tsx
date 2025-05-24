@@ -44,7 +44,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 			<svg
 				ref={ref}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-				className={"[grid-area:graph] h-full w-full [backface-visibility:hidden]"}
+				className={"[grid-area:graph] h-full w-full absolute overflow-visible [backface-visibility:hidden]"}
 				preserveAspectRatio={"none"}
 				onMouseMove={(e) => {
 					const {
@@ -70,7 +70,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 				<Portal>
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-						className={"[grid-area:graph] h-full w-full absolute"}
+						className={"[grid-area:graph] h-full w-full absolute overflow-visible"}
 						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 						preserveAspectRatio={"none"}
 					>
