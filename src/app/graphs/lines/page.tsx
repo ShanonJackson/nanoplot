@@ -54,7 +54,6 @@ export default function Page() {
 	const eachUniqueNewLevel = data[0].data.filter((datapoint, i) => {
 		return data[0].data.findIndex((dp) => dp.new_level === datapoint.new_level) === i;
 	});
-	console.log({ eachUniqueNewLevel });
 	return (
 		<>
 			<ControlPanel>
