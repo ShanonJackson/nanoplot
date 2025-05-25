@@ -6,10 +6,11 @@ import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack
 import { DocumentationTable } from "../../../../components/Documentation/DocumentationTable/DocumentationTable";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Heatmap</DocumentationHeading>
 			<DocumentationParagraph>
 				Heatmaps show data by coloring each quadrant, making it easy to see where values are high or low at a glance. They help you
@@ -210,6 +211,6 @@ export default function App() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }

@@ -2,10 +2,11 @@ import * as React from "react";
 import { DocumentationHeading } from "../../../../../components/Documentation/DocumentationHeading/DocumentationHeading";
 import { DocumentationTable } from "../../../../../components/Documentation/DocumentationTable/DocumentationTable";
 import { DocumentationCode as Code } from "../../../../../components/Documentation/DocumentationCode/DocumentationCode";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Y Axis</DocumentationHeading>
 			<p className={"my-2"}>
 				The YAxis component can render on the left/right side and with custom dataset support (multiple YAxis).
@@ -102,6 +103,6 @@ type Jumps = "auto" | ISODuration | number;`,
 			<br />
 			<Code>{"<YAxis ticks={{ from: -25, to: 'auto', jumps: 'auto' }}/>"}</Code> - From -25 but the library will pick the most
 			appropriate max value and number of jumps based on the dataset
-		</div>
+		</DocumentationLayout>
 	);
 }

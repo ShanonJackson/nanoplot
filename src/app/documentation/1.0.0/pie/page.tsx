@@ -7,10 +7,11 @@ import { DocumentationParagraph } from "../../../../components/Documentation/Doc
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Pie Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Pie charts provide a quick, intuitive view of proportions, making it easy to compare the relative sizes of categories at a
@@ -128,7 +129,7 @@ export default function Page() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code>, Element: (v: JSX.Element | string) => v }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }
 

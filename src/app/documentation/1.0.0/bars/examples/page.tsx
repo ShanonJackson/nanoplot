@@ -7,10 +7,11 @@ import { BarsStackedExample } from "./examples/BarsStackedExample";
 import { BarsPercentExample } from "./examples/BarsPercentExample";
 import { BarsWithMaskExample } from "./examples/BarsWithMaskExample";
 import { DocumentationNote } from "../../../../../components/Documentation/DocumentationNote/DocumentationNote";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Bars Examples</DocumentationHeading>
 			<DocumentationHeading level={2}>Positive Negative Bars</DocumentationHeading>
 			<Sandpack files={{ "App.js": PositiveNegativeBars }} />
@@ -23,6 +24,6 @@ export default function Page() {
 			<DocumentationHeading level={2}>Mask Gradient Bars</DocumentationHeading>
 			<DocumentationNote>Notice the gradient starts from the top of the Y Axis, rather than the top of the bar.</DocumentationNote>
 			<Sandpack files={{ "App.js": BarsWithMaskExample }} />
-		</div>
+		</DocumentationLayout>
 	);
 }
