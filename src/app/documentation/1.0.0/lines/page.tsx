@@ -6,10 +6,11 @@ import { DocumentationParagraph } from "../../../../components/Documentation/Doc
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Line Graph</DocumentationHeading>
 			<DocumentationParagraph>
 				Line graphs are used to visualise continuous datasets, showing patterns, trends, and changes over time.
@@ -177,6 +178,6 @@ export default function App() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }

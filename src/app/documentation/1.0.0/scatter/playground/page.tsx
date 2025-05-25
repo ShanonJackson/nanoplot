@@ -16,6 +16,7 @@ import { GraphPanel } from "../../../../../components/Panels/GraphPanel";
 import { Graph } from "../../../../../components/Graph/Graph";
 import { Scatter } from "../../../../../components/Scatter/Scatter";
 import { useMounted } from "../../../../../hooks/use-mounted";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 const random = (min: number, max: number) => Math.random() * (max - min) + min;
 const MOCK_DATA = new Array(1000).fill(null).map(() => {
@@ -34,7 +35,7 @@ export default function Page() {
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
 	if (!mounted) return null; /* prevents hydration errors, because of random values */
 	return (
-		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[40%_1fr] p-8"}>
+		<DocumentationLayout playground>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LegendControlGroup state={legend} onChange={setLegend} />
@@ -64,6 +65,6 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-		</div>
+		</DocumentationLayout>
 	);
 }

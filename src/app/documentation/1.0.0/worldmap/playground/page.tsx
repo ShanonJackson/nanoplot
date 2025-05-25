@@ -9,6 +9,7 @@ import { Control } from "../../../../../components/Docs/Control/Control";
 import { SliderControl } from "../../../../../components/Docs/Control/components/SliderControl/SliderControl";
 import { Worldmap } from "../../../../../components/Worldmap/Worldmap";
 import Image from "next/image";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
@@ -16,7 +17,7 @@ export default function Page() {
 	});
 	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
-		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[35%_1fr] p-8"}>
+		<DocumentationLayout playground>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>World Map</h1>
 				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
@@ -68,7 +69,7 @@ export default function Page() {
 					/>
 				</Graph>
 			</GraphPanel>
-		</div>
+		</DocumentationLayout>
 	);
 }
 

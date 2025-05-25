@@ -7,10 +7,11 @@ import { DocumentationHeading } from "../../../../components/Documentation/Docum
 import { DocumentationParagraph } from "../../../../components/Documentation/DocumentationParagraph/DocumentationParagraph";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Area Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				An area chart displays trends over time. In stacked versions, each series is layered to highlight cumulative trends and
@@ -91,7 +92,7 @@ export default function Page() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }
 
