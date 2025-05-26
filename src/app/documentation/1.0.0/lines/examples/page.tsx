@@ -6,6 +6,7 @@ import { DocumentationNote } from "../../../../../components/Documentation/Docum
 import { LinesWithZoomAndPan } from "./examples/LinesWithZoom";
 import { LinesWithCustomTooltip } from "./examples/LinesWithCustomTooltip";
 import { LinesWithMask } from "./examples/LinesWithMask";
+import { LinesWithAnnotationsExample } from "./examples/LinesWithAnnotationsExample";
 
 export default function Page() {
 	return (
@@ -21,6 +22,8 @@ export default function Page() {
 			<Sandpack files={{ "App.js": LinesWithZoomAndPan }} />
 			<DocumentationHeading level={2}>Lines with custom tooltip</DocumentationHeading>
 			<Sandpack files={{ "App.js": LinesWithCustomTooltip }} />
+			<DocumentationHeading level={2}>Lines With Annotations</DocumentationHeading>
+			<Sandpack files={{ "App.js": LinesWithAnnotationsExample }} />
 		</div>
 	);
 }

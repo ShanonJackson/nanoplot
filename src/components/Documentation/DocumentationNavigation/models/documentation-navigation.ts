@@ -177,14 +177,14 @@ export const documentationNavigation: Array<{ title: string; items: MenuItem[] }
 				title: "YAxis",
 				href: Hrefs.CARTESIAN.Y_AXIS,
 			},
-			// {
-			// 	title: "XAxis",
-			// 	href: Hrefs.CARTESIAN.X_AXIS,
-			// },
-			// {
-			// 	title: "Legend",
-			// 	href: Hrefs.CARTESIAN.LEGEND,
-			// },
+			{
+				title: "XAxis",
+				href: Hrefs.CARTESIAN.X_AXIS,
+			},
+			{
+				title: "Legend",
+				href: Hrefs.CARTESIAN.LEGEND,
+			},
 			// {
 			// 	title: "ZoomSlider",
 			// 	href: Hrefs.CARTESIAN.ZOOM_SLIDER,

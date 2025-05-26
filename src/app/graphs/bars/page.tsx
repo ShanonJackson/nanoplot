@@ -28,7 +28,6 @@ export default function Page() {
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Months" });
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Cookies Sold" });
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top" });
-	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	return (
 		<>
 			<ControlPanel>

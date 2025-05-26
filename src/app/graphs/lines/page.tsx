@@ -22,6 +22,8 @@ import { LinesPredictionExample, LinesPredictionExampleCode } from "./components
 import { ZoomSlider } from "../../../components/ZoomSlider/ZoomSlider";
 import { Area } from "../../../components/Area/Area";
 import { overlay } from "../../../components/Overlay/Overlay";
+import NumberFlow from "@number-flow/react";
+import { cx } from "../../../utils/cx/cx";
 
 const roundDownToNearest = (num: number, nearest: number) => {
 	return nearest > 0 ? Math.floor(num / nearest) * nearest : Math.ceil(num / nearest) * nearest;
@@ -38,22 +40,17 @@ export default function Page() {
 	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
 	const data = [
 		{
-			name: "Competitive Rating",
-			stroke: "#316ff2",
-			fill: "linear-gradient(to bottom, #316ff2 0%, transparent 100%)",
+			name: "Cars",
 			data: [
-				{ x: 1747267200, y: 5035.43797916793, new_level: 21 },
-				{ x: 1747353600, y: 5167.7744424106795, new_level: 22 },
-				{ x: 1747699200, y: 5217.9121094837765, new_level: 23 },
-				{ x: 1747785600, y: 5196.531665265145, new_level: 23 },
-				{ x: 1747872000, y: 5230.115903859852, new_level: 23 },
-				{ x: 1747958400, y: 5297.261800936303, new_level: 23 },
-			].map(({ x, y, new_level }) => ({ x: new Date(x * 1000), y, new_level })),
+				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+				{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+				{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+				{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+				{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+				{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+			],
 		},
 	];
-	const eachUniqueNewLevel = data[0].data.filter((datapoint, i) => {
-		return data[0].data.findIndex((dp) => dp.new_level === datapoint.new_level) === i;
-	});
 	return (
 		<>
 			<ControlPanel>
@@ -64,43 +61,68 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel className={"bg-[#191937]"}>
-				<Graph data={data} gap={{ top: 30, left: 30, right: 30, bottom: 30 }}>
-					<YAxis ticks={{ from: roundDownToNearest(Math.min(...data.flatMap((d) => d.data.map((xy) => xy.y))), 100) }} />
-					<GridLines
-						border
-						className={{
-							root: "[stroke-dasharray:4,4]",
-							vertical: "[stroke:#316ff2]",
-							horizontal: "[stroke:#316ff2]",
-							border: {
-								left: "[stroke:#316ff2] [stroke-dasharray:1,0] [stroke-width:2]",
-								right: "[stroke:#316ff2]",
-								top: "[stroke:#316ff2]",
-								bottom: "[stroke:#316ff2] [stroke-dasharray:1,0] [stroke-width:2]",
-							},
+			<GraphPanel className={"bg-[#191937] p-4"}>
+				<Graph data={data}>
+					<YAxis />
+					<GridLines border horizontal vertical />
+					<Lines />
+					<Lines.Tooltip
+						tooltip={(points, x) => {
+							if (!(x instanceof Date)) return null;
+							const newData = data.map((line) => {
+								return {
+									...line,
+									data: line.data.map((point, index) => {
+										const prev = line.data[index - 1];
+										return { ...point, percent: prev ? (point.y / prev.y - 1) * 100 : 0 };
+									}),
+								};
+							});
+							const percents = newData.map((line) => {
+								return line.data.find((point) => {
+									return point.x.getTime() === x.getTime();
+								})?.percent;
+							});
+							return percents.map((percent, i) => {
+								if (!percent) return null;
+								return (
+									<div
+										className={cx(
+											"flex items-center text-lg font-bold rounded border py-1 px-3 bg-opacity-60 shadow-md backdrop-blur-sm border-gray-200 dark-border-[#454545]",
+											percent >= 0 ? "text-green-500" : "text-red-500",
+										)}
+										key={i}
+									>
+										<svg
+											viewBox={"0 0 25 25"}
+											height={"16"}
+											width={"16"}
+											className={cx(
+												"mr-1 transition-transform duration-300 ease-in-out",
+												percent >= 0 ? "rotate-180" : "",
+											)}
+										>
+											<path
+												d={"M 12.5 2 L 12.5 23 L 4 13 M 12.5 23 L 21 13"}
+												stroke={"black"}
+												fill={"transparent"}
+												strokeWidth={3}
+												strokeLinecap={"round"}
+												strokeLinejoin={"round"}
+												className={cx(percent >= 0 ? "stroke-green-500" : "stroke-red-500")}
+											/>
+										</svg>
+										<NumberFlow isolate value={Math.round(percent)} />%
+									</div>
+								);
+							});
 						}}
 					/>
-					<Lines curve="linear" joints={{ border: true }} />
-					{eachUniqueNewLevel.map((datapoint) => {
-						return (
-							<overlay.div x={{ tick: datapoint.x }} y={{ tick: datapoint.y }} className="[transform:translate(-50%,-100%)]">
-								<div className="flex flex-col items-center">
-									<div
-										className="w-8 h-8 rounded-full flex items-center justify-center"
-										style={{ border: "2px solid #316ff2" }}
-									></div>
-									<div className="w-1 h-3" style={{ backgroundColor: "#316ff2", borderRadius: "2px" }} />
-								</div>
-							</overlay.div>
-						);
-					})}
-					<Lines.Tooltip />
 					<XAxis
-						ticks={{ from: "auto - P1D", to: "auto + P1D", jumps: "P3D" }}
+						ticks={{ jumps: "P1M" }}
 						display={(x) => {
 							if (typeof x === "number" || typeof x === "string") return null;
-							return `${x.getDate()} ${["Jan", "Feb", "Mar", "Apr", "May", "Jun"][x.getMonth()]}`;
+							return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
 						}}
 					/>
 				</Graph>

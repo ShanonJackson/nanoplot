@@ -7,15 +7,15 @@ import { DocumentationNote } from "../../../../../components/Documentation/Docum
 export default function Page() {
 	return (
 		<div className={"p-4 md:p-8 max-w-[1500px]"}>
-			<DocumentationHeading level={1}>Y Axis</DocumentationHeading>
-			<Code>{'import { YAxis } from "nanoplot/YAxis"'}</Code>
+			<DocumentationHeading level={1}>X Axis</DocumentationHeading>
+			<Code>{'import { XAxis } from "nanoplot/XAxis"'}</Code>
 			<p className={"my-2"}>
-				The YAxis component can render on the left/right side and with custom dataset support (multiple YAxis).
+				The XAxis component can render on the left/right side and with custom dataset support (multiple XAxis).
 			</p>
 			<ul className={"list-disc list-inside"}>
 				<li>linear [default]</li>
-				<li>categorical - Will be spaced evenly on the YAxis, When 'y' in dataset is a string.</li>
-				<li>temporal - When 'y' in dataset is a javascript date object.</li>
+				<li>categorical - Will be spaced evenly on the XAxis, When 'x' in dataset is a string.</li>
+				<li>temporal - When 'x' in dataset is a javascript date object.</li>
 				<li>logarithmic [Coming Soon]</li>
 			</ul>
 			<DocumentationHeading>Props</DocumentationHeading>
@@ -69,13 +69,6 @@ type Jumps = "auto" | ISODuration | number;`,
 						Type: "string",
 						Required: "No",
 						Default: "-",
-					},
-					{
-						Name: { value: "position", tag: "code" },
-						Description: "Sets the position of the YAxis. Can be 'top', 'bottom', 'left', or 'right'. Default is 'left'.",
-						Type: "'left' | 'right'",
-						Required: "No",
-						Default: "'left'",
 					},
 					{
 						Name: { value: "dataset", tag: "code" },

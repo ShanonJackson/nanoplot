@@ -1,13 +1,6 @@
 import React, { JSX, ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
-import {
-	CartesianDataset,
-	CartesianDatasetDefaulted,
-	GraphContext,
-	SegmentDataset,
-	SegmentDatasetDefaulted,
-	useGraph,
-} from "../../hooks/use-graph/use-graph";
+import { CartesianDatasetDefaulted, GraphContext, SegmentDatasetDefaulted, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
@@ -86,15 +79,15 @@ export const Legend = ({ position = "top", alignment = "center", onClick, onMous
 	);
 };
 
-Legend.context = (ctx: GraphContext, props: Props) => {
+Legend.context = (ctx: GraphContext, { position = "top" }: Props) => {
 	const rows = (() => {
-		if (props.position === "top") return "max-content " + ctx.layout.rows;
-		if (props.position === "bottom") return ctx.layout.rows + " max-content";
+		if (position === "top") return "max-content " + ctx.layout.rows;
+		if (position === "bottom") return ctx.layout.rows + " max-content";
 		return ctx.layout.rows;
 	})();
 	const columns = (() => {
-		if (props.position === "left") return "max-content " + ctx.layout.columns;
-		if (props.position === "right") return ctx.layout.columns + " max-content";
+		if (position === "left") return "max-content " + ctx.layout.columns;
+		if (position === "right") return ctx.layout.columns + " max-content";
 		return ctx.layout.columns;
 	})();
 	return {

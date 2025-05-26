@@ -42,7 +42,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 			...line,
 			id: String(line.id),
 			stroke: line.stroke ?? colors[i] ?? colors.at(-1),
-			fill: String(line.fill),
+			fill: line.fill,
 			data: line.data.map((xy) => ({
 				x: xForValue(xy.x),
 				y: yForValue(xy.y),
@@ -67,12 +67,12 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 				const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
 				const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
 				const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
-				const filled = hovered.includes(id) || (pinned.includes(id) && !disabled) || fill;
+				const isInteractiveFill = hovered.includes(id) || (pinned.includes(id) && !disabled) || fill;
 				const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
 
 				return (
 					<React.Fragment key={i}>
-						{filled && !disabled && (
+						{isInteractiveFill && !disabled && (
 							<linearGradient id={identifier} x1="0" y1="0" x2="0" y2="1">
 								<stop offset="5%" stopColor={stroke} stopOpacity={"0.5"} />
 								<stop offset="95%" stopColor={stroke} stopOpacity={"0"} />
@@ -99,14 +99,14 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 									fill={"transparent"}
 									className={cx("lines__stroke", disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 								/>
-								{filled && points[0] && (
+								{isInteractiveFill && points[0] && (
 									<Line
 										d={
 											path +
 											`L ${points[points.length - 1]?.x ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0].x} ${viewbox.y} Z`
 										}
 										stroke={"transparent"}
-										fill={`linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
+										fill={fill || `linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
 										strokeOpacity={0}
 										className={"lines__fill"}
 									/>

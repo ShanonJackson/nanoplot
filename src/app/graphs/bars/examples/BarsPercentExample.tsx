@@ -62,7 +62,7 @@ export const BarsPercentExample = () => {
 			]}
 			gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 		>
-			<YAxis ticks={{ to: 100 }} display={(y) => `${y}%`} />
+			<YAxis display={(y) => `${y}%`} />
 			<GridLines border horizontal />
 			<Bars labels={(y) => `${y}%`} />
 			<XAxis />

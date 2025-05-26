@@ -29,7 +29,7 @@ export const LinesControlGroup: FC<Props> = ({ state, onChange }) => {
 			</Control>
 			<Control name={"joints"} type={"boolean"} default={"false"}>
 				<BooleanControl
-					value={state.joints ?? false}
+					value={Boolean(state.joints) ?? false}
 					description={"Show joints between lines."}
 					onChange={(value) => onChange({ ...state, joints: value })}
 				/>

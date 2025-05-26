@@ -74,14 +74,16 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 				: dataset.domain.y;
 
 		const xDomainZoomed = (() => {
-			const [before, after] = zoom?.x ?? [0, 100];
+			if (!zoom?.x) return xDomain;
+			const [before, after] = zoom.x;
 			const ZOOM_FACTOR = 100 / (after - before);
 			const PAN_FACTOR = X_SCALE * (before === 0 ? 0 : before / 100);
 			return xDomain.map(({ tick, coordinate }) => ({ tick, coordinate: coordinate * ZOOM_FACTOR - PAN_FACTOR * ZOOM_FACTOR }));
 		})();
 
 		const yDomainZoomed = (() => {
-			const [before, after] = zoom?.y ?? [0, 100];
+			if (!zoom?.y) return yDomain;
+			const [before, after] = zoom.y;
 			const ZOOM_FACTOR = 100 / (after - before);
 			const INVERSE_PAN_FACTOR = Y_SCALE * -(after === 0 ? 0 : after / 100) + Y_SCALE;
 			return yDomain.map(({ tick, coordinate }) => ({

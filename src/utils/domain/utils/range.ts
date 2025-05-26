@@ -1,17 +1,10 @@
-import { GraphContext, GraphContextRaw } from "../../../hooks/use-graph/use-graph";
+import { GraphContextRaw } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
-import { DomainUtils } from "../domain";
 import { MathUtils } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
-import {
-	addDurationToDate,
-	getCeilDateFromDuration,
-	getDateDomain,
-	getDurationFromRange,
-	getFloorDateFromDuration,
-	removeDurationFromDate,
-} from "./date-domain";
+import { getDateDomain, getDurationFromRange } from "./date-domain";
+import { getRangeForSet } from "./auto-minmax";
 
 export const range = (
 	{ data, viewbox }: Pick<GraphContextRaw, "data" | "viewbox">,
@@ -50,7 +43,7 @@ export const range = (
 	let datasetMax = -Infinity;
 	for (const line of data) {
 		for (const d of line.data) {
-			/* This code is hyper hyper hyper critical */
+			/* This code is hyper hyper hyper performance critical */
 			const value = isDateTime ? (d[dimension] as Date).getTime() : (d[dimension] as number);
 			if (value < datasetMin) datasetMin = value;
 			if (value > datasetMax) datasetMax = value;
@@ -107,67 +100,14 @@ export const range = (
 	})();
 
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
-	const MIN = (() => {
-		if (from === "min" || from === "auto") {
-			if (isDateTime) {
-				return from === "auto" ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
-			}
-			return from === "min" ? min : DomainUtils.autoMinFor({ min, max: max });
-		}
-		if (typeof from === "number") return from;
-		const isAuto = from.includes("auto");
-		const operator = from.match(/(\+|-)/)?.[0];
-		const isPercentage = from.includes("%");
-		const value = +from.replace(/[^0-9]/g, "");
-		const modifyDuration = from.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0]; /* Time interval i.e 'months', 'years' etc. */
-		if (operator === "+") {
-			if (modifyDuration) {
-				const dte = isAuto ? new Date(min) : getCeilDateFromDuration(new Date(min), duration);
-				return addDurationToDate(dte, modifyDuration);
-			}
-			return isPercentage ? min + (min * value) / 100 : min + value;
-		}
-		if (operator === "-") {
-			if (modifyDuration) {
-				const dte = isAuto ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
-				return removeDurationFromDate(dte, modifyDuration);
-			}
-			return isPercentage ? min - (min * value) / 100 : min - value;
-		}
-		return min;
-	})();
-
-	const MAX = (() => {
-		if (to === "max" || to === "auto") {
-			if (isDateTime) {
-				return to === "auto" ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
-			}
-			return to === "max" ? max : DomainUtils.autoMaxFor({ max, min: +MIN });
-		}
-		if (typeof to === "number") return to;
-		const isAuto = to.includes("auto");
-		const operator = to.match(/(\+|-)/)?.[0];
-		const isPercentage = to.includes("%");
-		const value = +to.replace(/[^0-9]/g, "");
-		const modifyDuration = to.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0];
-
-		if (operator === "+") {
-			if (modifyDuration) {
-				const dte = isAuto ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
-				return addDurationToDate(dte, modifyDuration);
-			}
-			return isPercentage ? max + (max * value) / 100 : max + value;
-		}
-		if (operator === "-") {
-			if (modifyDuration) {
-				const dte = isAuto ? new Date(max) : getFloorDateFromDuration(new Date(max), duration);
-				return removeDurationFromDate(dte, modifyDuration);
-			}
-			return isPercentage ? max - (max * value) / 100 : max - value;
-		}
-		return max;
-	})();
-
+	const [MIN, MAX] = getRangeForSet({
+		min,
+		max,
+		duration,
+		isDateTime,
+		from,
+		to,
+	});
 	if (MIN === MAX) return [{ tick: MIN, coordinate: viewb / 2 }];
 
 	if (typeof jumps === "number" || (jumps === "auto" && !isDateTime)) {

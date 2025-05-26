@@ -81,7 +81,7 @@ export default function Page() {
 							Default: "-",
 						},
 						{
-							Name: { value: "loading", href: "/", tag: "code" },
+							Name: { value: "loading", tag: "code" },
 							Description: "Displays a loading skeleton",
 							Type: "boolean",
 							Required: "No",
@@ -90,14 +90,7 @@ export default function Page() {
 					]}
 					renderers={{
 						Name: (val) => {
-							if (val.href) {
-								return (
-									<a href={val.href} className={"cursor-pointer text-blue-600 dark:text-blue-400 hover:underline"}>
-										{val.tag === "code" ? <Code inherit>{val.value}</Code> : val.value}
-									</a>
-								);
-							}
-							return val.tag === "code" ? <Code>{val.value}</Code> : val.value;
+							return <Code>{val.value}</Code>;
 						},
 						Type: (v) => v,
 						Default: (val) => <Code>{val}</Code>,
@@ -155,7 +148,7 @@ export default function App() {
 						data: [
 							{ x: "Jan", y: 5_000 },
 							{ x: "Feb", y: 20_000 },
-							{ x: "Mar", y: 45_000 },
+							{ x: "Mar", y: 46_000 },
 							{ x: "Apr", y: 20_000 },
 						],
 					},
