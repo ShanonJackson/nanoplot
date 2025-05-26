@@ -15,17 +15,19 @@ export function ThemeToggle() {
 			?.split("=")[1] ?? "dark";
 
 	return (
-		<button
-			onClick={() => {
-				document.cookie = `theme=${theme === "dark" ? "light" : "dark"}; path=/;`;
-				router.refresh();
-			}}
-			className="flex items-center p-2 rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-			aria-label="Toggle theme"
-		>
-			<span className="sr-only">Toggle theme</span>
-			{theme === "light" ? "☀️" : "🌙"}
-			<span className="ml-2 text-xs">{theme[0].toUpperCase() + theme.slice(1)} Mode</span>
-		</button>
+		<label className="relative inline-flex items-center cursor-pointer">
+			<input
+				type="checkbox"
+				className="sr-only peer"
+				checked={theme === "dark"}
+				onChange={() => {
+					document.cookie = `theme=${theme === "dark" ? "light" : "dark"}; path=/;`;
+					router.refresh();
+				}}
+				aria-label="Toggle theme"
+			/>
+			<div className="w-11 h-6 rounded-full bg-gray-200 peer-checked:bg-gray-700 transition-colors duration-300 ease-in-out"></div>
+			<div className="absolute left-1 top-1 w-4 h-4 rounded-full bg-gray-400 transition-transform duration-300 ease-in-out transform peer-checked:translate-x-5"></div>
+		</label>
 	);
 }
