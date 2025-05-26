@@ -22,7 +22,7 @@ export const NavToggle = () => {
 				aria-label="Toggle menu"
 				onClick={() => setOpen(!open)}
 			>
-				<svg width="32px" height="32px" viewBox="0 0 32 32" className="stroke-gray-800 dark:stroke-gray-100 stroke-2">
+				<svg width="24px" height="24px" viewBox="0 0 32 32" className="stroke-gray-800 dark:stroke-gray-100 stroke-2">
 					<g transform="translate(16, 16)">
 						<line x1="-11" x2="11" transform={`translate(0, ${!open ? "-7" : "0"}) rotate(${!open ? "0" : "45"})`}></line>
 						{!open && <line x1="-11" x2="11" opacity="1"></line>}
