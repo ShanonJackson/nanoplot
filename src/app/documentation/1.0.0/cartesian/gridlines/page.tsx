@@ -2,10 +2,11 @@ import * as React from "react";
 import { DocumentationHeading } from "../../../../../components/Documentation/DocumentationHeading/DocumentationHeading";
 import { DocumentationTable } from "../../../../../components/Documentation/DocumentationTable/DocumentationTable";
 import { DocumentationCode as Code } from "../../../../../components/Documentation/DocumentationCode/DocumentationCode";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Gridlines</DocumentationHeading>
 			<Code>{'import { Gridlines } from "nanoplot/Gridlines"'}</Code>
 			<p className={"my-2"}>
@@ -68,6 +69,6 @@ export default function Page() {
 					Snippet: (v) => <Code>{v}</Code>,
 				}}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }

@@ -14,6 +14,7 @@ import { YAxis } from "../../../../../components/YAxis/YAxis";
 import { Legend } from "../../../../../components/Legend/Legend";
 import { GraphPanel } from "../../../../../components/Panels/GraphPanel";
 import { Graph } from "../../../../../components/Graph/Graph";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	const [line, setLine] = useState<ComponentProps<typeof Lines>>({ curve: "linear", joints: true });
@@ -22,7 +23,7 @@ export default function Page() {
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({});
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
 	return (
-		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[40%_1fr] p-8"}>
+		<DocumentationLayout playground>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
 				<LinesControlGroup state={line} onChange={setLine} />
@@ -101,6 +102,6 @@ export default function Page() {
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
-		</div>
+		</DocumentationLayout>
 	);
 }

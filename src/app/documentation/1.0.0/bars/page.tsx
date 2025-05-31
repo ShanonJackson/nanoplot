@@ -7,11 +7,12 @@ import { DocumentationParagraph } from "../../../../components/Documentation/Doc
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
 		<>
-			<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+			<DocumentationLayout>
 				<DocumentationHeading level={1}>Bar Chart</DocumentationHeading>
 				<DocumentationParagraph>Bar charts are used to compare discrete values across categories.</DocumentationParagraph>
 				<Sandpack files={{ "App.js": barsExample }} />
@@ -123,7 +124,7 @@ export default function Page() {
 					]}
 					renderers={{ "Class Name": (val) => <Code>{val}</Code>, Element: (v: JSX.Element | string) => v }}
 				/>
-			</div>
+			</DocumentationLayout>
 		</>
 	);
 }

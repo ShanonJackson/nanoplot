@@ -49,6 +49,7 @@ export default function Page() {
 
 	return (
 		<div>
+			<div>Datapoints = {dataset.map((d) => d.data.length).reduce((total, c) => total + c, 0)}</div>
 			<div className={"mx-auto w-[90%] h-[800px] resize overflow-hidden"}>
 				<Graph gap={{ right: 35, left: 10, top: 20, bottom: 10 }} data={dataset} zoom={zoom} interactions={{ hovered, pinned }}>
 					<ZoomSlider.X onChange={setZoom} />

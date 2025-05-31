@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { InstallCommand } from "../../../../components/InstallCommand/InstallCommand";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
+import React from "react";
 
 export default function Page() {
 	return (
-		<div className={"p-10 w-full"}>
+		<DocumentationLayout>
 			<Link href={"#getting-started"}>
 				<h1>Getting Started</h1>
 			</Link>
@@ -52,6 +54,6 @@ export default function App() {
 					}}
 				/>
 			</div>
-		</div>
+		</DocumentationLayout>
 	);
 }

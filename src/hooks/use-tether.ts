@@ -8,7 +8,7 @@ type Props = {
 	targetPosition?: Position;
 	tetherPosition?: Position;
 	offset?: { y: number; x: number };
-	boundingContainer?: React.RefObject<Element>;
+	boundingContainer?: RefObject<Element | null>;
 	onCollision?: (props: Collision) => Positions;
 };
 
@@ -25,8 +25,6 @@ export interface Collision extends Positions {
 		bottom: boolean;
 	};
 }
-
-const Y_OFFSET = 8;
 
 const getXY = ({
 	targetPosition: { side: targetSide, alignment: targetAlignment },
@@ -77,9 +75,21 @@ const getXY = ({
 		return -height / 2;
 	})();
 
+	const oy = (() => {
+		if (tetherSide === "top") return offsetY;
+		if (tetherSide === "bottom") return -offsetY;
+		return 0;
+	})();
+
+	const ox = (() => {
+		if (tetherSide === "left") return offsetX;
+		if (tetherSide === "right") return -offsetX;
+		return 0;
+	})();
+
 	return {
-		left: x + tetherXModifier + window.scrollX + offsetX,
-		top: y + tetherYModifier + window.scrollY - offsetY,
+		left: x + tetherXModifier + window.scrollX + ox,
+		top: y + tetherYModifier + window.scrollY + oy,
 	};
 };
 
@@ -172,12 +182,12 @@ export function useTether<T extends Element>({
 					? Math.min(boundingRect.y + boundingRect.height + window.scrollY, window.innerHeight)
 					: window.scrollY + document.documentElement.clientHeight),
 		};
-		const pos = getPositionCollision({ tetherPosition, targetPosition, collision });
-		const xy = getXY({ ...options, ...pos, offset: { y, x } });
-		const css = { zIndex: getZIndex(target), left: xy.left, top: xy.top, position: "absolute" } as const;
+		// const pos = getPositionCollision({ tetherPosition, targetPosition, collision });
+		// const xy = getXY({ ...options, ...pos, offset: { y, x } });
+		const css = { zIndex: getZIndex(target), left: initial.left, top: initial.top, position: "absolute" } as const;
 		/* update if required */
 		if (styles.left !== css.left || styles.top !== css.top || styles.zIndex !== css.zIndex) {
-			setPositions(pos);
+			setPositions({ tetherPosition, targetPosition });
 			setStyles(css);
 		}
 	};

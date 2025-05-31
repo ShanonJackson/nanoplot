@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useMemo, useRef } from "react";
-import { CartesianDataset, useGraph } from "../../../hooks/use-graph/use-graph";
+import { CartesianDataset, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -42,6 +42,7 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 		colors,
 		interactions: { pinned, hovered },
 	} = useGraph();
+	const isZooming = useIsZooming();
 	if (!GraphUtils.isXYData(data)) return null;
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
@@ -185,7 +186,10 @@ const LinesTooltipComponent = ({ tooltip, joints = true, ...rest }: Props) => {
 				ref={ref}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				preserveAspectRatio={"none"}
-				className={"h-full w-full [grid-area:graph] absolute overflow-visible [backface-visibility:hidden]"}
+				className={tw(
+					"lines-tooltip h-full w-full [grid-area:graph] absolute overflow-visible [backface-visibility:hidden]",
+					isZooming && "block overflow-hidden",
+				)}
 			>
 				<Portal>
 					<svg

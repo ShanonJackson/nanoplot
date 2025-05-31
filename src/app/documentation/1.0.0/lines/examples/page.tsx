@@ -6,11 +6,12 @@ import { DocumentationNote } from "../../../../../components/Documentation/Docum
 import { LinesWithZoomAndPan } from "./examples/LinesWithZoom";
 import { LinesWithCustomTooltip } from "./examples/LinesWithCustomTooltip";
 import { LinesWithMask } from "./examples/LinesWithMask";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 import { LinesWithAnnotationsExample } from "./examples/LinesWithAnnotationsExample";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Lines Examples</DocumentationHeading>
 			<DocumentationHeading level={2}>Lines with mask gradient</DocumentationHeading>
 			<Sandpack files={{ "App.js": LinesWithMask }} />
@@ -24,6 +25,6 @@ export default function Page() {
 			<Sandpack files={{ "App.js": LinesWithCustomTooltip }} />
 			<DocumentationHeading level={2}>Lines With Annotations</DocumentationHeading>
 			<Sandpack files={{ "App.js": LinesWithAnnotationsExample }} />
-		</div>
+		</DocumentationLayout>
 	);
 }

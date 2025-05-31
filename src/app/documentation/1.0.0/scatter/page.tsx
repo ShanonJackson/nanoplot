@@ -6,10 +6,11 @@ import { DocumentationParagraph } from "../../../../components/Documentation/Doc
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Scatter Graph</DocumentationHeading>
 			<DocumentationParagraph>
 				Scatter plots are used to visualise individual data points, highlighting relationships, distributions, and potential
@@ -74,7 +75,7 @@ export default function Page() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }
 

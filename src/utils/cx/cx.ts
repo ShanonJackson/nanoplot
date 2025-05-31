@@ -17,15 +17,15 @@ const unique: Record<string, string> = {
 	block: "display",
 	hidden: "display",
 };
-
-/* deduplicates tailwind classes - localized mutation for perf, perf version */
-const dynamicPropertyRegex = /\[(.*?)\]/g;
-/* regex to remove modifiers in tailwind class names i.e dark:md:stroke-red-500 with N number of modifiers, */
-const modifiers = /(?:dark|light|hover|focus|active|group-hover|peer-hover|peer-focus|peer-active|first|last|odd|even|placeholder-shown):/g;
-
-const toUniqueIdentifier = (cls: string) => {
-	if (cls.match(dynamicPropertyRegex)) return cls.split(":")[0].replace("[", "").replace(modifiers, "");
-	return unique[cls] || cls.split("-")[0]?.replace(modifiers, "");
+const getReplaceKnown = (cls: string): string =>
+	cls
+		.split(":")
+		.map((token) => unique[token] ?? token)
+		.join(":");
+export const toUniqueIdentifier = (c: string): string => {
+	const m = c.match(/[^\[\]:]+|\[[^\]]+]/g)!;
+	const l = m.pop()!;
+	return getReplaceKnown([...m, l[0] === "[" ? l.slice(1).split(":")[0] : l.split("-")[0]].join(":"));
 };
 
 export const tw = (...args: (StringOrFalsey | Record<string, StringOrFalsey | boolean>)[]) => {

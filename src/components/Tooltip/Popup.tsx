@@ -25,14 +25,15 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 		},
 		ref,
 	) => {
+		console.log({ side });
 		return (
 			<div
 				{...props}
 				className={tw(
 					"popup",
-					"relative isolate pseudo-bg-inherit w-max text-white [--a:90deg] [--h:8px] [--p:50%] [--b:1px] [--p:50%] p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
-					"before:content-[''] before:absolute before:z-[-1] before:[background-size:0_0,_100%_100%]",
-					"after:content-[''] after:absolute after:z-[-1] after:[border:inherit] after:[background-size:100%_100%,0_0]",
+					"relative isolate pseudo-bg-inherit w-max text-white p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
+					"before:content-['_'] before:absolute before:z-[-1] before:[background-size:0_0,_100%_100%]",
+					"after:content-['_'] after:absolute after:z-[-1] after:[border:inherit] after:[background-size:100%_100%,0_0]",
 					side === "top" &&
 						"[background-size:100%_calc(100%+var(--h))] [background-position:bottom] [border-radius:min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_var(--r)_var(--r)/var(--r)]",
 					side === "top" &&

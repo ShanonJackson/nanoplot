@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
-import { useDataset, useGraph } from "../../hooks/use-graph/use-graph";
+import { useDataset, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
-import { cx } from "../../utils/cx/cx";
+import { cx, tw } from "../../utils/cx/cx";
 import { LinesTooltip } from "./components/LinesTooltip";
 import { Line } from "./components/Line";
 import { toRgb } from "../../utils/color/to-rgb";
@@ -30,8 +30,11 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 	const {
 		interactions: { pinned, hovered },
 		viewbox,
+		zoom,
 	} = useGraph();
 	const { data, domain, colors } = useDataset(dataset);
+	const isZooming = useIsZooming();
+
 	if (!GraphUtils.isXYData(data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
@@ -57,8 +60,9 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 		<svg
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			preserveAspectRatio={"none"}
-			className={cx(
+			className={tw(
 				"absolute overflow-visible lines h-full w-full [grid-area:graph] will-change-transform [transform:translateZ(0)]",
+				isZooming && "block overflow-hidden",
 				className,
 			)}
 		>

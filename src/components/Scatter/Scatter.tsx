@@ -4,10 +4,11 @@ import { GraphUtils } from "../../utils/graph/graph";
 import { ScatterLoading } from "./components/ScatterLoading";
 import { PathUtils } from "../../utils/path/path";
 import { ScatterTooltip } from "./components/ScatterTooltip";
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { ScatterLabels } from "./components/ScatterLabels";
 import { ObjectUtils } from "../../utils/object/object";
 import { ScatterQuadrant } from "./components/ScatterQuadrant";
+import { tw } from "../../utils/cx/cx";
 
 type Props = {
 	trendline?: boolean;
@@ -25,6 +26,7 @@ const chunk = <T extends unknown>(array: T[], size: number): T[][] => {
 
 export const Scatter = ({ loading, trendline, className }: Props) => {
 	const context = useGraph();
+	const isZooming = useIsZooming();
 	const { x, y } = context.viewbox;
 
 	if (loading) return <ScatterLoading className={className} />;
@@ -43,7 +45,11 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);
 
 	return (
-		<svg viewBox={`0 0 ${x} ${y}`} className={"[grid-area:graph] h-full w-full absolute overflow-visible"} preserveAspectRatio={"none"}>
+		<svg
+			viewBox={`0 0 ${x} ${y}`}
+			className={tw("[grid-area:graph] h-full w-full absolute overflow-visible", isZooming && "block overflow-hidden")}
+			preserveAspectRatio={"none"}
+		>
 			{Object.entries(colors).flatMap(([color, points], i) => {
 				return chunk(points ?? [], 3000).map((points, ii) => {
 					return (

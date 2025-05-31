@@ -3,12 +3,13 @@
 import { GraphUtils } from "../../../utils/graph/graph";
 import { MathUtils } from "../../../utils/math/math";
 import React, { ReactNode, useId, useMemo, useRef, useState } from "react";
-import { CartesianDataset, useGraph } from "../../../hooks/use-graph/use-graph";
+import { CartesianDataset, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { Portal } from "../../Portal/Portal";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
 import { Tooltip } from "../../Tooltip/Tooltip";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
+import { cx, tw } from "../../../utils/cx/cx";
 
 type Point = Omit<CartesianDataset[number], "data"> & {
 	data: CartesianDataset[number]["data"][number];
@@ -24,6 +25,8 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 	const shadowId = useId();
 	const { data, viewbox, domain } = useGraph();
 	const [closest, setClosest] = useState<Point>();
+	const isZooming = useIsZooming();
+
 	if (!GraphUtils.isXYData(data)) return null;
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
@@ -44,7 +47,10 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 			<svg
 				ref={ref}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-				className={"[grid-area:graph] h-full w-full absolute overflow-visible [backface-visibility:hidden]"}
+				className={tw(
+					"scatter-tooltip [grid-area:graph] h-full w-full absolute overflow-visible [backface-visibility:hidden]",
+					isZooming && "block overflow-hidden",
+				)}
 				preserveAspectRatio={"none"}
 				onMouseMove={(e) => {
 					const {
@@ -70,9 +76,10 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 				<Portal>
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-						className={"[grid-area:graph] h-full w-full absolute overflow-visible"}
+						className={tw("[grid-area:graph] h-full w-full absolute overflow-visible", isZooming && "block overflow-hidden")}
 						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 						preserveAspectRatio={"none"}
+						ref={ref}
 					>
 						<filter id={shadowId} filterUnits="userSpaceOnUse">
 							<feGaussianBlur in="SourceAlpha" stdDeviation="35 100" result="blur" />
@@ -112,6 +119,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 									/>
 								);
 							}}
+							bounds={ref}
 							border={"rgb(45, 45, 45)"}
 						>
 							{closest && tooltip(closest)}

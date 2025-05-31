@@ -6,10 +6,11 @@ import { DocumentationHeading } from "../../../../components/Documentation/Docum
 import { DocumentationParagraph } from "../../../../components/Documentation/DocumentationParagraph/DocumentationParagraph";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
+import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	return (
-		<div className={"p-4 md:p-8 max-w-[1500px] md:w-[100%]"}>
+		<DocumentationLayout>
 			<DocumentationHeading level={1}>Radar Chart</DocumentationHeading>
 			<DocumentationParagraph>
 				Radar charts are ideal for comparing multivariate data across shared categories. This chart helps clearly highlight patterns
@@ -155,6 +156,6 @@ export default function App() {
 				]}
 				renderers={{ "Class Name": (val) => <Code>{val}</Code> }}
 			/>
-		</div>
+		</DocumentationLayout>
 	);
 }

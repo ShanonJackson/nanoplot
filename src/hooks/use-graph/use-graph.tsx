@@ -75,6 +75,13 @@ export const useGraphColumn = () => {
 
 export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;
 export const useGraph: () => GraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;
+export const useIsZooming = () => {
+	const {
+		x: [xmin, xmax],
+		y: [ymin, ymax],
+	} = useGraph().zoom;
+	return !(xmin === 0 && xmax === 100 && ymin === 0 && ymax === 100);
+};
 export const useDataset = (dataset?: string) => {
 	const context = useGraph();
 	return dataset ? context.datasets[dataset] : context;

@@ -7,6 +7,7 @@ import { GradientLegend } from "../../../../../components/GradientLegend/Gradien
 import { YAxis } from "../../../../../components/YAxis/YAxis";
 import { Heatmap } from "../../../../../components/Heatmap/Heatmap";
 import { XAxis } from "../../../../../components/XAxis/XAxis";
+import { DocumentationLayout } from "../../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
 
 export default function Page() {
 	const [heatmap, setHeatmap] = useState<Pick<ComponentProps<typeof Heatmap>, "gradient" | "scalars">>({
@@ -15,7 +16,7 @@ export default function Page() {
 		scalars: [-100_000, -80_000, -60_000, -40_000, -20_000, 0, 20_000, 40_000, 60_000, 80_000, 100_000],
 	});
 	return (
-		<div className={"h-[calc(100vh-80px)] grid md:grid-rows-2 gap-4 md:grid-cols-[40%_1fr] p-8"}>
+		<DocumentationLayout playground>
 			<ControlPanel>
 				<h1 className={"text-2xl"}>Heatmap</h1>
 			</ControlPanel>
@@ -115,6 +116,6 @@ export default function Page() {
 					<XAxis />
 				</Graph>
 			</GraphPanel>
-		</div>
+		</DocumentationLayout>
 	);
 }

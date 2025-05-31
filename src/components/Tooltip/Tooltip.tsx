@@ -5,6 +5,7 @@ import { Portal } from "../Portal/Portal";
 import { useOnClickOutside } from "../../hooks/use-on-click-outside";
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
 import { Popup } from "./Popup";
+import { cx } from "../../utils/cx/cx";
 
 export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onDragStart" | "onDragEnd" | "onDrag" | "ref"> & {
 	active?: boolean;
@@ -15,8 +16,8 @@ export type Props = Omit<JSX.IntrinsicElements["div"], "onAnimationStart" | "onD
 	interactable?: boolean;
 	onClose?: () => void;
 	children?: React.ReactNode;
-	bounds?: React.RefObject<Element> /* collision detection will be relative to this box OR window */;
-	contain?: React.RefObject<Element> /* if the tooltip renders outside this box, will render null */;
+	bounds?: React.RefObject<Element | null> /* collision detection will be relative to this box OR window */;
+	contain?: React.RefObject<Element | null> /* if the tooltip renders outside this box, will render null */;
 	triangle?: { x: number }; // % of triangle's x location i.e 50% would be center.
 	border?: string;
 	collision?: boolean;
@@ -60,11 +61,31 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 			tetherRef: tooltipRef,
 			boundingContainer: bounds,
 			offset: {
-				y: position.target.side === "top" || position.target.side === "bottom" ? 8 : 0,
-				x: position.target.side === "left" || position.target.side === "right" ? 8 : 0,
+				y: 8,
+				x: 8,
 			},
-			onCollision: (collides) => {
+			onCollision: ({ collision: collidesWith }) => {
 				if (!collision) return { targetPosition: position.target, tetherPosition: position.tooltip };
+				if (collidesWith.top)
+					return {
+						targetPosition: { side: "bottom", alignment: "center" },
+						tetherPosition: { side: "top", alignment: "center" },
+					};
+				if (collidesWith.bottom)
+					return {
+						targetPosition: { side: "top", alignment: "center" },
+						tetherPosition: { side: "bottom", alignment: "center" },
+					};
+				if (collidesWith.left)
+					return {
+						targetPosition: { side: "right", alignment: "center" },
+						tetherPosition: { side: "left", alignment: "center" },
+					};
+				if (collidesWith.right)
+					return {
+						targetPosition: { side: "left", alignment: "center" },
+						tetherPosition: { side: "right", alignment: "center" },
+					};
 				return { targetPosition: position.target, tetherPosition: position.tooltip };
 			},
 		});
@@ -82,25 +103,23 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 		return (
 			<>
 				{trigger(target as RefObject<never>, open)}
-				{!disabled && isInsideContainer ? (
-					<Portal>
-						{open && Boolean(children) && (
-							<Popup
-								{...rest}
-								ref={setTooltipRef}
-								style={{ ...tetherStyles, ...style }}
-								border={border}
-								target={{ side, alignment }}
-								onMouseEnter={() => setIsInsideTooltip(true)}
-								onMouseLeave={() => setIsInsideTooltip(false)}
-								triangle={triangle}
-								className={className}
-							>
-								{children}
-							</Popup>
-						)}
-					</Portal>
-				) : null}
+				<Portal>
+					{open && Boolean(children) && (
+						<Popup
+							{...rest}
+							ref={setTooltipRef}
+							style={{ ...tetherStyles, ...style }}
+							border={border}
+							target={{ side, alignment }}
+							onMouseEnter={() => setIsInsideTooltip(true)}
+							onMouseLeave={() => setIsInsideTooltip(false)}
+							triangle={triangle}
+							className={cx(className, (!isInsideContainer || disabled) && "hidden")}
+						>
+							{children}
+						</Popup>
+					)}
+				</Portal>
 			</>
 		);
 	},
