@@ -64,30 +64,8 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 				y: 8,
 				x: 8,
 			},
-			onCollision: ({ collision: collidesWith }) => {
-				if (!collision) return { targetPosition: position.target, tetherPosition: position.tooltip };
-				if (collidesWith.top)
-					return {
-						targetPosition: { side: "bottom", alignment: "center" },
-						tetherPosition: { side: "top", alignment: "center" },
-					};
-				if (collidesWith.bottom)
-					return {
-						targetPosition: { side: "top", alignment: "center" },
-						tetherPosition: { side: "bottom", alignment: "center" },
-					};
-				if (collidesWith.left)
-					return {
-						targetPosition: { side: "right", alignment: "center" },
-						tetherPosition: { side: "left", alignment: "center" },
-					};
-				if (collidesWith.right)
-					return {
-						targetPosition: { side: "left", alignment: "center" },
-						tetherPosition: { side: "right", alignment: "center" },
-					};
-				return { targetPosition: position.target, tetherPosition: position.tooltip };
-			},
+			/* default is to 'flip' so if collision is true, set this to undefined so 'flip' behaviour kicks in */
+			onCollision: collision ? undefined : () => ({ targetPosition: position.target, tetherPosition: position.tooltip }),
 		});
 
 		useOnClickOutside([target, tooltipRef], onClose);
@@ -100,6 +78,23 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 			rect && tooltip
 				? rect.left < tooltip.left && rect.right > tooltip.right && rect.top < tooltip.top && rect.bottom > tooltip.bottom
 				: true;
+
+		const triangleX = (() => {
+			if (alignment === "left") return { x: 0.05 };
+			if (alignment === "right") return { x: 0.95 };
+			if (alignment === "top") return { x: 0.05 };
+			if (alignment === "bottom") return { x: 0.95 };
+			return undefined;
+		})();
+
+		const transform = (() => {
+			if (alignment === "left") return `translate(-5%,0)`;
+			if (alignment === "right") return `translate(5%,0)`;
+			if (alignment === "top") return `translate(0,5%)`;
+			if (alignment === "bottom") return `translate(0,-5%)`;
+			return undefined;
+		})();
+
 		return (
 			<>
 				{trigger(target as RefObject<never>, open)}
@@ -108,12 +103,12 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 						<Popup
 							{...rest}
 							ref={setTooltipRef}
-							style={{ ...tetherStyles, ...style }}
+							style={{ ...tetherStyles, ...style, transform }}
 							border={border}
 							target={{ side, alignment }}
 							onMouseEnter={() => setIsInsideTooltip(true)}
 							onMouseLeave={() => setIsInsideTooltip(false)}
-							triangle={triangle}
+							triangle={triangleX}
 							className={cx(className, (!isInsideContainer || disabled) && "hidden")}
 						>
 							{children}

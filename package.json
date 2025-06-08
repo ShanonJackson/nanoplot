@@ -1,6 +1,7 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.67",
+	"version": "0.0.69",
+	"license": "MIT",
 	"private": false,
 	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
 	"scripts": {

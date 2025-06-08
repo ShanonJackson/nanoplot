@@ -149,7 +149,8 @@ export function useTether<T extends Element>({
 	const [styles, setStyles] = useState<{ left?: number; top?: number; zIndex?: number; position?: "absolute" }>({});
 
 	const getPositionCollision = (collision: Collision) => {
-		if (!Object.values(collision.collision).some(Boolean)) return positions;
+		const isColliding = Object.values(collision.collision).some(Boolean);
+		if (!isColliding) return { tetherPosition, targetPosition };
 		return onCollision(collision);
 	};
 
@@ -182,12 +183,12 @@ export function useTether<T extends Element>({
 					? Math.min(boundingRect.y + boundingRect.height + window.scrollY, window.innerHeight)
 					: window.scrollY + document.documentElement.clientHeight),
 		};
-		// const pos = getPositionCollision({ tetherPosition, targetPosition, collision });
-		// const xy = getXY({ ...options, ...pos, offset: { y, x } });
-		const css = { zIndex: getZIndex(target), left: initial.left, top: initial.top, position: "absolute" } as const;
+		const pos = getPositionCollision({ tetherPosition, targetPosition, collision });
+		const xy = getXY({ ...options, ...pos, offset: { y, x } });
+		const css = { zIndex: getZIndex(target), left: xy.left, top: xy.top, position: "absolute" } as const;
 		/* update if required */
 		if (styles.left !== css.left || styles.top !== css.top || styles.zIndex !== css.zIndex) {
-			setPositions({ tetherPosition, targetPosition });
+			setPositions(pos);
 			setStyles(css);
 		}
 	};

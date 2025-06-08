@@ -10,6 +10,7 @@ import { useBoundingBox } from "../../../hooks/use-bounding-box";
 import { Tooltip } from "../../Tooltip/Tooltip";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { cx, tw } from "../../../utils/cx/cx";
+import { useGraphRef } from "../../../hooks/use-graph/use-graph-ref";
 
 type Point = Omit<CartesianDataset[number], "data"> & {
 	data: CartesianDataset[number]["data"][number];
@@ -48,7 +49,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 				ref={ref}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				className={tw(
-					"scatter-tooltip [grid-area:graph] h-full w-full absolute overflow-visible [backface-visibility:hidden]",
+					"scatter-tooltip [grid-area:graph] h-full w-full absolute overflow-visible [backface-visibility:hidden] inset-0",
 					isZooming && "block overflow-hidden",
 				)}
 				preserveAspectRatio={"none"}
@@ -76,10 +77,9 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 				<Portal>
 					<svg
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-						className={tw("[grid-area:graph] h-full w-full absolute overflow-visible", isZooming && "block overflow-hidden")}
+						className={"absolute h-full w-full overflow-visible"}
 						style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 						preserveAspectRatio={"none"}
-						ref={ref}
 					>
 						<filter id={shadowId} filterUnits="userSpaceOnUse">
 							<feGaussianBlur in="SourceAlpha" stdDeviation="35 100" result="blur" />
@@ -105,7 +105,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 						)}
 						<Tooltip
 							active={true}
-							trigger={(ref) => {
+							trigger={(rf) => {
 								return (
 									<path
 										d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} h 0.001`}
@@ -115,7 +115,7 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 										strokeLinejoin={"round"}
 										filter={`url(#${shadowId})`}
 										vectorEffect={"non-scaling-stroke"}
-										ref={ref}
+										ref={rf}
 									/>
 								);
 							}}

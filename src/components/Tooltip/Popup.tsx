@@ -11,7 +11,16 @@ type Props = ComponentProps<"div"> & {
 	children?: ReactNode;
 };
 
-export const POPUP_TRIANGLE_HEIGHT_PX = 12;
+/*
+	For those coming to modify.
+	This implementation supports the following functionality:
+	- Linear gradient borders.
+	- Linear gradient background (that is not clipped by the triangle [which in some implementations would be a pseudo element).
+	- Border-radius corners (which can't possible if using clip-path to achieve linear gradient background).
+
+	Because of the above, this implementation achieves it with a single div but alot of css.
+
+ */
 export const Popup = forwardRef<HTMLDivElement, Props>(
 	(
 		{
@@ -25,7 +34,17 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 		},
 		ref,
 	) => {
-		console.log({ side });
+		const trianglePosition = (() => {
+			if (triangle) return triangle.x * 100 + "%";
+			return {
+				["left"]: "10%",
+				["top"]: "10%",
+				["right"]: "90%",
+				["bottom"]: "90%",
+				["center"]: "50%",
+			}[alignment];
+		})();
+
 		return (
 			<div
 				{...props}
@@ -67,7 +86,7 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 						"--a": "90deg",
 						"--r": `${radius}px`,
 						"--b": "1px",
-						"--p": `${triangle ? triangle.x * 100 : 50}%`,
+						"--p": trianglePosition,
 					} as CSSProperties
 				}
 				ref={ref}

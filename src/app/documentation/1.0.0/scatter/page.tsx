@@ -106,12 +106,12 @@ export default function App ()  {
 					},
 				]}
 			>
-				<Legend alignment={"end"} position={"top"} />
-				<YAxis ticks={{ to: 100 }}/>
+				<Legend position={"top"} alignment={"end"} />
+				<YAxis />
 				<GridLines border horizontal vertical />
 				<Scatter />
 				<Scatter.Tooltip tooltip={(point) => \`\${point.data.x} \${point.data.y}\`} />
-				<XAxis ticks={{ to: 50 }} />
+				<XAxis />
 			</Graph>
 		</div>
 	);

@@ -43,12 +43,12 @@ export default function Page() {
 						},
 					]}
 				>
-					<Legend alignment={"end"} position={"top"} />
-					<YAxis ticks={{ to: 100 }} />
-					<GridLines border horizontal vertical />
+					<Legend position={"top"} alignment={"end"} />
+					<YAxis />
+					<GridLines />
 					<Scatter />
 					<Scatter.Tooltip tooltip={(point) => `${point.data.x} ${point.data.y}`} />
-					<XAxis ticks={{ to: 50 }} />
+					<XAxis />
 				</Graph>
 			</GraphPanel>
 			<div>
