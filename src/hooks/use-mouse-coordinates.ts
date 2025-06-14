@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useState, useTransition } from "react";
-import { MathUtils } from "../utils/math/math";
+import { MathUtils, scale } from "../utils/math/math";
 
 export const useMouseCoordinates = (
 	ref: RefObject<SVGSVGElement | null>,
@@ -17,8 +17,8 @@ export const useMouseCoordinates = (
 				const rect = svg.getBoundingClientRect();
 				const point = svg.createSVGPoint();
 				/* Immutably not possible on SVGPoint, Ignore the Typescript types they're wrong. */
-				point.x = MathUtils.scale(e.clientX - rect.left, rect.width, svg.viewBox.baseVal.width);
-				point.y = MathUtils.scale(e.clientY - rect.top, rect.height, svg.viewBox.baseVal.height);
+				point.x = scale(e.clientX - rect.left, rect.width, svg.viewBox.baseVal.width);
+				point.y = scale(e.clientY - rect.top, rect.height, svg.viewBox.baseVal.height);
 				const x = e.clientX - e.currentTarget?.getBoundingClientRect().left;
 				const y = e.clientY - e.currentTarget?.getBoundingClientRect().top;
 

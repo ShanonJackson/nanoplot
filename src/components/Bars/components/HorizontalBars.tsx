@@ -5,7 +5,7 @@ import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
-import { MathUtils } from "../../../utils/math/math";
+import { MathUtils, scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
@@ -98,10 +98,9 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 				dataset.map((bar, i) => {
 					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
 					const collision = typeof labels === "object" && "collision" in labels ? labels.collision : true;
-					const width =
-						Math.abs(MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) - (position === "above" ? 100 : 0)) + "%";
-					const height = MathUtils.scale(bar.y2 - bar.y1, context.viewbox.y, 100);
-					const top = MathUtils.scale(bar.y1, context.viewbox.y, 100);
+					const width = Math.abs(scale(bar.x2 - bar.x1, context.viewbox.x, 100) - (position === "above" ? 100 : 0)) + "%";
+					const height = scale(bar.y2 - bar.y1, context.viewbox.y, 100);
+					const top = scale(bar.y1, context.viewbox.y, 100);
 					const label = (() => {
 						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.x);
 						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
@@ -115,10 +114,7 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 							style={{
 								width,
 								height: height + "%",
-								left:
-									position === "above"
-										? "unset"
-										: MathUtils.scale(Math.min(bar.x1, bar.x2), context.viewbox.x, 100) + "%",
+								left: position === "above" ? "unset" : scale(Math.min(bar.x1, bar.x2), context.viewbox.x, 100) + "%",
 								right: position === "above" ? 0 : "unset",
 								top: top + "%",
 							}}

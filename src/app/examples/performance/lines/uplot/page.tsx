@@ -8,6 +8,7 @@ import { GridLines } from "../../../../../components/GridLines/GridLines";
 import { format } from "../../../../../utils/date/date-format";
 import { XAxis } from "../../../../../components/XAxis/XAxis";
 import { useState } from "react";
+import { ZoomSlider } from "../../../../../components/ZoomSlider/ZoomSlider";
 
 const dataset = data.slice(1, 4).map((d, i) => ({
 	name: (() => {
@@ -23,6 +24,9 @@ const dataset = data.slice(1, 4).map((d, i) => ({
 
 export default function Page() {
 	const [mount, setMount] = useState(false);
+	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
+	const minDate = dataset[0].data[0].x;
+	const maxDate = dataset[0].data[dataset[0].data.length - 1].x;
 	return (
 		<div>
 			<button onClick={() => setMount((m) => !m)}>{mount ? "Unmount" : "Mount"}</button>
@@ -35,17 +39,29 @@ export default function Page() {
 							TCP: dataset.filter((d) => d.name === "TCP Out").map((c) => ({ ...c, stroke: "rgb(255, 0, 0)" })),
 						}}
 					>
-						<Legend position={"top"} />
-						<YAxis />
+						<Legend position={"top"} datasets={["TCP"]} />
+						<YAxis ticks={{ from: 0, to: 100, jumps: 6 }} />
 						<GridLines />
 						<Lines />
 						<Lines dataset={"TCP"} />
 						<Lines.Tooltip
+							datasets={["TCP"]}
 							tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }}
 						/>
-						<YAxis dataset={"TCP"} position={"right"} display={(t) => t.toString() + " MB"} />
+						<YAxis
+							dataset={"TCP"}
+							position={"right"}
+							display={(t) => t.toString() + " MB"}
+							ticks={{ from: 0, to: 50, jumps: 6 }}
+						/>
 						<XAxis
-							ticks={{ jumps: "P2D" }}
+							ticks={{ from: minDate.getTime(), to: maxDate.getTime(), jumps: "P2D" }}
+							dataset={"TCP"}
+							display={() => null}
+							className={"pt-0"}
+						/>
+						<XAxis
+							ticks={{ from: minDate.getTime(), to: maxDate.getTime(), jumps: "P2D" }}
 							display={(x) => {
 								if (typeof x === "number" || typeof x === "string") return null;
 								return format(x, "mm/dd");

@@ -8,13 +8,13 @@ import { LinesTooltip } from "../Lines/components/LinesTooltip";
 import { ObjectUtils } from "../../utils/object/object";
 import { Line } from "../Lines/components/Line";
 import { ColorUtils } from "../../utils/color/color";
+import { LinesTooltipZone } from "../Lines/components/LinesTooltipZone";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
 	curve?: keyof typeof CurveUtils;
 	loading?: boolean;
 }
-
 
 export const Area = ({ className, curve = "linear", children, loading }: Props) => {
 	const {
@@ -41,8 +41,7 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 			})),
 		};
 	});
-	
-	
+
 	const grouped = Object.entries(ObjectUtils.groupBy(lines, ({ group, id }) => group ?? id));
 
 	return (
@@ -107,4 +106,4 @@ Area.context = (ctx: GraphContext): GraphContext => {
 	};
 };
 
-Area.Tooltip = LinesTooltip;
+Area.Tooltip = LinesTooltipZone;

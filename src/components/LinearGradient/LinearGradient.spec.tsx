@@ -4,7 +4,7 @@ import { LinearGradient } from "./LinearGradient";
 import { toRgb } from "../../utils/color/to-rgb";
 import { GraphContext, GraphContextProvider } from "../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
 const MOCK_CONTEXT: GraphContext = {
@@ -99,13 +99,13 @@ describe("src/components/LinearGradient", () => {
 		expect(stops[0].getAttribute("offset")).toBe("0%");
 		expect(stops[1].getAttribute("stop-color")).toBe("rgb(255, 0, 0)");
 		expect(stops[1].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[1].getAttribute("offset")).toBe(MathUtils.scale(xForValue(400), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[1].getAttribute("offset")).toBe(scale(xForValue(400), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 		expect(stops[2].getAttribute("stop-color")).toBe("rgb(0, 0, 255)");
 		expect(stops[2].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[2].getAttribute("offset")).toBe(MathUtils.scale(xForValue(400.1), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[2].getAttribute("offset")).toBe(scale(xForValue(400.1), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 		expect(stops[3].getAttribute("stop-color")).toBe("rgb(0, 0, 255)");
 		expect(stops[3].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[3].getAttribute("offset")).toBe(MathUtils.scale(xForValue(1000), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[3].getAttribute("offset")).toBe(scale(xForValue(1000), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 	});
 
 	it("Should anchor to 100% offset when mask:linear-gradient(...) with value stops is above largest x", () => {
@@ -128,12 +128,12 @@ describe("src/components/LinearGradient", () => {
 		expect(stops[0].getAttribute("offset")).toBe("0%");
 		expect(stops[1].getAttribute("stop-color")).toBe("rgb(255, 0, 0)");
 		expect(stops[1].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[1].getAttribute("offset")).toBe(MathUtils.scale(xForValue(400), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[1].getAttribute("offset")).toBe(scale(xForValue(400), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 		expect(stops[2].getAttribute("stop-color")).toBe("rgb(0, 0, 255)");
 		expect(stops[2].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[2].getAttribute("offset")).toBe(MathUtils.scale(xForValue(400.1), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[2].getAttribute("offset")).toBe(scale(xForValue(400.1), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 		expect(stops[3].getAttribute("stop-color")).toBe("rgb(0, 0, 255)");
 		expect(stops[3].getAttribute("stop-opacity")).toBe(null);
-		expect(stops[3].getAttribute("offset")).toBe(MathUtils.scale(xForValue(1500), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
+		expect(stops[3].getAttribute("offset")).toBe(scale(xForValue(1500), MOCK_CONTEXT.viewbox.x, 100).toString() + "%");
 	});
 });

@@ -3,7 +3,7 @@ import { cx } from "../../utils/cx/cx";
 import { Rect } from "../Bars/components/Rect";
 import { GraphUtils } from "../../utils/graph/graph";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { overlay } from "../Overlay/Overlay";
 import { ColorUtils } from "../../utils/color/color";
@@ -32,7 +32,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 	const width = viewbox.x / xCategories.size;
 	const height = viewbox.y / yCategories.size;
 	const ticks = scalars.map((tick, i) => {
-		if (typeof tick === "number") return { tick: tick, percent: MathUtils.scale(i, scalars.length - 1, 100) };
+		if (typeof tick === "number") return { tick: tick, percent: scale(i, scalars.length - 1, 100) };
 		return tick;
 	});
 
@@ -65,9 +65,9 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 			{labels &&
 				dataset.map((rect, i) => {
 					const collision = typeof labels === "object" && "collision" in labels ? labels.collision : true;
-					const width = MathUtils.scale(rect.x2 - rect.x1, context.viewbox.x, 100) + "%";
-					const height = MathUtils.scale(rect.y2 - rect.y1, context.viewbox.y, 100);
-					const top = MathUtils.scale(rect.y1, context.viewbox.y, 100);
+					const width = scale(rect.x2 - rect.x1, context.viewbox.x, 100) + "%";
+					const height = scale(rect.y2 - rect.y1, context.viewbox.y, 100);
+					const top = scale(rect.y1, context.viewbox.y, 100);
 					const label = (() => {
 						if (typeof labels === "object") return labels.display(rect.data.z);
 						return (labels === true ? rect.data.z.toString() : labels(rect.data.z)) ?? "";
@@ -81,7 +81,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 							style={{
 								width,
 								height: height + "%",
-								left: `${MathUtils.scale(rect.x1, context.viewbox.x, 100)}%`,
+								left: `${scale(rect.x1, context.viewbox.x, 100)}%`,
 								top: top + "%",
 							}}
 						>

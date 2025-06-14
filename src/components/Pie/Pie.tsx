@@ -3,7 +3,7 @@ import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../utils/graph/graph";
 import { PieLoading } from "./components/PieLoading";
 import { PieEmpty } from "./components/PieEmpty";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { PathUtils } from "../../utils/path/path";
 import { cx } from "../../utils/cx/cx";
 import { overlay } from "../Overlay/Overlay";
@@ -52,9 +52,9 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 				...segment,
 				previousTotalDegrees: segments
 					.slice(0, i)
-					.map(({ value }) => MathUtils.scale(value, sum, 360))
+					.map(({ value }) => scale(value, sum, 360))
 					.reduce((sum, value) => sum + value, 180),
-				degrees: MathUtils.scale(segment.value, sum, 360),
+				degrees: scale(segment.value, sum, 360),
 			};
 		})
 		.map((segment, i, dataset) => {
@@ -93,7 +93,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 				PIE_RADIUS * (1.2 + 0.1 * ((isCollisionFlipped ? collisionPosition - 4 : collisionPosition) + 1)),
 				segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + 180,
 			);
-			const isRightAligned = isCollisionFlipped || MathUtils.scale(endLabelLine.x, viewbox.x, 100) > 50;
+			const isRightAligned = isCollisionFlipped || scale(endLabelLine.x, viewbox.x, 100) > 50;
 			const label = labels && (
 				<>
 					<path

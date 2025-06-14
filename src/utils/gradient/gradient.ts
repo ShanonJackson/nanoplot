@@ -1,6 +1,6 @@
 import { toRgb } from "../color/to-rgb";
 import { CartesianDataset, GraphContext } from "../../hooks/use-graph/use-graph";
-import { MathUtils } from "../math/math";
+import { MathUtils, scale } from "../math/math";
 import { CoordinatesUtils } from "../coordinates/coordinates";
 
 const parseRgbString = (rgb: string): { r: number; g: number; b: number; a: number } => {
@@ -37,7 +37,7 @@ export const GradientUtils = {
 		if (direction === "to bottom" || direction === "to top") {
 			const yMax = yForValue(Math.max(...dataset.map(({ y }) => +y)));
 			const yMin = yForValue(Math.min(...dataset.map(({ y }) => +y)));
-			const percent = MathUtils.scale(yForValue(point.y), gradient.includes("mask:") ? viewbox.y : [yMax, yMin], 100);
+			const percent = scale(yForValue(point.y), gradient.includes("mask:") ? viewbox.y : [yMax, yMin], 100);
 			return GradientUtils.colorFrom({
 				gradient,
 				percent: direction === "to top" ? 100 - percent : percent,
@@ -47,7 +47,7 @@ export const GradientUtils = {
 		}
 		const xMin = xForValue(Math.min(...dataset.map(({ x }) => +x)));
 		const xMax = xForValue(Math.max(...dataset.map(({ x }) => +x)));
-		const percent = MathUtils.scale(xForValue(point.x), gradient.includes("mask:") ? viewbox.x : [xMin, xMax], 100);
+		const percent = scale(xForValue(point.x), gradient.includes("mask:") ? viewbox.x : [xMin, xMax], 100);
 		return GradientUtils.colorFrom({ gradient, percent: direction == "to left" ? 100 - percent : percent, domain, viewbox });
 	},
 	direction: (gradient: string): string => {
@@ -103,10 +103,10 @@ export const GradientUtils = {
 						if (isPercent) return parseFloat(offset) / 100;
 						// it's a value in the domain.
 						if (direction === "to right" || direction === "to left") {
-							return MathUtils.scale(xForValue(parseFloat(offset)), viewbox.x, 1);
+							return scale(xForValue(parseFloat(offset)), viewbox.x, 1);
 						}
-						if (direction === "to top") return 1 - MathUtils.scale(yForValue(parseFloat(offset)), viewbox.y, 1);
-						return MathUtils.scale(yForValue(parseFloat(offset)), viewbox.y, 1);
+						if (direction === "to top") return 1 - scale(yForValue(parseFloat(offset)), viewbox.y, 1);
+						return scale(yForValue(parseFloat(offset)), viewbox.y, 1);
 					})();
 					return {
 						color: toRgb(match[1]),

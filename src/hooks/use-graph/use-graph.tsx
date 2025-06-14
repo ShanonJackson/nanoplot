@@ -1,7 +1,6 @@
-import { HTMLAttributes, useLayoutEffect } from "react";
+import { HTMLAttributes } from "react";
 import { GraphContextServer, useGraphServer } from "./use-server-graph";
 import { GraphContextClient, useGraphClient } from "./use-client-graph";
-import { useStatefulRef } from "../use-stateful-ref";
 
 export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
@@ -84,5 +83,14 @@ export const useIsZooming = () => {
 };
 export const useDataset = (dataset?: string) => {
 	const context = useGraph();
-	return dataset ? context.datasets[dataset] : context;
+	return dataset ? { ...context, ...context.datasets[dataset] } : context;
+};
+export const useDatasets = (datasets?: string[]) => {
+	const context = useGraph();
+	if (!datasets || datasets?.length === 0) return context.datasets;
+	return Object.fromEntries(
+		datasets.map((dataset) => {
+			return [dataset, context.datasets[dataset]];
+		}),
+	);
 };

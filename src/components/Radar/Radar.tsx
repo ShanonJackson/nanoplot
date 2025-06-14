@@ -2,7 +2,7 @@ import React, { useId } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
 import { useGraph } from "../../hooks/use-graph/use-graph";
 import { RadarSkeleton } from "./components/RadarSkeleton";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { cx } from "../../utils/cx/cx";
 import { PathUtils } from "../../utils/path/path";
 
@@ -38,7 +38,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 
 	if (loading) return <RadarSkeleton radius={radius} rings={rings} className={className} />;
 
-	const scale = (value: number) => {
+	const scaleValue = (value: number) => {
 		if (value === 0) return MIN_THRESHOLD;
 		if (value >= MAX_SCALE) return MAX_SCALE;
 		const index = scalars.findIndex((num, index, arr) => {
@@ -46,7 +46,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 			return (next !== value && MathUtils.isBetween(value, num, next)) || next === undefined;
 		});
 		const output: [number, number] = [proportion * index, proportion * Math.min(scalars.length, index + 1)];
-		return MathUtils.scale(value, [scalars[index], scalars[index + 1] || scalars[index]], output);
+		return scale(value, [scalars[index], scalars[index + 1] || scalars[index]], output);
 	};
 
 	return (
@@ -130,7 +130,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 						...item,
 						data: item.data
 							.toSorted((a, b) => points.indexOf(a.x.toString()) - points.indexOf(b.x.toString()))
-							.map(({ y }) => scale(+y)),
+							.map(({ y }) => scaleValue(+y)),
 					}))
 					.map(({ data, stroke, fill }, i) => {
 						const glow = data

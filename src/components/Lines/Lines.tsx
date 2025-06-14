@@ -2,13 +2,14 @@ import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
 import { useDataset, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
-import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { CoordinatesUtils, xCoordinateFor, yCoordinateFor } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
 import { cx, tw } from "../../utils/cx/cx";
 import { LinesTooltip } from "./components/LinesTooltip";
 import { Line } from "./components/Line";
 import { toRgb } from "../../utils/color/to-rgb";
 import { GradientUtils } from "../../utils/gradient/gradient";
+import { LinesTooltipZone } from "./components/LinesTooltipZone";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -30,28 +31,20 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 	const {
 		interactions: { pinned, hovered },
 		viewbox,
-		zoom,
 	} = useGraph();
 	const { data, domain, colors } = useDataset(dataset);
 	const isZooming = useIsZooming();
 
 	if (!GraphUtils.isXYData(data)) return null;
 
-	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
-	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
-
+	const xyForDataset = CoordinatesUtils.xyCoordinatesForDataset({ domain, viewbox });
 	const lines = data.map((line, i) => {
 		return {
 			...line,
 			id: String(line.id),
 			stroke: line.stroke ?? colors[i] ?? colors.at(-1),
 			fill: line.fill,
-			data: line.data.map((xy) => ({
-				x: xForValue(xy.x),
-				y: yForValue(xy.y),
-				xValue: xy.x,
-				yValue: xy.y,
-			})),
+			coordinates: xyForDataset(line.data),
 		};
 	});
 
@@ -66,7 +59,7 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 				className,
 			)}
 		>
-			{lines.map(({ id, stroke, fill, data: points }, i) => {
+			{lines.map(({ id, stroke, fill, coordinates: points, data }, i) => {
 				/* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
 				const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
 				const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
@@ -118,12 +111,13 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 							</>
 						)}
 						{joints &&
-							points.map(({ x, y, xValue, yValue }, i) => {
+							points.map(({ x, y }, i) => {
+								const xy = data[i];
 								const color = stroke.includes("linear-gradient")
 									? GradientUtils.gradientColorFromValue({
 											viewbox,
 											domain,
-											point: { x: xValue, y: yValue },
+											point: { x: xy.x, y: xy.y },
 											gradient: stroke,
 											dataset: points,
 										})
@@ -161,4 +155,4 @@ export const Lines = ({ className, curve = "linear", joints, children, loading, 
 	);
 };
 
-Lines.Tooltip = LinesTooltip;
+Lines.Tooltip = LinesTooltipZone;

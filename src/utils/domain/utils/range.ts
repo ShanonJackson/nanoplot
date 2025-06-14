@@ -1,9 +1,9 @@
 import { GraphContextRaw } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
-import { MathUtils } from "../../math/math";
+import { scale } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
-import { getDateDomain, getDurationFromRange } from "./date-domain";
+import { getDateDomain, getDurationFromMinMax, getDurationFromRange } from "./date-domain";
 import { getRangeForSet } from "./auto-minmax";
 
 export const range = (
@@ -17,14 +17,6 @@ export const range = (
 ) => {
 	if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
-	const duration = (() => {
-		/* ISO 8601 Duration Format - https://en.wikipedia.org/wiki/ISO_8601#Durations */
-		if (!isDateTime) return "";
-		if (jumps === "auto" || typeof jumps === "number") {
-			return getDurationFromRange(new Date(data[0].data[0][dimension]), new Date(data[0].data[1][dimension]));
-		}
-		return jumps;
-	})();
 
 	const inverse = dimension === "y" ? "x" : "y";
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
@@ -39,14 +31,30 @@ export const range = (
 	}
 
 	/* get min/max of dataset in stack safe AND performant way. i.e Math.min(...values) will stack overflow >129_000 or so */
-	let datasetMin = Infinity;
-	let datasetMax = -Infinity;
-	for (const line of data) {
-		for (const d of line.data) {
-			/* This code is hyper hyper hyper performance critical */
-			const value = isDateTime ? (d[dimension] as Date).getTime() : (d[dimension] as number);
-			if (value < datasetMin) datasetMin = value;
-			if (value > datasetMax) datasetMax = value;
+	let datasetMin = typeof from === "number" ? from : Infinity;
+	let datasetMax = typeof to === "number" ? to : -Infinity;
+	if (dimension === "x" && typeof from !== "number" && typeof to !== "number") {
+		/* these are split for JIT performance */
+		for (let i = 0; i < data.length; i++) {
+			const lineData = data[i].data;
+			for (let j = 0; j < lineData.length; j++) {
+				const value = lineData[j].x;
+				const v = isDateTime ? (value as Date).getTime() : (value as number);
+				if (v < datasetMin) datasetMin = v;
+				if (v > datasetMax) datasetMax = v;
+			}
+		}
+	}
+	if (dimension === "y" && typeof from !== "number" && typeof to !== "number") {
+		/* these are split for JIT performance */
+		for (let i = 0; i < data.length; i++) {
+			const lineData = data[i].data;
+			for (let j = 0; j < lineData.length; j++) {
+				const value = lineData[j].y;
+				const v = isDateTime ? (value as Date).getTime() : (value as number);
+				if (v < datasetMin) datasetMin = v;
+				if (v > datasetMax) datasetMax = v;
+			}
 		}
 	}
 
@@ -100,6 +108,15 @@ export const range = (
 	})();
 
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
+
+	const duration = (() => {
+		/* ISO 8601 Duration Format - https://en.wikipedia.org/wiki/ISO_8601#Durations */
+		if (!isDateTime) return "";
+		if (jumps === "auto" || typeof jumps === "number") {
+			return getDurationFromMinMax(min, max);
+		}
+		return jumps;
+	})();
 	const [MIN, MAX] = getRangeForSet({
 		min,
 		max,
@@ -148,10 +165,11 @@ export const range = (
 			return jumps;
 		})();
 		return Array.from({ length: JUMPS }, (_, i) => ({
-			tick: MathUtils.scale(i, [0, JUMPS - 1], [mn, mx]),
-			coordinate: MathUtils.scale(i, [0, JUMPS - 1], [0, viewb]),
+			tick: scale(i, [0, JUMPS - 1], [mn, mx]),
+			coordinate: scale(i, [0, JUMPS - 1], [0, viewb]),
 		}));
 	}
+
 	/*
 		Datetime Domain.
 		min === "auto" -> start the graph from the first datapoint in the dataset. (touching the side of graph)
@@ -166,9 +184,10 @@ export const range = (
 		max: new Date(MAX),
 		duration,
 	});
-
+	const minTime = new Date(MIN).getTime();
+	const maxTime = new Date(MAX).getTime();
 	return domain.map((tick) => ({
 		tick,
-		coordinate: MathUtils.scale(tick.getTime(), [new Date(MIN).getTime(), new Date(MAX).getTime()], [0, viewb]),
+		coordinate: ((tick.getTime() - minTime) / (maxTime - minTime)) * viewb /* math scale inline for perf. */,
 	}));
 };

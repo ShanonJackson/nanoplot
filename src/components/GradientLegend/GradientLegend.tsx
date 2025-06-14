@@ -1,6 +1,6 @@
 import React from "react";
 import { GraphContext, useGraphColumn } from "../../hooks/use-graph/use-graph";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { cx } from "../../utils/cx/cx";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
@@ -14,7 +14,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 export const GradientLegend = ({ position, alignment = "center", gradient, scalars, labels = true, ...rest }: Props) => {
 	const column = useGraphColumn().column;
 	const ticks = scalars.map((tick, i, ticks) => {
-		if (typeof tick === "number") return { label: tick, left: MathUtils.scale(i, ticks.length - 1, 100) + "%" };
+		if (typeof tick === "number") return { label: tick, left: scale(i, ticks.length - 1, 100) + "%" };
 		return { label: tick.tick, left: tick.percent + "%" };
 	});
 	return (

@@ -6,7 +6,7 @@ import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
 import { cx } from "../../../utils/cx/cx";
-import { MathUtils } from "../../../utils/math/math";
+import { MathUtils, scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
@@ -117,9 +117,9 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 				dataset.map((bar, i) => {
 					const position = typeof labels === "object" && "position" in labels ? labels.position : "center";
 					const collision = typeof labels === "object" && "collision" in labels ? labels.collision : true;
-					const width = MathUtils.scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
-					const height = MathUtils.scale(Math.abs(bar.y1 - bar.y2), context.viewbox.y, 100);
-					const top = position === "above" ? -4 : MathUtils.scale(Math.min(bar.y2, bar.y1), context.viewbox.y, 100) + "%";
+					const width = scale(bar.x2 - bar.x1, context.viewbox.x, 100) + "%";
+					const height = scale(Math.abs(bar.y1 - bar.y2), context.viewbox.y, 100);
+					const top = position === "above" ? -4 : scale(Math.min(bar.y2, bar.y1), context.viewbox.y, 100) + "%";
 					const label = (() => {
 						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.y);
 						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
@@ -132,7 +132,7 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 							style={{
 								width,
 								height: Math.abs(height - (position === "above" ? 100 : 0)) + "%",
-								left: `${MathUtils.scale(bar.x1, context.viewbox.x, 100)}%`,
+								left: `${scale(bar.x1, context.viewbox.x, 100)}%`,
 								top: top,
 							}}
 						>

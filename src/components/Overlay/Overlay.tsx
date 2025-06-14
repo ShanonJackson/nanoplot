@@ -1,7 +1,7 @@
 import React, { ReactNode, Ref } from "react";
 import { OverlayRect } from "./OverlayRect";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 
@@ -23,14 +23,14 @@ export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
 
 	const x1 = (() => {
 		if (!x) return undefined;
-		if ("coordinate" in x) return MathUtils.scale(x.coordinate, viewbox.x, 100) + "%";
-		if ("tick" in x) return MathUtils.scale(xForValue(x.tick), viewbox.x, 100) + "%";
+		if ("coordinate" in x) return scale(x.coordinate, viewbox.x, 100) + "%";
+		if ("tick" in x) return scale(xForValue(x.tick), viewbox.x, 100) + "%";
 		return undefined;
 	})();
 	const y1 = (() => {
 		if (!y) return undefined;
-		if ("coordinate" in y) return MathUtils.scale(y.coordinate, viewbox.y, 100) + "%";
-		if ("tick" in y) return MathUtils.scale(yForValue(y.tick), viewbox.y, 100) + "%";
+		if ("coordinate" in y) return scale(y.coordinate, viewbox.y, 100) + "%";
+		if ("tick" in y) return scale(yForValue(y.tick), viewbox.y, 100) + "%";
 		return undefined;
 	})();
 

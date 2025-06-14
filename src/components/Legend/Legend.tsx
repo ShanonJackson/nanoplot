@@ -1,6 +1,13 @@
 import React, { JSX, ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
-import { CartesianDatasetDefaulted, GraphContext, SegmentDatasetDefaulted, useGraph } from "../../hooks/use-graph/use-graph";
+import {
+	CartesianDatasetDefaulted,
+	GraphContext,
+	GraphContextRaw,
+	SegmentDatasetDefaulted,
+	useDatasets,
+	useGraph,
+} from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
@@ -12,9 +19,19 @@ type Props = Omit<JSX.IntrinsicElements["div"], "onClick" | "onMouseEnter" | "on
 	onMouseLeave?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
 	onMouseMove?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
 	children?: ReactNode;
+	datasets?: string[];
 };
 
-export const Legend = ({ position = "top", alignment = "center", onClick, onMouseEnter, onMouseMove, onMouseLeave, ...rest }: Props) => {
+export const Legend = ({
+	position = "top",
+	alignment = "center",
+	onClick,
+	onMouseEnter,
+	onMouseMove,
+	onMouseLeave,
+	datasets,
+	...rest
+}: Props) => {
 	const context = useGraph();
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	const {
@@ -22,6 +39,46 @@ export const Legend = ({ position = "top", alignment = "center", onClick, onMous
 		domain,
 		interactions: { pinned, hovered },
 	} = context;
+	const dsets = Object.values(useDatasets(datasets));
+
+	const render = (ctx: Pick<GraphContext, "domain" | "colors" | "data">) => {
+		return ctx.data
+			.map((dp) => ({ ...dp, group: dp.group ?? "" }))
+			.sort((a, b) => a.group.localeCompare(b.group))
+			.map((datapoint, i, datapoints) => {
+				const { id, name, fill, stroke } = datapoint;
+				const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
+				const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
+				const bg = fill ?? stroke;
+				const deserialized = bg?.replace("mask:", "")?.includes("linear-gradient")
+					? GradientUtils.deserialize({
+							gradient: bg.replace("mask:", ""),
+							viewbox,
+							domain,
+						})
+					: bg;
+				return (
+					<div
+						key={i}
+						className={cx(
+							"flex items-center",
+							(onClick || onMouseEnter || onMouseLeave || onMouseMove) && "cursor-pointer user-select-none",
+						)}
+						onClick={() => onClick?.(datapoint)}
+						onMouseEnter={() => onMouseEnter?.(datapoint)}
+						onMouseLeave={() => onMouseLeave?.(datapoint)}
+						onMouseMove={() => onMouseMove?.(datapoint)}
+					>
+						<div
+							className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
+							style={disabled ? undefined : { background: deserialized }}
+						/>
+						<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
+						{isLastInGroup && <div className={"h-[16px] bg-gray-700 w-[1px] ml-[10px]"} />}
+					</div>
+				);
+			});
+	};
 
 	return (
 		<Element
@@ -39,42 +96,8 @@ export const Legend = ({ position = "top", alignment = "center", onClick, onMous
 				rest.className,
 			)}
 		>
-			{context.data
-				.map((dp) => ({ ...dp, group: dp.group ?? "" }))
-				.sort((a, b) => a.group.localeCompare(b.group))
-				.map((datapoint, i, datapoints) => {
-					const { id, name, fill, stroke } = datapoint;
-					const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));
-					const isLastInGroup = datapoints[i + 1]?.group ? datapoints[i + 1].group !== datapoint.group : false;
-					const bg = fill ?? stroke;
-					const deserialized = bg?.replace("mask:", "")?.includes("linear-gradient")
-						? GradientUtils.deserialize({
-								gradient: bg.replace("mask:", ""),
-								viewbox,
-								domain,
-							})
-						: bg;
-					return (
-						<div
-							key={i}
-							className={cx(
-								"flex items-center",
-								(onClick || onMouseEnter || onMouseLeave || onMouseMove) && "cursor-pointer user-select-none",
-							)}
-							onClick={() => onClick?.(datapoint)}
-							onMouseEnter={() => onMouseEnter?.(datapoint)}
-							onMouseLeave={() => onMouseLeave?.(datapoint)}
-							onMouseMove={() => onMouseMove?.(datapoint)}
-						>
-							<div
-								className={cx("size-4 mr-1 rounded-full", disabled && "bg-gray-400 opacity-[0.8]")}
-								style={disabled ? undefined : { background: deserialized }}
-							/>
-							<div className={cx("text-nowrap", disabled && "text-gray-400")}>{name}</div>
-							{isLastInGroup && <div className={"h-[16px] bg-gray-700 w-[1px] ml-[10px]"} />}
-						</div>
-					);
-				})}
+			{render(context)}
+			{dsets.map((d) => render(d))}
 		</Element>
 	);
 };

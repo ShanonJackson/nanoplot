@@ -1,7 +1,7 @@
 import React, { ReactNode, useId } from "react";
 import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { GraphUtils } from "../../utils/graph/graph";
 import { WorldmapTooltip } from "./components/WorldmapTooltip";
@@ -35,7 +35,7 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 						if (gradient && dataset[iso]) {
 							return GradientUtils.colorFrom({
 								gradient: gradient,
-								percent: MathUtils.scale(+dataset[iso].value, [min, max], 100),
+								percent: scale(+dataset[iso].value, [min, max], 100),
 								viewbox,
 								domain,
 							});

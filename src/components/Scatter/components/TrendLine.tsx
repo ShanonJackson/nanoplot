@@ -2,7 +2,7 @@ import React, { useId } from "react";
 import { GraphContext } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
-import { MathUtils } from "../../../utils/math/math";
+import { MathUtils, scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 
 const ALL_TIME_TREND_TEXT_WIDTH_PX = 82; /* hardcoded width, as calculated VIA DOM inspector */
@@ -15,7 +15,7 @@ export const DemandScatterTrendLine = ({ context }: { context: GraphContext }) =
 	const width = 1005;
 	const maskId = useId();
 
-	const TEXT_WIDTH_UNITS = MathUtils.scale(ALL_TIME_TREND_TEXT_WIDTH_PX, width ?? 0, context.viewbox.x);
+	const TEXT_WIDTH_UNITS = scale(ALL_TIME_TREND_TEXT_WIDTH_PX, width ?? 0, context.viewbox.x);
 
 	if (!GraphUtils.isXYData(data) || data.length === 0) return null;
 
@@ -48,7 +48,7 @@ export const DemandScatterTrendLine = ({ context }: { context: GraphContext }) =
 			<overlay.div>
 				<div
 					style={{
-						offsetPath: `path("M 0 ${MathUtils.scale(y1, context.viewbox.y, height)} L ${width} ${MathUtils.scale(
+						offsetPath: `path("M 0 ${scale(y1, context.viewbox.y, height)} L ${width} ${scale(
 							y2,
 							context.viewbox.y,
 							height,

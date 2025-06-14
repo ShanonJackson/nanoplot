@@ -2,6 +2,17 @@ import { describe, expect, it } from "bun:test";
 import { getCeilDateFromDuration, getDateDomain, getFloorDateFromDuration } from "./date-domain";
 
 describe("src/utils/domain/utils/date-domain.ts", () => {
+	it("Should complete in <1.5ms", () => {
+		const start = performance.now();
+		getDateDomain({
+			min: new Date(2019, 7, 22, 6, 0, 0),
+			max: new Date(2019, 8, 29, 19, 49, 0),
+			duration: "P2D",
+		});
+		const end = performance.now();
+		expect(end - start).toBeLessThan(1.5);
+	});
+
 	it("Should return 1 month 5 hr increments starting from floor(min) and ceil(max) on this duration", () => {
 		const range = getDateDomain({
 			min: new Date(2023, 0, 28, 0, 0, 0),

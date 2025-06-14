@@ -1,7 +1,7 @@
 "use client";
 
 import { GraphUtils } from "../../../utils/graph/graph";
-import { MathUtils } from "../../../utils/math/math";
+import { MathUtils, scale } from "../../../utils/math/math";
 import React, { ReactNode, useId, useMemo, useRef, useState } from "react";
 import { CartesianDataset, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -60,15 +60,15 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 						height: graphHeight,
 						width: graphWidth,
 					} = ref.current?.getBoundingClientRect() ?? { height: 0, width: 0, top: 0, left: 0 };
-					const x1 = MathUtils.scale(e.nativeEvent.x - graphLeft, graphWidth, viewbox.x);
-					const y1 = MathUtils.scale(e.nativeEvent.y - graphTop, graphHeight, viewbox.y);
+					const x1 = scale(e.nativeEvent.x - graphLeft, graphWidth, viewbox.x);
+					const y1 = scale(e.nativeEvent.y - graphTop, graphHeight, viewbox.y);
 					const closest = points.reduce((prev, curr) => {
 						const current = Math.sqrt((x1 - curr.coordinates.x) ** 2 + (y1 - curr.coordinates.y) ** 2);
 						return Math.sqrt((x1 - prev.coordinates.x) ** 2 + (y1 - prev.coordinates.y) ** 2) < current ? prev : curr;
 					});
 					if (!closest) return;
-					const radiusX = MathUtils.scale(20, graphWidth, viewbox.x);
-					const radiusY = MathUtils.scale(20, graphHeight, viewbox.y);
+					const radiusX = scale(20, graphWidth, viewbox.x);
+					const radiusY = scale(20, graphHeight, viewbox.y);
 					const isMouseOntop = Math.abs(x1 - closest.coordinates.x) < radiusX && Math.abs(y1 - closest.coordinates.y) < radiusY;
 					setClosest((c) => (isMouseOntop ? closest : undefined));
 				}}

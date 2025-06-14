@@ -22,8 +22,10 @@ const getReplaceKnown = (cls: string): string =>
 		.split(":")
 		.map((token) => unique[token] ?? token)
 		.join(":");
+
+const regex = /[^\[\]:]+|\[[^\]]+]/g;
 export const toUniqueIdentifier = (c: string): string => {
-	const m = c.match(/[^\[\]:]+|\[[^\]]+]/g)!;
+	const m = c.match(regex)!;
 	const l = m.pop()!;
 	return getReplaceKnown([...m, l[0] === "[" ? l.slice(1).split(":")[0] : l.split("-")[0]].join(":"));
 };

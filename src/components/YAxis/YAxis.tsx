@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { GraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
-import { MathUtils } from "../../utils/math/math";
+import { MathUtils, scale } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
 import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
@@ -45,7 +45,7 @@ export const YAxis = ({ title, description, display, dataset, position = "left" 
 									!isVisible && "opacity-0",
 								)}
 								data-coordinate={coordinate}
-								style={{ top: `${MathUtils.scale(coordinate, 3000, 100)}%` }}
+								style={{ top: `${scale(coordinate, 3000, 100)}%` }}
 							>
 								{label}
 							</div>

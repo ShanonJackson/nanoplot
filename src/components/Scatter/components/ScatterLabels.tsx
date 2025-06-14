@@ -1,6 +1,6 @@
 "use client";
 
-import { MathUtils } from "../../../utils/math/math";
+import { MathUtils, scale } from "../../../utils/math/math";
 import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { overlay } from "../../Overlay/Overlay";
 import { GraphUtils } from "../../../utils/graph/graph";
@@ -43,19 +43,19 @@ const ScatterLabelsComponent = () => {
 				.map(({ x: x1, y: y1, name, color }, i, points) => {
 					const labelWidth = ctx.measureText(String(name)).width;
 					const collides = (() => {
-						const xCoordinate = +x1 + MathUtils.scale(labelWidth, graphWidth, viewbox.x) + LABEL_X_MARGIN;
+						const xCoordinate = +x1 + scale(labelWidth, graphWidth, viewbox.x) + LABEL_X_MARGIN;
 						if (xCoordinate > viewbox.x) return true;
 						return points.slice(i + 1).some((point) => {
 							if (xCoordinate > point.x) {
-								const yHeight = MathUtils.scale(12, graphHeight, viewbox.y);
+								const yHeight = scale(12, graphHeight, viewbox.y);
 								if (y1 + yHeight > point.y && y1 - yHeight < point.y) return true;
 							}
 							return false;
 						});
 					})();
 					if (collides) return null;
-					const left = MathUtils.scale(x1, viewbox.x, 100);
-					const top = MathUtils.scale(y1, viewbox.y, 100);
+					const left = scale(x1, viewbox.x, 100);
+					const top = scale(y1, viewbox.y, 100);
 					if (left > 100 || left < 0 || top < 0 || top > 97) return null;
 					return (
 						<overlay.div

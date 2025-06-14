@@ -77,50 +77,70 @@ export const getDateDomain = ({ min, max, duration }: { min: Date; max: Date; du
 	const dur = parseDuration(duration);
 	type Unit = keyof typeof dur;
 	const units: Unit[] = ["years", "months", "days", "hours", "minutes", "seconds"];
-	const largestUnit = units.find((u) => dur[u] > 0);
-	if (!largestUnit) throw new Error("Duration must have at least one non-zero component");
+	const largest = units.find((u) => dur[u] > 0);
+	if (!largest) throw new Error("Duration must have at least one non-zero component");
 
-	// Split into step (largest) and offset (others)
-	const stepUnits: Record<Unit, number> = { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-	const offsetUnits: Record<Unit, number> = { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-	// Assign step for largestUnit
-	stepUnits[largestUnit] = dur[largestUnit];
-	// Rest go to offset
-	units.forEach((u) => {
-		if (u !== largestUnit) offsetUnits[u] = dur[u];
-	});
+	// Separate step and offset values
+	const step = dur[largest];
+	const offset = { ...dur };
+	delete offset[largest];
 
-	const add = (d: Date, delta: Record<Unit, number>) => {
-		const c = new Date(d.getTime());
-		if (delta.years) c.setFullYear(c.getFullYear() + delta.years);
-		if (delta.months) c.setMonth(c.getMonth() + delta.months);
-		if (delta.days) c.setDate(c.getDate() + delta.days);
-		if (delta.hours) c.setHours(c.getHours() + delta.hours);
-		if (delta.minutes) c.setMinutes(c.getMinutes() + delta.minutes);
-		if (delta.seconds) c.setSeconds(c.getSeconds() + delta.seconds);
-		return c;
-	};
-
+	// Floor start date
+	const start = getFloorDateFromDuration(min, duration);
 	const result: Date[] = [];
-	const startFloor = getFloorDateFromDuration(min, duration);
-	let i = 0;
 
-	while (true) {
-		// Advance largest unit by i steps
-		const stepDelta: Record<Unit, number> = Object.fromEntries(units.map((u) => [u, stepUnits[u] * i])) as Record<Unit, number>;
+	if (largest === "years" || largest === "months") {
+		// Month/year arithmetic
+		const baseYear = start.getFullYear();
+		const baseMonth = start.getMonth();
+		const offsDay = offset.days || 0;
+		const offsHour = offset.hours || 0;
+		const offsMin = offset.minutes || 0;
+		const offsSec = offset.seconds || 0;
 
-		const base = add(startFloor, stepDelta);
-		const tick = add(base, offsetUnits);
-
-		if (tick > max) {
-			result.push(tick);
-			break;
+		let stepCount = 0;
+		while (true) {
+			const totalMonths = baseMonth + step * stepCount + (largest === "years" ? 0 : 0);
+			const year = baseYear + (largest === "years" ? step * stepCount : Math.floor(totalMonths / 12));
+			const month = largest === "months" ? (baseMonth + step * stepCount) % 12 : baseMonth;
+			const date = new Date(
+				year,
+				month,
+				start.getDate() + offsDay,
+				start.getHours() + offsHour,
+				start.getMinutes() + offsMin,
+				start.getSeconds() + offsSec,
+			);
+			result.push(date);
+			if (date > max) break;
+			stepCount++;
 		}
-		if (tick >= startFloor) {
-			result.push(tick);
+	} else {
+		// Millisecond unit arithmetic
+		const msPerUnit: Record<Unit, number> = {
+			years: 0,
+			months: 0,
+			days: 864e5,
+			hours: 36e5,
+			minutes: 6e4,
+			seconds: 1e3,
+		};
+		const stepMs = step * msPerUnit[largest];
+		const offsetMs =
+			(offset.days || 0) * msPerUnit.days +
+			(offset.hours || 0) * msPerUnit.hours +
+			(offset.minutes || 0) * msPerUnit.minutes +
+			(offset.seconds || 0) * msPerUnit.seconds;
+
+		const startTs = start.getTime();
+		// compute number of ticks needed
+		const count = Math.ceil((max.getTime() - (startTs + offsetMs)) / stepMs);
+		for (let i = 0; i <= count; i++) {
+			const ts = startTs + i * stepMs + offsetMs;
+			result.push(new Date(ts));
 		}
-		i++;
 	}
+
 	return result;
 };
 
@@ -206,6 +226,56 @@ export const getCeilDateFromDuration = (d: Date, duration: string): Date => {
 
 	return result;
 };
+
+type ISOUnit = "Y" | "M" | "W" | "D" | "H" | "M" | "S";
+interface Candidate {
+	iso: string;
+	ms: number;
+}
+
+const TARGET_TICKS = 10;
+export function getDurationFromMinMax(min: number, max: number): string {
+	// Convert to numeric ms
+	const span = max - min;
+
+	// Candidate intervals in ISO + their ms lengths
+	const candidates: Candidate[] = [
+		{ iso: "PT1S", ms: 1000 },
+		{ iso: "PT5S", ms: 5 * 1000 },
+		{ iso: "PT15S", ms: 15 * 1000 },
+		{ iso: "PT30S", ms: 30 * 1000 },
+		{ iso: "PT1M", ms: 60 * 1000 },
+		{ iso: "PT5M", ms: 5 * 60 * 1000 },
+		{ iso: "PT15M", ms: 15 * 60 * 1000 },
+		{ iso: "PT30M", ms: 30 * 60 * 1000 },
+		{ iso: "PT1H", ms: 60 * 60 * 1000 },
+		{ iso: "PT3H", ms: 3 * 60 * 60 * 1000 },
+		{ iso: "PT6H", ms: 6 * 60 * 60 * 1000 },
+		{ iso: "PT12H", ms: 12 * 60 * 60 * 1000 },
+		{ iso: "P1D", ms: 24 * 60 * 60 * 1000 },
+		{ iso: "P2D", ms: 2 * 24 * 60 * 60 * 1000 },
+		{ iso: "P7D", ms: 7 * 24 * 60 * 60 * 1000 },
+		{ iso: "P1M", ms: 30 * 24 * 60 * 60 * 1000 }, // ≈30 days
+		{ iso: "P3M", ms: 3 * 30 * 24 * 60 * 60 * 1000 },
+		{ iso: "P6M", ms: 6 * 30 * 24 * 60 * 60 * 1000 },
+		{ iso: "P1Y", ms: 365 * 24 * 60 * 60 * 1000 }, // ≈1 year
+	];
+
+	// For each candidate, how many ticks would it give?
+	// pick the iso whose tick-count is closest to targetTicks
+	let best: Candidate = candidates[0];
+	let bestDiff = Infinity;
+
+	for (const cand of candidates) {
+		const ticks = span / cand.ms;
+		const diff = Math.abs(ticks - TARGET_TICKS);
+		if (diff < bestDiff) {
+			bestDiff = diff;
+			best = cand;
+		}
+	}
+	return best.iso;
+}
 
 export function getDurationFromRange(start: Date, end: Date): string {
 	if (end.getTime() < start.getTime()) {
