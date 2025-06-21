@@ -1,6 +1,7 @@
 "use client";
 
 import { BarGraphIcon } from "../../../assets/icons";
+import WorldMapWidget from "./widgets/WorldMapWidget";
 
 export default function Page() {
   return (<div className="h-screen flex flex-col bg-gray-100">
@@ -14,6 +15,8 @@ export default function Page() {
         <ComparisonBar />
         <ToolBar />
         <div className="flex flex-wrap rounded w-full my-8 [&>*]:rounded-md">
+        {/* Add more widgets here */}
+         <WorldMapWidget />
         </div>
       </main>
     </div>
