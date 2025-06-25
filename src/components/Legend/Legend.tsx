@@ -33,15 +33,13 @@ export const Legend = ({
 	...rest
 }: Props) => {
 	const context = useGraph();
+	const dsets = useDatasets(datasets);
 	const Element = position === "top" || position === "bottom" ? Graph.Row : Graph.Column;
 	const {
-		viewbox,
-		domain,
 		interactions: { pinned, hovered },
 	} = context;
-	const dsets = Object.values(useDatasets(datasets));
 
-	const render = (ctx: Pick<GraphContext, "domain" | "colors" | "data">) => {
+	const render = (ctx: GraphContext) => {
 		return ctx.data
 			.map((dp) => ({ ...dp, group: dp.group ?? "" }))
 			.sort((a, b) => a.group.localeCompare(b.group))
@@ -53,8 +51,8 @@ export const Legend = ({
 				const deserialized = bg?.replace("mask:", "")?.includes("linear-gradient")
 					? GradientUtils.deserialize({
 							gradient: bg.replace("mask:", ""),
-							viewbox,
-							domain,
+							viewbox: ctx.viewbox,
+							domain: ctx.domain,
 						})
 					: bg;
 				return (

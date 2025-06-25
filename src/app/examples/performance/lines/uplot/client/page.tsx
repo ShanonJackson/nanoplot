@@ -40,12 +40,7 @@ export default function Page() {
 						<Legend position={"top"} />
 						<YAxis ticks={{ from: 0, to: 100, jumps: 6 }} />
 						<GridLines />
-						<Lines />
-						<Lines dataset={"TCP"} />
-						<Lines.Tooltip
-							datasets={["TCP"]}
-							tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }}
-						/>
+						<Lines datasets={["TCP"]} />
 						<YAxis
 							dataset={"TCP"}
 							position={"right"}

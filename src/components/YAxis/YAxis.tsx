@@ -22,14 +22,14 @@ export const YAxis = ({ title, description, display, dataset, position = "left" 
 	return (
 		<Graph.Column className={"yaxis flex relative text-xs font-normal select-none"}>
 			{(title || description) && (
-				<div className={"yaxis__labels flex text-center rotate-180 font-bold"}>
+				<div className={"yaxis__labels flex text-center rotate-180 font-bold whitespace-nowrap"}>
 					<div className={"yaxis__description text-xs text-gray-500 dark:text-gray-600 [writing-mode:vertical-rl] ml-[10px]"}>
 						{description}
 					</div>
 					<div className={"yaxis__title text-[14px] text-gray-700 dark:text-gray-300 [writing-mode:vertical-rl]"}>{title}</div>
 				</div>
 			)}
-			<div className={"yaxis__ticks mr-2"}>
+			<div className={"yaxis__ticks mr-2 whitespace-nowrap"}>
 				{domain.y.map(({ tick, coordinate }, i) => {
 					const label = (() => {
 						if (display) return display(tick);

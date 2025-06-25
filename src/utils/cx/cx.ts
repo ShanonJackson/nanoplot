@@ -1,40 +1,34 @@
-type StringOrFalsey = string | undefined | number | null | false | 0n;
-export const cx = (...args: (StringOrFalsey | Record<string, StringOrFalsey | boolean>)[]) => {
-	return args
-		.map((str) => {
-			if (!str || typeof str === "string") return str;
-			return Object.entries(str).map(([k, v]) => (v ? k : ""));
-		})
-		.flat()
-		.filter(Boolean)
-		.join(" ");
-};
+type Socket = string | number | null | false | undefined;
 
-const unique: Record<string, string> = {
+const uniq: Record<string, string> = {
 	absolute: "position",
 	relative: "position",
 	static: "position",
 	block: "display",
 	hidden: "display",
 };
-const getReplaceKnown = (cls: string): string =>
-	cls
-		.split(":")
-		.map((token) => unique[token] ?? token)
-		.join(":");
+const splitRegex = /[^\[\]:]+|\[[^\]]+\]/g;
+export function tw(...args: (Socket | Record<string, Socket | boolean>)[]): string {
+	const seen: Record<string, string> = {};
+	const order: string[] = [];
+	function add(cls: string) {
+		const parts = cls.match(splitRegex)!;
+		const last = parts.pop()!;
+		const base = last.startsWith("[") ? last.slice(1).split(":")[0] : last.split("-")[0];
+		const id = [...parts, uniq[base] || base].join(":");
+		if (!(id in seen)) order.push(id);
+		seen[id] = cls;
+	}
+	for (const arg of args) {
+		if (!arg) continue;
+		if (typeof arg === "string") {
+			for (const cls of arg.match(/\S+/g) || []) add(cls);
+		} else {
+			// @ts-ignore (perf related, gpt generated, don't really care about safety on this part.);
+			for (const cls in arg) if (arg[cls]) add(cls);
+		}
+	}
+	return order.map((id) => seen[id]).join(" ");
+}
 
-const regex = /[^\[\]:]+|\[[^\]]+]/g;
-export const toUniqueIdentifier = (c: string): string => {
-	const m = c.match(regex)!;
-	const l = m.pop()!;
-	return getReplaceKnown([...m, l[0] === "[" ? l.slice(1).split(":")[0] : l.split("-")[0]].join(":"));
-};
-
-export const tw = (...args: (StringOrFalsey | Record<string, StringOrFalsey | boolean>)[]) => {
-	const result: Record<string, string> = {};
-	cx(...args)
-		.replace(/\s+/g, " ")
-		.split(" ")
-		.forEach((cls) => (result[toUniqueIdentifier(cls)] = cls));
-	return Object.values(result).join(" ");
-};
+export const cx = tw;

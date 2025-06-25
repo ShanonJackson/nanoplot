@@ -87,10 +87,6 @@ export const useDataset = (dataset?: string) => {
 };
 export const useDatasets = (datasets?: string[]) => {
 	const context = useGraph();
-	if (!datasets || datasets?.length === 0) return context.datasets;
-	return Object.fromEntries(
-		datasets.map((dataset) => {
-			return [dataset, context.datasets[dataset]];
-		}),
-	);
+	if (!datasets || datasets?.length === 0) return [];
+	return datasets.map((dataset) => ({ ...context, ...context.datasets[dataset], datasetName: dataset }));
 };

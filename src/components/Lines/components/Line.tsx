@@ -9,7 +9,7 @@ type Props = JSX.IntrinsicElements["path"] & {
 	points?: Array<{ x: number; y: number }>;
 };
 
-export const Line = ({ stroke, d, disabled, fill, className, points }: Props) => {
+export const Line = ({ stroke, d, disabled, fill, className, points, ...rest }: Props) => {
 	const strokeId = useId();
 	const fillId = useId();
 	const clipId = useId();
@@ -36,6 +36,7 @@ export const Line = ({ stroke, d, disabled, fill, className, points }: Props) =>
 					vectorEffect={"non-scaling-stroke"}
 					strokeWidth={1.5}
 					className={className}
+					{...rest}
 				/>
 			)}
 		</>

@@ -66,13 +66,10 @@ export const GradientUtils = {
 		viewbox: GraphContext["viewbox"];
 		domain: GraphContext["domain"];
 	}) => {
+		/* Turns a linear-gradient with ticks/values into a CSS linear-gradient string. */
 		const direction = GradientUtils.direction(gradient);
 		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
-		const colors = stops
-			.map(({ color, offset, opacity }) => {
-				return `${color} ${(offset ?? 0) * 100}%`;
-			})
-			.join(", ");
+		const colors = stops.map(({ color, offset }) => `${color} ${(offset ?? 0) * 100}%`).join(", ");
 		return `linear-gradient(${direction}, ${colors})`;
 	},
 	parse: ({

@@ -1,13 +1,14 @@
 import { CartesianDataset, GraphContext } from "../../hooks/use-graph/use-graph";
 
+/* avoids doing work for same ref multiple times across multiple components, without effecting garbage collection */
+const cacheFor = new WeakMap<
+	Pick<GraphContext, "viewbox" | "domain">,
+	WeakMap<CartesianDataset[number]["data"], Array<{ x: number; y: number }>>
+>();
 export const CoordinatesUtils = {
-	xyCoordinatesForDataset: ({
-		domain,
-		viewbox,
-	}: {
-		viewbox: GraphContext["viewbox"];
-		domain: { x: GraphContext["domain"]["x"]; y: GraphContext["domain"]["y"] };
-	}) => {
+	xyCoordinatesForDataset: (context: Pick<GraphContext, "viewbox" | "domain">) => {
+		const cache = cacheFor.get(context) ?? cacheFor.set(context, new WeakMap()).get(context)!;
+		const { domain, viewbox } = context;
 		/* Given a whole dataset get x/y coordinates for everything */
 		const xLength = domain.x.length;
 		const xTicks = domain.x.map((d) => +d.tick);
@@ -54,6 +55,7 @@ export const CoordinatesUtils = {
 			const yOffset = yMinCoordinate - yMin * yScale;
 
 			return (data: CartesianDataset[number]["data"]) => {
+				if (cache.get(data)) return cache.get(data)!;
 				const len = data.length;
 				let output: Array<{ x: number; y: number }> = new Array(len);
 				for (let i = 0; i < len; i++) {
@@ -70,6 +72,7 @@ export const CoordinatesUtils = {
 						y: vy * yScale + yOffset,
 					};
 				}
+				cache.set(data, output);
 				return output;
 			};
 		}

@@ -38,16 +38,14 @@ export default function Page() {
 						datasets={{
 							TCP: dataset.filter((d) => d.name === "TCP Out").map((c) => ({ ...c, stroke: "rgb(255, 0, 0)" })),
 						}}
+						zoom={zoom}
 					>
+						<ZoomSlider.X onChange={setZoom} distance={{ minimum: 5 }} />
 						<Legend position={"top"} datasets={["TCP"]} />
 						<YAxis ticks={{ from: 0, to: 100, jumps: 6 }} />
 						<GridLines />
-						<Lines />
-						<Lines dataset={"TCP"} />
-						<Lines.Tooltip
-							datasets={["TCP"]}
-							tooltip={{ title: (v) => format(new Date(+v), "yyyy-mm-dd hh:mm"), display: (v) => v.y.toString() }}
-						/>
+						<Lines datasets={["TCP"]} />
+						<Lines.Mouse cross={{ x: true, y: true }} joints={true} datasets={["TCP"]} />
 						<YAxis
 							dataset={"TCP"}
 							position={"right"}

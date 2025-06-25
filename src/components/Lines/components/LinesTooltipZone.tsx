@@ -1,8 +1,7 @@
 "use client";
 import { tw } from "../../../utils/cx/cx";
 import { useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
-import { ComponentProps, useRef } from "react";
-import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
+import { ComponentProps, useRef, useState } from "react";
 import { LinesTooltip } from "./LinesTooltip";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 
@@ -10,7 +9,7 @@ const LinesTooltipZoneComponent = (props: Omit<ComponentProps<typeof LinesToolti
 	const ref = useRef<SVGSVGElement>(null);
 	const isZooming = useIsZooming();
 	const { viewbox } = useGraph();
-	const mouse = useMouseCoordinates(ref);
+	const [inside, setInside] = useState(false);
 	return (
 		<svg
 			ref={ref}
@@ -20,8 +19,10 @@ const LinesTooltipZoneComponent = (props: Omit<ComponentProps<typeof LinesToolti
 				"lines-tooltip h-full w-full [grid-area:graph] absolute overflow-visible [backface-visibility:hidden]",
 				isZooming && "block overflow-hidden",
 			)}
+			onMouseEnter={() => setInside(true)}
+			onMouseLeave={() => setInside(false)}
 		>
-			{mouse && <LinesTooltip {...props} zoneRef={ref} />}
+			{inside && <LinesTooltip {...props} zoneRef={ref} />}
 		</svg>
 	);
 };
