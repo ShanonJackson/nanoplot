@@ -47,4 +47,9 @@ describe("src/utils/cx", () => {
 
 		expect(average).toBeLessThan(0.05);
 	});
+
+	it("Should not filter out flex and flex-col when togeahter", () => {
+		const result = tw("flex", "flex-col");
+		expect(result).toBe("flex flex-col");
+	});
 });

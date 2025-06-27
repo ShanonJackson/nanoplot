@@ -22,8 +22,8 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 				x: number | string | Date,
 		  ) => React.ReactNode)
 		| {
-				title: (x: number | string | Date) => React.ReactNode;
-				display: (point: CartesianDataset[number]["data"][number]) => React.ReactNode;
+				title?: (x: number | string | Date) => React.ReactNode;
+				display?: (point: CartesianDataset[number]["data"][number]) => React.ReactNode;
 		  };
 
 	joints?: boolean;
@@ -127,7 +127,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 			<Portal>
 				<svg
 					viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
-					className={"[grid-area:graph] h-full w-full absolute pointer-events-none"}
+					className={"[grid-area:graph] h-full w-full absolute overflow-visible pointer-events-none"}
 					style={{ width: rect.width, height: rect.height, left: rect.left, top: rect.top }}
 					preserveAspectRatio={"none"}
 				>

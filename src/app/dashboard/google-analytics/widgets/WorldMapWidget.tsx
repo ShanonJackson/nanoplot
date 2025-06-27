@@ -1,5 +1,6 @@
 import { Graph } from "../../../../export";
 import { Worldmap } from "../../../../export";
+import { Widget } from "./Widget";
 
 export const WorldMapWidget: React.FC = () => {
 	const DATA = [
@@ -36,7 +37,7 @@ export const WorldMapWidget: React.FC = () => {
 		{ name: "ZA", countryName: "South Africa", value: 2765 },
 	];
 	return (
-		<div className="flex flex-col h-[400px] w-[768px] bg-white">
+		<Widget>
 			<div className="flex justify-between m-2 p-1">
 				<div className="flex justify-start font-bold">
 					<div className="mx-1 text-black">
@@ -116,6 +117,6 @@ export const WorldMapWidget: React.FC = () => {
 			<div className="flex justify-end font-bold text-blue-600 m-2 p-4">
 				<button>View countries →</button>
 			</div>
-		</div>
+		</Widget>
 	);
 };

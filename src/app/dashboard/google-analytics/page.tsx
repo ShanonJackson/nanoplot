@@ -1,7 +1,7 @@
 "use client";
-
 import { BarGraphIcon } from "../../../assets/icons";
 import { WorldMapWidget } from "./widgets/WorldMapWidget";
+import { LinesWidget } from "./widgets/LinesWidget";
 
 export default function Page() {
 	return (
@@ -101,7 +101,8 @@ export default function Page() {
 							})}
 						</div>
 					</div>
-					<div className="flex flex-wrap rounded w-full my-8 [&>*]:rounded-md">
+					<div className="flex flex-wrap rounded w-full my-8 [&>*]:rounded-md gap-4">
+						<LinesWidget />
 						<WorldMapWidget />
 					</div>
 				</main>

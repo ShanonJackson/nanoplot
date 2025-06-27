@@ -60,6 +60,8 @@ export const Lines = (props: Props) => {
 			{dsets.map((dset, i) => {
 				return <Lines {...props} datasets={undefined} context={dset} key={i} />; // recurse for each dataset.
 			})}
+			{/* Empty svg because lines lines need to be absolute to allow overflow-visible; But if it's absolute and the only child the Graph collapses in height. */}
+			<svg className={"h-full w-full [grid-area:graph]"} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} />
 			<svg
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				preserveAspectRatio={"none"}
