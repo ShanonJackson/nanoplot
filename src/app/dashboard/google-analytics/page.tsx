@@ -64,7 +64,7 @@ export default function Page() {
 					</div>
 				</aside>
 				<main className="flex flex-col flex-1 overflow-auto mx-8 mt-6 bg-gray-100">
-					<div className="flex items-center justify-between shadow h-10 text-gray-500 font-bold">
+					<div className="relative flex items-center justify-between shadow h-10 text-gray-500 font-bold">
 						<div className="flex justify-start [&>*]:cursor-pointer">
 							<div className="flex justify-between items-center px-2 border-2 border-blue-500 bg-blue-100 rounded-full">
 								<div className="flex items-center justify-center w-5 h-5 bg-blue-600 rounded-full text-white">A</div>
