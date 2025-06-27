@@ -80,6 +80,7 @@ export const Tooltip = forwardRef<HTMLDivElement, Props>(
 				: true;
 
 		const triangleX = (() => {
+			if (triangle) return triangle;
 			if (alignment === "left") return { x: 0.05 };
 			if (alignment === "right") return { x: 0.95 };
 			if (alignment === "top") return { x: 0.05 };

@@ -90,7 +90,7 @@ export const WorldMapWidget: React.FC = () => {
 					<div>
 						{DATA.sort((a, b) => b.value - a.value)
 							.slice(0, 7)
-							.map((item, index) => {
+							.map((item) => {
 								return (
 									<div key={item.countryName} className="flex flex-col px-4 pt-2">
 										<div className="flex justify-between ">

@@ -32,7 +32,7 @@ export const TooltipMouse = ({ active, children, ...props }: TooltipProps) => {
 		window.addEventListener("mousemove", onMouseMove);
 		return () => window.removeEventListener("mousemove", onMouseMove);
 	}, [props.bounds?.current, tooltipRef.current]);
-
+	console.log(mouse.triangle.x);
 	return (
 		<Tooltip
 			{...props}
