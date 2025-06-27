@@ -2,6 +2,8 @@
 import { BarGraphIcon } from "../../../assets/icons";
 import { WorldMapWidget } from "./widgets/WorldMapWidget";
 import { LinesWidget } from "./widgets/LinesWidget";
+import { InsightsWidget } from "./widgets/InsightsWidget";
+import { AnalyticsWidget } from "./widgets/AnalyticsWidget";
 
 export default function Page() {
 	return (
@@ -103,6 +105,8 @@ export default function Page() {
 					</div>
 					<div className="flex flex-wrap rounded w-full my-8 [&>*]:rounded-md gap-4">
 						<LinesWidget />
+						<AnalyticsWidget />
+						<InsightsWidget />
 						<WorldMapWidget />
 					</div>
 				</main>
