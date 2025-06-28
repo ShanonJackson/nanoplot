@@ -22,7 +22,7 @@ export const range = (
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
 
 	if (typeof data[0]?.data?.[0]?.[dimension] === "string" /* Categorical */) {
-		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension]))));
+		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension])))).reverse();
 		const tickWidth = viewb / xValues.length;
 		return xValues.map((tick, i) => ({
 			tick,

@@ -48,7 +48,7 @@ export const UserAcquisitionWidget = () => {
 									{ x: "Referral", y: 1470 },
 									{ x: "Unassigned", y: 394 },
 									{ x: "Organic Social", y: 275 },
-								].map(({ x, y }) => ({ y: x, x: y })),
+								].map(({ x, y }) => /* Horizontal */ ({ y: x, x: y })),
 							},
 						]}
 					>

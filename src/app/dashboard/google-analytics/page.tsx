@@ -5,6 +5,7 @@ import { LinesWidget } from "./widgets/LinesWidget";
 import { InsightsWidget } from "./widgets/InsightsWidget";
 import { AnalyticsWidget } from "./widgets/AnalyticsWidget";
 import { UserAcquisitionWidget } from "./widgets/UserAcquisitionWidget";
+import { SessionsWidget } from "./widgets/SessionsWidget";
 
 export default function Page() {
 	return (
@@ -109,6 +110,7 @@ export default function Page() {
 						<AnalyticsWidget />
 						<InsightsWidget />
 						<UserAcquisitionWidget />
+						<SessionsWidget />
 						<WorldMapWidget />
 					</div>
 				</main>
