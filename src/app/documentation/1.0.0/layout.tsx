@@ -41,7 +41,6 @@ export default async function RootLayout({
 						<div className={"w-full"}>{children}</div>
 					</div>
 				</div>
-				{children}
 			</body>
 		</html>
 	);
