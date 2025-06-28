@@ -165,8 +165,8 @@ export const range = (
 			return jumps;
 		})();
 		return Array.from({ length: JUMPS }, (_, i) => ({
-			tick: scale(i, [0, JUMPS - 1], [mn, mx]),
-			coordinate: scale(i, [0, JUMPS - 1], [0, viewb]),
+			tick: scale(i, [0, JUMPS - 1], [mn, mx], 2),
+			coordinate: scale(i, [0, JUMPS - 1], [0, viewb], 2),
 		}));
 	}
 

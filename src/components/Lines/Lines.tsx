@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
-import { GraphContext, useDataset, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
+import { GraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
@@ -10,6 +10,7 @@ import { toRgb } from "../../utils/color/to-rgb";
 import { LinesTooltipZone } from "./components/LinesTooltipZone";
 import { LinesMouse } from "./components/LinesMouse";
 import { LinesJoints } from "./components/LinesJoints";
+import { LinesReference } from "./components/LinesReference";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -140,3 +141,4 @@ export const Lines = (props: Props) => {
 Lines.Tooltip = LinesTooltipZone;
 Lines.Mouse = LinesMouse;
 Lines.Joints = LinesJoints;
+Lines.Reference = LinesReference;

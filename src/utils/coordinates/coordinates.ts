@@ -44,7 +44,6 @@ export const CoordinatesUtils = {
 
 		const isXLinearOptimized = xIsLinearScale && (xIsDateTime || xIsNumericalScale);
 		const isYLinearOptimized = yIsLinearScale && (yIsNumericalScale || yIsDateTimeScale);
-
 		if (isXLinearOptimized && isYLinearOptimized) {
 			const xMinCoordinate = xCoordinates[0];
 			const yMinCoordinate = yCoordinates[0];

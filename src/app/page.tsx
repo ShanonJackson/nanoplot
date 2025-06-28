@@ -4,6 +4,8 @@ import { Figtree } from "next/font/google";
 import { cx } from "../utils/cx/cx";
 import GettingStarted from "../app/documentation/1.0.0/getting-started/page";
 import "./globals.css";
+import { DocumentationHeader } from "../components/Documentation/DocumentationHeader/DocumentationHeader";
+import { DocumentationNavigation } from "../components/Documentation/DocumentationNavigation/DocumentationNavigation";
 
 const figtree = Figtree({
 	subsets: ["latin"], // Supports Latin characters
@@ -30,7 +32,13 @@ export default async function RootLayout({}: Readonly<{
 					"nanoplot h-full w-full sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200",
 				)}
 			>
-				<GettingStarted />
+				<DocumentationHeader />
+				<div className={"flex"}>
+					<DocumentationNavigation />
+					<div className={"w-full"}>
+						<GettingStarted />
+					</div>
+				</div>
 			</body>
 		</html>
 	);
