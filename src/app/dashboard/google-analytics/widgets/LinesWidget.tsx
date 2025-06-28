@@ -118,6 +118,7 @@ export const LinesWidget = ({}: Props) => {
 						}}
 					/>
 					<YAxis
+						className={"ml-2"}
 						position={"right"}
 						display={(v) => {
 							// format 4000 to say 4k using Intl.NumberFormat

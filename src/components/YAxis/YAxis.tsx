@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ComponentProps, ReactNode } from "react";
 import { GraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { MathUtils, scale } from "../../utils/math/math";
@@ -6,7 +6,7 @@ import { DomainUtils } from "../../utils/domain/domain";
 import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
 
-type Props = {
+type Props = ComponentProps<"div"> & {
 	ticks?: FromToJumps;
 	title?: ReactNode;
 	display?: (tick: string | number | Date) => ReactNode;
@@ -15,12 +15,12 @@ type Props = {
 	dataset?: string /* dataset property key */;
 };
 
-export const YAxis = ({ title, description, display, dataset, position = "left" }: Props) => {
+export const YAxis = ({ title, description, display, dataset, position = "left", ...rest }: Props) => {
 	const { domain } = useDataset(dataset);
 	const { viewbox } = useGraph();
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 	return (
-		<Graph.Column className={"yaxis flex relative text-xs font-normal select-none"}>
+		<Graph.Column {...rest} className={cx("yaxis flex relative text-xs font-normal select-none", rest.className)}>
 			{(title || description) && (
 				<div className={"yaxis__labels flex text-center rotate-180 font-bold whitespace-nowrap"}>
 					<div className={"yaxis__description text-xs text-gray-500 dark:text-gray-600 [writing-mode:vertical-rl] ml-[10px]"}>
