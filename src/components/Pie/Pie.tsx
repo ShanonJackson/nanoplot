@@ -12,6 +12,7 @@ import { ColorUtils } from "../../utils/color/color";
 type Props = {
 	loading?: boolean;
 	donut?: boolean | number /* radius as percentage */;
+	radius?: number;
 	labels?: boolean;
 	glow?: boolean;
 	total?: number;
@@ -19,14 +20,14 @@ type Props = {
 	children?: ReactNode;
 };
 
-export const Pie = ({ glow = true, donut, labels = true, total, loading, className, children }: Props) => {
+export const Pie = ({ glow = true, donut, labels = true, radius = labels ? 30 : 50, total, loading, className, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
 	const { data, viewbox, colors } = useGraph();
 
 	if (!GraphUtils.isSegmentData(data)) return null;
 
-	const PIE_RADIUS = viewbox.x * 0.3; /* 30% */
+	const PIE_RADIUS = viewbox.x * (radius / 100); /* radius of 50% would be diameter of 100% */
 	const DONUT_RADIUS = viewbox.x * (typeof donut === "number" ? donut / 100 : 0.16); /* 16% */
 	const CX = viewbox.x / 2;
 	const CY = viewbox.y / 2;
@@ -45,7 +46,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 		.map((segment, i) => ({
 			...segment,
 			value: Number(segment.value),
-			fill: colors[i],
+			fill: segment.fill ?? colors[i] ?? colors.at(-1),
 		}))
 		.map((segment, i, segments) => {
 			return {
@@ -196,7 +197,7 @@ export const Pie = ({ glow = true, donut, labels = true, total, loading, classNa
 						<g className={"transform origin-center [rotate:180deg] invisible @[width:400px]:!visible"}>{label}</g>
 						{donut && (
 							<mask id={maskId}>
-								<rect width="80%" height="80%" fill="white" />
+								<rect width={labels ? "80%" : "100%"} height={labels ? "80%" : "100%"} fill="white" />
 								<circle cx={CX} cy={CY} r={DONUT_RADIUS} fill="black" />
 							</mask>
 						)}

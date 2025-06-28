@@ -6,6 +6,9 @@ import { InsightsWidget } from "./widgets/InsightsWidget";
 import { AnalyticsWidget } from "./widgets/AnalyticsWidget";
 import { UserAcquisitionWidget } from "./widgets/UserAcquisitionWidget";
 import { SessionsWidget } from "./widgets/SessionsWidget";
+import { UserActivityWidget } from "./widgets/UserActivityWidget";
+import { RevenueWidget } from "./widgets/RevenueWidget";
+import { AverageValueWidget } from "./widgets/AverageRevenueWidget";
 
 export default function Page() {
 	return (
@@ -112,6 +115,9 @@ export default function Page() {
 						<UserAcquisitionWidget />
 						<SessionsWidget />
 						<WorldMapWidget />
+						<UserActivityWidget />
+						<RevenueWidget />
+						<AverageValueWidget />
 					</div>
 				</main>
 			</div>
