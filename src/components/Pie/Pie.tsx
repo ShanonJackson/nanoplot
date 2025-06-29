@@ -181,7 +181,7 @@ export const Pie = ({ glow = true, donut, labels = true, radius = labels ? 30 : 
 						viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 						role={"img"}
 						className={cx(
-							"pie__segment-group group transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
+							"pie__segment-group group absolute overflow-visible transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
 							className,
 						)}
 						key={i}

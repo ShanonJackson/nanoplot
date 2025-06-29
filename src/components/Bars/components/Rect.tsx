@@ -4,7 +4,7 @@ import { PathUtils } from "../../../utils/path/path";
 import { useGraph } from "../../../hooks/use-graph/use-graph";
 import { MathUtils } from "../../../utils/math/math";
 
-type Props = JSX.IntrinsicElements["path"] & {
+type Props = JSX.IntrinsicElements["rect"] & {
 	x1: number;
 	x2: number;
 	y1: number;
@@ -15,7 +15,6 @@ type Props = JSX.IntrinsicElements["path"] & {
 };
 
 export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest }: Props) => {
-	const { viewbox } = useGraph();
 	const fillId = useId();
 	const strokeId = useId();
 	const clip = useId();
@@ -50,14 +49,15 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 				</>
 			)}
 			{isFillMasked ? (
-				<rect x={x1} y={0} width={x2 - x1} height={"100%"} fill={`url(#${fillId})`} clipPath={`url(#${clip})`} />
+				<rect {...rest} x={x1} y={0} width={x2 - x1} height={"100%"} fill={`url(#${fillId})`} clipPath={`url(#${clip})`} />
 			) : (
 				<path
+					{...rest}
 					fill={isFillGradient ? `url(#${fillId})` : rest.fill}
 					stroke={isGradientStroke ? `url(#${strokeId})` : rest.stroke}
 					d={path}
 					vectorEffect={"non-scaling-stroke"}
-					strokeWidth={10}
+					strokeWidth={rest.strokeWidth ?? 10}
 					className={rest.className}
 					clipPath={`url(#${clip})`}
 				/>

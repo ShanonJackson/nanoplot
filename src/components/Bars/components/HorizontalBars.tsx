@@ -1,15 +1,16 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
-import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { CartesianDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
-import { MathUtils, scale } from "../../../utils/math/math";
+import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
-type Props = React.SVGAttributes<SVGSVGElement> & {
+type Rect = Omit<CartesianDatasetDefaulted[number], "data"> & { data: CartesianDatasetDefaulted[number]["data"][number] };
+type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave"> & {
 	children?: React.ReactNode;
 	size?: number;
 	radius?: number;
@@ -18,6 +19,8 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
+	onMouseEnter?: (event: MouseEvent, rect: Rect) => void;
+	onMouseLeave?: (event: MouseEvent) => void;
 };
 
 export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor = 0, className }: Props) => {

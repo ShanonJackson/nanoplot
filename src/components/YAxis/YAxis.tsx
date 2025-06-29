@@ -6,7 +6,7 @@ import { DomainUtils } from "../../utils/domain/domain";
 import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
 
-type Props = ComponentProps<"div"> & {
+type Props = Omit<ComponentProps<"div">, "title"> & {
 	ticks?: FromToJumps;
 	title?: ReactNode;
 	display?: (tick: string | number | Date) => ReactNode;

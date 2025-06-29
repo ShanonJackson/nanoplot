@@ -1,16 +1,17 @@
-import React, { ReactNode } from "react";
-import { useGraph } from "../../../hooks/use-graph/use-graph";
+import React, { MouseEvent, ReactNode } from "react";
+import { CartesianDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
 import { cx } from "../../../utils/cx/cx";
-import { MathUtils, scale } from "../../../utils/math/math";
+import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
-type Props = React.SVGAttributes<SVGSVGElement> & {
+type Rect = Omit<CartesianDatasetDefaulted[number], "data"> & { data: CartesianDatasetDefaulted[number]["data"][number] };
+type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave"> & {
 	children?: ReactNode;
 	loading?: boolean;
 	glow?: boolean;
@@ -21,9 +22,23 @@ type Props = React.SVGAttributes<SVGSVGElement> & {
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
+	onMouseEnter?: (event: MouseEvent, rect: Rect) => void;
+	onMouseLeave?: (event: MouseEvent) => void;
 };
 
-export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, radius = 0, glow, className, loading, ...rest }: Props) => {
+export const VerticalBars = ({
+	children,
+	size = 50,
+	anchor = 0,
+	labels = true,
+	radius = 0,
+	glow,
+	className,
+	loading,
+	onMouseEnter,
+	onMouseLeave,
+	...rest
+}: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 	if (loading) return <BarsVerticalLoading />;
@@ -58,6 +73,7 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 						};
 					})
 					.map((segment, ii, segments) => {
+						/* this stacks segments in same group */
 						const isAboveAnchor = Math.min(segment.y1, segment.y2) < yForValue(anchor);
 						const prevHeight = segments.slice(0, ii).reduce((acc, { y1, y2 }) => {
 							if (isAboveAnchor ? y1 >= yForValue(anchor) : yForValue(anchor) >= y1) return acc;
@@ -98,6 +114,8 @@ export const VerticalBars = ({ children, size = 50, anchor = 0, labels = true, r
 							stroke={bar.stroke}
 							radius={bar.radius}
 							glow={glow}
+							onMouseEnter={(event) => onMouseEnter?.(event, bar)}
+							onMouseLeave={onMouseLeave}
 							className={"bars__bar"}
 						/>
 					);
