@@ -157,7 +157,7 @@ export const VerticalBars = ({
 							<div className={"h-full w-full relative"}>
 								<span
 									className={cx(
-										"bars__label-text text-xs absolute",
+										"bars__label-text [font-size:0.75rem] [line-height:1rem] absolute",
 										position === "center" && "top-[50%] left-[50%] [transform:translate(-50%,-50%)]",
 										position === "above" &&
 											"text-black dark:text-white bottom-0 left-[50%] [transform:translate(-50%,0)]",
