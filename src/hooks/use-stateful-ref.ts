@@ -1,6 +1,6 @@
 import React, { RefCallback, RefObject, useCallback, useRef, useState } from "react";
 
-export const useStatefulRef = <T extends Element>(refs: React.ForwardedRef<T>[] = []): [RefObject<T>, RefCallback<T>] => {
+export const useStatefulRef = <T extends Element | null>(refs: React.ForwardedRef<T>[] = []): [RefObject<T>, RefCallback<T>] => {
 	const [, update] = useState(0);
 	const ref = useRef<T>(null);
 

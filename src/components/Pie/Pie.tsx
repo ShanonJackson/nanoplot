@@ -8,6 +8,7 @@ import { PathUtils } from "../../utils/path/path";
 import { cx } from "../../utils/cx/cx";
 import { overlay } from "../Overlay/Overlay";
 import { ColorUtils } from "../../utils/color/color";
+import { PieTooltip } from "./components/PieTooltip";
 
 type Props = {
 	loading?: boolean;
@@ -131,9 +132,10 @@ export const Pie = ({ glow = true, donut, labels = true, radius = labels ? 30 : 
 
 			const path = (
 				<path
+					data-pie-id={segment.id /* used for client component tooltip to hook into */}
 					className={cx(
 						`pie__segment transition-all duration-200 ease-in-out [scale:1] origin-center pointer-events-auto`,
-						!donut && `group-hover:drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] hover:[scale:1.02]`,
+						!donut && `group-hover:[filter:drop-shadow(0_0_50px_rgba(0,0,0,0.5))] hover:[scale:1.02]`,
 					)}
 					d={
 						PathUtils.describeArc(
@@ -208,6 +210,7 @@ export const Pie = ({ glow = true, donut, labels = true, radius = labels ? 30 : 
 	);
 };
 
+Pie.Tooltip = PieTooltip;
 Pie.context = (ctx: GraphContext): GraphContext => {
 	return {
 		...ctx,

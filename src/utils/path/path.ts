@@ -71,7 +71,7 @@ export const PathUtils = {
 
 		const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 		// more than 5.dp can give hydration error between server/client because floating point decimals past like 10 seem to be different in node/bun
-		return ["M", start.x.toFixed(5), start.y.toFixed(5), "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
+		return ["M", start.x.toFixed(5), start.y.toFixed(5), "A", radius, radius, 0, largeArcFlag, 0, end.x.toFixed(5), end.y.toFixed(5)].join(" ");
 	},
 	circleArc: (cx: number, cy: number, r: number) => {
 		const theta = (360 * Math.PI) / 180;

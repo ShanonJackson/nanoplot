@@ -3,7 +3,7 @@ import { useLayoutEffect } from "react";
 import { useGraph } from "./use-graph";
 
 export const useGraphRef = () => {
-	const [ref, setRef] = useStatefulRef<HTMLDivElement>();
+	const [ref, setRef] = useStatefulRef<HTMLDivElement | null>();
 	const { id } = useGraph();
 	useLayoutEffect(() => {
 		const element = document.getElementById(id);

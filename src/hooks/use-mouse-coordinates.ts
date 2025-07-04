@@ -2,18 +2,22 @@ import { RefObject, useEffect, useMemo, useState, useTransition } from "react";
 import { MathUtils, scale } from "../utils/math/math";
 import { useGraph } from "./use-graph/use-graph";
 import { GraphUtils } from "../utils/graph/graph";
+import { useGraphRef } from "./use-graph/use-graph-ref";
 
 export function useMouseCoordinates(
 	ref: RefObject<SVGSVGElement | null>,
 	closest?: { x: true; lazy?: boolean },
-): null | { coordinates: SVGPoint; px: { x: number; y: number }; closest: { x: Date | string | number } };
+): null | { coordinates: SVGPoint; px: { x: number; y: number, clientX: number, clientY: number }; closest: { x: Date | string | number } };
 export function useMouseCoordinates(
 	ref: RefObject<SVGSVGElement | null>,
 	closest?: { x: boolean; lazy?: boolean },
 ): null | { coordinates: SVGPoint; px: { x: number; y: number }; closest: unknown } {
+	
+	const graphRef = useGraphRef();
 	const [inside, setInside] = useState(false);
 	const [point, setPoint] = useState<SVGPoint>();
 	const [xy, setXY] = useState<{ x: number; y: number }>();
+	const [clientXY, setClientXY] = useState<{ clientX: number; clientY: number }>();
 	const [closestX, setClosestX] = useState<number | Date>();
 	const { data, viewbox, domain } = useGraph();
 
@@ -21,15 +25,16 @@ export function useMouseCoordinates(
 
 	useEffect(() => {
 		const svg = ref.current;
-		if (!svg) return;
+		const graph = graphRef.current;
+		if (!svg || !graph) return;
 		const controller = new AbortController();
 
 		const ticks = domain.x.map(({ tick, coordinate }) => ({
 			tick: tick instanceof Date ? tick.getTime() : (tick as number),
 			coordinate,
 		}));
-
-		svg.addEventListener(
+		
+		graph.addEventListener(
 			"mousemove",
 			(e: MouseEvent) => {
 				const rect = svg.getBoundingClientRect();
@@ -42,6 +47,7 @@ export function useMouseCoordinates(
 
 				// check if it's inside the svg, if it isn't setXY to undefined
 				if (point.x < 0 || point.y < 0 || point.x > svg.viewBox.baseVal.width || point.y > svg.viewBox.baseVal.height) {
+					setClientXY(undefined);
 					setPoint(undefined);
 					setClosestX(undefined);
 					return setXY(undefined);
@@ -60,16 +66,17 @@ export function useMouseCoordinates(
 					const isDateTimeAxis = domain.x[0]?.tick instanceof Date;
 					return isDateTimeAxis ? new Date(findClosestValue(interpolatedX)) : interpolatedX;
 				})();
+				setClientXY({ clientX: e.clientX, clientY: e.clientY });
 				setXY({ x, y });
 				setPoint(point);
 				setClosestX(xClosest);
 			},
 			{ signal: controller.signal },
 		);
-		svg.addEventListener("mouseenter", () => setInside(true), { signal: controller.signal });
-		svg.addEventListener("mouseleave", () => setPoint(undefined), { signal: controller.signal });
+		graph.addEventListener("mouseenter", () => setInside(true), { signal: controller.signal });
+		graph.addEventListener("mouseleave", () => setPoint(undefined), { signal: controller.signal });
 		return () => controller.abort();
-	}, [ref.current, closest?.x ? domain.x : undefined, isCalculatingClosestX]);
+	}, [graphRef.current, ref.current, closest?.x ? domain.x : undefined, isCalculatingClosestX]);
 
 	const xValues = useMemo(() => {
 		if (!GraphUtils.isXYData(data) || !isCalculatingClosestX) return [];
@@ -99,7 +106,7 @@ export function useMouseCoordinates(
 	if (!point || !xy) return null;
 	return {
 		coordinates: point,
-		px: xy,
+		px: {...xy, ...clientXY},
 		closest: { x: closestX },
 	};
 }
