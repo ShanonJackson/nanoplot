@@ -1,5 +1,5 @@
 import React from "react";
-import { GraphContext, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { MathUtils, scale } from "../../utils/math/math";
 import { cx } from "../../utils/cx/cx";
 
@@ -57,7 +57,7 @@ export const GradientLegend = ({ position, alignment = "center", gradient, scala
 	);
 };
 
-GradientLegend.context = (ctx: GraphContext, props: Props) => {
+GradientLegend.context = (ctx: InternalGraphContext, props: Props) => {
 	const rows = (() => {
 		if (props.position === "top") return "max-content " + ctx.layout.rows;
 		if (props.position === "bottom") return ctx.layout.rows + " max-content";

@@ -1,4 +1,4 @@
-import { GraphContextRaw } from "../../../hooks/use-graph/use-graph";
+import { GraphContext } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
 import { scale } from "../../math/math";
@@ -7,7 +7,7 @@ import { getDateDomain, getDurationFromMinMax, getDurationFromRange } from "./da
 import { getRangeForSet } from "./auto-minmax";
 
 export const range = (
-	{ data, viewbox }: Pick<GraphContextRaw, "data" | "viewbox">,
+	{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
 	{ from = "auto", to = "auto", jumps = "auto" }: FromToJumps = {
 		from: "auto",
 		to: "auto",

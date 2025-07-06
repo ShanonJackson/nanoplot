@@ -2,12 +2,12 @@ import { describe, expect, it } from "bun:test";
 import { render } from "@testing-library/react";
 import { LinearGradient } from "./LinearGradient";
 import { toRgb } from "../../utils/color/to-rgb";
-import { GraphContext, GraphContextProvider } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, GraphContextProvider } from "../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
-const MOCK_CONTEXT: GraphContext = {
+const MOCK_CONTEXT: InternalGraphContext = {
 	id: "a",
 	data: [],
 	attributes: {},

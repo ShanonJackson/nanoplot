@@ -12,6 +12,7 @@ type Props = {
 }
 ```
 - Graphs should never expose SVG elements.
+- Labels should default to false.
 - Graphs should never expose coordinates; only values I.E <overlay.div x={100} y={150}/>
 - Graphs should support everything, but sometimes for advanced use cases through exporting primitives.
 - Graphs that have dataset support should be recursive components;

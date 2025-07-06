@@ -29,7 +29,12 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 		<>
 			{isFillGradient && rest.fill && <LinearGradient id={fillId} gradient={rest.fill} />}
 			{isGradientStroke && rest.stroke && <LinearGradient id={strokeId} gradient={rest.stroke} />}
-			<path id={clipId} d={path} />
+			<path
+				id={clipId}
+				d={path}
+				fill={isFillGradient ? `url(#${fillId})` : rest.fill}
+				stroke={isGradientStroke ? `url(#${strokeId})` : rest.stroke}
+			/>
 			<clipPath id={clip}>
 				<use xlinkHref={"#" + clipId} />
 			</clipPath>

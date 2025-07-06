@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactNode } from "react";
-import { GraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { MathUtils, scale } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
@@ -60,7 +60,7 @@ export const YAxis = ({ title, description, display, dataset, position = "left",
 	);
 };
 
-YAxis.context = (ctx: GraphContext, props: Props): GraphContext => {
+YAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	return {
 		...ctx,
 		layout: {

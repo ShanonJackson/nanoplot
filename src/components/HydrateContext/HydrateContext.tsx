@@ -2,12 +2,12 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { ClientContext, GraphContextClient } from "../../hooks/use-graph/use-client-graph";
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
-import { GraphContext } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
 
 const isISODateString = (value: unknown): value is string => {
 	return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && !isNaN(Date.parse(value));
 };
-const contextFromParse = (json: string): GraphContext => {
+const contextFromParse = (json: string): InternalGraphContext => {
 	function reviver(key: string, value: unknown) {
 		if ((key === "x" || key === "tick") && isISODateString(value)) return new Date(value);
 		return value;

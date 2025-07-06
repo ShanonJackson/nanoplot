@@ -1,4 +1,4 @@
-export type { GraphContext, CartesianDataset, SegmentDataset } from "../hooks/use-graph/use-graph";
+export type { InternalGraphContext, CartesianDataset, SegmentDataset } from "../hooks/use-graph/use-graph";
 
 export { Sunburst } from "../components/Sunburst/Sunburst";
 export { Bars } from "../components/Bars/Bars";

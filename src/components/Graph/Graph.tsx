@@ -3,7 +3,7 @@ import {
 	CartesianDataset,
 	GraphContext,
 	GraphContextProvider,
-	GraphContextRaw,
+	InternalGraphContext,
 	SegmentDataset,
 	useGraphColumn,
 } from "../../hooks/use-graph/use-graph";
@@ -63,7 +63,7 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 		),
 	});
 
-	const setDefaults = (dataset: GraphContextRaw): GraphContext => {
+	const setDefaults = (dataset: GraphContext): InternalGraphContext => {
 		const xDomain =
 			dataset.domain.x.length === 0
 				? DomainUtils.x.ticks({ data: dataset.data, viewbox: { x: X_SCALE, y: Y_SCALE } })
@@ -100,26 +100,20 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 			},
 			data: GraphUtils.isXYData(dataset.data)
 				? dataset.data.map((dp, i) => {
-						/* if there's a fill and no stroke, use fill as the stroke, otherwise use stroke color, or default color */
 						return {
 							id: dp.id ?? dp.name,
-							stroke:
-								typeof dp.fill === "string" && !dp.stroke
-									? dp.fill
-									: (dp.stroke ?? dataset.colors[i] ?? dataset.colors.at(-1)),
+							stroke: dp.stroke ?? dp.fill ?? dataset.colors[i] ?? dataset.colors.at(-1),
+							fill: dp.fill ?? dp.stroke ?? dataset.colors[i] ?? dataset.colors.at(-1),
 							...dp,
 						};
 					})
 				: dataset.data
 						.toSorted((a, b) => Number(b.value) - Number(a.value))
 						.map((dp, i) => {
-							/* if there's a fill and no stroke, use fill as the stroke, otherwise use stroke color, or default color */
 							return {
 								id: dp.id ?? dp.name,
-								stroke:
-									typeof dp.fill === "string" && !dp.stroke
-										? dp.fill
-										: (dp.stroke ?? dataset.colors[i] ?? dataset.colors.at(-1)),
+								stroke: dp.stroke ?? dp.fill ?? dataset.colors[i] ?? dataset.colors.at(-1),
+								fill: dp.fill ?? dp.stroke ?? dataset.colors[i] ?? dataset.colors.at(-1),
 								...dp,
 							};
 						}),

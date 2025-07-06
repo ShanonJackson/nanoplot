@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
-import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { cx } from "../../utils/cx/cx";
@@ -98,7 +98,7 @@ export const Area = ({ className, curve = "linear", children, loading }: Props) 
 	);
 };
 
-Area.context = (ctx: GraphContext): GraphContext => {
+Area.context = (ctx: InternalGraphContext): InternalGraphContext => {
 	return {
 		...ctx,
 		colors: ColorUtils.scheme.sunset,

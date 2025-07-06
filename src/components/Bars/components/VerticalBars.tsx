@@ -1,5 +1,5 @@
 import React, { MouseEvent, ReactNode } from "react";
-import { CartesianDatasetDefaulted, SegmentDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
+import { InternalCartesianDataset, Simplify, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -10,8 +10,8 @@ import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
-type Rect = Omit<CartesianDatasetDefaulted[number], "data"> & { data: CartesianDatasetDefaulted[number]["data"][number] };
-type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave"> & {
+type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
+type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
 	children?: ReactNode;
 	loading?: boolean;
 	glow?: boolean;
@@ -22,16 +22,22 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
-	fill?: (segment: SegmentDatasetDefaulted[number]) => void;
-	onMouseEnter?: (rect: Rect, event: MouseEvent) => void;
+	/**
+	 * Function that can change the 'fill' for individual segments based on some condition.
+	 */
+	fill?: (segment: Segment) => string;
+	stroke?: (segment: Segment) => string;
+	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
 
 export const VerticalBars = ({
 	children,
+	fill,
+	stroke,
 	size = 50,
 	anchor = 0,
-	labels = true,
+	labels,
 	radius = 0,
 	glow,
 	className,
@@ -100,10 +106,12 @@ export const VerticalBars = ({
 			<svg
 				{...rest}
 				viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
-				className={cx("horizontal-bars [grid-area:graph] h-full w-full bars", className)}
+				className={cx("vertical-bars [grid-area:graph] h-full w-full bars", className)}
 				preserveAspectRatio={"none"}
 			>
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+					const fillColor = fill ? fill(bar) : bar.fill;
+					const strokeColor = stroke ? stroke(bar) : bar.stroke;
 					return (
 						<Rect
 							key={index}
@@ -111,11 +119,11 @@ export const VerticalBars = ({
 							x2={x2}
 							y2={y2}
 							y1={y1}
-							fill={String(bar.fill)}
-							stroke={bar.stroke}
+							fill={fillColor}
+							stroke={strokeColor}
 							radius={bar.radius}
 							glow={glow}
-							onMouseEnter={(event) => onMouseEnter?.(bar, event)}
+							onMouseEnter={onMouseEnter ? (event) => onMouseEnter?.(bar, event) : undefined}
 							onMouseLeave={onMouseLeave}
 							className={"bars__bar"}
 						/>

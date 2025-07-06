@@ -1,7 +1,7 @@
 import React, { MouseEvent } from "react";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
-import { CartesianDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
+import { InternalCartesianDataset, Simplify, useGraph } from "../../../hooks/use-graph/use-graph";
 import { cx } from "../../../utils/cx/cx";
 import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
@@ -9,8 +9,8 @@ import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 
-type Rect = Omit<CartesianDatasetDefaulted[number], "data"> & { data: CartesianDatasetDefaulted[number]["data"][number] };
-type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave"> & {
+type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
+type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
 	children?: React.ReactNode;
 	size?: number;
 	radius?: number;
@@ -19,11 +19,27 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
-	onMouseEnter?: (event: MouseEvent, rect: Rect) => void;
+	/**
+	 * Function that can change the 'fill' for individual segments based on some condition.
+	 */
+	fill?: (segment: Segment) => string;
+	stroke?: (segment: Segment) => string;
+	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
 
-export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor = 0, className }: Props) => {
+export const HorizontalBars = ({
+	children,
+	fill,
+	stroke,
+	labels,
+	size = 50,
+	radius = 0,
+	anchor = 0,
+	onMouseEnter,
+	onMouseLeave,
+	className,
+}: Props) => {
 	const context = useGraph();
 	if (!GraphUtils.isXYData(context.data)) return null;
 
@@ -79,6 +95,8 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 				preserveAspectRatio={"none"}
 			>
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+					const fillColor = fill ? fill(bar) : bar.fill;
+					const strokeColor = stroke ? stroke(bar) : bar.stroke;
 					return (
 						<Rect
 							key={index}
@@ -86,11 +104,13 @@ export const HorizontalBars = ({ children, labels, size = 50, radius = 0, anchor
 							x2={x2}
 							y2={y2}
 							y1={y1}
-							fill={String(bar.fill)}
-							stroke={bar.stroke}
+							fill={fillColor}
+							stroke={strokeColor}
 							radius={bar.radius}
 							glow={false}
 							horizontal={true}
+							onMouseEnter={onMouseEnter ? (event) => onMouseEnter?.(bar, event) : undefined}
+							onMouseLeave={onMouseLeave}
 							className={"bars__bar"}
 						/>
 					);

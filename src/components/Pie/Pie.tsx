@@ -1,5 +1,5 @@
 import React, { ReactNode, useId } from "react";
-import { GraphContext, SegmentDatasetDefaulted, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, InternalSegmentDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../utils/graph/graph";
 import { PieLoading } from "./components/PieLoading";
 import { PieEmpty } from "./components/PieEmpty";
@@ -14,14 +14,16 @@ type Props = {
 	loading?: boolean;
 	donut?: boolean | number /* radius as percentage */;
 	radius?: number;
-	labels?: boolean | { position: "outside" | "center"; display: (value: SegmentDatasetDefaulted[number]) => ReactNode };
+	labels?: boolean | { position: "outside" | "center"; display: (value: InternalSegmentDataset[number]) => ReactNode };
 	glow?: boolean;
 	total?: number;
 	className?: string;
+	onMouseEnter?: (segment: InternalSegmentDataset[number] & { degrees: number }, event: React.MouseEvent<SVGPathElement>) => void;
+	onMouseLeave?: (event: React.MouseEvent<SVGPathElement>) => void;
 	children?: ReactNode;
 };
 
-export const Pie = ({ glow, donut, labels, radius, total, loading, className, children }: Props) => {
+export const Pie = ({ glow, donut, labels, radius, total, loading, className, onMouseEnter, onMouseLeave, children }: Props) => {
 	const glowId = useId();
 	const maskId = useId();
 	const { data, viewbox, colors } = useGraph();
@@ -50,7 +52,9 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 	}
 	return (
 		<>
-			{donut && <overlay.div className="pie__children absolute inset-0 flex items-center justify-center">{children}</overlay.div>}
+			{donut && children && (
+				<overlay.div className="pie__children absolute inset-0 flex items-center justify-center">{children}</overlay.div>
+			)}
 			{total !== undefined && (
 				<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("pie__track h-full w-full [grid-area:graph]", className)}>
 					{donut && (
@@ -185,8 +189,10 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 												segment.previousTotalDegrees + ROTATION_DEGREES + segment.degrees,
 											) + ` L ${CX} ${CX} Z`
 										}
-										fill={String(segment.fill)}
+										stroke={segment.fill}
 										data-degrees={segment.degrees}
+										onMouseEnter={onMouseEnter ? (event) => onMouseEnter(segment, event) : undefined}
+										onMouseLeave={onMouseLeave}
 									/>
 								</g>
 								{isLabelsOutside && (
@@ -198,7 +204,7 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 												d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 													isRightAligned ? "l 100 0" : "l -100 0"
 												}`}
-												stroke={String(segment.fill)}
+												stroke={segment.fill}
 											/>
 											<g className={"pie__label text-7xl font-bold pointer-events-auto"}>
 												<text
@@ -234,7 +240,7 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 };
 
 Pie.Tooltip = PieTooltip;
-Pie.context = (ctx: GraphContext, props: Props): GraphContext => {
+Pie.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	const isLabelsCentered = props.labels && typeof props.labels === "object" && props.labels.position === "center";
 	const isLabelsOutside = props.labels === true || (typeof props.labels === "object" && props.labels.position === "outside");
 	return {

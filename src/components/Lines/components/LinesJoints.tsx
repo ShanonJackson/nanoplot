@@ -1,4 +1,4 @@
-import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { InternalGraphContext } from "../../../hooks/use-graph/use-graph";
 import * as React from "react";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { GradientUtils } from "../../../utils/gradient/gradient";
@@ -9,7 +9,7 @@ type Props = {
 	at?: { x: string | number | Date };
 	border?: string;
 	strokeWidth?: number;
-	context: GraphContext;
+	context: InternalGraphContext;
 };
 
 export const LinesJoints = ({ context, border, at, strokeWidth = 8 }: Props) => {

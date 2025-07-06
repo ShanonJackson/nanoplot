@@ -1,5 +1,5 @@
 import React, { useId } from "react";
-import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { InternalGraphContext } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { MathUtils, scale } from "../../../utils/math/math";
@@ -7,7 +7,7 @@ import { overlay } from "../../Overlay/Overlay";
 
 const ALL_TIME_TREND_TEXT_WIDTH_PX = 82; /* hardcoded width, as calculated VIA DOM inspector */
 const TEXT_WIDTH_PADDING = 15; // units of padding either side of text.
-export const DemandScatterTrendLine = ({ context }: { context: GraphContext }) => {
+export const DemandScatterTrendLine = ({ context }: { context: InternalGraphContext }) => {
 	const { data } = context;
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);

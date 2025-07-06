@@ -2,14 +2,14 @@ import React from "react";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { ComponentProps, ReactNode, useRef } from "react";
-import { SegmentDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
+import { InternalSegmentDataset, useGraph } from "../../../hooks/use-graph/use-graph";
 import { scale } from "../../../utils/math/math";
 import { cx } from "../../../utils/cx/cx";
 import { useGraphRef } from "../../../hooks/use-graph/use-graph-ref";
 import { GraphUtils } from "../../../utils/graph/graph";
 
 type Props = Omit<ComponentProps<"div">, "children"> & {
-	children: (segment: SegmentDatasetDefaulted[number]) => ReactNode;
+	children: (segment: InternalSegmentDataset[number]) => ReactNode;
 };
 
 export const PieTooltip = HydrateContext((props: Props) => {

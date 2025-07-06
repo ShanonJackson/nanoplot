@@ -1,10 +1,9 @@
 import React, { JSX, ReactNode } from "react";
 import { Graph } from "../Graph/Graph";
 import {
-	CartesianDatasetDefaulted,
-	GraphContext,
-	GraphContextRaw,
-	SegmentDatasetDefaulted,
+	InternalCartesianDataset,
+	InternalGraphContext,
+	InternalSegmentDataset,
 	useDatasets,
 	useGraph,
 } from "../../hooks/use-graph/use-graph";
@@ -14,10 +13,10 @@ import { GradientUtils } from "../../utils/gradient/gradient";
 type Props = Omit<JSX.IntrinsicElements["div"], "onClick" | "onMouseEnter" | "onMouseLeave"> & {
 	position?: "top" | "bottom" | "left" | "right";
 	alignment?: "center" | "start" | "end";
-	onClick?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
-	onMouseEnter?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
-	onMouseLeave?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
-	onMouseMove?: (datapoint: CartesianDatasetDefaulted[number] | SegmentDatasetDefaulted[number]) => void;
+	onClick?: (datapoint: InternalCartesianDataset[number] | InternalSegmentDataset[number]) => void;
+	onMouseEnter?: (datapoint: InternalCartesianDataset[number] | InternalSegmentDataset[number]) => void;
+	onMouseLeave?: (datapoint: InternalCartesianDataset[number] | InternalSegmentDataset[number]) => void;
+	onMouseMove?: (datapoint: InternalCartesianDataset[number] | InternalSegmentDataset[number]) => void;
 	children?: ReactNode;
 	datasets?: string[];
 };
@@ -39,7 +38,7 @@ export const Legend = ({
 		interactions: { pinned, hovered },
 	} = context;
 
-	const render = (ctx: GraphContext) => {
+	const render = (ctx: InternalGraphContext) => {
 		return ctx.data
 			.map((dp) => ({ ...dp, group: dp.group ?? "" }))
 			.sort((a, b) => a.group.localeCompare(b.group))
@@ -100,7 +99,7 @@ export const Legend = ({
 	);
 };
 
-Legend.context = (ctx: GraphContext, { position = "top" }: Props) => {
+Legend.context = (ctx: InternalGraphContext, { position = "top" }: Props) => {
 	const rows = (() => {
 		if (position === "top") return "max-content " + ctx.layout.rows;
 		if (position === "bottom") return ctx.layout.rows + " max-content";

@@ -15,6 +15,7 @@ export type CartesianDataset = Array<{
 		z?: number | string | Date;
 	}>;
 }>;
+
 export type SegmentDataset = Array<{
 	id?: string /* name is id, if undefined */;
 	name: string;
@@ -25,15 +26,36 @@ export type SegmentDataset = Array<{
 	value: string | number | Date;
 }>;
 
-export type CartesianDatasetDefaulted = Array<Omit<CartesianDataset[number], "id"> & { id: string }>;
-export type SegmentDatasetDefaulted = Array<Omit<SegmentDataset[number], "id"> & { id: string }>;
+export type InternalSegmentDataset = Array<{
+	id: string /* name is id, if undefined */;
+	name: string;
+	description?: string;
+	group?: string;
+	stroke: string /* takes default color if not set */;
+	fill: string /* takes default color if not set */;
+	value: string | number | Date;
+}>;
 
-export type GraphContext = {
+export type InternalCartesianDataset = Array<{
+	id: string /* name is id, if undefined */;
+	name: string;
+	description?: string;
+	group?: string;
+	stroke: string /* takes default color if not set */;
+	fill: string /* takes default color if not set */;
+	data: Array<{
+		x: number | Date | string;
+		y: number | Date | string;
+		z?: number | string | Date;
+	}>;
+}>;
+
+export type InternalGraphContext = {
 	id: string;
 	attributes: HTMLAttributes<HTMLDivElement>;
 	gap: { top: number; right: number; bottom: number; left: number };
 	viewbox: { x: number; y: number };
-	data: CartesianDatasetDefaulted | SegmentDatasetDefaulted;
+	data: InternalSegmentDataset | InternalCartesianDataset;
 	layout: { rows: string; columns: string };
 	zoom: { x: [number, number]; y: [number, number] };
 	domain: {
@@ -42,10 +64,10 @@ export type GraphContext = {
 	};
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
-	datasets: Record<string, Pick<GraphContext, "domain" | "colors" | "data">>;
+	datasets: Record<string, Pick<InternalGraphContext, "domain" | "colors" | "data">>;
 };
 
-export type GraphContextRaw = {
+export type GraphContext = {
 	id: string;
 	attributes: HTMLAttributes<HTMLDivElement>;
 	gap: { top: number; right: number; bottom: number; left: number };
@@ -59,7 +81,7 @@ export type GraphContextRaw = {
 	};
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
-	datasets: Record<string, Pick<GraphContextRaw, "domain" | "colors" | "data">>;
+	datasets: Record<string, Pick<GraphContext, "domain" | "colors" | "data">>;
 };
 
 export const useGraphColumn = () => {
@@ -73,7 +95,7 @@ export const useGraphColumn = () => {
 };
 
 export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;
-export const useGraph: () => GraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;
+export const useGraph: () => InternalGraphContext = typeof window === "undefined" ? useGraphServer : useGraphClient;
 export const useIsZooming = () => {
 	const {
 		x: [xmin, xmax],
@@ -90,3 +112,9 @@ export const useDatasets = (datasets?: string[]) => {
 	if (!datasets || datasets?.length === 0) return [];
 	return datasets.map((dataset) => ({ ...context, ...context.datasets[dataset], datasetName: dataset }));
 };
+
+/*
+	turns A & B into C so the tooltip for the type is simplified
+	i.e {name: string} & {age: number} becomes {name: string, age: number}
+*/
+export type Simplify<T> = { [K in keyof T]: T[K] };

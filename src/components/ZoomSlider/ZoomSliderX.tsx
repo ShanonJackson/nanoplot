@@ -1,6 +1,6 @@
 import React from "react";
 import { Graph } from "../Graph/Graph";
-import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { RangeSlider } from "../Slider/RangeSlider";
 
 type Props = {
@@ -17,7 +17,7 @@ export const ZoomSliderX = ({ onChange, distance = { minimum: 10 } }: Props) => 
 	);
 };
 
-ZoomSliderX.context = (ctx: GraphContext, props: Props): GraphContext => {
+ZoomSliderX.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	return {
 		...ctx,
 		layout: {

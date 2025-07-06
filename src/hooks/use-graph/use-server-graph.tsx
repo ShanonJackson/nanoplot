@@ -1,12 +1,12 @@
 import React from "react";
 import { cache, ReactNode } from "react";
-import { GraphContext } from "./use-graph";
+import { InternalGraphContext } from "./use-graph";
 
-const [get, set] = cache((): [() => GraphContext, (ctx: GraphContext) => void] => {
-	let ctx = {} as GraphContext;
-	return [() => ctx, (value: GraphContext) => (ctx = value)];
+const [get, set] = cache((): [() => InternalGraphContext, (ctx: InternalGraphContext) => void] => {
+	let ctx = {} as InternalGraphContext;
+	return [() => ctx, (value: InternalGraphContext) => (ctx = value)];
 })();
-export const GraphContextServer = ({ value, children }: { value: GraphContext; children: ReactNode }) => {
+export const GraphContextServer = ({ value, children }: { value: InternalGraphContext; children: ReactNode }) => {
 	set(value);
 	return <>{children}</>;
 };

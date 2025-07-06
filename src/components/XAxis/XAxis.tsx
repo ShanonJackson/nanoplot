@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactNode } from "react";
-import { GraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { DomainUtils } from "../../utils/domain/domain";
 import { scale } from "../../utils/math/math";
@@ -100,7 +100,7 @@ export const XAxis = ({ display, title, ticks, description, dataset, ...rest }: 
 	);
 };
 
-XAxis.context = (ctx: GraphContext, props: Props): GraphContext => {
+XAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	const dset = props.dataset ? (ctx.datasets[props.dataset] ?? ctx) : ctx;
 	const domain = (() => {
 		if (Array.isArray(props.ticks)) {

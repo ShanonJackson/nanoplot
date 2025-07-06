@@ -1,5 +1,5 @@
 import { Expression } from "../../../models/domain/domain";
-import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { InternalGraphContext } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../graph/graph";
 
 /*
@@ -7,7 +7,7 @@ import { GraphUtils } from "../../graph/graph";
 	and calculate the value of the expression.
 	i.e [0,.....100] AND "max + 10%" RETURNS 110;
  */
-export const expression = ({ expr, data, dimension }: { expr: Expression; data: GraphContext["data"]; dimension: "x" | "y" }) => {
+export const expression = ({ expr, data, dimension }: { expr: Expression; data: InternalGraphContext["data"]; dimension: "x" | "y" }) => {
 	if (!GraphUtils.isXYData(data)) return null;
 	// const max = Math.max(...data.flatMap((line) => line.data.map((d) => d[dimension]));
 	// const min = Math.min(...data.flatMap((line) => line.data.map((d) => d[dimension]));

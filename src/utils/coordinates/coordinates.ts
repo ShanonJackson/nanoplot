@@ -1,12 +1,12 @@
-import { CartesianDataset, GraphContext } from "../../hooks/use-graph/use-graph";
+import { CartesianDataset, InternalGraphContext } from "../../hooks/use-graph/use-graph";
 
 /* avoids doing work for same ref multiple times across multiple components, without effecting garbage collection */
 const cacheFor = new WeakMap<
-	Pick<GraphContext, "viewbox" | "domain">,
+	Pick<InternalGraphContext, "viewbox" | "domain">,
 	WeakMap<CartesianDataset[number]["data"], Array<{ x: number; y: number }>>
 >();
 export const CoordinatesUtils = {
-	xyCoordinatesForDataset: (context: Pick<GraphContext, "viewbox" | "domain">) => {
+	xyCoordinatesForDataset: (context: Pick<InternalGraphContext, "viewbox" | "domain">) => {
 		const cache = cacheFor.get(context) ?? cacheFor.set(context, new WeakMap()).get(context)!;
 		const { domain, viewbox } = context;
 		/* Given a whole dataset get x/y coordinates for everything */
@@ -141,7 +141,13 @@ export const CoordinatesUtils = {
 			});
 		};
 	},
-	xCoordinateFor: ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { x: GraphContext["domain"]["x"] } }) => {
+	xCoordinateFor: ({
+		domain,
+		viewbox,
+	}: {
+		viewbox: InternalGraphContext["viewbox"];
+		domain: { x: InternalGraphContext["domain"]["x"] };
+	}) => {
 		const length = domain.x.length;
 		const xTicks = domain.x.map((d) => +d.tick);
 		const coordinates = domain.x.map((d) => d.coordinate);
@@ -189,7 +195,13 @@ export const CoordinatesUtils = {
 						((numValue - xTicks[lowIdx]) / (xTicks[highIdx] - xTicks[lowIdx])) * (coordinates[highIdx] - coordinates[lowIdx]);
 		};
 	},
-	yCoordinateFor: ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { y: GraphContext["domain"]["y"] } }) => {
+	yCoordinateFor: ({
+		domain,
+		viewbox,
+	}: {
+		viewbox: InternalGraphContext["viewbox"];
+		domain: { y: InternalGraphContext["domain"]["y"] };
+	}) => {
 		const length = domain.y.length;
 		const yTicks = domain.y.map((d) => +d.tick);
 		const coordinates = domain.y.map((d) => d.coordinate);
@@ -241,7 +253,13 @@ export const CoordinatesUtils = {
 	},
 };
 
-export const xCoordinateFor = ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { x: GraphContext["domain"]["x"] } }) => {
+export const xCoordinateFor = ({
+	domain,
+	viewbox,
+}: {
+	viewbox: InternalGraphContext["viewbox"];
+	domain: { x: InternalGraphContext["domain"]["x"] };
+}) => {
 	const length = domain.x.length;
 	const xTicks = domain.x.map((d) => +d.tick);
 	const coordinates = domain.x.map((d) => d.coordinate);
@@ -290,7 +308,13 @@ export const xCoordinateFor = ({ domain, viewbox }: { viewbox: GraphContext["vie
 	};
 };
 
-export const yCoordinateFor = ({ domain, viewbox }: { viewbox: GraphContext["viewbox"]; domain: { y: GraphContext["domain"]["y"] } }) => {
+export const yCoordinateFor = ({
+	domain,
+	viewbox,
+}: {
+	viewbox: InternalGraphContext["viewbox"];
+	domain: { y: InternalGraphContext["domain"]["y"] };
+}) => {
 	const length = domain.y.length;
 	const yTicks = domain.y.map((d) => +d.tick);
 	const coordinates = domain.y.map((d) => d.coordinate);

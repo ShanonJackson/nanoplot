@@ -1,5 +1,5 @@
 import { toRgb } from "../color/to-rgb";
-import { CartesianDataset, GraphContext } from "../../hooks/use-graph/use-graph";
+import { CartesianDataset, InternalGraphContext } from "../../hooks/use-graph/use-graph";
 import { MathUtils, scale } from "../math/math";
 import { CoordinatesUtils } from "../coordinates/coordinates";
 
@@ -23,8 +23,8 @@ export const GradientUtils = {
 		gradient: string;
 		point: { x: number | string | Date; y: number | string | Date };
 		dataset: CartesianDataset[number]["data"];
-		viewbox: GraphContext["viewbox"];
-		domain: GraphContext["domain"];
+		viewbox: InternalGraphContext["viewbox"];
+		domain: InternalGraphContext["domain"];
 	}) => {
 		/*
 			Finds a value's coordinate.
@@ -63,8 +63,8 @@ export const GradientUtils = {
 		domain,
 	}: {
 		gradient: string;
-		viewbox: GraphContext["viewbox"];
-		domain: GraphContext["domain"];
+		viewbox: InternalGraphContext["viewbox"];
+		domain: InternalGraphContext["domain"];
 	}) => {
 		/* Turns a linear-gradient with ticks/values into a CSS linear-gradient string. */
 		const direction = GradientUtils.direction(gradient);
@@ -78,8 +78,8 @@ export const GradientUtils = {
 		domain,
 	}: {
 		gradient: string;
-		viewbox: GraphContext["viewbox"];
-		domain: GraphContext["domain"];
+		viewbox: InternalGraphContext["viewbox"];
+		domain: InternalGraphContext["domain"];
 	}): { stops: Array<{ color: string; offset: number | null; opacity?: number }>; direction: string } => {
 		try {
 			const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
@@ -134,8 +134,8 @@ export const GradientUtils = {
 	}: {
 		gradient: string;
 		percent: number;
-		viewbox: GraphContext["viewbox"];
-		domain: GraphContext["domain"];
+		viewbox: InternalGraphContext["viewbox"];
+		domain: InternalGraphContext["domain"];
 	}): string => {
 		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
 

@@ -1,7 +1,7 @@
 import React, { ComponentProps } from "react";
 import { HorizontalBars } from "./components/HorizontalBars";
 import { VerticalBars } from "./components/VerticalBars";
-import { GraphContext } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
 import { ColorUtils } from "../../utils/color/color";
 
 type VerticalProps = { horizontal?: false } & ComponentProps<typeof VerticalBars>;
@@ -11,7 +11,7 @@ export const Bars = ({ horizontal, ...props }: VerticalProps | HorizontalProps) 
 	return horizontal ? <HorizontalBars {...props} /> : <VerticalBars {...props} />;
 };
 
-Bars.context = (ctx: GraphContext): GraphContext => {
+Bars.context = (ctx: InternalGraphContext): InternalGraphContext => {
 	return {
 		...ctx,
 		colors: ColorUtils.scheme.contrast,

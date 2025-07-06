@@ -1,5 +1,5 @@
 import React, { ReactNode, useId } from "react";
-import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
@@ -63,7 +63,7 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 
 Worldmap.Tooltip = WorldmapTooltip;
 
-Worldmap.context = (ctx: GraphContext) => {
+Worldmap.context = (ctx: InternalGraphContext) => {
 	return {
 		...ctx,
 		attributes: { ...ctx.attributes, className: cx(ctx.attributes.className, "ratio-[1090/539] w-full") },

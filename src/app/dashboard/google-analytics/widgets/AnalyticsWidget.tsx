@@ -1,8 +1,12 @@
 import { Widget } from "./Widget";
 import { Graph } from "../../../../components/Graph/Graph";
 import { Bars } from "../../../../components/Bars/Bars";
+import { useState } from "react";
 
 export const AnalyticsWidget = () => {
+	const [hovered, setHovered] = useState<
+		{ id: string; fill: string; data: { x: string | number | Date; y: string | number | Date } } | undefined
+	>(undefined);
 	return (
 		<Widget className={"p-6"}>
 			<div className="space-y-[20px]">
@@ -69,7 +73,24 @@ export const AnalyticsWidget = () => {
 								},
 							]}
 						>
-							<Bars size={80} />
+							<Bars
+								size={82}
+								className="[&>path]:transition-all [&>path]:duration-200 [&>path]:ease-in-out"
+								fill={(segment) => {
+									if (!hovered) return segment.fill;
+									const isX = hovered?.data.x === segment.data.x;
+									const isY = hovered?.data.y === segment.data.y;
+									return isX && isY ? segment.fill : "rgb(26, 115, 232, 0.1)";
+								}}
+								stroke={(segment) => {
+									if (!hovered) return segment.fill;
+									const isX = hovered?.data.x === segment.data.x;
+									const isY = hovered?.data.y === segment.data.y;
+									return isX && isY ? segment.fill : "rgb(26, 115, 232, 0.1)";
+								}}
+								onMouseEnter={(rect) => setHovered(rect)}
+								onMouseLeave={() => setHovered(undefined)}
+							/>
 						</Graph>
 					</div>
 				</div>

@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import * as R from "react";
-import { GraphContext } from "./use-graph";
+import { InternalGraphContext } from "./use-graph";
 
-export const ClientContext = R.createContext<GraphContext | undefined>?.(undefined);
+export const ClientContext = R.createContext<InternalGraphContext | undefined>?.(undefined);
 
-export const GraphContextClient = ({ value, children }: { value: GraphContext; children: ReactNode }) => {
+export const GraphContextClient = ({ value, children }: { value: InternalGraphContext; children: ReactNode }) => {
 	return <ClientContext.Provider value={value}>{children}</ClientContext.Provider>;
 };
 export const useGraphClient = () => {

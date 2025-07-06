@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
-import { GraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
@@ -18,7 +18,7 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	joints?: boolean | { border: string };
 	loading?: boolean;
 	datasets?: string[];
-	context?: GraphContext;
+	context?: InternalGraphContext;
 }
 
 const chunk = (a: { x: number; y: number }[], s: number) => {
@@ -77,7 +77,7 @@ export const Lines = (props: Props) => {
 					const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
 					const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
 					const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
-					const isInteractiveFill = hovered.includes(id) || (pinned.includes(id) && !disabled) || fill;
+					const isInteractiveFill = hovered.includes(id) || (pinned.includes(id) && !disabled);
 					const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
 
 					return (
