@@ -17,8 +17,8 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 	anchor?: number;
 	labels?:
 		| boolean
-		| ((value: string | number | Date) => string)
-		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
+		| ((segment: Segment) => string)
+		| { position: "above" | "center"; collision?: boolean; display: (segment: Segment) => string };
 	/**
 	 * Function that can change the 'fill' for individual segments based on some condition.
 	 */
@@ -125,8 +125,8 @@ export const HorizontalBars = ({
 					const height = scale(bar.y2 - bar.y1, context.viewbox.y, 100);
 					const top = scale(bar.y1, context.viewbox.y, 100);
 					const label = (() => {
-						if (typeof labels === "object" && "position" in labels) return labels.display(bar.data.x);
-						return (labels === true ? bar.data.y : labels(bar.data.y)) ?? "";
+						if (typeof labels === "object" && "position" in labels) return labels.display(bar);
+						return (labels === true ? bar.data.y : labels(bar)) ?? "";
 					})();
 					const breakpoint = [2, 4, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().length);
 
