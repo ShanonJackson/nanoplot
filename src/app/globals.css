@@ -3,11 +3,10 @@
 @tailwind utilities;
 @tailwind screens;
 
-@property --hundred-cqw {
-    syntax: "<length>";
-    initial-value: 0px;
-    inherits: false;
-}
+/*
+    https://dev.to/janeori/css-type-casting-to-numeric-tanatan2-scalars-582j
+    allows 100cqh in calc functions to prevent text scaling inside svg.
+*/
 @property --hundred-cqh {
     syntax: "<length>";
     initial-value: 0px;

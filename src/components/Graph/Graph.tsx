@@ -38,7 +38,7 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 		data: data,
 		gap: { top: gap?.top ?? 0, left: gap?.left ?? 0, right: gap?.right ?? 0, bottom: gap?.bottom ?? 0 },
 		attributes: {
-			className: "@container/graph [container-type:size_!important] nanoplot relative grid h-full w-full isolate",
+			className: "@container/graph relative grid h-full w-full isolate",
 		},
 		domain: {
 			x: [],

@@ -127,21 +127,39 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 						segment.previousTotalDegrees + segment.degrees / (isSinglePie ? 0.75 : 2) + ROTATION_DEGREES,
 					);
 
+					const label = (() => {
+						if (typeof labels === "object") return labels.display(segment);
+						return (
+							<>
+								<tspan>{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}</tspan>
+								<tspan dx={25}>
+									{new Intl.NumberFormat("en-US", {
+										minimumFractionDigits: 0,
+										maximumFractionDigits: 2,
+									}).format((segment.value / sum) * 100)}
+									%
+								</tspan>
+							</>
+						);
+					})();
+
 					return (
 						<React.Fragment key={i}>
-							<overlay.div
-								x={{ coordinate: center.x }}
-								y={{ coordinate: center.y }}
-								className={"z-[2] [transform:translate(-50%,-50%)]"}
-							>
-								{segment.id}
-							</overlay.div>
+							{isLabelsCentered && (
+								<overlay.div
+									x={{ coordinate: center.x }}
+									y={{ coordinate: center.y }}
+									className={"z-[2] [transform:translate(-50%,-50%)]"}
+								>
+									{label}
+								</overlay.div>
+							)}
 							<svg
 								viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 								role={"img"}
 								className={cx(
-									"pie__segment-group group absolute overflow-visible transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-auto w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
-									isLabelsCentered && "aspect-square",
+									"pie__segment-group group absolute overflow-visible transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
+									isLabelsCentered && "aspect-square h-auto",
 									className,
 								)}
 								preserveAspectRatio={isLabelsCentered ? "none" : undefined}
@@ -195,16 +213,7 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 														isRightAligned ? "[text-anchor:start]" : "[text-anchor:end]",
 													)}
 												>
-													<tspan>
-														{segment.name.length > 20 ? segment.name.slice(0, 20) + "..." : segment.name}
-													</tspan>
-													<tspan dx={25}>
-														{new Intl.NumberFormat("en-US", {
-															minimumFractionDigits: 0,
-															maximumFractionDigits: 2,
-														}).format((segment.value / sum) * 100)}
-														%
-													</tspan>
+													{label}
 												</text>
 											</g>
 										</>
@@ -227,10 +236,15 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, ch
 Pie.Tooltip = PieTooltip;
 Pie.context = (ctx: GraphContext, props: Props): GraphContext => {
 	const isLabelsCentered = props.labels && typeof props.labels === "object" && props.labels.position === "center";
+	const isLabelsOutside = props.labels === true || (typeof props.labels === "object" && props.labels.position === "outside");
 	return {
 		...ctx,
 		attributes: {
-			className: isLabelsCentered ? cx(ctx.attributes.className, "aspect-square w-full h-auto") : ctx.attributes.className,
+			className: cx(
+				ctx.attributes.className,
+				isLabelsCentered && "aspect-square w-full h-auto",
+				isLabelsOutside && "[container-type:size_!important]",
+			),
 		},
 		colors: ColorUtils.scheme.contrast,
 	};

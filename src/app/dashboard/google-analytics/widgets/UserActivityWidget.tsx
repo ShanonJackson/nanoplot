@@ -47,7 +47,7 @@ export const UserActivityWidget = () => {
 						},
 						{
 							name: "1 Day",
-							stroke: "rgb(251, 188, 5)",
+							stroke: "rgb(249 115 22)",
 							data: Array.from({ length: 30 }, (_, i) => ({
 								x: new Date(2025, 5, i + 1),
 								y: 21000 - i * 50, // slowly tapering from ~21K to ~19500

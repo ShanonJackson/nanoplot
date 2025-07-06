@@ -1,5 +1,5 @@
 import React, { MouseEvent, ReactNode } from "react";
-import { CartesianDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
+import { CartesianDatasetDefaulted, SegmentDatasetDefaulted, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -22,7 +22,8 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 		| boolean
 		| ((value: string | number | Date) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string };
-	onMouseEnter?: (event: MouseEvent, rect: Rect) => void;
+	fill?: (segment: SegmentDatasetDefaulted[number]) => void;
+	onMouseEnter?: (rect: Rect, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
 
@@ -114,7 +115,7 @@ export const VerticalBars = ({
 							stroke={bar.stroke}
 							radius={bar.radius}
 							glow={glow}
-							onMouseEnter={(event) => onMouseEnter?.(event, bar)}
+							onMouseEnter={(event) => onMouseEnter?.(bar, event)}
 							onMouseLeave={onMouseLeave}
 							className={"bars__bar"}
 						/>

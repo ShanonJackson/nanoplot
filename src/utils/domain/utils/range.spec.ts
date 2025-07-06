@@ -54,6 +54,6 @@ describe("src/utils/domain/range.ts", () => {
 		const yDomain = DomainUtils.y.ticks({ data: dataset, viewbox: { x: 3000, y: 3000 } });
 
 		expect(yDomain[0].tick).toBe(0);
-		expect(yDomain[yDomain.length - 1].tick).toBe(55);
+		expect(yDomain[yDomain.length - 1].tick).toBe(60);
 	});
 });

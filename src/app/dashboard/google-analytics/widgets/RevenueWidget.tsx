@@ -29,16 +29,16 @@ export const RevenueWidget = () => {
 				</div>
 			</div>
 			<div className="flex flex-col items-center">
-				<div className={"h-[210px] w-full"}>
+				<div className={"h-[210px] min-h-0 w-full"}>
 					<Graph data={[{ name: "Web", value: 100, stroke: "rgb(26, 115, 232)", fill: "rgb(26, 115, 232)" }]}>
 						<Pie donut={35} labels={false} glow={false} />
 					</Graph>
 				</div>
 				<div className="flex items-center gap-2 mt-5 text-center">
-					<div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+					<div className="w-2 h-2 bg-blue-500 rounded-full shrink-0"></div>
 					<span className="text-sm font-medium text-gray-700">WEB</span>
 				</div>
-				<div className="text-2xl font-bold text-gray-900 ml-2">100.0%</div>
+				<div className="text-2xl font-bold text-gray-900 ml-2 shrink-0">100.0%</div>
 			</div>
 			<div className="flex justify-end mt-4">
 				<a href="#" className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium">

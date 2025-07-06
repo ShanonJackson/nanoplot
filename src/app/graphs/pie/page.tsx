@@ -36,7 +36,7 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph data={cookies}>
-					<Pie {...pie} labels={{ position: "center", display: (v) => v.toString() }} />
+					<Pie {...pie} labels={{ position: "center", display: (v) => v.id }} />
 					<Pie.Tooltip>
 						{(segment) => {
 							const fill = segment.fill;

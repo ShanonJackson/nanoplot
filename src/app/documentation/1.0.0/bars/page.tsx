@@ -16,7 +16,6 @@ export default function Page() {
 				<DocumentationHeading level={1}>Bar Chart</DocumentationHeading>
 				<DocumentationParagraph>Bar charts are used to compare discrete values across categories.</DocumentationParagraph>
 				<Sandpack files={{ "App.js": barsExample }} />
-
 				<DocumentationNote>
 					Bar charts are versatile and can support stacked bars for cumulative totals, 100% stacked bars to compare relative
 					proportions, and differential bars showing positive and negative changes relative to an anchor value.

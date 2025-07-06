@@ -17,7 +17,7 @@ export default function Page() {
 				Pie charts provide a quick, intuitive view of proportions, making it easy to compare the relative sizes of categories at a
 				glance.
 			</DocumentationParagraph>
-			<Sandpack files={{ "App.js": pieExample }} />
+			<Sandpack files={{ "App.js": pieExample }} options={{ editorWidthPercentage: 35 }} />
 			<DocumentationHeading>Props</DocumentationHeading>
 			<DocumentationTable
 				columns={["Name", "Description", "Type", "Required", "Default"]}
@@ -146,9 +146,9 @@ export default function App() {
 	];
 	const totalCookies = cookies.reduce((sum, cookie) => sum + cookie.value, 0);
 	return (
-		<div className={"h-[500px] w-[100%] m-auto dark:bg-black"}>
+		<div className={"h-[500px] w-[60%] m-auto dark:bg-black"}>
 			<Graph data={cookies}>
-				<Pie {...pie} labels={{ position: "center", display: (v) => v.toString() }} />
+				<Pie labels={true}/>
 				<Pie.Tooltip>
 					{(segment) => {
 						const fill = segment.fill;
@@ -199,5 +199,25 @@ export default function App() {
 			</Graph>
 		</div>
 	);
+};
+
+const lightenColor = (color: string, amt: number) => {
+	color = color.replace(\`#\`, "");
+	if (color.length === 6) {
+		const decimalColor = parseInt(color, 16);
+		let r = (decimalColor >> 16) + amt;
+		r > 255 && (r = 255);
+		r < 0 && (r = 0);
+		let g = (decimalColor & 0x0000ff) + amt;
+		g > 255 && (g = 255);
+		g < 0 && (g = 0);
+		let b = ((decimalColor >> 8) & 0x00ff) + amt;
+		b > 255 && (b = 255);
+		b < 0 && (b = 0);
+		const newColor = \`\${(g | (b << 8) | (r << 16)).toString(16)}\`;
+		if (newColor.length === 4) return \`#00\${newColor}\`;
+		return \`#\${newColor}\`;
+	}
+	return color;
 };
 `;

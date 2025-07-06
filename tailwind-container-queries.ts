@@ -54,10 +54,6 @@ export default plugin(
 					if (isHeight) return `(${h}:${height})`;
 					return `(${w}:${width})`;
 				})();
-
-				if (width.includes("100cqw")) {
-					console.log(width);
-				}
 				return pwidth !== null || pheight !== null ? `@container ${modifier ?? ""} ${selector}` : [];
 			},
 			{

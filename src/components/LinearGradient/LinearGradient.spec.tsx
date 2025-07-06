@@ -14,6 +14,8 @@ const MOCK_CONTEXT: GraphContext = {
 	gap: { top: 0, right: 0, bottom: 0, left: 0 },
 	layout: { columns: "", rows: "" },
 	viewbox: { x: 1_000, y: 1_000 },
+	zoom: { x: [0, 100], y: [0, 100] },
+	datasets: {},
 	domain: {
 		x: [
 			{ coordinate: 0, tick: 0 },

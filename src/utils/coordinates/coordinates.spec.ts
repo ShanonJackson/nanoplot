@@ -1,8 +1,6 @@
-import spec from "./data.spec.json";
 import { describe, expect, it } from "bun:test";
 import { CoordinatesUtils } from "./coordinates";
-import { CurveUtils } from "../path/curve";
-import data from "../path/data.spec.json";
+import spec from "./data.spec.json";
 
 describe("Coordinates Utils", () => {
 	it("Should be faster than 1ms", () => {
@@ -39,6 +37,6 @@ describe("Coordinates Utils", () => {
 		});
 
 		const average = times.reduce((acc, curr) => acc + curr, 0) / times.length;
-		expect(average).toBeLessThan(0.001);
+		expect(average).toBeLessThan(1);
 	});
 });

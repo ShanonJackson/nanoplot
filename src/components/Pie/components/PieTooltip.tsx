@@ -1,3 +1,4 @@
+import React from "react";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { ComponentProps, ReactNode, useRef } from "react";

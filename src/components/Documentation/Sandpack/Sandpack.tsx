@@ -10,24 +10,26 @@ export const Sandpack = (props: ComponentProps<typeof SandpackLibrary>) => {
 	if (!mounted) return null;
 	const isLight = document.cookie.includes("theme=light");
 	return (
-		<SandpackLibrary
-			{...props}
-			template={"react"}
-			key={isLight.toString()}
-			theme={isLight ? "light" : "dark"}
-			customSetup={{
-				dependencies: { ...props.customSetup?.dependencies, nanoplot: pkg.version, "@number-flow/react": "latest" },
-			}}
-			options={{
-				editorHeight: 500,
-				...props.options,
-				externalResources: [
-					"https://unpkg.com/@tailwindcss/browser@4.0.12",
-					`${window.location.origin}/sandpack/sandpack.js`,
-					`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}.js`,
-					`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}-global.css`,
-				],
-			}}
-		/>
+		<div className={"min-h-[500px]"}>
+			<SandpackLibrary
+				{...props}
+				template={"react"}
+				key={isLight.toString()}
+				theme={isLight ? "light" : "dark"}
+				customSetup={{
+					dependencies: { ...props.customSetup?.dependencies, nanoplot: pkg.version, "@number-flow/react": "latest" },
+				}}
+				options={{
+					editorHeight: 500,
+					...props.options,
+					externalResources: [
+						"https://unpkg.com/@tailwindcss/browser@4.0.12",
+						`${window.location.origin}/sandpack/sandpack.js`,
+						`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}.js`,
+						`${window.location.origin}/sandpack/sandpack-${isLight ? "light" : "dark"}-global.css`,
+					],
+				}}
+			/>
+		</div>
 	);
 };
