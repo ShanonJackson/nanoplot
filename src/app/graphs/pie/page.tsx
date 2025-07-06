@@ -13,19 +13,18 @@ export default function Page() {
 		labels: true,
 		children: "",
 	});
-	
-	
+
 	const cookies = [
-		{id: "US", name: "US", value: 17226},
-		{id: "CN", name: "China", value: 15397},
-		{id: "JP", name: "Japan", value: 12573},
-		{id: "AU", name: "Australia", value: 10659},
-		{id: "NZ", name: "New Zealand", value: 8411},
-		{id: "DE", name: "Germany", value: 8328},
-		{id: "FR", name: "France", value: 7162},
-		{id: "GB", name: "United Kingdom", value: 1582},
-		{id: "IT", name: "Italy", value: 1582},
-		{id: "ES", name: "Spain", value: 583}
+		{ id: "US", name: "US", value: 17226 },
+		{ id: "CN", name: "China", value: 15397 },
+		{ id: "JP", name: "Japan", value: 12573 },
+		{ id: "AU", name: "Australia", value: 10659 },
+		{ id: "NZ", name: "New Zealand", value: 8411 },
+		{ id: "DE", name: "Germany", value: 8328 },
+		{ id: "FR", name: "France", value: 7162 },
+		{ id: "GB", name: "United Kingdom", value: 1582 },
+		{ id: "IT", name: "Italy", value: 1582 },
+		{ id: "ES", name: "Spain", value: 583 },
 	];
 	const totalCookies = cookies.reduce((sum, cookie) => sum + cookie.value, 0);
 
@@ -36,35 +35,25 @@ export default function Page() {
 				<PieControlGroup state={pie} onChange={setPie} />
 			</ControlPanel>
 			<GraphPanel>
-				<Graph
-					data={cookies}
-				>
-					<Pie {...pie}> {pie.children && <div dangerouslySetInnerHTML={{ __html: pie.children.toString() ?? "" }} />}</Pie>
+				<Graph data={cookies}>
+					<Pie {...pie} labels={{ position: "center", display: (v) => v.toString() }} />
 					<Pie.Tooltip>
 						{(segment) => {
 							const fill = segment.fill;
-							if(typeof segment.value !== "number" || typeof fill !== "string") return null;
+							if (typeof segment.value !== "number" || typeof fill !== "string") return null;
 							const bg = `linear-gradient(${lightenColor(fill, 20)}, ${fill})`;
 							return (
 								<div
-									style={{"border": `2px solid ${lightenColor(fill, 50)}`, background: bg}}
-									className={
-										"text-black rounded-[2px] opacity-[0.9]"
-									}
+									style={{ border: `2px solid ${lightenColor(fill, 50)}`, background: bg }}
+									className={"text-black rounded-[2px] opacity-[0.9] user-select-none"}
 								>
 									<div
 										style={{
 											borderBottom: `2px solid ${lightenColor(fill, 50)}`,
 										}}
-										className={
-											"w-[200px] h-[45px] px-[4px] py-[6px] flex items-center gap-2"
-										}
+										className={"w-[200px] h-[45px] px-[4px] py-[6px] flex items-center gap-2"}
 									>
-										<img
-											src={`https://flagcdn.com/h24/${segment.id.toLowerCase()}.png`}
-											width="24"
-											height="18"
-										/>
+										<img src={`https://flagcdn.com/h24/${segment.id.toLowerCase()}.png`} width="24" height="18" />
 										<div>
 											<div
 												className={
@@ -84,10 +73,10 @@ export default function Page() {
 									</div>
 									<div className={"w-[200px] h-[35px] flex items-baseline gap-[6px] pb-[10px] pl-[6px]"}>
 										<div className={"text-xl font-bold"}>
-											{` ${new Intl.NumberFormat("en-US", {
+											{`${new Intl.NumberFormat("en-US", {
 												minimumFractionDigits: 0,
 												maximumFractionDigits: 2,
-											}).format((segment.value / totalCookies) * 100)}`}
+											}).format((segment.value / totalCookies) * 100)}%`}
 										</div>
 										<div className={"text-sm font-bold"}>Cookies Sold</div>
 									</div>
@@ -120,4 +109,3 @@ const lightenColor = (color: string, amt: number) => {
 	}
 	return color;
 };
-

@@ -38,7 +38,7 @@ export default plugin(
 			(value = "", { modifier }) => {
 				const [width, height] = (() => {
 					if (!value.includes("width:") && value.includes("height")) return [null, value.replace("height:", "")];
-					return value.replace("width:", "").replace("height:", "").split("|");
+					return value.replace("mwidth:", "").replace("mheight:", "").replace("width:", "").replace("height:", "").split("|");
 				})();
 				const isHeight = value.includes("height");
 				const isWidth = value.includes("width");
@@ -48,11 +48,16 @@ export default plugin(
 				let pheight = height ? parseValue(height) : null;
 				const selector = (() => {
 					const w = isMaxWidth ? "max-width" : "min-width";
+					const h = isMaxHeight ? "max-height" : "min-height";
 					if (!isHeight && !isWidth) return `(${w}: ${width})`;
-					if (isHeight && isWidth) return `(${w}:${width}) and (min-height:${height})`;
-					if (isHeight) return `(min-height:${height})`;
+					if (isHeight && isWidth) return `(${w}:${width}) and (${h}:${height})`;
+					if (isHeight) return `(${h}:${height})`;
 					return `(${w}:${width})`;
 				})();
+
+				if (width.includes("100cqw")) {
+					console.log(width);
+				}
 				return pwidth !== null || pheight !== null ? `@container ${modifier ?? ""} ${selector}` : [];
 			},
 			{

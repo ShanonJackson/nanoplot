@@ -38,7 +38,7 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 		data: data,
 		gap: { top: gap?.top ?? 0, left: gap?.left ?? 0, right: gap?.right ?? 0, bottom: gap?.bottom ?? 0 },
 		attributes: {
-			className: "@container/graph nanoplot relative grid h-full w-full isolate",
+			className: "@container/graph [container-type:size_!important] nanoplot relative grid h-full w-full isolate",
 		},
 		domain: {
 			x: [],
@@ -110,8 +110,8 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 							...dp,
 						};
 					})
-				: [...dataset.data]
-						.sort((a, b) => Number(b.value) - Number(a.value))
+				: dataset.data
+						.toSorted((a, b) => Number(b.value) - Number(a.value))
 						.map((dp, i) => {
 							/* if there's a fill and no stroke, use fill as the stroke, otherwise use stroke color, or default color */
 							return {

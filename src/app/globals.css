@@ -3,3 +3,13 @@
 @tailwind utilities;
 @tailwind screens;
 
+@property --hundred-cqw {
+    syntax: "<length>";
+    initial-value: 0px;
+    inherits: false;
+}
+@property --hundred-cqh {
+    syntax: "<length>";
+    initial-value: 0px;
+    inherits: false;
+}

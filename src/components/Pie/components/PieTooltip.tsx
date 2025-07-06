@@ -33,13 +33,13 @@ export const PieTooltip = HydrateContext((props: Props) => {
 			{mouse && segment && (
 				<div
 					{...props}
-					className={cx("absolute [grid-area:graph] z-[1] pointer-events-none", props.className)}
+					className={cx("[grid-area:graph] absolute z-[2] pointer-events-none", props.className)}
 					style={{
 						left: scale(mouse.coordinates.x, viewbox.x, 100) + "%",
 						top: scale(mouse.coordinates.y, viewbox.y, 100) + "%",
 					}}
 				>
-					{props.children({...segment, fill: segment.fill ?? colors[data.indexOf(segment)] ?? colors.at(-1)})}
+					{props.children({ ...segment, fill: segment.fill ?? colors[data.indexOf(segment)] ?? colors.at(-1) })}
 				</div>
 			)}
 		</>

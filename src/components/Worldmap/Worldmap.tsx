@@ -25,7 +25,7 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 			<svg
 				id={id}
 				viewBox={"0 0 1090 539"}
-				className={cx("absolute worldmap w-auto h-full aspect-[1090/539]", className)}
+				className={cx("worldmap w-auto h-full aspect-[1090/539]", className)}
 				preserveAspectRatio={"none"}
 				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
 			>

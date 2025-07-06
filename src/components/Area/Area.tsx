@@ -4,7 +4,6 @@ import { GraphContext, useGraph } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { cx } from "../../utils/cx/cx";
-import { LinesTooltip } from "../Lines/components/LinesTooltip";
 import { ObjectUtils } from "../../utils/object/object";
 import { Line } from "../Lines/components/Line";
 import { ColorUtils } from "../../utils/color/color";
