@@ -189,7 +189,7 @@ export const Pie = ({ glow, donut, labels, radius, total, loading, className, on
 												segment.previousTotalDegrees + ROTATION_DEGREES + segment.degrees,
 											) + ` L ${CX} ${CX} Z`
 										}
-										stroke={segment.fill}
+										fill={segment.fill}
 										data-degrees={segment.degrees}
 										onMouseEnter={onMouseEnter ? (event) => onMouseEnter(segment, event) : undefined}
 										onMouseLeave={onMouseLeave}
