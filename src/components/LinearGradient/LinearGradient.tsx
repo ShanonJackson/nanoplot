@@ -10,7 +10,6 @@ type Props = React.HTMLAttributes<SVGLinearGradientElement> & {
 export const LinearGradient = ({ id, gradient, ...rest }: Props) => {
 	const { viewbox, domain } = useGraph();
 	const { direction, stops } = GradientUtils.parse({ gradient, viewbox, domain });
-	console.log({ gradient, viewbox, domain });
 	const { x1, y1, x2, y2 } = (() => {
 		if (direction.includes("to ")) {
 			switch (direction.replace("to ", "").trim()) {

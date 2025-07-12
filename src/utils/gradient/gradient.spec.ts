@@ -28,17 +28,16 @@ const MOCK_CONTEXT: InternalGraphContext = {
 };
 
 describe("src/utils/gradient", () => {
-	it("Should return correct color for a hex gradient", () => {
-		//  GradientUtils.parse({ gradient, viewbox, domain })
-		const gradient = "mask:linear-gradient(to right, rgb(255, 0, 0) 400, rgb(0, 0, 255) 400.1, rgb(0, 0, 255) 1500)";
-		// 50% should yield a mid-gray: rgba(128, 128, 128, 1)
-
-		const color = GradientUtils.parse({
-			gradient,
-			...MOCK_CONTEXT,
-		});
-		console.log(color);
-	});
+	// it("Should return correct color for a hex gradient", () => {
+	// 	//  GradientUtils.parse({ gradient, viewbox, domain })
+	// 	const gradient = "mask:linear-gradient(to right, rgb(255, 0, 0) 400, rgb(0, 0, 255) 400.1, rgb(0, 0, 255) 1500)";
+	// 	// 50% should yield a mid-gray: rgba(128, 128, 128, 1)
+	//
+	// 	const color = GradientUtils.parse({
+	// 		gradient,
+	// 		...MOCK_CONTEXT,
+	// 	});
+	// });
 	//
 	// it("Should work with shorthand hex stops", () => {
 	// 	const gradient = "linear-gradient(to right, #000 0%, #fff 100%)";
