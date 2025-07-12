@@ -62,67 +62,80 @@ export default function Page() {
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
 			<GraphPanel className={"bg-[#191937] p-4"}>
-				<Graph data={data}>
-					<YAxis />
-					<GridLines border horizontal vertical />
-					<Lines />
-					<Lines.Tooltip
-						tooltip={(points, x) => {
-							if (!(x instanceof Date)) return null;
-							const newData = data.map((line) => {
-								return {
-									...line,
-									data: line.data.map((point, index) => {
-										const prev = line.data[index - 1];
-										return { ...point, percent: prev ? (point.y / prev.y - 1) * 100 : 0 };
-									}),
-								};
-							});
-							const percents = newData.map((line) => {
-								return line.data.find((point) => {
-									return point.x.getTime() === x.getTime();
-								})?.percent;
-							});
-							return percents.map((percent, i) => {
-								if (!percent) return null;
-								return (
-									<div
-										className={cx(
-											"flex items-center text-lg font-bold rounded border py-1 px-3 bg-opacity-60 shadow-md backdrop-blur-sm border-gray-200 dark-border-[#454545]",
-											percent >= 0 ? "text-green-500" : "text-red-500",
-										)}
-										key={i}
-									>
-										<svg
-											viewBox={"0 0 25 25"}
-											height={"16"}
-											width={"16"}
-											className={cx(
-												"mr-1 transition-transform duration-300 ease-in-out",
-												percent >= 0 ? "rotate-180" : "",
-											)}
-										>
-											<path
-												d={"M 12.5 2 L 12.5 23 L 4 13 M 12.5 23 L 21 13"}
-												stroke={"black"}
-												fill={"transparent"}
-												strokeWidth={3}
-												strokeLinecap={"round"}
-												strokeLinejoin={"round"}
-												className={cx(percent >= 0 ? "stroke-green-500" : "stroke-red-500")}
-											/>
-										</svg>
-										<NumberFlow isolate value={Math.round(percent)} />%
-									</div>
-								);
+				<Graph
+					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
+					interactions={{ hovered, pinned }}
+					zoom={zoom}
+					data={[
+						{
+							name: "New Users",
+							stroke: "#FF4B4B",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+							],
+						},
+						{
+							name: "Registered Users",
+							stroke: "#33D4FF",
+							data: [
+								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
+								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
+								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
+								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
+								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
+								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
+								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
+								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+							],
+						},
+					]}
+				>
+					<ZoomSlider.X onChange={setZoom} />
+					<Legend
+						alignment={"end"}
+						position={"top"}
+						onClick={(dp) => {
+							setPinned((p) => {
+								if (p.includes(dp.id)) return p.filter((pin) => pin !== dp.id);
+								return [...p, dp.id];
 							});
 						}}
+						onMouseEnter={(dp) => {
+							setHovered((h) => {
+								if (h.includes(dp.id)) return h.filter((hov) => hov !== dp.id);
+								return [...h, dp.id];
+							});
+						}}
+						onMouseLeave={(dp) => {
+							setHovered((h) => h.filter((hov) => hov !== dp.id));
+						}}
 					/>
+					<YAxis />
+					<GridLines border vertical horizontal />
+					<Lines curve={"natural"} joints />
+					<Lines.Tooltip />
+					<ZoomSlider.Y onChange={setZoom} />
 					<XAxis
-						ticks={{ jumps: "P1M" }}
+						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {
+							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+							return months[x.getMonth()];
 						}}
 					/>
 				</Graph>

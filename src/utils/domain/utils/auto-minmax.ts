@@ -22,7 +22,7 @@ export const getRangeForSet = ({
 	isDateTime: boolean;
 	min: number;
 	max: number;
-}) => {
+}): { min: number | Date; max: number | Date; jumps?: number } => {
 	/*
 	 * If "from/to" are both "auto" and it's not date domain we need to calculate both at same time in order to get the best looking axes.
 	 *      - Also; Favor taking less jumps, and favor taking jumps that don't result in a gap of >20% at either the start of end of the range.
@@ -32,7 +32,8 @@ export const getRangeForSet = ({
 	 */
 	if (from === "auto" && to === "auto" && !isDateTime) {
 		const zeroedMin = min >= 0 ? 0 : min;
-		if (max <= zeroedMin) return [zeroedMin, to];
+
+		// if (max <= zeroedMin) return { min: zeroedMin, max: to }; don't think this is possible. removing it.
 		const rawStep = (max - zeroedMin) / DESIRED_STEPS;
 		const exp = Math.floor(Math.log10(rawStep));
 		const possibleSteps: number[] = [];
@@ -75,18 +76,30 @@ export const getRangeForSet = ({
 				chosen = smaller.reduce((acc, c) => (c.step > acc.step ? c : acc), smaller[0]);
 			}
 		}
-		return [chosen.minTick, chosen.maxTick];
+		return {
+			min: chosen.minTick,
+			max: chosen.maxTick,
+			jumps: chosen.jumps,
+		};
 	}
 
-	if (from !== "auto") {
+	if (from !== "auto" /* i have a known from */) {
+		//* I have a known 'to' but not a known from.
 		const MIN = minFor({ min, max, from, isDateTime, duration });
 		const MAX = maxFor({ min: +MIN, max, to, isDateTime, duration });
-		return [MIN, MAX];
+		return {
+			min: MIN,
+			max: MAX,
+		};
 	}
 
+	// i have a known from and a known to.
 	const MAX = maxFor({ min, max, to, isDateTime, duration });
-	const MIN = minFor({ min, max: +MAX, from, isDateTime, duration });
-	return [MIN, MAX];
+	const MIN = minFor({ min, max, from, isDateTime, duration });
+	return {
+		min: MIN,
+		max: MAX,
+	};
 };
 
 const minFor = ({

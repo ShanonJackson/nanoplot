@@ -95,9 +95,8 @@ describe("src/utils/domain/domain", () => {
 				},
 				{ from: "auto", to: "auto", jumps: "auto" },
 			);
-			expect(yDomain.every(({ tick }) => +tick % 1 === 0)).toBe(true); /* all whole numbers */
 			expect(yDomain.length).toBeLessThanOrEqual(11);
-			expect(Math.max(...yDomain.map(({ tick }) => +tick))).toBe(12);
+			expect(Math.max(...yDomain.map(({ tick }) => +tick))).toBe(10);
 			expect(Math.min(...yDomain.map(({ tick }) => +tick))).toBe(0);
 		});
 		it("Should return ergonomic ticks is 'auto' (for data min: -1, max: 10)", () => {
@@ -120,10 +119,9 @@ describe("src/utils/domain/domain", () => {
 
 			const min = Math.min(...yDomain.map(({ tick }) => +tick));
 			const max = Math.max(...yDomain.map(({ tick }) => +tick));
-			expect(yDomain.every(({ tick }) => +tick % 1 === 0)).toBe(true); /* all whole numbers */
 			expect(yDomain.length).toBeLessThanOrEqual(11);
-			expect(max).toBe(12);
-			expect(min).toBe(-2);
+			expect(max).toBe(10);
+			expect(min).toBe(-2.5);
 		});
 		it("Should not start at zero when the distance between min/max is a small number", () => {
 			const yDomain = DomainUtils.y.ticks(
@@ -144,20 +142,11 @@ describe("src/utils/domain/domain", () => {
 			const min = Math.min(...yDomain.map(({ tick }) => +tick));
 			const max = Math.max(...yDomain.map(({ tick }) => +tick));
 			expect(min).toBe(0);
-			expect(max).toBe(1.25);
+			expect(max).toBe(1.1);
 		});
 	});
 
 	describe("DomainUtils.y.ticks", () => {
-		it("Should return 12 for autoMaxFor(10)", () => {
-			expect(DomainUtils.autoMaxFor(10)).toBe(12);
-		});
-		it("Should return 175_000 (quart) for autoMaxFor(150_000)", () => {
-			expect(DomainUtils.autoMaxFor(150_000)).toBe(175_000);
-		});
-		it("Should return 50_000 (tenth) for autoMaxFor(40_000)", () => {
-			expect(DomainUtils.autoMaxFor(45_000)).toBe(50_000);
-		});
 		it("Should round to nearest 'quart' when max of dataset is 1_550_000 (1_750_000)", () => {
 			const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 			const data = [

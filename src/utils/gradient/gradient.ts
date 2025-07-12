@@ -117,9 +117,11 @@ export const GradientUtils = {
 				}));
 
 			const patched = [
-				...(stops[0].offset && stops[0].offset !== 0 ? [{ ...stops[0], offset: 0 }] : []),
+				...(stops[0].offset && stops[0].offset !== 0 && stops[0].offset > 0 ? [{ ...stops[0], offset: 0 }] : []),
 				...stops,
-				...(stops[stops.length - 1] && stops[stops.length - 1].offset !== 1 ? [{ ...stops[stops.length - 1], offset: 1 }] : []),
+				...(stops[stops.length - 1] && stops[stops.length - 1].offset !== 1 && stops[stops.length - 1].offset < 1
+					? [{ ...stops[stops.length - 1], offset: 1 }]
+					: []),
 			];
 			return { stops: patched, direction: direction ?? "to bottom" };
 		} catch (e) {

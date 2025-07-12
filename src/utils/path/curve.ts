@@ -7,21 +7,20 @@ const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precisio
 const decoder = new TextDecoder();
 export const CurveUtils = {
 	linear: (coords: Array<{ x: number; y: number }>): string => {
-		/*
-			This code is essentially just .map .join but about 5-10x the performance, (also outputs relative path syntax)
-			I.E coords.map(({x, y}, i) => `${i === 0 ? 'M' : 'L'} ${x} ${y}`).join(' ')
-			This code is written in a way that assumes x/y coordinates are never > 4 digits. (9999)
-		*/
 		if (coords.length === 0) return "";
-		const buffer = new Uint8Array(coords.length * 16);
+		const buffer = new Uint8Array(coords.length * 12 + 1);
 		let offset = 0;
 		let prevX = 0;
 		let prevY = 0;
+
 		for (let i = 0; i < coords.length; i++) {
 			const { x, y } = coords[i];
-			buffer[offset++] = 108; // 'M' or 'l'
+			buffer[offset++] = i === 0 ? 77 : 108; // 'M' for first, 'l' for others
+
 			const dx = x - prevX;
 			const dy = y - prevY;
+
+			// Process X coordinate
 			let n = dx;
 			if (n < 0) {
 				buffer[offset++] = 45; // '-'
@@ -31,27 +30,30 @@ export const CurveUtils = {
 			const intX = (scaledX / 100) | 0;
 			const fracX = scaledX % 100;
 
-			if (intX > 999) {
+			// Optimize for single-digit case (0–9)
+			if (intX < 10) {
+				buffer[offset++] = 48 + intX;
+			} else if (intX < 100) {
+				buffer[offset++] = 48 + ((intX / 10) | 0);
+				buffer[offset++] = 48 + (intX % 10);
+			} else if (intX < 1000) {
+				buffer[offset++] = 48 + ((intX / 100) | 0);
+				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intX % 10);
+			} else {
 				buffer[offset++] = 48 + ((intX / 1000) | 0);
 				buffer[offset++] = 48 + (((intX % 1000) / 100) | 0);
 				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
 				buffer[offset++] = 48 + (intX % 10);
-			} else if (intX > 99) {
-				buffer[offset++] = 48 + ((intX / 100) | 0);
-				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intX % 10);
-			} else if (intX > 9) {
-				buffer[offset++] = 48 + ((intX / 10) | 0);
-				buffer[offset++] = 48 + (intX % 10);
-			} else {
-				buffer[offset++] = 48 + intX;
 			}
 			if (fracX !== 0) {
-				buffer[offset++] = 46;
+				buffer[offset++] = 46; // '.'
 				buffer[offset++] = 48 + ((fracX / 10) | 0);
 				buffer[offset++] = 48 + (fracX % 10);
 			}
 			buffer[offset++] = 32; // ' '
+
+			// Process Y coordinate
 			n = dy;
 			if (n < 0) {
 				buffer[offset++] = 45; // '-'
@@ -60,30 +62,32 @@ export const CurveUtils = {
 			const scaledY = (n * 100 + 0.5) | 0;
 			const intY = (scaledY / 100) | 0;
 			const fracY = scaledY % 100;
-			if (intY > 999) {
+
+			// Optimize for single-digit case (0–9)
+			if (intY < 10) {
+				buffer[offset++] = 48 + intY;
+			} else if (intY < 100) {
+				buffer[offset++] = 48 + ((intY / 10) | 0);
+				buffer[offset++] = 48 + (intY % 10);
+			} else if (intY < 1000) {
+				buffer[offset++] = 48 + ((intY / 100) | 0);
+				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
+				buffer[offset++] = 48 + (intY % 10);
+			} else {
 				buffer[offset++] = 48 + ((intY / 1000) | 0);
 				buffer[offset++] = 48 + (((intY % 1000) / 100) | 0);
 				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
 				buffer[offset++] = 48 + (intY % 10);
-			} else if (intY > 99) {
-				buffer[offset++] = 48 + ((intY / 100) | 0);
-				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intY % 10);
-			} else if (intY > 9) {
-				buffer[offset++] = 48 + ((intY / 10) | 0);
-				buffer[offset++] = 48 + (intY % 10);
-			} else {
-				buffer[offset++] = 48 + intY;
 			}
+
 			if (fracY !== 0) {
-				buffer[offset++] = 46;
+				buffer[offset++] = 46; // '.'
 				buffer[offset++] = 48 + ((fracY / 10) | 0);
 				buffer[offset++] = 48 + (fracY % 10);
 			}
 			prevX = x;
 			prevY = y;
 		}
-		buffer[0] = 77; // Ensure first command is 'M'
 		return decoder.decode(buffer.subarray(0, offset));
 	},
 	natural: (coordinates: Array<{ x: number; y: number }>) => {

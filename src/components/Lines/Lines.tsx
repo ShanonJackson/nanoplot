@@ -119,7 +119,7 @@ export const Lines = (props: Props) => {
 												`L ${points.at(-1)?.x ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0].x} ${viewbox.y} Z`
 											}
 											stroke={"transparent"}
-											fill={fill || `linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
+											fill={`linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
 											strokeOpacity={0}
 											className={"lines__fill"}
 										/>

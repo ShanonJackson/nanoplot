@@ -1,6 +1,32 @@
 import { describe, expect, it } from "bun:test";
 import { CoordinatesUtils } from "./coordinates";
 import spec from "./data.spec.json";
+import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
+
+const MOCK_CONTEXT: InternalGraphContext = {
+	id: "a",
+	data: [],
+	attributes: {},
+	gap: { top: 0, right: 0, bottom: 0, left: 0 },
+	layout: { columns: "", rows: "" },
+	viewbox: { x: 3000, y: 3000 },
+	zoom: { x: [0, 100], y: [0, 100] },
+	datasets: {},
+	domain: {
+		x: [
+			{ coordinate: 0, tick: 0 },
+			{ coordinate: 500, tick: 500 },
+			{ coordinate: 1_000, tick: 1000 },
+		],
+		y: [
+			{ coordinate: 0, tick: 1_000 },
+			{ coordinate: 500, tick: 500 },
+			{ coordinate: 1_000, tick: 0 },
+		],
+	},
+	colors: [],
+	interactions: { hovered: [], pinned: [] },
+};
 
 describe("Coordinates Utils", () => {
 	it("Should be faster than 1ms", () => {

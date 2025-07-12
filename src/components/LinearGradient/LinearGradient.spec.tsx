@@ -111,7 +111,7 @@ describe("src/components/LinearGradient", () => {
 	});
 
 	it("Should anchor to 100% offset when mask:linear-gradient(...) with value stops is above largest x", () => {
-		const { getByTestId } = render(
+		const { getByTestId, debug } = render(
 			<GraphContextProvider value={MOCK_CONTEXT}>
 				<LinearGradient
 					id={""}
@@ -124,6 +124,7 @@ describe("src/components/LinearGradient", () => {
 		const gradient = getByTestId("a");
 		expect(gradient).toBeInTheDocument();
 		const stops = gradient.querySelectorAll("stop");
+		console.log(debug());
 		expect(stops).toHaveLength(4);
 		expect(stops[0].getAttribute("stop-color")).toBe("rgb(255, 0, 0)");
 		expect(stops[0].getAttribute("stop-opacity")).toBe(null);

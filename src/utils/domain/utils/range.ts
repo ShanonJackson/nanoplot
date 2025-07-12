@@ -33,7 +33,8 @@ export const range = (
 	/* get min/max of dataset in stack safe AND performant way. i.e Math.min(...values) will stack overflow >129_000 or so */
 	let datasetMin = typeof from === "number" ? from : Infinity;
 	let datasetMax = typeof to === "number" ? to : -Infinity;
-	if (dimension === "x" && typeof from !== "number" && typeof to !== "number") {
+
+	if (dimension === "x" && (typeof from !== "number" || typeof to !== "number")) {
 		/* these are split for JIT performance */
 		for (let i = 0; i < data.length; i++) {
 			const lineData = data[i].data;
@@ -45,7 +46,7 @@ export const range = (
 			}
 		}
 	}
-	if (dimension === "y" && typeof from !== "number" && typeof to !== "number") {
+	if (dimension === "y" && (typeof from !== "number" || typeof to !== "number")) {
 		/* these are split for JIT performance */
 		for (let i = 0; i < data.length; i++) {
 			const lineData = data[i].data;
@@ -117,7 +118,11 @@ export const range = (
 		}
 		return jumps;
 	})();
-	const [MIN, MAX] = getRangeForSet({
+	const {
+		min: MIN,
+		max: MAX,
+		jumps: RECOMMENDED_JUMPS,
+	} = getRangeForSet({
 		min,
 		max,
 		duration,
@@ -131,6 +136,7 @@ export const range = (
 		const mx = Number(MAX);
 		const mn = Number(MIN);
 		const JUMPS = (() => {
+			if (RECOMMENDED_JUMPS) return RECOMMENDED_JUMPS + 1;
 			const distance = mx - mn;
 			if (jumps === "auto") {
 				const digits = Math.max(0, Math.round(distance).toString().replace("-", "").length - 2);
@@ -157,7 +163,6 @@ export const range = (
 							return distance / jump;
 						})
 						.find((jump) => {
-							if (jump % 1 !== 0) return false;
 							return distance % jump === 0 && jump <= 11 && jump >= 5;
 						}) ?? 9;
 				return jump + 1;
@@ -165,8 +170,8 @@ export const range = (
 			return jumps;
 		})();
 		return Array.from({ length: JUMPS }, (_, i) => ({
-			tick: scale(i, [0, JUMPS - 1], [mn, mx], 2),
-			coordinate: scale(i, [0, JUMPS - 1], [0, viewb], 2),
+			tick: scale(i, [0, JUMPS - 1], [mn, mx]),
+			coordinate: scale(i, [0, JUMPS - 1], [0, viewb]),
 		}));
 	}
 

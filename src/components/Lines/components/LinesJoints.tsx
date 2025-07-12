@@ -4,6 +4,7 @@ import { GraphUtils } from "../../../utils/graph/graph";
 import { GradientUtils } from "../../../utils/gradient/gradient";
 import { equals } from "../../../utils/equals/equals";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
+import { cx } from "../../../utils/cx/cx";
 
 type Props = {
 	at?: { x: string | number | Date };
@@ -13,10 +14,14 @@ type Props = {
 };
 
 export const LinesJoints = ({ context, border, at, strokeWidth = 8 }: Props) => {
+	const {
+		interactions: { pinned, hovered },
+	} = context;
+
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xyForPoints = CoordinatesUtils.xyCoordinatesForDataset(context);
-	return context.data.flatMap(({ data, stroke }, i) => {
+	return context.data.flatMap(({ data, stroke, id }, i) => {
 		const points = xyForPoints(data);
 		const isLinearGradient = stroke?.includes("linear-gradient");
 		if (isLinearGradient && stroke) {
@@ -59,6 +64,8 @@ export const LinesJoints = ({ context, border, at, strokeWidth = 8 }: Props) => 
 			if (at?.x && !equals(data[i].x, at.x)) continue; /* Skip if at.x is set and data[i].x !== at.x */
 			path += `M ${points[i].x} ${points[i].y} h 0.001 `; /* += for perf; see V8 and other engine string types. */
 		}
+		const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
+
 		return (
 			<React.Fragment key={i}>
 				{border && (
@@ -69,6 +76,7 @@ export const LinesJoints = ({ context, border, at, strokeWidth = 8 }: Props) => 
 						strokeWidth={strokeWidth + 1}
 						strokeLinecap={"round"}
 						vectorEffect={"non-scaling-stroke"}
+						className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 					/>
 				)}
 				<path
@@ -78,6 +86,7 @@ export const LinesJoints = ({ context, border, at, strokeWidth = 8 }: Props) => 
 					strokeWidth={strokeWidth}
 					strokeLinecap={"round"}
 					vectorEffect={"non-scaling-stroke"}
+					className={cx(disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 				/>
 			</React.Fragment>
 		);

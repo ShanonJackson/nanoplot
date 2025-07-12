@@ -1,13 +1,44 @@
 import { describe, expect, it } from "bun:test";
 import { GradientUtils } from "./gradient";
+import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
+
+const MOCK_CONTEXT: InternalGraphContext = {
+	id: "a",
+	data: [],
+	attributes: {},
+	gap: { top: 0, right: 0, bottom: 0, left: 0 },
+	layout: { columns: "", rows: "" },
+	viewbox: { x: 1_000, y: 1_000 },
+	zoom: { x: [0, 100], y: [0, 100] },
+	datasets: {},
+	domain: {
+		x: [
+			{ coordinate: 0, tick: 0 },
+			{ coordinate: 500, tick: 500 },
+			{ coordinate: 1_000, tick: 1000 },
+		],
+		y: [
+			{ coordinate: 0, tick: 1_000 },
+			{ coordinate: 500, tick: 500 },
+			{ coordinate: 1_000, tick: 0 },
+		],
+	},
+	colors: [],
+	interactions: { hovered: [], pinned: [] },
+};
 
 describe("src/utils/gradient", () => {
-	// it("Should return correct color for a hex gradient", () => {
-	// 	const gradient = "linear-gradient(to right, #000000 0%, #ffffff 100%)";
-	// 	// 50% should yield a mid-gray: rgba(128, 128, 128, 1)
-	// 	const color = GradientUtils.colorFrom(gradient, 50);
-	// 	expect(color).toBe("rgba(128, 128, 128, 1.00)");
-	// });
+	it("Should return correct color for a hex gradient", () => {
+		//  GradientUtils.parse({ gradient, viewbox, domain })
+		const gradient = "mask:linear-gradient(to right, rgb(255, 0, 0) 400, rgb(0, 0, 255) 400.1, rgb(0, 0, 255) 1500)";
+		// 50% should yield a mid-gray: rgba(128, 128, 128, 1)
+
+		const color = GradientUtils.parse({
+			gradient,
+			...MOCK_CONTEXT,
+		});
+		console.log(color);
+	});
 	//
 	// it("Should work with shorthand hex stops", () => {
 	// 	const gradient = "linear-gradient(to right, #000 0%, #fff 100%)";

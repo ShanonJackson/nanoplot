@@ -17,6 +17,8 @@ export const GradientLegend = ({ position, alignment = "center", gradient, scala
 		if (typeof tick === "number") return { label: tick, left: scale(i, ticks.length - 1, 100) + "%" };
 		return { label: tick.tick, left: tick.percent + "%" };
 	});
+	// linear-gradient(to right, red 1590, blue 120000);
+	// gradient`linear-gradient(to right, red 1590, blue ${new Date()})`
 	return (
 		<div
 			{...rest}
