@@ -40,7 +40,7 @@ export const GradientUtils = {
 			const percent = scale(yForValue(point.y), gradient.includes("mask:") ? viewbox.y : [yMax, yMin], 100);
 			return GradientUtils.colorFrom({
 				gradient,
-				percent: direction === "to top" ? 100 - percent : percent,
+				value: direction === "to top" ? 100 - percent : percent,
 				domain,
 				viewbox,
 			});
@@ -48,7 +48,7 @@ export const GradientUtils = {
 		const xMin = xForValue(Math.min(...dataset.map(({ x }) => +x)));
 		const xMax = xForValue(Math.max(...dataset.map(({ x }) => +x)));
 		const percent = scale(xForValue(point.x), gradient.includes("mask:") ? viewbox.x : [xMin, xMax], 100);
-		return GradientUtils.colorFrom({ gradient, percent: direction == "to left" ? 100 - percent : percent, domain, viewbox });
+		return GradientUtils.colorFrom({ gradient, value: direction == "to left" ? 100 - percent : percent, domain, viewbox });
 	},
 	direction: (gradient: string): string => {
 		const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
@@ -64,7 +64,7 @@ export const GradientUtils = {
 	}: {
 		gradient: string;
 		viewbox: InternalGraphContext["viewbox"];
-		domain: InternalGraphContext["domain"];
+		domain?: InternalGraphContext["domain"];
 	}) => {
 		/* Turns a linear-gradient with ticks/values into a CSS linear-gradient string. */
 		const direction = GradientUtils.direction(gradient);
@@ -79,8 +79,8 @@ export const GradientUtils = {
 	}: {
 		gradient: string;
 		viewbox: InternalGraphContext["viewbox"];
-		domain: InternalGraphContext["domain"];
-	}): { stops: Array<{ color: string; offset: number | null; opacity?: number }>; direction: string } => {
+		domain?: InternalGraphContext["domain"];
+	}): { stops: Array<{ color: string; offset: number; opacity?: number; value: number }>; direction: string } => {
 		try {
 			const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
 				undefined,
@@ -89,9 +89,22 @@ export const GradientUtils = {
 			const linear = direction
 				? gradient.replace("mask:", "")
 				: gradient.replace("linear-gradient(", "linear-gradient(to bottom, ").replace("mask:", "");
-			const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
-			const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
-			const stops = Array.from(linear.matchAll(regex))
+
+			// scaled betweeen min and max as percentage.
+
+			const parsed = Array.from(linear.matchAll(regex));
+			const min = Math.min(...parsed.map((match) => (match[3] ? parseFloat(match[3]) : 0)));
+			const max = Math.max(...parsed.map((match) => (match[3] ? parseFloat(match[3]) : 0)));
+
+			const xForValue =
+				viewbox && domain?.x.length && domain.y.length
+					? CoordinatesUtils.xCoordinateFor({ domain, viewbox })
+					: (v: number) => scale(v, [min, max], viewbox?.x ?? 1);
+			const yForValue =
+				viewbox && domain?.x.length && domain.y.length
+					? CoordinatesUtils.yCoordinateFor({ domain, viewbox })
+					: (v: number) => scale(v, [min, max], viewbox?.y ?? 1);
+			const stops = parsed
 				.map((match) => {
 					const offset = match[3];
 					const computed = (() => {
@@ -109,6 +122,7 @@ export const GradientUtils = {
 						color: toRgb(match[1]),
 						offset: computed,
 						opacity: match[5] ? parseFloat(match[5]) : undefined,
+						value: parseFloat(offset),
 					};
 				})
 				.map((item, index, arr) => ({
@@ -130,16 +144,19 @@ export const GradientUtils = {
 	},
 	colorFrom: ({
 		gradient,
-		percent,
+		value,
 		viewbox,
 		domain,
 	}: {
+		value: number;
 		gradient: string;
-		percent: number;
 		viewbox: InternalGraphContext["viewbox"];
 		domain: InternalGraphContext["domain"];
 	}): string => {
 		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
+		const min = Math.min(...stops.map((s) => s.value ?? 0));
+		const max = Math.max(...stops.map((s) => s.value ?? 0));
+		const percent = scale(value, [min, max], 100);
 
 		// Ensure first and last stops have defined positions.
 		stops[0].offset = stops[0].offset ?? 0;

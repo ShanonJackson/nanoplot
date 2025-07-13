@@ -38,12 +38,8 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph data={MOCK_DATA}>
-					<GradientLegend
-						position={"top"}
-						gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
-						scalars={[Math.min(...MOCK_DATA.map((d) => d.value)), Math.max(...MOCK_DATA.map((d) => d.value))]}
-					/>
-					<Worldmap gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"} {...map} />
+					<GradientLegend position={"top"} gradient={`linear-gradient(90deg, #e1efff 0, #4285f4 ${12_000})`} />
+					<Worldmap gradient={`linear-gradient(90deg, #e1efff 0, #4285f4 ${12_000})`} {...map} />
 					<Worldmap.Tooltip
 						tooltip={(dp) => {
 							return (

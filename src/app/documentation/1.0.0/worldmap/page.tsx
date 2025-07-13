@@ -63,10 +63,9 @@ export default function App() {
 			<Graph data={DATA}>
 				<GradientLegend
 					position={"top"}
-					gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"}
-					scalars={[Math.min(...DATA.map((d) => d.value)), Math.max(...DATA.map((d) => d.value))]}
+					gradient={\`linear-gradient(90deg, #e1efff \${Math.min(...MOCK_DATA.map((d) => d.value))}, #4285f4 \${Math.max(...MOCK_DATA.map((d) => d.value))})\`}
 				/>
-				<Worldmap gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"} />
+				<Worldmap gradient={\`linear-gradient(90deg, #e1efff \${Math.min(...MOCK_DATA.map((d) => d.value))}, #4285f4 \${Math.max(...MOCK_DATA.map((d) => d.value))})\`} />
 				<Worldmap.Tooltip
 					tooltip={(dp) => {
 						return (

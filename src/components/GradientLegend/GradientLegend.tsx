@@ -1,24 +1,30 @@
-import React from "react";
-import { InternalGraphContext, useGraphColumn } from "../../hooks/use-graph/use-graph";
+import React, { useContext } from "react";
+import { InternalGraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { MathUtils, scale } from "../../utils/math/math";
 import { cx } from "../../utils/cx/cx";
+import { GradientUtils } from "../../utils/gradient/gradient";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
 	position: "top" | "bottom";
 	alignment?: "start" | "center" | "end";
 	gradient: `linear-gradient(${string})`;
-	scalars: number[] | Array<{ tick: number; percent: number }>;
 	labels?: boolean | ((value: string | number | Date) => string);
 };
 
-export const GradientLegend = ({ position, alignment = "center", gradient, scalars, labels = true, ...rest }: Props) => {
+export const GradientLegend = ({ position, alignment = "center", gradient, labels = true, ...rest }: Props) => {
+	const context = useGraph();
 	const column = useGraphColumn().column;
-	const ticks = scalars.map((tick, i, ticks) => {
-		if (typeof tick === "number") return { label: tick, left: scale(i, ticks.length - 1, 100) + "%" };
-		return { label: tick.tick, left: tick.percent + "%" };
+	const css = GradientUtils.deserialize({ gradient, viewbox: context.viewbox });
+	const parsed = GradientUtils.parse({ gradient, viewbox: context.viewbox });
+	const ticks = parsed.stops.map((stop) => {
+		const label = (() => {
+			if (!labels) return undefined;
+			if (typeof labels === "function") return labels(stop.value);
+			return stop.value;
+		})();
+		return { left: (stop.offset ?? 0) * 100 + "%", label };
 	});
-	// linear-gradient(to right, red 1590, blue 120000);
-	// gradient`linear-gradient(to right, red 1590, blue ${new Date()})`
+
 	return (
 		<div
 			{...rest}
@@ -33,23 +39,19 @@ export const GradientLegend = ({ position, alignment = "center", gradient, scala
 		>
 			<div className="relative mb-[40px]">
 				<div className="text-xs text-gray-500">Value →</div>
-				<div className="gradient-legend__gradient h-[8px] rounded-sm" style={{ background: gradient }} />
+				<div className="gradient-legend__gradient h-[8px] rounded-sm" style={{ background: css }} />
 				<div className={"gradient-legend__labels relative mx-1"}>
 					<div className="flex items-center justify-between">
-						{ticks.map((tick, i) => (
+						{ticks.map(({ left, label }, i) => (
 							<div
 								key={i}
 								className="gradient-legend__tick absolute -translate-x-1/2 top-[100%] flex flex-col items-center"
-								style={{ left: tick.left }}
+								style={{ left }}
 							>
 								<div className="h-2 w-[1px] bg-gray-400" />
-								<span className="gradient-legend__label text-[10px] text-gray-600 mt-1">
-									{(() => {
-										if (!labels) return null;
-										if (typeof labels === "function") return labels(tick.label);
-										return tick.label;
-									})()}
-								</span>
+								{label !== undefined && (
+									<span className="gradient-legend__label text-[10px] text-gray-600 mt-1">{label}</span>
+								)}
 							</div>
 						))}
 					</div>

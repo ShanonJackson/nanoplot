@@ -58,7 +58,9 @@ export const WorldMapWidget: React.FC = () => {
 			<div className="flex">
 				<div className="flex items-center w-[500px] px-4 py-8">
 					<Graph data={DATA}>
-						<Worldmap gradient={"linear-gradient(90deg, #e1efff 0%, #a3c5ff 50%, #4285f4 100%)"} />
+						<Worldmap
+							gradient={`linear-gradient(90deg, #e1efff ${Math.min(...DATA.map((d) => d.value))}, #4285f4 ${Math.max(...DATA.map((d) => d.value))})`}
+						/>
 						<Worldmap.Tooltip
 							tooltip={(dp) => {
 								return (

@@ -18,8 +18,6 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 	const id = useId();
 	if (!GraphUtils.isSegmentData(data)) return null;
 	const dataset = Object.fromEntries(data.map((datapoint) => [datapoint.id ?? datapoint.name, datapoint]));
-	const max = Math.max(...Object.values(dataset).map(({ value }) => +value));
-	const min = Math.min(...Object.values(dataset).map(({ value }) => +value));
 	return (
 		<>
 			<svg
@@ -35,7 +33,7 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 						if (gradient && dataset[iso]) {
 							return GradientUtils.colorFrom({
 								gradient: gradient,
-								percent: scale(+dataset[iso].value, [min, max], 100),
+								value: +dataset[iso].value,
 								viewbox,
 								domain,
 							});

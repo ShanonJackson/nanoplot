@@ -8,7 +8,7 @@
 	{from: "min", to: "max", jumps: "1 month"}
 	{from: "min - 1 month", to: "max + 1 month" jumps: "1 month"}
  */
-import { InternalGraphContext, GraphContext } from "../../hooks/use-graph/use-graph";
+import { GraphContext } from "../../hooks/use-graph/use-graph";
 import { range } from "./utils/range";
 import { autoMin } from "./utils/auto-min";
 import { autoMax } from "./utils/auto-max";
