@@ -177,7 +177,7 @@ export default function App() {
 									notation: "compact",
 									compactDisplay: "short",
 									maximumFractionDigits: 2,
-								}).format(Number(v));
+								}).format(Number(v.data.y));
 							},
 						}}
 					/>
