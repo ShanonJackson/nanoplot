@@ -31,7 +31,7 @@ export const Worldmap = ({ translate, gradient, className, onMouseEnter, onMouse
 				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
 			>
 				{Object.entries(countries).map(([iso, path], i) => {
-					const fillColor = (() => {
+					const filled = (() => {
 						if (fill && dataset[iso]) return fill(dataset[iso]);
 						if (gradient && dataset[iso]) {
 							return GradientUtils.colorFrom({
@@ -43,23 +43,21 @@ export const Worldmap = ({ translate, gradient, className, onMouseEnter, onMouse
 						}
 						return dataset[iso]?.fill;
 					})();
-
-					const strokeColor = stroke ? stroke(dataset[iso]) : "#FFF";
-
+					const stroked = stroke ? stroke(dataset[iso]) : "#FFF";
 					const isInDataset = Boolean(dataset[iso]);
 					return (
 						<path
 							key={i}
 							d={path}
-							fill={fillColor}
+							fill={filled}
 							stroke={"transparent"}
 							strokeWidth={0.5}
-							data-iso={iso}
+							data-iso={iso /* this is used for Worldmap.Tooltip to get the box model for a country */}
 							style={
 								{
-									"--worldmap-fill-light": fillColor ?? "#dddddd",
-									"--worldmap-fill-dark": fillColor ?? "#2c2c2c",
-									"--worldmap-stroke": strokeColor,
+									"--worldmap-fill-light": filled ?? "#dddddd",
+									"--worldmap-fill-dark": filled ?? "#2c2c2c",
+									"--worldmap-stroke": stroked,
 								} as CSSProperties
 							}
 							className={cx(

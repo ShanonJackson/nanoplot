@@ -10,7 +10,7 @@ type Props = {
 	tooltip: (datapoint: SegmentDataset[number]) => ReactNode;
 };
 
-const WorldmapTooltipComponent = ({ tooltip }: Props) => {
+export const WorldmapTooltip = HydrateContext(({ tooltip }: Props) => {
 	const { id, data } = useGraph();
 	const [datapoint, setDatapoint] = useState<SegmentDataset[number]>();
 	const ref = useGraphRef();
@@ -53,6 +53,4 @@ const WorldmapTooltipComponent = ({ tooltip }: Props) => {
 			{tooltip(datapoint)}
 		</TooltipMouse>
 	);
-};
-
-export const WorldmapTooltip = HydrateContext(WorldmapTooltipComponent);
+});
