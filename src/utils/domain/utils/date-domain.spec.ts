@@ -2,6 +2,20 @@ import { describe, expect, it } from "bun:test";
 import { getCeilDateFromDuration, getDateDomain, getFloorDateFromDuration } from "./date-domain";
 
 describe("src/utils/domain/utils/date-domain.ts", () => {
+	it("Should return 2025-01-01 -> 2025-04-01 with P1M when min/max is set to 2025-01-01 and 2025-04-01", () => {
+		const dtes = getDateDomain({
+			min: new Date(2025, 0, 1, 0, 0, 0),
+			max: new Date(2025, 3, 1, 0, 0, 0),
+			duration: "P1M",
+		});
+
+		expect(dtes[0]).toEqual(new Date(2025, 0, 1, 0, 0, 0));
+		expect(dtes[1]).toEqual(new Date(2025, 1, 1, 0, 0, 0));
+		expect(dtes[2]).toEqual(new Date(2025, 2, 1, 0, 0, 0));
+		expect(dtes[3]).toEqual(new Date(2025, 3, 1, 0, 0, 0));
+		expect(dtes[4]).toBeUndefined();
+	});
+
 	it("Should complete in <1.5ms", () => {
 		const start = performance.now();
 		getDateDomain({

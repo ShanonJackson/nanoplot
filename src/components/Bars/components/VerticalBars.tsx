@@ -51,6 +51,7 @@ export const VerticalBars = ({
 	if (loading) return <BarsVerticalLoading />;
 
 	const yForValue = CoordinatesUtils.yCoordinateFor(context);
+	const xForValue = CoordinatesUtils.xCoordinateFor(context);
 	const bars = context.data.flatMap((bar, i) =>
 		bar.data.map((xy) => ({
 			...bar,
@@ -59,26 +60,25 @@ export const VerticalBars = ({
 			data: xy,
 		})),
 	);
-	const BAR_WIDTH = Math.floor((context.viewbox.x * (size / 100)) / new Set(bars.map((bar) => `${bar.data.x}|${bar.group}`)).size);
-	const dataset = context.domain.x
-		.flatMap(({ tick, coordinate }) => {
-			return Object.entries(
-				ObjectUtils.groupBy(
-					bars.filter((d) => d.data.x === tick),
-					({ group }) => group,
-				),
-			).flatMap(([, barsForGroup], i, groups) => {
+
+	const BAR_WIDTH =
+		Math.floor(context.viewbox.x / context.domain.x.length / new Set(bars.map((bar) => bar.group ?? "no-group")).size) * (size / 100); // this divided by number of unique groups?
+	const xValues = new Set(bars.map((bar) => (bar.data.x instanceof Date ? bar.data.x.getTime() : bar.data.x)));
+
+	const dataset = Array.from(xValues)
+		.flatMap((x) => {
+			const coordinate = xForValue(x);
+			const barsForTick = bars.filter((bar) => (bar.data.x instanceof Date ? bar.data.x.getTime() : bar.data.x) === x);
+			return Object.entries(ObjectUtils.groupBy(barsForTick, ({ group }) => group)).flatMap(([, barsForGroup], i, groups) => {
 				const x1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
 				return barsForGroup
-					?.map((bar) => {
-						return {
-							...bar,
-							x1,
-							x2: x1 + BAR_WIDTH,
-							y1: yForValue(bar.data.y),
-							y2: yForValue(anchor),
-						};
-					})
+					?.map((bar) => ({
+						...bar,
+						x1,
+						x2: x1 + BAR_WIDTH,
+						y1: yForValue(bar.data.y),
+						y2: yForValue(anchor),
+					}))
 					.map((segment, ii, segments) => {
 						/* this stacks segments in same group */
 						const isAboveAnchor = Math.min(segment.y1, segment.y2) < yForValue(anchor);
@@ -98,7 +98,6 @@ export const VerticalBars = ({
 			});
 		})
 		.filter((x) => !!x);
-
 	const isBelowAnchor = bars.some((bar) => +bar.data.y < anchor); /* is any bar below the anchor */
 
 	return (

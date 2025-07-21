@@ -3,12 +3,12 @@ import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
 import { scale } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
-import { getDateDomain, getDurationFromMinMax, getDurationFromRange } from "./date-domain";
+import { getDateDomain, getDurationFromMinMax } from "./date-domain";
 import { getRangeForSet } from "./auto-minmax";
 
 export const range = (
 	{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-	{ from = "auto", to = "auto", jumps = "auto" }: FromToJumps = {
+	{ from = "auto", to = "auto", jumps = "auto", type }: FromToJumps = {
 		from: "auto",
 		to: "auto",
 		jumps: "auto",
@@ -183,6 +183,9 @@ export const range = (
 		max === "auto" -> end the graph at the last datapoint in the dataset (touching the side of graph)
 		max === "max" -> end the graph at the ceiling date.
 		max === "max + P1M" -> end the graph at the ceiling date + 1 month.
+
+
+		WHEN CATEGORICAL (type: categorical) is used, we shift the domain to the
 	 */
 	const domain = getDateDomain({
 		min: new Date(MIN),
@@ -191,6 +194,13 @@ export const range = (
 	});
 	const minTime = new Date(MIN).getTime();
 	const maxTime = new Date(MAX).getTime();
+
+	if (type === "categorical") {
+		return domain.map((tick, i, arr) => {
+			return { tick, coordinate: (viewbox.x / arr.length) * (i + 0.5) };
+		});
+	}
+
 	return domain.map((tick) => ({
 		tick,
 		coordinate: ((tick.getTime() - minTime) / (maxTime - minTime)) * viewb /* math scale inline for perf. */,

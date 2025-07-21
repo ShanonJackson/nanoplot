@@ -34,60 +34,76 @@ export const XAxis = ({ display, title, ticks, description, dataset, ...rest }: 
 	const breakpoint = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 130, 160, 190].find((bp) => bp >= characters);
 	return (
 		<Graph.Row {...rest} className={tw("xaxis items-center relative pt-2 text-xs font-normal select-none", rest.className)}>
-			<div className={"xaxis__ticks flex relative"}>
-				{labels.map(({ label }, i) => {
-					return (
-						<div className={"xaxis__tick opacity-0 text-nowrap"} key={i}>
-							{label}
-						</div>
-					);
-				})}
-				<div className={"xaxis__ticks absolute top-0 left-0 flex @container-[size] h-[1.25em] w-full"}>
-					<div className={"w-full relative"}>
-						{labels.map(({ coordinate, label }, i) => {
-							const x = scale(coordinate, 3000, 100);
-							if (x > 100 || x < 0) return null;
-							return (
-								<React.Fragment key={i}>
-									<div
-										className={cx(
-											"xaxis__tick absolute top-0 text-gray-700 dark:text-gray-300 text-nowrap",
-											"[writing-mode:vertical-lr] [transform:rotate(20deg)_translateX(50%)_scale(-1,_-1)_translateY(calc(-100%_-_5px))] [transform-origin:0_0]",
-											breakpoint === 10 &&
-												"@[width:10ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:10ch]:![writing-mode:unset]",
-											breakpoint === 20 &&
-												"@[width:20ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:20ch]:![writing-mode:unset]",
-											breakpoint === 30 &&
-												"@[width:30ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:30ch]:![writing-mode:unset]",
-											breakpoint === 40 &&
-												"@[width:40ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:40ch]:![writing-mode:unset]",
-											breakpoint === 50 &&
-												"@[width:50ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:50ch]:![writing-mode:unset]",
-											breakpoint === 60 &&
-												"@[width:60ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:60ch]:![writing-mode:unset]",
-											breakpoint === 70 &&
-												"@[width:70ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:70ch]:![writing-mode:unset]",
-											breakpoint === 80 &&
-												"@[width:80ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:80ch]:![writing-mode:unset]",
-											breakpoint === 90 &&
-												"@[width:90ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:90ch]:![writing-mode:unset]",
-											breakpoint === 100 &&
-												"@[width:100ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:100ch]:![writing-mode:unset]",
-											breakpoint === 130 &&
-												"@[width:130ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:130ch]:![writing-mode:unset]",
-											breakpoint === 160 &&
-												"@[width:160ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:160ch]:![writing-mode:unset]",
-											breakpoint === 190 &&
-												"@[width:190ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:190ch]:![writing-mode:unset]",
-										)}
-										style={{ left: `${x}%` }}
-									>
-										{label}
-									</div>
-								</React.Fragment>
-							);
-						})}
-					</div>
+			<div className={"xaxis__ticks @container-[inline-size] text-center"}>
+				<div className={"flex h-full w-full relative"}>
+					{labels.map(({ label }, i) => {
+						return (
+							<div
+								className={cx(
+									"xaxis__tick text-nowrap invisible [writing-mode:vertical-lr]",
+									breakpoint === 10 && "@[width:10ch]:[writing-mode:unset]",
+									breakpoint === 20 && "@[width:20ch]:[writing-mode:unset]",
+									breakpoint === 30 && "@[width:30ch]:[writing-mode:unset]",
+									breakpoint === 40 && "@[width:40ch]:[writing-mode:unset]",
+									breakpoint === 50 && "@[width:50ch]:[writing-mode:unset]",
+									breakpoint === 60 && "@[width:60ch]:[writing-mode:unset]",
+									breakpoint === 70 && "@[width:70ch]:[writing-mode:unset]",
+									breakpoint === 80 && "@[width:80ch]:[writing-mode:unset]",
+									breakpoint === 90 && "@[width:90ch]:[writing-mode:unset]",
+									breakpoint === 100 && "@[width:100ch]:[writing-mode:unset]",
+									breakpoint === 130 && "@[width:130ch]:[writing-mode:unset]",
+									breakpoint === 160 && "@[width:160ch]:[writing-mode:unset]",
+									breakpoint === 190 && "@[width:190ch]:[writing-mode:unset]",
+								)}
+								key={i}
+							>
+								{label}
+							</div>
+						);
+					})}
+					{labels.map(({ coordinate, label }, i) => {
+						const x = scale(coordinate, 3000, 100);
+						if (x > 100 || x < 0) return null;
+						return (
+							<React.Fragment key={i}>
+								<div
+									className={cx(
+										"xaxis__tick absolute top-0 text-gray-700 dark:text-gray-300 text-nowrap",
+										"[writing-mode:vertical-lr] [transform:rotate(20deg)_translateX(50%)_scale(-1,_-1)_translateY(calc(-100%_-_5px))] [transform-origin:0_0]",
+										breakpoint === 10 &&
+											"@[width:10ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:10ch]:![writing-mode:unset]",
+										breakpoint === 20 &&
+											"@[width:20ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:20ch]:![writing-mode:unset]",
+										breakpoint === 30 &&
+											"@[width:30ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:30ch]:![writing-mode:unset]",
+										breakpoint === 40 &&
+											"@[width:40ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:40ch]:![writing-mode:unset]",
+										breakpoint === 50 &&
+											"@[width:50ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:50ch]:![writing-mode:unset]",
+										breakpoint === 60 &&
+											"@[width:60ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:60ch]:![writing-mode:unset]",
+										breakpoint === 70 &&
+											"@[width:70ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:70ch]:![writing-mode:unset]",
+										breakpoint === 80 &&
+											"@[width:80ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:80ch]:![writing-mode:unset]",
+										breakpoint === 90 &&
+											"@[width:90ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:90ch]:![writing-mode:unset]",
+										breakpoint === 100 &&
+											"@[width:100ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:100ch]:![writing-mode:unset]",
+										breakpoint === 130 &&
+											"@[width:130ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:130ch]:![writing-mode:unset]",
+										breakpoint === 160 &&
+											"@[width:160ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:160ch]:![writing-mode:unset]",
+										breakpoint === 190 &&
+											"@[width:190ch]:![transform:rotate(0deg)_translateX(-50%)] @[width:190ch]:![writing-mode:unset]",
+									)}
+									style={{ left: `${x}%` }}
+								>
+									{label}
+								</div>
+							</React.Fragment>
+						);
+					})}
 				</div>
 			</div>
 			{(title || description) && (
@@ -102,15 +118,7 @@ export const XAxis = ({ display, title, ticks, description, dataset, ...rest }: 
 
 XAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	const dset = props.dataset ? (ctx.datasets[props.dataset] ?? ctx) : ctx;
-	const domain = (() => {
-		if (Array.isArray(props.ticks)) {
-			const tcks = props.ticks;
-			return props.ticks.map((tick, i) => {
-				return { tick, coordinate: (i / (tcks.length - 1)) * ctx.viewbox.x };
-			});
-		}
-		return DomainUtils.x.ticks({ ...dset, viewbox: ctx.viewbox }, props.ticks);
-	})();
+	const domain = DomainUtils.x.ticks({ ...dset, viewbox: ctx.viewbox }, props.ticks);
 
 	return {
 		...ctx,
@@ -120,7 +128,6 @@ XAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext 
 			columns: ctx.layout.columns,
 		},
 		domain: {
-			...ctx.domain,
 			y: ctx.domain.y,
 			x: props.dataset ? ctx.domain.x : domain,
 		},

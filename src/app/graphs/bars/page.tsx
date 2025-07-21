@@ -21,6 +21,7 @@ import {
 	PositiveNegativeBarsCustomAnchorExample,
 	PositiveNegativeBarsCustomAnchorExampleCode,
 } from "./examples/PositiveNegativeBarsCustomAnchorExample";
+import { format } from "../../../utils/date/date-format";
 
 export default function Page() {
 	const [bars, setBars] = useState<BarControls>({});
@@ -38,39 +39,38 @@ export default function Page() {
 				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
 				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
 			</ControlPanel>
-			<GraphPanel
-				examples={[
-					{ name: "Positive/Negative Bars", code: "", component: PositiveNegativeBarsExample },
-					{
-						name: "Positive/Negative Bars - Anchoring at 500_000",
-						code: PositiveNegativeBarsCustomAnchorExampleCode,
-						component: PositiveNegativeBarsCustomAnchorExample,
-					},
-					{ name: "Stacked Bars", code: StackedBarsExampleCode, component: StackedBarsExample },
-					{ name: "Horizontal Bars", code: HorizontalBarsExampleCode, component: HorizontalBarsExample },
-					{ name: "Bars percent / 100", code: BarsPercentExampleCode, component: BarsPercentExample },
-				]}
-			>
+			<GraphPanel>
 				<Graph
 					data={[
 						{
 							name: "Male",
 							fill: "linear-gradient(to bottom, #e93157 0%, #fbad26 100%)",
+							group: "gender",
 							data: [
 								{ x: "Jan", y: 5_000 },
 								{ x: "Feb", y: 20_000 },
 								{ x: "Mar", y: 45_000 },
 								{ x: "Apr", y: 20_000 },
-							],
+							].map((d, i) => ({ x: new Date(2025, i, 1), y: d.y })),
 						},
 						{
 							name: "Female",
+							group: "gender",
 							fill: "linear-gradient(to bottom, #1c8cdc 0%, #4cc7b0 100%)",
 							data: [
 								{ x: "Jan", y: 45_000 },
 								{ x: "Feb", y: 10_000 },
 								{ x: "Mar", y: 15_000 },
 								{ x: "Apr", y: 30_000 },
+							].map((d, i) => ({ x: new Date(2025, i, 1), y: d.y })),
+						},
+						{
+							name: "abcdefg",
+							fill: "red",
+							data: [
+								{ x: new Date(2025, 6, 1), y: 30_000 },
+								{ x: new Date(2025, 0, 1), y: 30_000 },
+								{ x: new Date(2025, 1, 1), y: 30_000 },
 							],
 						},
 					].map((dp) => {
@@ -95,30 +95,14 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars
-						{...bars}
-						horizontal={false}
-						labels={{
-							position: "above",
-							collision: true,
-							display: (v) => {
-								return new Intl.NumberFormat("en", {
-									notation: "compact",
-									compactDisplay: "short",
-									maximumFractionDigits: 2,
-								}).format(Number(v.data.y));
-							},
-						}}
-					/>
+					<Bars {...bars} horizontal={false} />
 					{legend.position === "right" && <Legend {...legend} />}
 					<XAxis
 						{...xaxis}
-						title={xaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: xaxis.title?.toString() ?? "" }} />}
-						description={
-							xaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: xaxis.description?.toString() ?? "" }} />
-							)
-						}
+						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
+						display={(x) => (x instanceof Date ? format(x) : null)}
+						title={"HELLO WORLD TITLE"}
+						description={"HELLOWRLD DESC"}
 					/>
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>

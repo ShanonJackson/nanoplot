@@ -33,7 +33,7 @@ export default function App() {
 			>
 				<YAxis />
 				<GridLines border vertical={true} horizontal={true} />
-				<Bars horizontal labels={{ position: "center", display: (v) => v.toString() }} />
+				<Bars horizontal labels={{ position: "center", display: (v) => v.data.x }} />
 				<XAxis />
 			</Graph>
 		</div>

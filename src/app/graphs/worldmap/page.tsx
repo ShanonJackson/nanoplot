@@ -10,36 +10,15 @@ import { GradientLegend } from "../../../components/GradientLegend/GradientLegen
 import Image from "next/image";
 
 export default function Page() {
-	const [map, setMap] = useState<ComponentProps<typeof Worldmap>>({
-		translate: { x: 100, y: 0, scale: 0 },
-	});
-	const setMapPartial = (partial: Partial<ComponentProps<typeof Worldmap>>) => setMap((prev) => ({ ...prev, ...partial }));
 	return (
 		<>
-			<ControlPanel>
-				<h1 className={"text-2xl"}>World Map</h1>
-				<Control name={"translate"} type={"{x: number, y: number, scale: number}"}>
-					<SliderControl
-						value={map.translate?.x ?? 0}
-						onChange={(value) => setMapPartial({ translate: { y: 0, scale: 0, ...map.translate, x: value } })}
-						description={`${map.translate?.x} x`}
-					/>
-					<SliderControl
-						value={map.translate?.y ?? 0}
-						onChange={(value) => setMapPartial({ translate: { x: 0, scale: 0, ...map.translate, y: value } })}
-						description={`${map.translate?.y} y`}
-					/>
-					<SliderControl
-						value={map.translate?.scale ?? 0}
-						onChange={(value) => setMapPartial({ translate: { y: 0, x: 0, ...map.translate, scale: value } })}
-						description={`${map.translate?.scale} scale`}
-					/>
-				</Control>
-			</ControlPanel>
 			<GraphPanel>
 				<Graph data={MOCK_DATA}>
 					<GradientLegend position={"top"} gradient={`linear-gradient(90deg, #e1efff 0, #4285f4 ${12_000})`} />
-					<Worldmap gradient={`linear-gradient(90deg, #e1efff 0, #4285f4 ${12_000})`} {...map} />
+					<Worldmap
+						gradient={`linear-gradient(90deg, #e1efff 0, #4285f4 ${12_000})`}
+						fill={(country) => (country.name === "US" ? "red" : "blue")}
+					/>
 					<Worldmap.Tooltip
 						tooltip={(dp) => {
 							return (

@@ -112,7 +112,7 @@ export const getDateDomain = ({ min, max, duration }: { min: Date; max: Date; du
 				start.getSeconds() + offsSec,
 			);
 			result.push(date);
-			if (date > max) break;
+			if (date >= max) break;
 			stepCount++;
 		}
 	} else {

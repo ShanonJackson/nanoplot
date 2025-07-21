@@ -60,7 +60,7 @@ export const PositiveNegativeBarsExample = () => {
 							notation: "compact",
 							compactDisplay: "short",
 							maximumFractionDigits: 2,
-						}).format(Number(v.data.y))
+						}).format(Number(v))
 					);
 				}}
 			/>
@@ -145,7 +145,7 @@ export const PositiveNegativeBarsExample = () => {
 							notation: "compact",
 							compactDisplay: "short",
 							maximumFractionDigits: 2,
-						}).format(Number(v.data.y))
+						}).format(Number(v))
 					);
 				}}
 			/>

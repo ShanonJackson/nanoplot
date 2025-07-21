@@ -44,7 +44,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 				x2: xCoordinateFor(x) + width / 2,
 				y1: yCoordinateFor(y) - height / 2,
 				y2: yCoordinateFor(y) + height / 2,
-				fill: GradientUtils.colorFrom({ gradient, percent, domain, viewbox }),
+				fill: GradientUtils.colorFrom({ gradient, value: percent, domain, viewbox }),
 				data: { x, y, z },
 			};
 		});

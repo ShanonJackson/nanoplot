@@ -202,7 +202,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 												<div
 													style={{
 														background: bg?.includes("linear-gradient")
-															? GradientUtils.colorFrom({ gradient: bg, percent, viewbox, domain })
+															? GradientUtils.colorFrom({ gradient: bg, value: percent, viewbox, domain })
 															: bg,
 													}}
 													className="bg-current h-[14px] w-[14px] rounded-full mr-1"

@@ -83,7 +83,6 @@ export const WorldMapWidget: React.FC = () => {
 						/>
 					</Graph>
 				</div>
-
 				<div className="flex flex-col flex-1 w-full text-gray-400 text-sm font-bold">
 					<div className="flex h-6 w-full justify-between px-4 mb-1">
 						<span className="border-b-2 border-dotted border-gray-400">COUNTRY</span>

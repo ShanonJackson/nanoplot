@@ -178,8 +178,8 @@ export const CoordinatesUtils = {
 		}
 		return (value: number | string | Date) => {
 			const numValue = +value;
-			if (numValue <= min) return 0;
-			if (numValue >= max) return viewbox.x;
+			if (numValue < min) return 0;
+			if (numValue > max) return viewbox.x;
 			let left = 0;
 			let right = length - 1;
 			while (left < right) {

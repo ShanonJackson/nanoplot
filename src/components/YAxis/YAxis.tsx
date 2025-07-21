@@ -83,7 +83,6 @@ YAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext 
 						{
 							...dataset,
 							domain: {
-								...dataset.domain,
 								x: dataset.domain.x,
 								y: DomainUtils.y.ticks({ viewbox: ctx.viewbox, data: dataset.data }, props.ticks),
 							},

@@ -71,7 +71,7 @@ export const StackedBarsExample = () => {
 					new Intl.NumberFormat("en", {
 						notation: "compact",
 						compactDisplay: "short",
-					}).format(Number(y))
+					}).format(Number(y.data.y))
 				}
 			/>
 			<XAxis />

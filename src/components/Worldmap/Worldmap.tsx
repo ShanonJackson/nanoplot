@@ -1,7 +1,6 @@
-import React, { ReactNode, useId } from "react";
-import { InternalGraphContext, useGraph } from "../../hooks/use-graph/use-graph";
+import React, { CSSProperties, ReactNode, useId } from "react";
+import { InternalGraphContext, InternalSegmentDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
-import { MathUtils, scale } from "../../utils/math/math";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { GraphUtils } from "../../utils/graph/graph";
 import { WorldmapTooltip } from "./components/WorldmapTooltip";
@@ -10,10 +9,14 @@ type Props = {
 	translate?: { x: number; y: number; scale: number };
 	gradient?: `linear-gradient(${string})`;
 	className?: string;
+	fill?: (country: InternalSegmentDataset[number]) => string;
+	stroke?: (country: InternalSegmentDataset[number]) => string;
+	onMouseEnter?: (country: InternalSegmentDataset[number], event: React.MouseEvent) => void;
+	onMouseLeave?: (event: React.MouseEvent) => void;
 	children?: ReactNode;
 };
 
-export const Worldmap = ({ translate, gradient, className, children }: Props) => {
+export const Worldmap = ({ translate, gradient, className, onMouseEnter, onMouseLeave, fill, stroke, children }: Props) => {
 	const { data, viewbox, domain } = useGraph();
 	const id = useId();
 	if (!GraphUtils.isSegmentData(data)) return null;
@@ -28,8 +31,8 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 				transform={`translate(${translate?.x ?? 0}, ${translate?.y ?? 0}) scale(${1 + (translate?.scale ?? 0) / 85})`}
 			>
 				{Object.entries(countries).map(([iso, path], i) => {
-					const color = "#2c2c2c";
-					const fill = (() => {
+					const fillColor = (() => {
+						if (fill && dataset[iso]) return fill(dataset[iso]);
 						if (gradient && dataset[iso]) {
 							return GradientUtils.colorFrom({
 								gradient: gradient,
@@ -38,18 +41,33 @@ export const Worldmap = ({ translate, gradient, className, children }: Props) =>
 								domain,
 							});
 						}
-						if (typeof dataset[iso]?.fill === "string") return dataset[iso].fill;
-						return color;
+						return dataset[iso]?.fill;
 					})();
+
+					const strokeColor = stroke ? stroke(dataset[iso]) : "#FFF";
+
+					const isInDataset = Boolean(dataset[iso]);
 					return (
 						<path
 							key={i}
 							d={path}
-							fill={fill}
+							fill={fillColor}
 							stroke={"transparent"}
 							strokeWidth={0.5}
 							data-iso={iso}
-							className={`hover:stroke-white hover:stroke-[1.2] worldmap__country`}
+							style={
+								{
+									"--worldmap-fill-light": fillColor ?? "#dddddd",
+									"--worldmap-fill-dark": fillColor ?? "#2c2c2c",
+									"--worldmap-stroke": strokeColor,
+								} as CSSProperties
+							}
+							className={cx(
+								`worldmap__country fill-[var(--worldmap-fill-light)] dark:fill-[var(--worldmap-fill-dark)]`,
+								isInDataset && "hover:stroke-[var(--worldmap-stroke)]",
+							)}
+							onMouseEnter={onMouseEnter ? (e) => onMouseEnter(dataset[iso], e) : undefined /* RSC safe */}
+							onMouseLeave={onMouseLeave}
 						/>
 					);
 				})}

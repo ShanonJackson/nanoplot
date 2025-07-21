@@ -20,13 +20,13 @@ export const DomainUtils = {
 	x: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from = "auto", to = "auto", jumps = "auto" }: FromToJumps = {
+			{ from = "auto", to = "auto", jumps = "auto", type }: FromToJumps = {
 				from: "auto",
 				to: "auto",
 				jumps: "auto",
 			},
 		) => {
-			return range({ data, viewbox }, { from, to, jumps }, "x");
+			return range({ data, viewbox }, { from, to, jumps, type }, "x");
 		},
 	},
 	y: {

@@ -11,6 +11,7 @@ export type Expression =
 	| `${MinMax} + ${number}`
 	| `${MinMax} + ${ISODuration}`
 	| number;
+
 type From = "auto" | Expression | number;
 type To = "auto" | Expression | number;
 type Jumps = "auto" | ISODuration | number;
@@ -19,4 +20,5 @@ export type FromToJumps = {
 	from?: From;
 	to?: To;
 	jumps?: Jumps;
+	type?: "logarithmic" | "linear" | "temporal" | "categorical";
 };
