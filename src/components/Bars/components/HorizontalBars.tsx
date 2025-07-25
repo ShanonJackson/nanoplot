@@ -44,18 +44,17 @@ export const HorizontalBars = ({
 	if (!GraphUtils.isXYData(context.data)) return null;
 
 	const xForValue = CoordinatesUtils.xCoordinateFor(context);
-
+	const yForValue = CoordinatesUtils.yCoordinateFor(context);
 	const bars = context.data.flatMap((bar, i) =>
 		bar.data.map((xy) => ({
 			...bar,
-			fill: bar.fill ?? bar.stroke ?? context.colors[i] ?? context.colors.at(-1),
-			group: bar.group ?? bar.id ?? bar.name,
+			group: bar.group ?? bar.id,
 			data: xy,
 		})),
-	); // bars excl segments.
+	);
 	const BAR_WIDTH = Math.floor((context.viewbox.y * (size / 100)) / new Set(bars.map((bar) => `${bar.data.y}|${bar.group}`)).size);
 	/* dataset is a single array of rect's with x1/x2/y1/y2; rect can be a segment of a bar (grouped) or a bar itself */
-	const dataset = context.domain.y
+	const dataset1 = context.domain.y
 		.flatMap(({ tick, coordinate }) => {
 			return Object.entries(
 				ObjectUtils.groupBy(
@@ -87,6 +86,42 @@ export const HorizontalBars = ({
 		})
 		.filter((x) => !!x);
 
+	const BAR_HEIGHT =
+		Math.floor(context.viewbox.y / context.domain.y.length / new Set(bars.map((bar) => bar.group ?? "no-group")).size) * (size / 100);
+	const yValues = new Set(bars.map((bar) => (bar.data.y instanceof Date ? bar.data.y.getTime() : bar.data.y)));
+
+	const dataset = Array.from(yValues)
+		.flatMap((y) => {
+			const coordinate = yForValue(y);
+			const barsForTick = bars.filter((bar) => (bar.data.y instanceof Date ? bar.data.y.getTime() : bar.data.y) === y);
+			return Object.entries(ObjectUtils.groupBy(barsForTick, ({ group }) => group)).flatMap(([, barsForGroup], i, groups) => {
+				const y1 = coordinate + BAR_HEIGHT * i - (BAR_HEIGHT * Object.keys(groups).length) / 2;
+				return barsForGroup
+					?.map((bar) => ({
+						...bar,
+						x1: xForValue(anchor),
+						x2: xForValue(bar.data.x),
+						y1,
+						y2: y1 + BAR_HEIGHT,
+					}))
+					.map((segment, ii, segments) => {
+						const isAboveAnchor = Math.min(segment.x1, segment.x2) < xForValue(anchor);
+						const prevWidth = segments.slice(0, ii).reduce((acc, { x1, x2 }) => {
+							if (isAboveAnchor ? x1 >= xForValue(anchor) : xForValue(anchor) >= x1) return acc;
+							return isAboveAnchor ? acc + Math.abs(x1 - x2) : acc - Math.abs(x1 - x2);
+						}, 0);
+						const x1 = segment.x1 - prevWidth;
+						const x2 = segment.x2 - prevWidth;
+						return {
+							...segment,
+							x1: Math.max(x1, x2),
+							x2: Math.min(x1, x2),
+							radius: ii === segments.length - 1 ? radius : undefined,
+						};
+					});
+			});
+		})
+		.filter((x) => !!x);
 	return (
 		<>
 			<svg

@@ -30,7 +30,11 @@ export const PieTooltip = HydrateContext((props: Props) => {
 
 	return (
 		<>
-			<svg className={"[grid-area:graph] h-full w-full"} viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`} ref={ref} />
+			<svg
+				className={"absolute [grid-area:graph] h-full w-full z-[-1]"}
+				viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+				ref={ref}
+			/>
 			{mouse && segment && (
 				<div
 					{...props}

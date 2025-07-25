@@ -11,12 +11,36 @@ import { ColorUtils } from "../../utils/color/color";
 import { PieTooltip } from "./components/PieTooltip";
 
 type Props = {
+	/*
+	 * If `true`, the pie chart will be rendered with a loading state.
+	 */
 	loading?: boolean;
+	/*
+	 * If `true`, the pie chart will be rendered as a donut chart.
+	 * If a number is provided, it will be used as the radius of the donut in percentage (e.g., 50 for 50%).
+	 */
 	donut?: boolean | number /* radius as percentage */;
-	gap?: number /* unit as stroke-width on a path */;
+	/*
+	 * Gap between the segments in `stroke-width` units.
+	 */
+	gap?: number;
 	radius?: number;
+	/*
+	 * Position of the labels.
+	 * - `true` will display labels outside the pie chart.
+	 * - `false` will not display labels.
+	 * - `{ position: "center"; display: (segment) => ReactNode }` requires a 1/1 aspect ratio on the pie.
+	 * - `{ position: "outside"; display: (segment) => ReactNode }` will display labels outside the pie chart.
+	 */
 	labels?: boolean | { position: "outside" | "center"; display: (value: InternalSegmentDataset[number]) => ReactNode };
+	/*
+	 * If `true`, the pie chart will have a glow effect.
+	 */
 	glow?: boolean;
+	/*
+	 * Total value of the pie chart, used for percentage calculations.
+	 * If not provided, it will be calculated from the dataset.
+	 */
 	total?: number;
 	className?: string;
 	onMouseEnter?: (segment: InternalSegmentDataset[number] & { degrees: number }, event: React.MouseEvent<SVGPathElement>) => void;
@@ -166,10 +190,8 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 							role={"img"}
 							className={cx(
 								"pie__segment-group group absolute overflow-visible transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
-								isLabelsCentered && "aspect-square h-auto",
 								className,
 							)}
-							preserveAspectRatio={isLabelsCentered ? "none" : undefined}
 						>
 							{glow && <use xlinkHref={`#${glowId + segment.id}`} filter={"blur(150px)"} opacity={0.5} scale={0.9} />}
 							<g mask={gap ? `url(#${gapId + i})` : undefined}>
@@ -277,16 +299,11 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 
 Pie.Tooltip = PieTooltip;
 Pie.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
-	const isLabelsCentered = props.labels && typeof props.labels === "object" && props.labels.position === "center";
 	const isLabelsOutside = props.labels === true || (typeof props.labels === "object" && props.labels.position === "outside");
 	return {
 		...ctx,
 		attributes: {
-			className: cx(
-				ctx.attributes.className,
-				isLabelsCentered && "aspect-square w-full h-auto",
-				isLabelsOutside && "[container-type:size_!important]",
-			),
+			className: cx(ctx.attributes.className, isLabelsOutside && "[container-type:size_!important]"),
 		},
 		colors: ColorUtils.scheme.contrast,
 	};
