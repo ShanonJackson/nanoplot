@@ -30,7 +30,7 @@ export const LinesMouse = ({ joints, datasets, onMove, onLeave, onEnter, classNa
 			viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 			preserveAspectRatio={"none"}
 			className={tw(
-				"lines-tooltip h-full w-full [grid-area:graph] absolute overflow-visible [backface-visibility:hidden]",
+				"lines-mouse h-full w-full [grid-area:graph] absolute overflow-visible [backface-visibility:hidden]",
 				isZooming && "block overflow-hidden",
 				className,
 			)}

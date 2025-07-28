@@ -3,6 +3,7 @@ import { HorizontalBars } from "./components/HorizontalBars";
 import { VerticalBars } from "./components/VerticalBars";
 import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
 import { ColorUtils } from "../../utils/color/color";
+import { BarsMouse } from "./components/BarsMouse";
 
 type VerticalProps = { horizontal?: false } & ComponentProps<typeof VerticalBars>;
 type HorizontalProps = { horizontal?: true } & ComponentProps<typeof HorizontalBars>;
@@ -17,3 +18,5 @@ Bars.context = (ctx: InternalGraphContext): InternalGraphContext => {
 		colors: ColorUtils.scheme.contrast,
 	};
 };
+
+Bars.Mouse = BarsMouse;

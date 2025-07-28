@@ -52,6 +52,9 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 	const glowId = useId();
 	const maskId = useId();
 	const gapId = useId();
+	const {
+		interactions: { pinned, hovered },
+	} = useGraph();
 	const { data, viewbox } = useGraph();
 
 	if (!GraphUtils.isSegmentData(data)) return null;
@@ -114,6 +117,10 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 				</svg>
 			)}
 			{dataset.map((segment, i, dataset) => {
+				const interacted = hovered.concat(pinned); /* hovered + pinned interaction is currently the same */
+				const disabled = interacted.length && !interacted.includes(segment.id);
+				const isActive = interacted.includes(segment.id);
+
 				const startLabelLine = PathUtils.polarToCartesian(
 					CX,
 					CX,
@@ -190,6 +197,7 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 							role={"img"}
 							className={cx(
 								"pie__segment-group group absolute overflow-visible transition-all duration-200 ease-in-out [grid-area:graph] pointer-events-none h-full w-full brightness-100 has-[path:hover]:z-[1] has-[path:hover]:[&_.label-path]:stroke-current has-[path:hover]:brightness-110",
+								disabled && "opacity-40",
 								className,
 							)}
 						>
@@ -204,7 +212,10 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 										data-pie-id={segment.id /* used for client component tooltip to hook into */}
 										className={cx(
 											`pie__segment transition-all duration-200 ease-in-out [scale:1] origin-center pointer-events-auto`,
-											!donut && `group-hover:[filter:drop-shadow(0_0_50px_rgba(0,0,0,0.5))] hover:[scale:1.02]`,
+											!donut &&
+												!disabled &&
+												`group-hover:[filter:drop-shadow(0_0_50px_rgba(0,0,0,0.5))] hover:[scale:1.02]`,
+											isActive && "[scale:1.02]",
 										)}
 										d={
 											PathUtils.describeArc(
@@ -227,7 +238,10 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 								<g className={"invisible @[width:400px]:!visible"}>
 									<>
 										<path
-											className={"pie__label-connector stroke-[5] fill-transparent group-hover:stroke-[15]"}
+											className={cx(
+												"pie__label-connector stroke-[5] fill-transparent",
+												!disabled && "group-hover:stroke-[15]",
+											)}
 											key={segment.name}
 											d={`M ${startLabelLine.x} ${startLabelLine.y} L ${endLabelLine.x} ${endLabelLine.y} ${
 												isRightAligned ? "l 100 0" : "l -100 0"
@@ -281,6 +295,7 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 										};
 									})
 									.map(({ start, end }, i) => {
+										if (isSinglePie) return null;
 										return (
 											<React.Fragment key={i}>
 												<path strokeWidth={gap} d={`M ${CX} ${CY} L ${start.x} ${start.y}`} stroke={"black"} />

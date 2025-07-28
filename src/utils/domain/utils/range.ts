@@ -197,7 +197,7 @@ export const range = (
 
 	if (type === "categorical") {
 		return domain.map((tick, i, arr) => {
-			return { tick, coordinate: (viewbox.x / arr.length) * (i + 0.5) };
+			return { tick, coordinate: (viewbox[dimension] / arr.length) * (i + 0.5) };
 		});
 	}
 

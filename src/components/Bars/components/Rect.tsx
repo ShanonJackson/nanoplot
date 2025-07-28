@@ -34,6 +34,7 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 				d={path}
 				fill={isFillGradient ? `url(#${fillId})` : rest.fill}
 				stroke={isGradientStroke ? `url(#${strokeId})` : rest.stroke}
+				className={rest.className}
 			/>
 			<clipPath id={clip}>
 				<use xlinkHref={"#" + clipId} />
@@ -54,7 +55,16 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 				</>
 			)}
 			{isFillMasked ? (
-				<rect {...rest} x={x1} y={0} width={x2 - x1} height={"100%"} fill={`url(#${fillId})`} clipPath={`url(#${clip})`} />
+				<rect
+					{...rest}
+					x={x1}
+					y={0}
+					width={x2 - x1}
+					height={"100%"}
+					fill={`url(#${fillId})`}
+					clipPath={`url(#${clip})`}
+					className={rest.className}
+				/>
 			) : (
 				<path
 					{...rest}
@@ -63,8 +73,8 @@ export const Rect = ({ x1, y1, x2, y2, radius, glow, horizontal = false, ...rest
 					d={path}
 					vectorEffect={"non-scaling-stroke"}
 					strokeWidth={rest.strokeWidth ?? 10}
-					className={rest.className}
 					clipPath={`url(#${clip})`}
+					className={rest.className}
 				/>
 			)}
 		</>

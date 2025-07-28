@@ -23,12 +23,15 @@ import {
 } from "./examples/PositiveNegativeBarsCustomAnchorExample";
 import { format } from "../../../utils/date/date-format";
 
+type Mouse = Parameters<NonNullable<ComponentProps<(typeof Bars)["Mouse"]>["onMove"]>>[0];
 export default function Page() {
 	const [bars, setBars] = useState<BarControls>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: true });
 	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Months" });
 	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Cookies Sold" });
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top" });
+
+	const [mouse, setMouse] = useState<Mouse>();
 	return (
 		<>
 			<ControlPanel>
@@ -77,7 +80,7 @@ export default function Page() {
 						return {
 							...dp,
 							data: dp.data.map((d) => {
-								return { x: d.x, y: d.y };
+								return { x: d.y, y: d.x };
 							}),
 						};
 					})}
@@ -87,6 +90,8 @@ export default function Page() {
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
 						{...yaxis}
+						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
+						display={(x) => (x instanceof Date ? format(x) : null)}
 						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
 						description={
 							yaxis.description?.toString() && (
@@ -95,15 +100,10 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars {...bars} horizontal={false} />
+					<Bars {...bars} horizontal={true} interactions={{ y: mouse?.closest.tick.y, shadow: true }} />
+					<Bars.Mouse onMove={(mouse) => setMouse(mouse)} onLeave={() => setMouse(undefined)} />
 					{legend.position === "right" && <Legend {...legend} />}
-					<XAxis
-						{...xaxis}
-						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
-						display={(x) => (x instanceof Date ? format(x) : null)}
-						title={"HELLO WORLD TITLE"}
-						description={"HELLOWRLD DESC"}
-					/>
+					<XAxis {...xaxis} title={"HELLO WORLD TITLE"} description={"HELLOWRLD DESC"} />
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

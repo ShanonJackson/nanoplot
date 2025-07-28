@@ -13,6 +13,7 @@ export default function Page() {
 		labels: true,
 		children: "",
 	});
+	const [hovered, setHovered] = useState<string[]>([]);
 
 	const cookies = [
 		{ id: "US", name: "US", value: 17226 },
@@ -35,8 +36,14 @@ export default function Page() {
 				<PieControlGroup state={pie} onChange={setPie} />
 			</ControlPanel>
 			<GraphPanel>
-				<Graph data={cookies}>
-					<Pie {...pie} gap={15} labels={{ position: "outside", display: (v) => v.id }} />
+				<Graph data={cookies} interactions={{ hovered }}>
+					<Pie
+						{...pie}
+						gap={5}
+						labels={{ position: "outside", display: (v) => v.id }}
+						onMouseEnter={(segment) => setHovered([segment.id])}
+						onMouseLeave={() => setHovered([])}
+					/>
 					<Pie.Tooltip>
 						{(segment) => {
 							const fill = segment.fill;

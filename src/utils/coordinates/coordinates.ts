@@ -88,8 +88,8 @@ export const CoordinatesUtils = {
 					x1 = domain.x.find((d) => d.tick === xy.x)?.coordinate ?? 0;
 				} else {
 					const numValue = +xy.x;
-					if (numValue <= xMin) return { x: 0, y: 0 };
-					if (numValue >= xMax) return { x: viewbox.x, y: 0 };
+					if (numValue < xMin) return { x: 0, y: 0 };
+					if (numValue > xMax) return { x: viewbox.x, y: 0 };
 					let left = 0;
 					let right = xLength - 1;
 					while (left < right) {
@@ -118,8 +118,8 @@ export const CoordinatesUtils = {
 					y1 = domain.y.find((d) => d.tick === xy.y)?.coordinate ?? 0;
 				} else {
 					const numValue = +xy.y;
-					if (numValue >= yMax) return { x: 0, y: 0 };
-					if (numValue <= yMin) return { x: 0, y: viewbox.y };
+					if (numValue > yMax) return { x: 0, y: 0 };
+					if (numValue < yMin) return { x: 0, y: viewbox.y };
 					let left = 0;
 					let right = yLength - 1;
 					while (left < right) {
@@ -231,9 +231,9 @@ export const CoordinatesUtils = {
 			};
 		}
 		return (value: number | string | Date) => {
-			const numValue = +value;
-			if (numValue >= max) return 0;
-			if (numValue <= min) return viewbox.y;
+			const numValue = value instanceof Date ? value.getTime() : +value; /* .getTime() on date's required; Performance improvement */
+			if (numValue > max) return 0;
+			if (numValue < min) return viewbox.y;
 			let left = 0;
 			let right = length - 1;
 			while (left < right) {

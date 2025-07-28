@@ -32,13 +32,16 @@ export const DomainUtils = {
 	y: {
 		ticks: (
 			{ data, viewbox }: Pick<GraphContext, "data" | "viewbox">,
-			{ from = "auto", to = "auto", jumps = "auto" }: FromToJumps = {
+			{ from = "auto", to = "auto", jumps = "auto", type }: FromToJumps = {
 				from: "auto",
 				to: "auto",
 				jumps: "auto",
 			},
 		) => {
-			return range({ data, viewbox }, { from, to, jumps }, "y").map((tick) => ({ ...tick, coordinate: viewbox.y - tick.coordinate }));
+			return range({ data, viewbox }, { from, to, jumps, type }, "y").map((tick) => ({
+				...tick,
+				coordinate: viewbox.y - tick.coordinate,
+			}));
 		},
 	},
 };

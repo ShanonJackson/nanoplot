@@ -1,4 +1,4 @@
-import React, { MouseEvent, ReactNode } from "react";
+import React, { MouseEvent, ReactNode, useId } from "react";
 import { InternalCartesianDataset, Simplify, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
@@ -9,24 +9,46 @@ import { cx } from "../../../utils/cx/cx";
 import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
+import { LinearGradient } from "../../LinearGradient/LinearGradient";
 
 type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
 type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
-	children?: ReactNode;
-	loading?: boolean;
-	glow?: boolean;
+	/*
+	 * Percentage of the width of the bars (50 by default).
+	 */
 	size?: number;
+	/*
+	 * Applies a glow effect to the bars.
+	 */
+	glow?: boolean;
+	/*
+	 * The radius of the corners of the bars (0 by default).
+	 * Effects top/left and top/right corners of the bars.
+	 */
 	radius?: number;
+	/*
+	 * The y value where the bars should be anchored to (0 by default).
+	 * This is useful for positive/negative bar charts.
+	 */
 	anchor?: number;
 	labels?:
 		| boolean
 		| ((segment: Segment) => string)
 		| { position: "above" | "center"; collision?: boolean; display: (segment: Segment) => string };
+	loading?: boolean;
+	children?: ReactNode;
 	/**
-	 * Function that can change the 'fill' for individual segments based on some condition.
+	 * Function that can change the 'fill' for individual bar segments based on some condition.
 	 */
 	fill?: (segment: Segment) => string;
+	/**
+	 * Function that can change the 'stroke' for individual bar segments based on some condition.
+	 */
 	stroke?: (segment: Segment) => string;
+	/*
+	 * `{ interactions: { x: number | string | Date } }` can be used to highlight a specific bar segments matching the x value.
+	 */
+	interactions?: { x?: number | string | Date; shadow?: boolean };
 	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
@@ -42,11 +64,15 @@ export const VerticalBars = ({
 	glow,
 	className,
 	loading,
+	interactions,
 	onMouseEnter,
 	onMouseLeave,
 	...rest
 }: Props) => {
 	const context = useGraph();
+	const {
+		interactions: { hovered, pinned },
+	} = context;
 	if (!GraphUtils.isXYData(context.data)) return null;
 	if (loading) return <BarsVerticalLoading />;
 
@@ -108,24 +134,62 @@ export const VerticalBars = ({
 				className={cx("vertical-bars [grid-area:graph] h-full w-full bars", className)}
 				preserveAspectRatio={"none"}
 			>
+				<LinearGradient
+					gradient={"linear-gradient(to bottom, rgba(45, 45, 45, 0) 0%, rgba(45, 45, 45, 0.35) 65%, rgba(45, 45, 45, 1) 100%)"}
+					id={"bar-shadow-dark"}
+				/>
+				<LinearGradient
+					gradient={
+						"linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, rgba(180, 180, 180, 0.15) 65%, rgba(180, 180, 180, 0.2) 100%)"
+					}
+					id={"bar-shadow-light"}
+				/>
+				{context.domain.x.map(({ coordinate }, i) => {
+					const isShadowed = interactions?.shadow && interactions?.x && xForValue(interactions.x) === coordinate;
+					if (!interactions?.shadow) return null;
+					return (
+						<Rect
+							key={i}
+							x1={coordinate - context.viewbox.x / context.domain.x.length / 2}
+							x2={coordinate + context.viewbox.x / context.domain.x.length / 2}
+							y2={context.viewbox.y}
+							y1={0}
+							stroke={"transparent"}
+							className={cx(
+								"bars__bar bars__bar--shadow transition-all duration-300 opacity-0 fill-[url(#bar-shadow-light)]",
+								isShadowed && "opacity-1",
+								`dark:fill-[url(#bar-shadow-dark)]`,
+							)}
+						/>
+					);
+				})}
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
+					const disabled =
+						Boolean(pinned.concat(hovered).length && !pinned.includes(bar.id) && !hovered.includes(bar.id)) ||
+						(interactions?.x ? xForValue(interactions.x) !== xForValue(bar.data.x) : false);
 					const fillColor = fill ? fill(bar) : bar.fill;
 					const strokeColor = stroke ? stroke(bar) : bar.stroke;
 					return (
-						<Rect
-							key={index}
-							x1={x1}
-							x2={x2}
-							y2={y2}
-							y1={y1}
-							fill={fillColor}
-							stroke={strokeColor}
-							radius={bar.radius}
-							glow={glow}
-							onMouseEnter={onMouseEnter ? (event) => onMouseEnter?.(bar, event) : undefined}
-							onMouseLeave={onMouseLeave}
-							className={"bars__bar"}
-						/>
+						<React.Fragment key={index}>
+							<Rect
+								key={index}
+								x1={x1}
+								x2={x2}
+								y2={y2}
+								y1={y1}
+								fill={fillColor}
+								stroke={strokeColor}
+								radius={bar.radius}
+								glow={glow}
+								onMouseEnter={onMouseEnter ? (event) => onMouseEnter?.(bar, event) : undefined}
+								onMouseLeave={onMouseLeave}
+								className={cx(
+									"bars__bar transition-all duration-300",
+									disabled && "opacity-40",
+									onMouseEnter && "cursor-pointer",
+								)}
+							/>
+						</React.Fragment>
 					);
 				})}
 				{isBelowAnchor && (
@@ -158,7 +222,7 @@ export const VerticalBars = ({
 							style={{
 								width,
 								height: Math.abs(height - (position === "above" ? 100 : 0)) + "%",
-								left: `${scale(bar.x1, context.viewbox.x, 100)}%`,
+								left: scale(bar.x1, context.viewbox.x, 100) + "%",
 								top: top,
 							}}
 						>

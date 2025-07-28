@@ -8,6 +8,7 @@ import { Rect } from "./Rect";
 import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
+import { LinearGradient } from "../../LinearGradient/LinearGradient";
 
 type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
 type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
@@ -24,6 +25,11 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 	 */
 	fill?: (segment: Segment) => string;
 	stroke?: (segment: Segment) => string;
+	/*
+	 * `{ interactions: { y: number | string | Date } }` can be used to highlight a specific bar segments matching the x value.
+	 * `{ interactions: { y: number | string | Date, shadow: boolean } }` shadow effect behind bar.
+	 */
+	interactions?: { y?: number | string | Date; shadow?: boolean };
 	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
@@ -36,6 +42,7 @@ export const HorizontalBars = ({
 	size = 50,
 	radius = 0,
 	anchor = 0,
+	interactions,
 	onMouseEnter,
 	onMouseLeave,
 	className,
@@ -52,40 +59,6 @@ export const HorizontalBars = ({
 			data: xy,
 		})),
 	);
-	const BAR_WIDTH = Math.floor((context.viewbox.y * (size / 100)) / new Set(bars.map((bar) => `${bar.data.y}|${bar.group}`)).size);
-	/* dataset is a single array of rect's with x1/x2/y1/y2; rect can be a segment of a bar (grouped) or a bar itself */
-	const dataset1 = context.domain.y
-		.flatMap(({ tick, coordinate }) => {
-			return Object.entries(
-				ObjectUtils.groupBy(
-					bars.filter((d) => d.data.y === tick),
-					({ group }) => group,
-				),
-			).flatMap(([, barsForGroup], i, groups) => {
-				const y1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
-				return barsForGroup
-					?.map((bar) => {
-						return {
-							...bar,
-							x1: xForValue(anchor),
-							x2: xForValue(bar.data.x),
-							y1,
-							y2: y1 + BAR_WIDTH,
-						};
-					})
-					.map((segment, i, segments) => {
-						const previousX = segments.slice(0, i).reduce((acc, { x2 }) => acc + x2, xForValue(anchor));
-						return {
-							...segment,
-							x1: previousX,
-							x2: segment.x2 - previousX ? segment.x2 : segment.x2 + previousX,
-							radius: i === segments.length - 1 ? radius : undefined,
-						};
-					});
-			});
-		})
-		.filter((x) => !!x);
-
 	const BAR_HEIGHT =
 		Math.floor(context.viewbox.y / context.domain.y.length / new Set(bars.map((bar) => bar.group ?? "no-group")).size) * (size / 100);
 	const yValues = new Set(bars.map((bar) => (bar.data.y instanceof Date ? bar.data.y.getTime() : bar.data.y)));
@@ -122,6 +95,7 @@ export const HorizontalBars = ({
 			});
 		})
 		.filter((x) => !!x);
+
 	return (
 		<>
 			<svg
@@ -129,6 +103,37 @@ export const HorizontalBars = ({
 				className={cx("horizontal-bars [grid-area:graph] h-full w-full", className)}
 				preserveAspectRatio={"none"}
 			>
+				<LinearGradient
+					gradient={"linear-gradient(to left, rgba(45, 45, 45, 0) 0%, rgba(45, 45, 45, 0.35) 65%, rgba(45, 45, 45, 1) 100%)"}
+					id={"bar-shadow-dark"}
+				/>
+				<LinearGradient
+					gradient={
+						"linear-gradient(to left, rgba(180, 180, 180, 0) 0%, rgba(180, 180, 180, 0.15) 65%, rgba(180, 180, 180, 0.2) 100%)"
+					}
+					id={"bar-shadow-light"}
+				/>
+				{context.domain.y.map(({ coordinate }, i) => {
+					const isShadowed = interactions?.shadow && interactions?.y && yForValue(interactions.y) === coordinate;
+
+					if (!interactions?.shadow) return null;
+
+					return (
+						<Rect
+							key={i}
+							x1={0}
+							x2={context.viewbox.x}
+							y2={coordinate + context.viewbox.x / context.domain.x.length / 2}
+							y1={coordinate - context.viewbox.x / context.domain.x.length / 2}
+							stroke={"transparent"}
+							className={cx(
+								"bars__bar bars__bar--shadow transition-all duration-300 opacity-0 fill-[url(#bar-shadow-light)]",
+								isShadowed && "opacity-1",
+								`dark:fill-[url(#bar-shadow-dark)]`,
+							)}
+						/>
+					);
+				})}
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
 					const fillColor = fill ? fill(bar) : bar.fill;
 					const strokeColor = stroke ? stroke(bar) : bar.stroke;
