@@ -13,15 +13,8 @@ import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControl
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
-import { StackedBarsExample, StackedBarsExampleCode } from "./examples/StackedBarsExample";
-import { HorizontalBarsExample, HorizontalBarsExampleCode } from "./examples/HorizontalBarsExample";
-import { BarsPercentExample, BarsPercentExampleCode } from "./examples/BarsPercentExample";
-import { PositiveNegativeBarsExample } from "./examples/PositiveNegativeBarsExample";
-import {
-	PositiveNegativeBarsCustomAnchorExample,
-	PositiveNegativeBarsCustomAnchorExampleCode,
-} from "./examples/PositiveNegativeBarsCustomAnchorExample";
 import { format } from "../../../utils/date/date-format";
+import { SandpackShowcase } from "../../../components/Documentation/SandpackShowcase/SandpackShowcase";
 
 type Mouse = Parameters<NonNullable<ComponentProps<(typeof Bars)["Mouse"]>["onMove"]>>[0];
 export default function Page() {
@@ -34,6 +27,11 @@ export default function Page() {
 	const [mouse, setMouse] = useState<Mouse>();
 	return (
 		<>
+			<SandpackShowcase language={"tsx"} title={"Showcase"}>
+				{`export default function App() {
+			    return (<div>helasdsadlo world</div>)
+			   }`}
+			</SandpackShowcase>
 			<ControlPanel>
 				<h1 className={"text-2xl pb-2"}>Bars</h1>
 				<BarsControlGroup state={bars} onChange={setBars} />
@@ -89,9 +87,9 @@ export default function Page() {
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
-						{...yaxis}
 						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
 						display={(x) => (x instanceof Date ? format(x) : null)}
+						teeth
 						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
 						description={
 							yaxis.description?.toString() && (
@@ -100,10 +98,19 @@ export default function Page() {
 						}
 					/>
 					<GridLines {...gridline} />
-					<Bars {...bars} horizontal={true} interactions={{ y: mouse?.closest.tick.y, shadow: true }} />
+					{mouse?.closest.tick.x ? (
+						<Bars.Bar
+							x={"auto"}
+							y={mouse?.closest.tick.y}
+							fill={"linear-gradient(to left, rgba(45, 45, 45, 0) 0%, rgba(45, 45, 45, 0.35) 65%, rgba(45, 45, 45, 1) 100%)"}
+							horizontal
+							className={""}
+						/>
+					) : null}
+					<Bars {...bars} horizontal={true} interactions={{ y: mouse?.closest.tick.y }} />
 					<Bars.Mouse onMove={(mouse) => setMouse(mouse)} onLeave={() => setMouse(undefined)} />
 					{legend.position === "right" && <Legend {...legend} />}
-					<XAxis {...xaxis} title={"HELLO WORLD TITLE"} description={"HELLOWRLD DESC"} />
+					<XAxis teeth {...xaxis} title={"HELLO WORLD TITLE"} description={"HELLOWRLD DESC"} />
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

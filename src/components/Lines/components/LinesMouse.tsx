@@ -22,7 +22,7 @@ export const LinesMouse = ({ joints, datasets, onMove, onLeave, onEnter, classNa
 	const context = useGraph();
 	const { viewbox } = context;
 	const dsets = useDatasets(datasets);
-	const mouse = useMouseCoordinates(ref, { x: true, lazy: true });
+	const mouse = useMouseCoordinates(ref, { x: true, y: false, lazy: true });
 
 	return (
 		<svg
@@ -38,20 +38,20 @@ export const LinesMouse = ({ joints, datasets, onMove, onLeave, onEnter, classNa
 			onMouseLeave={onLeave}
 			onMouseMove={(e) => onMove?.(e, mouse)}
 		>
-			{mouse?.closest.x && joints && (
+			{mouse?.closest.tick.x && joints && (
 				<Lines.Joints
 					context={context}
-					at={{ x: mouse.closest.x }}
+					at={{ x: mouse.closest.tick.x }}
 					border={typeof joints === "object" ? joints["border"] : undefined}
 				/>
 			)}
-			{mouse?.closest.x &&
+			{mouse?.closest.tick.x &&
 				joints &&
 				dsets.map((dataset, i) => {
 					return (
 						<Lines.Joints
 							context={dataset}
-							at={{ x: mouse.closest.x }}
+							at={{ x: mouse.closest.tick.x }}
 							border={typeof joints === "object" ? joints["border"] : undefined}
 							key={i}
 						/>

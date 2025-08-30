@@ -9,12 +9,13 @@ import { FromToJumps } from "../../models/domain/domain";
 type Props = Omit<ComponentProps<"div">, "title"> & {
 	ticks?: FromToJumps;
 	title?: ReactNode;
+	teeth?: boolean;
 	description?: ReactNode;
 	dataset?: string;
 	display?: (tick: number | string | Date) => ReactNode;
 };
 
-export const XAxis = ({ display, title, ticks, description, dataset, ...rest }: Props) => {
+export const XAxis = ({ display, title, ticks, description, dataset, teeth, ...rest }: Props) => {
 	const { domain, viewbox } = useDataset(dataset);
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
@@ -31,9 +32,18 @@ export const XAxis = ({ display, title, ticks, description, dataset, ...rest }: 
 		if (coordinate > viewbox.x || coordinate < 0) return acc;
 		return acc + (typeof label === "string" ? label.length : 0);
 	}, 0);
+
 	const breakpoint = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 130, 160, 190].find((bp) => bp >= characters);
 	return (
 		<Graph.Row {...rest} className={tw("xaxis items-center relative pt-2 text-xs font-normal select-none", rest.className)}>
+			{teeth &&
+				labels.map(({ coordinate }, i) => {
+					const x = scale(coordinate, 3000, 100);
+					if (x > 100 || x < 0) return null;
+					return (
+						<div key={i} className={"absolute bg-gray-200 dark:bg-[#2d2d2d] w-[1px] h-[8px] top-0"} style={{ left: x + "%" }} />
+					);
+				})}
 			<div className={"xaxis__ticks @container-[inline-size] text-center"}>
 				<div className={"flex h-full w-full relative"}>
 					{labels.map(({ label }, i) => {

@@ -48,7 +48,7 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 	/*
 	 * `{ interactions: { x: number | string | Date } }` can be used to highlight a specific bar segments matching the x value.
 	 */
-	interactions?: { x?: number | string | Date; shadow?: boolean };
+	interactions?: { x?: number | string | Date };
 	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
@@ -81,14 +81,12 @@ export const VerticalBars = ({
 	const bars = context.data.flatMap((bar, i) =>
 		bar.data.map((xy) => ({
 			...bar,
-			fill: bar.fill ?? bar.stroke ?? context.colors[i] ?? context.colors.at(-1),
-			group: bar.group ?? bar.id ?? bar.name,
+			group: bar.group ?? bar.id /* grouped unique if no group is defined */,
 			data: xy,
 		})),
 	);
 
-	const BAR_WIDTH =
-		Math.floor(context.viewbox.x / context.domain.x.length / new Set(bars.map((bar) => bar.group ?? "no-group")).size) * (size / 100); // this divided by number of unique groups?
+	const BAR_WIDTH = Math.floor(context.viewbox.x / context.domain.x.length / new Set(bars.map((bar) => bar.group)).size) * (size / 100); // this divided by number of unique groups?
 	const xValues = new Set(bars.map((bar) => (bar.data.x instanceof Date ? bar.data.x.getTime() : bar.data.x)));
 
 	const dataset = Array.from(xValues)
@@ -134,35 +132,6 @@ export const VerticalBars = ({
 				className={cx("vertical-bars [grid-area:graph] h-full w-full bars", className)}
 				preserveAspectRatio={"none"}
 			>
-				<LinearGradient
-					gradient={"linear-gradient(to bottom, rgba(45, 45, 45, 0) 0%, rgba(45, 45, 45, 0.35) 65%, rgba(45, 45, 45, 1) 100%)"}
-					id={"bar-shadow-dark"}
-				/>
-				<LinearGradient
-					gradient={
-						"linear-gradient(to bottom, rgba(180, 180, 180, 0) 0%, rgba(180, 180, 180, 0.15) 65%, rgba(180, 180, 180, 0.2) 100%)"
-					}
-					id={"bar-shadow-light"}
-				/>
-				{context.domain.x.map(({ coordinate }, i) => {
-					const isShadowed = interactions?.shadow && interactions?.x && xForValue(interactions.x) === coordinate;
-					if (!interactions?.shadow) return null;
-					return (
-						<Rect
-							key={i}
-							x1={coordinate - context.viewbox.x / context.domain.x.length / 2}
-							x2={coordinate + context.viewbox.x / context.domain.x.length / 2}
-							y2={context.viewbox.y}
-							y1={0}
-							stroke={"transparent"}
-							className={cx(
-								"bars__bar bars__bar--shadow transition-all duration-300 opacity-0 fill-[url(#bar-shadow-light)]",
-								isShadowed && "opacity-1",
-								`dark:fill-[url(#bar-shadow-dark)]`,
-							)}
-						/>
-					);
-				})}
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
 					const disabled =
 						Boolean(pinned.concat(hovered).length && !pinned.includes(bar.id) && !hovered.includes(bar.id)) ||
@@ -197,7 +166,7 @@ export const VerticalBars = ({
 						strokeWidth={2}
 						vectorEffect={"non-scaling-stroke"}
 						stroke={"red"}
-						className={"stroke-dark-priority-100"}
+						className={"stroke-[#2d2d2d]"}
 						d={`M 0 ${yForValue(anchor)} L ${context.viewbox.x} ${yForValue(anchor)}`}
 					/>
 				)}

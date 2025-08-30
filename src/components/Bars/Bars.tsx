@@ -4,12 +4,13 @@ import { VerticalBars } from "./components/VerticalBars";
 import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
 import { ColorUtils } from "../../utils/color/color";
 import { BarsMouse } from "./components/BarsMouse";
+import { BarsBar } from "./components/BarsBar";
 
 type VerticalProps = { horizontal?: false } & ComponentProps<typeof VerticalBars>;
 type HorizontalProps = { horizontal?: true } & ComponentProps<typeof HorizontalBars>;
 
 export const Bars = ({ horizontal, ...props }: VerticalProps | HorizontalProps) => {
-	return horizontal ? <HorizontalBars {...props} /> : <VerticalBars {...props} />;
+	return horizontal ? <HorizontalBars {...(props as any)} /> : <VerticalBars {...(props as any)} />;
 };
 
 Bars.context = (ctx: InternalGraphContext): InternalGraphContext => {
@@ -20,3 +21,4 @@ Bars.context = (ctx: InternalGraphContext): InternalGraphContext => {
 };
 
 Bars.Mouse = BarsMouse;
+Bars.Bar = BarsBar;

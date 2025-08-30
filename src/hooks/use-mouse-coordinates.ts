@@ -49,8 +49,8 @@ export function useMouseCoordinates(
 	const [clientXY, setClientXY] = useState<{ clientX: number; clientY: number }>();
 	const [closestX, setClosestX] = useState<number | string | Date>();
 	const [closestY, setClosestY] = useState<number | string | Date>();
-	const [closestXTick, setClosestXTick] = useState<string | number | Date>(0);
-	const [closestYTick, setClosestYTick] = useState<string | number | Date>(0);
+	const [closestXTick, setClosestXTick] = useState<string | number | Date>();
+	const [closestYTick, setClosestYTick] = useState<string | number | Date>();
 	const { data, viewbox, domain } = useGraph();
 
 	const isLazyCalculate = closest?.x || closest?.y ? (closest?.lazy ? inside : true) : false;
@@ -80,7 +80,6 @@ export function useMouseCoordinates(
 				point.y = scale(e.clientY - rect.top, rect.height, svg.viewBox.baseVal.height);
 				const x = e.clientX - rect.left;
 				const y = e.clientY - rect.top;
-
 				// check if it's inside the svg, if it isn't setXY to undefined
 				if (point.x < 0 || point.y < 0 || point.x > svg.viewBox.baseVal.width || point.y > svg.viewBox.baseVal.height) {
 					setClientXY(undefined);
@@ -98,10 +97,13 @@ export function useMouseCoordinates(
 					const t0 = xTicks[i];
 					const t1 = xTicks[i + 1] ?? t0; // clamp to end
 					const proportion = t0.coordinate === t1.coordinate ? 0 : (svgX - t0.coordinate) / (t1.coordinate - t0.coordinate);
-					setClosestXTick(proportion > 0.5 ? t1.tick : t0.tick);
+					const closest = proportion > 0.5 ? t1.tick : t0.tick;
 					const interpolatedX = t0.tick + proportion * (t1.tick - t0.tick);
 					const isDateTimeAxis = domain.x[0]?.tick instanceof Date;
-					return isDateTimeAxis ? new Date(findClosestValue(interpolatedX, xValues)) : interpolatedX;
+					return {
+						tick: isDateTimeAxis ? new Date(closest) : closest,
+						datapoint: isDateTimeAxis ? new Date(findClosestValue(interpolatedX, xValues)) : interpolatedX,
+					};
 				})();
 
 				const yClosest = (() => {
@@ -113,18 +115,22 @@ export function useMouseCoordinates(
 					const t0 = yTicks[i];
 					const t1 = yTicks[i + 1] ?? t0; // clamp to end
 					const proportion = t0.coordinate === t1.coordinate ? 0 : (svgY - t0.coordinate) / (t1.coordinate - t0.coordinate);
-					const closestTick = proportion > 0.5 ? t1.tick : t0.tick;
-					setClosestYTick(closestTick);
+					const closest = proportion > 0.5 ? t1.tick : t0.tick;
 					const interpolatedY = t0.tick + proportion * (t1.tick - t0.tick);
 					const isDateTimeAxis = domain.y[0]?.tick instanceof Date;
-					return isDateTimeAxis ? new Date(findClosestValue(interpolatedY, yValues)) : interpolatedY;
+					return {
+						tick: isDateTimeAxis ? new Date(closest) : closest,
+						datapoint: isDateTimeAxis ? new Date(findClosestValue(interpolatedY, yValues)) : interpolatedY,
+					};
 				})();
 
 				setClientXY({ clientX: e.clientX, clientY: e.clientY });
 				setXY({ x, y });
 				setPoint(point);
-				setClosestX(xClosest);
-				setClosestY(yClosest);
+				setClosestXTick(xClosest?.tick);
+				setClosestYTick(yClosest?.tick);
+				setClosestX(xClosest?.datapoint);
+				setClosestY(yClosest?.datapoint);
 			},
 			{ signal: controller.signal },
 		);
@@ -169,6 +175,6 @@ export function useMouseCoordinates(
 	return {
 		coordinates: point,
 		px: { ...xy, ...clientXY },
-		closest: { datapoint: { x: closestX, y: closestY }, tick: { x: new Date(closestXTick), y: new Date(closestYTick) } },
+		closest: { datapoint: { x: closestX, y: closestY }, tick: { x: closestXTick, y: closestYTick } },
 	};
 }

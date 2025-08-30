@@ -2,6 +2,22 @@ import { describe, it, expect } from "bun:test";
 import { DomainUtils } from "../domain";
 
 describe("src/utils/domain/range.ts", () => {
+	it("Should return 6 ticks for min:0 max:5000", () => {
+		const dataset = [
+			{
+				name: "Line 1",
+				data: [
+					{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 0 },
+					{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 5000 },
+				],
+			},
+		];
+		const yDomain = DomainUtils.y.ticks({ data: dataset, viewbox: { x: 3000, y: 3000 } });
+		expect(yDomain.length).toBe(6); /* starting at zero */
+		expect(yDomain[0].tick).toBe(0);
+		expect(yDomain[yDomain.length - 1].tick).toBe(5000);
+	});
+
 	it.each([
 		{ min: -140_000, max: 1_450_000, expectedMin: -250_000, expectedMax: 1_500_000 },
 		{ min: 20, max: 145, expectedMin: 0, expectedMax: 150 },

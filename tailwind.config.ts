@@ -1,5 +1,5 @@
 const container = require("./tailwind-container-queries");
-const plugin = require('tailwindcss/plugin');
+const plugin = require("tailwindcss/plugin");
 
 export default {
 	content: [
@@ -16,9 +16,6 @@ export default {
 			sans: ["Figtree", "sans-serif"],
 		},
 		extend: {
-			colors: {
-				"dark-priority-100": "rgb(45, 45, 45)",
-			},
 			animation: {
 				rotate: "rotate 3s linear infinite",
 				borderWidth: "borderWidth 8s ease-in-out infinite",
@@ -39,9 +36,9 @@ export default {
 		container,
 		plugin(function ({ addComponents }: any) {
 			addComponents({
-				'.pseudo-bg-inherit': {
-					'&::before, &::after': {
-						background: 'inherit',
+				".pseudo-bg-inherit": {
+					"&::before, &::after": {
+						background: "inherit",
 					},
 				},
 			});

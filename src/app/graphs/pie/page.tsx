@@ -5,6 +5,8 @@ import { PieControlGroup, PieControls } from "../../../components/ControlGroup/P
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
 import { Pie } from "../../../components/Pie/Pie";
+import { Legend } from "../../../components/Legend/Legend";
+import { InternalSegmentDataset } from "../../../hooks/use-graph/use-graph";
 
 export default function Page() {
 	const [pie, setPie] = useState<PieControls>({
@@ -13,7 +15,7 @@ export default function Page() {
 		labels: true,
 		children: "",
 	});
-	const [hovered, setHovered] = useState<string[]>([]);
+	const [hovered, setHovered] = useState<InternalSegmentDataset[number]>();
 
 	const cookies = [
 		{ id: "US", name: "US", value: 17226 },
@@ -36,14 +38,32 @@ export default function Page() {
 				<PieControlGroup state={pie} onChange={setPie} />
 			</ControlPanel>
 			<GraphPanel>
-				<Graph data={cookies} interactions={{ hovered }}>
+				<Graph data={cookies} interactions={{ hovered: hovered ? [hovered.id] : [] }}>
 					<Pie
-						{...pie}
 						gap={5}
-						labels={{ position: "outside", display: (v) => v.id }}
-						onMouseEnter={(segment) => setHovered([segment.id])}
-						onMouseLeave={() => setHovered([])}
-					/>
+						onMouseEnter={(segment) => setHovered(segment)}
+						onMouseLeave={() => setHovered(undefined)}
+						radius={40}
+						labels={true}
+					>
+						<>
+							<div className="flex flex-col items-center justify-center">
+								<span className="text-lg font-semibold leading-5">{hovered ? hovered.name : "Cookies"}</span>
+								<div className="text-xl font-bold">
+									{hovered ? (
+										<span className="text-violet-600 dark:text-violet-400">
+											{hovered ? ((+hovered.value / totalCookies) * 100).toFixed(2) : 0}%
+										</span>
+									) : (
+										<>
+											<span className="text-violet-600 dark:text-violet-400">{totalCookies} Sold</span>
+										</>
+									)}
+								</div>
+							</div>
+						</>
+					</Pie>
+					<Legend position={"right"} />
 					<Pie.Tooltip>
 						{(segment) => {
 							const fill = segment.fill;

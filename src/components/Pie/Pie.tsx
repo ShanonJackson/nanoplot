@@ -43,7 +43,10 @@ type Props = {
 	 */
 	total?: number;
 	className?: string;
-	onMouseEnter?: (segment: InternalSegmentDataset[number] & { degrees: number }, event: React.MouseEvent<SVGPathElement>) => void;
+	onMouseEnter?: (
+		segment: InternalSegmentDataset[number] & { degrees: number; percent: number },
+		event: React.MouseEvent<SVGPathElement>,
+	) => void;
 	onMouseLeave?: (event: React.MouseEvent<SVGPathElement>) => void;
 	children?: ReactNode;
 };
@@ -93,12 +96,13 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 					.map(({ value }) => scale(value, sum, 360))
 					.reduce((sum, value) => sum + value, ROTATION_DEGREES),
 				degrees: scale(segment.value, sum, 360),
+				percent: scale(segment.value, sum, 100),
 			};
 		});
 
 	return (
 		<>
-			{donut && children && (
+			{donut !== undefined && children && (
 				<overlay.div className="pie__children absolute inset-0 flex items-center justify-center">{children}</overlay.div>
 			)}
 			{total !== undefined && (
@@ -110,7 +114,7 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 						</mask>
 					)}
 					<path
-						className={cx(`origin-center fill-gray-200 dark:fill-dark-priority-100`)}
+						className={cx(`origin-center fill-gray-200 dark:fill-[#2d2d2d]`)}
 						d={PathUtils.describeArc(CX, CX, PIE_RADIUS, 0, 360) + ` L ${CX} ${CX} Z`}
 						mask={donut ? `url(#${maskId})` : undefined}
 					/>
@@ -218,13 +222,22 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 											isActive && "[scale:1.02]",
 										)}
 										d={
-											PathUtils.describeArc(
-												CX,
-												CX,
-												PIE_RADIUS,
-												segment.previousTotalDegrees + ROTATION_DEGREES,
-												segment.previousTotalDegrees + ROTATION_DEGREES + segment.degrees,
-											) + ` L ${CX} ${CX} Z`
+											donut
+												? PathUtils.annularArc(
+														CX,
+														CY,
+														segment.previousTotalDegrees + ROTATION_DEGREES,
+														segment.previousTotalDegrees + segment.degrees + ROTATION_DEGREES,
+														PIE_RADIUS,
+														DONUT_RADIUS,
+													)
+												: PathUtils.describeArc(
+														CX,
+														CX,
+														PIE_RADIUS,
+														segment.previousTotalDegrees + ROTATION_DEGREES,
+														segment.previousTotalDegrees + ROTATION_DEGREES + segment.degrees,
+													) + ` L ${CX} ${CX} Z`
 										}
 										fill={segment.fill}
 										data-degrees={segment.degrees}

@@ -35,7 +35,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 	const rect = useBoundingBox(ref) ?? { width: 0, height: 0, left: 0, top: 0 };
 	const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>();
 	const mouse = useMouseCoordinates(ref, { x: true, y: false });
-	const closest = mouse?.closest?.x;
+	const closest = mouse?.closest?.tick.x;
 	const {
 		data,
 		domain,

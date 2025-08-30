@@ -40,17 +40,13 @@ export const Lines = (props: Props) => {
 		data,
 		viewbox,
 		interactions: { pinned, hovered },
-		colors,
 	} = context;
 
 	if (!GraphUtils.isXYData(data)) return null;
 	const xyForDataset = CoordinatesUtils.xyCoordinatesForDataset(context);
-	const lines = data.map((line, i) => {
+	const lines = data.map((line) => {
 		return {
 			...line,
-			id: String(line.id),
-			stroke: line.stroke ?? colors[i] ?? colors.at(-1),
-			fill: line.fill,
 			coordinates: xyForDataset(line.data),
 		};
 	});

@@ -29,7 +29,7 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 	 * `{ interactions: { y: number | string | Date } }` can be used to highlight a specific bar segments matching the x value.
 	 * `{ interactions: { y: number | string | Date, shadow: boolean } }` shadow effect behind bar.
 	 */
-	interactions?: { y?: number | string | Date; shadow?: boolean };
+	interactions?: { y?: number | string | Date };
 	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
@@ -103,37 +103,6 @@ export const HorizontalBars = ({
 				className={cx("horizontal-bars [grid-area:graph] h-full w-full", className)}
 				preserveAspectRatio={"none"}
 			>
-				<LinearGradient
-					gradient={"linear-gradient(to left, rgba(45, 45, 45, 0) 0%, rgba(45, 45, 45, 0.35) 65%, rgba(45, 45, 45, 1) 100%)"}
-					id={"bar-shadow-dark"}
-				/>
-				<LinearGradient
-					gradient={
-						"linear-gradient(to left, rgba(180, 180, 180, 0) 0%, rgba(180, 180, 180, 0.15) 65%, rgba(180, 180, 180, 0.2) 100%)"
-					}
-					id={"bar-shadow-light"}
-				/>
-				{context.domain.y.map(({ coordinate }, i) => {
-					const isShadowed = interactions?.shadow && interactions?.y && yForValue(interactions.y) === coordinate;
-
-					if (!interactions?.shadow) return null;
-
-					return (
-						<Rect
-							key={i}
-							x1={0}
-							x2={context.viewbox.x}
-							y2={coordinate + context.viewbox.x / context.domain.x.length / 2}
-							y1={coordinate - context.viewbox.x / context.domain.x.length / 2}
-							stroke={"transparent"}
-							className={cx(
-								"bars__bar bars__bar--shadow transition-all duration-300 opacity-0 fill-[url(#bar-shadow-light)]",
-								isShadowed && "opacity-1",
-								`dark:fill-[url(#bar-shadow-dark)]`,
-							)}
-						/>
-					);
-				})}
 				{dataset.map(({ x1, x2, y1, y2, ...bar }, index) => {
 					const fillColor = fill ? fill(bar) : bar.fill;
 					const strokeColor = stroke ? stroke(bar) : bar.stroke;

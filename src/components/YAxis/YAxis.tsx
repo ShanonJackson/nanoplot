@@ -9,13 +9,14 @@ import { FromToJumps } from "../../models/domain/domain";
 type Props = Omit<ComponentProps<"div">, "title"> & {
 	ticks?: FromToJumps;
 	title?: ReactNode;
+	teeth?: boolean;
 	display?: (tick: string | number | Date) => ReactNode;
 	description?: ReactNode;
 	position?: "left" | "right";
 	dataset?: string /* dataset property key */;
 };
 
-export const YAxis = ({ title, description, display, dataset, position = "left", ...rest }: Props) => {
+export const YAxis = ({ title, description, display, dataset, teeth = false, position = "left", ...rest }: Props) => {
 	const { domain } = useDataset(dataset);
 	const { viewbox } = useGraph();
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
@@ -37,15 +38,24 @@ export const YAxis = ({ title, description, display, dataset, position = "left",
 						return tick.toString();
 					})();
 					const isVisible = Math.round(coordinate) >= 0 && Math.round(coordinate) <= viewbox.y;
+					const top = scale(coordinate, 3000, 100);
 					return (
 						<React.Fragment key={i}>
+							{teeth && (
+								<div
+									key={i}
+									className={
+										"absolute bg-gray-200 dark:bg-[#2d2d2d] w-[8px] h-[1px] right-0 [transform:translateY(-50%)]"
+									}
+									style={{ top: top + "%" }}
+								/>
+							)}
 							<div
 								className={cx(
 									`yaxis__tick absolute right-2 [transform:translateY(-50%)] text-gray-700 dark:text-gray-300`,
 									!isVisible && "opacity-0",
 								)}
-								data-coordinate={coordinate}
-								style={{ top: `${scale(coordinate, 3000, 100)}%` }}
+								style={{ top: top + "%" }}
 							>
 								{label}
 							</div>

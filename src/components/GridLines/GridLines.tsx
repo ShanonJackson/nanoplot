@@ -47,7 +47,7 @@ export const GridLines = ({ border = true, horizontal = true, vertical = true, c
 						strokeWidth={1}
 						vectorEffect="non-scaling-stroke"
 						className={tw(
-							"stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__border",
+							"stroke-gray-200 dark:stroke-[#2d2d2d] grid-lines__border",
 							typeof className === "object" && typeof className.border === "object" && className.border[side],
 							typeof className === "object" && className?.border,
 						)}
@@ -67,7 +67,7 @@ export const GridLines = ({ border = true, horizontal = true, vertical = true, c
 							strokeWidth={1}
 							vectorEffect="non-scaling-stroke"
 							className={tw(
-								"stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__horizontal",
+								"stroke-gray-200 dark:stroke-[#2d2d2d] grid-lines__horizontal",
 								typeof className === "object" && className?.horizontal,
 							)}
 						/>
@@ -87,7 +87,7 @@ export const GridLines = ({ border = true, horizontal = true, vertical = true, c
 							strokeWidth={1}
 							vectorEffect="non-scaling-stroke"
 							className={tw(
-								"stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__vertical",
+								"stroke-gray-200 dark:stroke-[#2d2d2d] grid-lines__vertical",
 								typeof className === "object" && className?.vertical,
 							)}
 						/>

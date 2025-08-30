@@ -4,6 +4,7 @@ import { DocumentationNavigation } from "../../../components/Documentation/Docum
 import { cookies } from "next/headers";
 import { cx } from "../../../utils/cx/cx";
 import "../../globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
 	title: "Nanoplot",
@@ -26,6 +27,7 @@ export default async function RootLayout({
 					"h-full w-full sm:overflow-unset bg-[hsl(0deg,0%,100%)] dark:bg-[hsl(210deg,22.22%,10.59%)] text-[hsl(0deg,0%,0%)] dark:text-[hsl(0deg,0%,100%)] transition-colors duration-200",
 				)}
 			>
+				<Analytics />
 				<div>
 					<DocumentationHeader />
 					<div className={"flex"}>

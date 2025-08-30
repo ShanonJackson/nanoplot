@@ -22,9 +22,9 @@ describe("src/utils/cx", () => {
 		expect(result).toBe("text-red bg-black stroke-gray-100");
 	});
 
-	it("tw merge deduplicates square bracket syntax against matching operation [stroke:#316ff2] against dark:stroke-dark-priority-100", () => {
-		const result = tw("text-red", "bg-black", "[stroke:#316ff2]", "dark:stroke-dark-priority-100");
-		expect(result).toBe("text-red bg-black [stroke:#316ff2] dark:stroke-dark-priority-100");
+	it("tw merge deduplicates square bracket syntax against matching operation [stroke:#316ff2] against dark:stroke-[#2d2d2d]", () => {
+		const result = tw("text-red", "bg-black", "[stroke:#316ff2]", "dark:stroke-[#2d2d2d]");
+		expect(result).toBe("text-red bg-black [stroke:#316ff2] dark:stroke-[#2d2d2d]");
 	});
 
 	it("Should keep multiple befores with custom properties", () => {
@@ -40,7 +40,7 @@ describe("src/utils/cx", () => {
 		const className = { vertical: "stroke-red-200" };
 		const average = benchmark(() => {
 			return tw(
-				"stroke-gray-200 dark:stroke-dark-priority-100 dark:stroke-dark-priority-100 grid-lines__vertical",
+				"stroke-gray-200 dark:stroke-[#2d2d2d] dark:stroke-[#2d2d2d] grid-lines__vertical",
 				typeof className === "object" && className?.vertical,
 			);
 		}, 400);

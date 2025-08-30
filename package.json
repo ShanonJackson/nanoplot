@@ -1,9 +1,16 @@
 {
 	"name": "nanoplot",
-	"version": "0.0.80",
+	"version": "0.0.82",
 	"license": "MIT",
 	"private": false,
-	"keywords": ["React", "D3", "Graphs", "Charts", "Data Visualization", "Graph Library"],
+	"keywords": [
+		"React",
+		"D3",
+		"Graphs",
+		"Charts",
+		"Data Visualization",
+		"Graph Library"
+	],
 	"scripts": {
 		"dev": "next dev --turbo",
 		"build": "next build",
@@ -29,6 +36,7 @@
 		"@types/react": "19.0.1",
 		"@types/react-dom": "19.0.2",
 		"@types/testing-library__jest-dom": "^6.0.0",
+		"@vercel/analytics": "^1.5.0",
 		"autoprefixer": "^10.4.20",
 		"bun-css-loader": "^1.4.2",
 		"bun-types": "^1.1.36",
@@ -39,7 +47,7 @@
 		"framer-motion": "^12.4.1",
 		"husky": "^9.1.7",
 		"motion": "^12.4.7",
-		"nanoplot": "0.0.27",
+		"nanoplot": "^0.0.81",
 		"next": "15.0.3",
 		"postcss": "^8.4.49",
 		"postcss-modules": "^6.0.1",
