@@ -118,8 +118,10 @@ const ensureInputCapacity = (state: LinearWasmState, points: number): boolean =>
         return true;
 };
 
+const SEGMENT_LENGTH = 18;
+
 const ensureOutputCapacity = (state: LinearWasmState, points: number): boolean => {
-        const estimate = points === 0 ? 1 : points * 20 + 32;
+        const estimate = points === 0 ? 1 : points * SEGMENT_LENGTH;
         if (estimate <= state.outputCapacity && state.exports.memory.buffer === state.memoryBuffer) {
                 return false;
         }
