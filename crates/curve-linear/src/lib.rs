@@ -13,6 +13,25 @@ const fn build_digit_table() -> [u8; 200] {
 
 const DIGIT_TABLE: [u8; 200] = build_digit_table();
 
+const DIV100_MAGIC: u64 = 0x51EB_851F;
+const DIV100_SHIFT: u32 = 37;
+const DIV1000_MAGIC: u64 = 0x20C4_9BA5_E4;
+const DIV1000_SHIFT: u32 = 47;
+
+#[inline(always)]
+fn div_mod_100(value: u32) -> (u32, u32) {
+    let quotient = ((value as u64 * DIV100_MAGIC) >> DIV100_SHIFT) as u32;
+    let remainder = value - quotient * 100;
+    (quotient, remainder)
+}
+
+#[inline(always)]
+fn div_mod_1000(value: u32) -> (u32, u32) {
+    let quotient = ((value as u64 * DIV1000_MAGIC) >> DIV1000_SHIFT) as u32;
+    let remainder = value - quotient * 1000;
+    (quotient, remainder)
+}
+
 #[inline(always)]
 unsafe fn write_small_uint(value: u32, out: *mut u8, end: *mut u8) -> Option<*mut u8> {
     if value < 10 {
@@ -35,10 +54,9 @@ unsafe fn write_small_uint(value: u32, out: *mut u8, end: *mut u8) -> Option<*mu
         if out.add(3) > end {
             return None;
         }
-        let hundreds = value / 100;
-        let last = (value - hundreds * 100) as usize;
+        let (hundreds, last) = div_mod_100(value);
         *out = b'0' + hundreds as u8;
-        let idx = last * 2;
+        let idx = (last as usize) * 2;
         *out.add(1) = DIGIT_TABLE[idx];
         *out.add(2) = DIGIT_TABLE[idx + 1];
         return Some(out.add(3));
@@ -46,13 +64,11 @@ unsafe fn write_small_uint(value: u32, out: *mut u8, end: *mut u8) -> Option<*mu
     if out.add(4) > end {
         return None;
     }
-    let thousands = value / 1000;
-    let rem = value - thousands * 1000;
-    let hundreds = rem / 100;
-    let last = (rem - hundreds * 100) as usize;
+    let (thousands, rem) = div_mod_1000(value);
+    let (hundreds, last) = div_mod_100(rem);
     *out = b'0' + thousands as u8;
     *out.add(1) = b'0' + hundreds as u8;
-    let idx = last * 2;
+    let idx = (last as usize) * 2;
     *out.add(2) = DIGIT_TABLE[idx];
     *out.add(3) = DIGIT_TABLE[idx + 1];
     Some(out.add(4))
@@ -60,8 +76,8 @@ unsafe fn write_small_uint(value: u32, out: *mut u8, end: *mut u8) -> Option<*mu
 
 #[inline(always)]
 unsafe fn write_scaled(mut value: u32, out: *mut u8, end: *mut u8) -> Option<*mut u8> {
-    let whole = value / 100;
-    value -= whole * 100;
+    let (whole, fractional) = div_mod_100(value);
+    value = fractional;
     let mut next = write_small_uint(whole, out, end)?;
     if value != 0 {
         if next.add(3) > end {
