@@ -2,7 +2,7 @@ const decoder = typeof TextDecoder !== "undefined" ? new TextDecoder() : null;
 
 type Point = { x: number; y: number };
 
-type LinearExports = {
+export type LinearExports = {
         memory: WebAssembly.Memory;
         alloc: (size: number) => number;
         dealloc: (ptr: number, size: number) => void;
@@ -22,6 +22,39 @@ interface LinearWasmState {
 }
 
 let wasmState: LinearWasmState | null = null;
+
+const createWasmState = (exports: LinearExports): LinearWasmState => ({
+        exports,
+        memory: exports.memory,
+        memoryBuffer: exports.memory.buffer,
+        inputPtr: 0,
+        inputCapacity: 0,
+        outputPtr: 0,
+        outputCapacity: 0,
+        inputView: new Uint32Array(),
+        outputView: new Uint8Array(),
+});
+
+export const isLinearWasmExports = (value: unknown): value is LinearExports => {
+        if (!value || typeof value !== "object") {
+                return false;
+        }
+        const exports = value as Partial<LinearExports> & Record<string, unknown>;
+        return (
+                exports.memory instanceof WebAssembly.Memory &&
+                typeof exports.alloc === "function" &&
+                typeof exports.dealloc === "function" &&
+                typeof exports.linear_path === "function"
+        );
+};
+
+export const initializeLinearWasmFromExports = (exports: LinearExports): void => {
+        disposeLinearWasm();
+        if (decoder === null) {
+                throw new Error("TextDecoder is not available; curve wasm cannot be initialized.");
+        }
+        wasmState = createWasmState(exports);
+};
 
 const INPUT_BYTES = Uint32Array.BYTES_PER_ELEMENT;
 
@@ -137,12 +170,8 @@ const copyCoords = (state: LinearWasmState, coords: Point[]) => {
 };
 
 export const initializeLinearWasmSync = (bytes: BufferSource): void => {
-        disposeLinearWasm();
         if (typeof WebAssembly === "undefined") {
                 throw new Error("WebAssembly is not available in this environment.");
-        }
-        if (decoder === null) {
-                throw new Error("TextDecoder is not available; curve wasm cannot be initialized.");
         }
         const moduleBytes = toArrayBuffer(bytes);
         const module = new WebAssembly.Module(moduleBytes);
@@ -158,22 +187,12 @@ export const initializeLinearWasmSync = (bytes: BufferSource): void => {
         if (typeof alloc !== "function" || typeof dealloc !== "function" || typeof linear_path !== "function") {
                 throw new Error("curve wasm module exports are incomplete.");
         }
-        wasmState = {
-                exports: {
-                        memory,
-                        alloc: alloc as LinearExports["alloc"],
-                        dealloc: dealloc as LinearExports["dealloc"],
-                        linear_path: linear_path as LinearExports["linear_path"],
-                },
+        initializeLinearWasmFromExports({
                 memory,
-                memoryBuffer: memory.buffer,
-                inputPtr: 0,
-                inputCapacity: 0,
-                outputPtr: 0,
-                outputCapacity: 0,
-                inputView: new Uint32Array(),
-                outputView: new Uint8Array(),
-        };
+                alloc: alloc as LinearExports["alloc"],
+                dealloc: dealloc as LinearExports["dealloc"],
+                linear_path: linear_path as LinearExports["linear_path"],
+        });
 };
 
 export const disposeLinearWasm = (): void => {
@@ -189,6 +208,14 @@ export const disposeLinearWasm = (): void => {
 };
 
 export const isLinearWasmReady = (): boolean => wasmState !== null && decoder !== null;
+
+export const applyLinearWasmExports = (maybeExports: unknown): boolean => {
+        if (!isLinearWasmExports(maybeExports)) {
+                return false;
+        }
+        initializeLinearWasmFromExports(maybeExports);
+        return true;
+};
 
 export const linearWasm = (coords: Point[]): string | null => {
         const state = wasmState;
