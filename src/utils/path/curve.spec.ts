@@ -6,7 +6,7 @@ import {
         hasCurveLinearWasm,
         initializeCurveLinearWasmSync,
 } from "./curve";
-import { linearFallback } from "./linear-js";
+import { linearFallback, linearJS } from "./linear-js";
 import * as fs from "node:fs";
 
 describe("CurveUtils", () => {
@@ -40,6 +40,12 @@ describe("CurveUtils", () => {
                 });
                 const average = times.reduce((acc, curr) => acc + curr, 0) / times.length;
                 expect(average).toBeLessThan(maxAverageDurationMs);
+        });
+
+        it("Optimized JS linear matches legacy fallback output.", () => {
+                const fallbackResult = linearFallback(data);
+                const optimizedResult = linearJS(data);
+                expect(optimizedResult).toBe(fallbackResult);
         });
 
         it("WASM linear matches JS output when enabled.", () => {

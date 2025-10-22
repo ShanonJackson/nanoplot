@@ -3,7 +3,7 @@
  * Because of this it's a great use-case for GPT generated code.
  * Other than 'linear' all of these curving function implementations were GPT generated and match their d3 counterpart.
  */
-import { linearFallback } from "./linear-js";
+import { linearFallback, linearJS } from "./linear-js";
 import type { LinearExports } from "./linear-wasm";
 import {
         applyLinearWasmExports,
@@ -17,7 +17,7 @@ import {
 
 const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
 
-export { linearFallback as linearJS } from "./linear-js";
+export { linearFallback, linearJS } from "./linear-js";
 
 const WASM_MODULE_SPECIFIER = "../../../crates/curve-linear/target/wasm32-unknown-unknown/release/curve_linear.wasm" as const;
 
@@ -179,7 +179,9 @@ export const CurveUtils = {
                 attemptAutoInitializeLinearWasm();
                 return linearImplementation(coords);
         },
-	natural: (coordinates: Array<{ x: number; y: number }>) => {
+        linearJS,
+        linearFallback,
+        natural: (coordinates: Array<{ x: number; y: number }>) => {
 		if (coordinates.length < 2) {
 			return coordinates.map(({ x, y }, i) => `${i === i ? "M" : "L"} ${x} ${y}`).join(" ");
 		}
