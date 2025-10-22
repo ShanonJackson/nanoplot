@@ -119,7 +119,7 @@ const ensureInputCapacity = (state: LinearWasmState, points: number): boolean =>
 };
 
 const ensureOutputCapacity = (state: LinearWasmState, points: number): boolean => {
-        const estimate = points === 0 ? 1 : points * 16 + 32;
+        const estimate = points === 0 ? 1 : points * 20 + 32;
         if (estimate <= state.outputCapacity && state.exports.memory.buffer === state.memoryBuffer) {
                 return false;
         }
@@ -223,6 +223,9 @@ export const linearWasm = (coords: Point[]): string | null => {
         }
         if (written === 0) {
                 return null;
+        }
+        if (state.exports.memory.buffer !== state.memoryBuffer) {
+                refreshViews(state);
         }
         return decoder.decode(state.outputView.subarray(0, written));
 };

@@ -1,5 +1,4 @@
 use std::alloc::{alloc as std_alloc, dealloc as std_dealloc, Layout};
-use std::ptr;
 
 const fn build_digit_table() -> [u8; 200] {
     let mut table = [0u8; 200];
@@ -15,7 +14,7 @@ const fn build_digit_table() -> [u8; 200] {
 const DIGIT_TABLE: [u8; 200] = build_digit_table();
 
 #[inline(always)]
-unsafe fn write_uint(mut value: u64, out: *mut u8, end: *mut u8) -> Option<*mut u8> {
+unsafe fn write_small_uint(value: u32, out: *mut u8, end: *mut u8) -> Option<*mut u8> {
     if value < 10 {
         if out >= end {
             return None;
@@ -32,67 +31,60 @@ unsafe fn write_uint(mut value: u64, out: *mut u8, end: *mut u8) -> Option<*mut 
         *out.add(1) = DIGIT_TABLE[idx + 1];
         return Some(out.add(2));
     }
-    if value < 1_000 {
+    if value < 1000 {
         if out.add(3) > end {
             return None;
         }
         let hundreds = value / 100;
-        let rem = (value % 100) as usize;
+        let last = (value - hundreds * 100) as usize;
         *out = b'0' + hundreds as u8;
-        let idx = rem * 2;
+        let idx = last * 2;
         *out.add(1) = DIGIT_TABLE[idx];
         *out.add(2) = DIGIT_TABLE[idx + 1];
         return Some(out.add(3));
     }
-    if value < 10_000 {
-        if out.add(4) > end {
-            return None;
-        }
-        let thousands = value / 1000;
-        let rem = (value % 1000) as usize;
-        let hundreds = rem / 100;
-        let last = (rem % 100) as usize;
-        *out = b'0' + thousands as u8;
-        *out.add(1) = b'0' + hundreds as u8;
-        let idx = last * 2;
-        *out.add(2) = DIGIT_TABLE[idx];
-        *out.add(3) = DIGIT_TABLE[idx + 1];
-        return Some(out.add(4));
-    }
-    let mut digits = [0u8; 20];
-    let mut idx = digits.len();
-    while value >= 100 {
-        let rem = (value % 100) as usize;
-        value /= 100;
-        idx -= 2;
-        digits[idx] = DIGIT_TABLE[rem * 2];
-        digits[idx + 1] = DIGIT_TABLE[rem * 2 + 1];
-    }
-    if value < 10 {
-        idx -= 1;
-        digits[idx] = b'0' + value as u8;
-    } else {
-        let rem = (value as usize) * 2;
-        idx -= 2;
-        digits[idx] = DIGIT_TABLE[rem];
-        digits[idx + 1] = DIGIT_TABLE[rem + 1];
-    }
-    let len = digits.len() - idx;
-    if out.add(len) > end {
+    if out.add(4) > end {
         return None;
     }
-    ptr::copy_nonoverlapping(digits.as_ptr().add(idx), out, len);
-    Some(out.add(len))
+    let thousands = value / 1000;
+    let rem = value - thousands * 1000;
+    let hundreds = rem / 100;
+    let last = (rem - hundreds * 100) as usize;
+    *out = b'0' + thousands as u8;
+    *out.add(1) = b'0' + hundreds as u8;
+    let idx = last * 2;
+    *out.add(2) = DIGIT_TABLE[idx];
+    *out.add(3) = DIGIT_TABLE[idx + 1];
+    Some(out.add(4))
+}
+
+#[inline(always)]
+unsafe fn write_scaled(mut value: u32, out: *mut u8, end: *mut u8) -> Option<*mut u8> {
+    let whole = value / 100;
+    value -= whole * 100;
+    let mut next = write_small_uint(whole, out, end)?;
+    if value != 0 {
+        if next.add(3) > end {
+            return None;
+        }
+        *next = b'.';
+        next = next.add(1);
+        let idx = (value as usize) * 2;
+        *next = DIGIT_TABLE[idx];
+        *next.add(1) = DIGIT_TABLE[idx + 1];
+        next = next.add(2);
+    }
+    Some(next)
 }
 
 #[inline(always)]
 unsafe fn write_delta(delta: f64, mut out: *mut u8, end: *mut u8) -> Option<*mut u8> {
     let negative = delta < 0.0;
-    let value = if negative { -delta } else { delta };
-    let mut scaled = (value * 100.0 + 0.5).trunc();
-    if scaled == -0.0 {
-        scaled = 0.0;
-    }
+    let scaled = if negative {
+        ((-delta) * 100.0 + 0.5) as u32
+    } else {
+        (delta * 100.0 + 0.5) as u32
+    };
     if negative {
         if out >= end {
             return None;
@@ -101,22 +93,7 @@ unsafe fn write_delta(delta: f64, mut out: *mut u8, end: *mut u8) -> Option<*mut
         out = out.add(1);
     }
 
-    let magnitude = scaled as u64;
-    let whole = magnitude / 100;
-    let frac_part = (magnitude - whole * 100) as usize;
-    let mut next = write_uint(whole, out, end)?;
-    if frac_part != 0 {
-        if next.add(3) > end {
-            return None;
-        }
-        *next = b'.';
-        next = next.add(1);
-        let idx = frac_part * 2;
-        *next = DIGIT_TABLE[idx];
-        *next.add(1) = DIGIT_TABLE[idx + 1];
-        next = next.add(2);
-    }
-    Some(next)
+    write_scaled(scaled, out, end)
 }
 
 #[no_mangle]
