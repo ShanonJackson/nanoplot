@@ -17,7 +17,7 @@ interface LinearWasmState {
         inputCapacity: number;
         outputPtr: number;
         outputCapacity: number;
-        inputView: Uint32Array;
+        inputView: Float64Array;
         outputView: Uint8Array;
 }
 
@@ -31,7 +31,7 @@ const createWasmState = (exports: LinearExports): LinearWasmState => ({
         inputCapacity: 0,
         outputPtr: 0,
         outputCapacity: 0,
-        inputView: new Uint32Array(),
+        inputView: new Float64Array(),
         outputView: new Uint8Array(),
 });
 
@@ -56,7 +56,7 @@ export const initializeLinearWasmFromExports = (exports: LinearExports): void =>
         wasmState = createWasmState(exports);
 };
 
-const INPUT_BYTES = Uint32Array.BYTES_PER_ELEMENT;
+const INPUT_BYTES = Float64Array.BYTES_PER_ELEMENT;
 
 const toArrayBuffer = (bytes: BufferSource): ArrayBuffer => {
         if (bytes instanceof ArrayBuffer) {
@@ -88,7 +88,7 @@ const refreshViews = (state: LinearWasmState) => {
                 state.memoryBuffer = buffer;
         }
         if (state.inputPtr !== 0 && state.inputCapacity > 0) {
-                state.inputView = new Uint32Array(state.memoryBuffer, state.inputPtr, state.inputCapacity / INPUT_BYTES);
+                state.inputView = new Float64Array(state.memoryBuffer, state.inputPtr, state.inputCapacity / INPUT_BYTES);
         }
         if (state.outputPtr !== 0 && state.outputCapacity > 0) {
                 state.outputView = new Uint8Array(state.memoryBuffer, state.outputPtr, state.outputCapacity);
@@ -141,31 +141,13 @@ const ensureOutputCapacity = (state: LinearWasmState, points: number): boolean =
         return true;
 };
 
-const SIGN_MASK = 0x8000_0000;
-
-const encodeDelta = (current: number, previous: number): number => {
-        let delta = current - previous;
-        const sign = delta < 0 ? SIGN_MASK : 0;
-        if (sign !== 0) {
-                delta = -delta;
-        }
-        const magnitude = Math.floor(delta * 100 + 0.5);
-        return (magnitude & ~SIGN_MASK) | sign;
-};
-
 const copyCoords = (state: LinearWasmState, coords: Point[]) => {
         const view = state.inputView;
-        let prevX = 0;
-        let prevY = 0;
         let index = 0;
         for (let i = 0; i < coords.length; i++) {
                 const point = coords[i];
-                const x = point.x;
-                const y = point.y;
-                view[index++] = encodeDelta(x, prevX);
-                view[index++] = encodeDelta(y, prevY);
-                prevX = x;
-                prevY = y;
+                view[index++] = point.x;
+                view[index++] = point.y;
         }
 };
 

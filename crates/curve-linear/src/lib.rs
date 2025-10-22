@@ -86,9 +86,13 @@ unsafe fn write_uint(mut value: u64, out: *mut u8, end: *mut u8) -> Option<*mut 
 }
 
 #[inline(always)]
-unsafe fn write_scaled(raw: u32, mut out: *mut u8, end: *mut u8) -> Option<*mut u8> {
-    let negative = (raw & 0x8000_0000) != 0;
-    let magnitude = (raw & 0x7fff_ffff) as u64;
+unsafe fn write_delta(delta: f64, mut out: *mut u8, end: *mut u8) -> Option<*mut u8> {
+    let negative = delta < 0.0;
+    let value = if negative { -delta } else { delta };
+    let mut scaled = (value * 100.0 + 0.5).trunc();
+    if scaled == -0.0 {
+        scaled = 0.0;
+    }
     if negative {
         if out >= end {
             return None;
@@ -96,6 +100,8 @@ unsafe fn write_scaled(raw: u32, mut out: *mut u8, end: *mut u8) -> Option<*mut 
         *out = b'-';
         out = out.add(1);
     }
+
+    let magnitude = scaled as u64;
     let whole = magnitude / 100;
     let frac_part = (magnitude - whole * 100) as usize;
     let mut next = write_uint(whole, out, end)?;
@@ -133,7 +139,7 @@ pub extern "C" fn dealloc(ptr: *mut u8, size: usize) {
 
 #[no_mangle]
 pub extern "C" fn linear_path(
-    coords_ptr: *const u32,
+    coords_ptr: *const f64,
     points: usize,
     output_ptr: *mut u8,
     output_capacity: usize,
@@ -155,7 +161,7 @@ pub extern "C" fn linear_path(
         coords_iter = coords_iter.add(1);
         let first_y = *coords_iter;
         coords_iter = coords_iter.add(1);
-        current_out = match write_scaled(first_x, current_out, end) {
+        current_out = match write_delta(first_x, current_out, end) {
             Some(ptr) => ptr,
             None => return 0,
         };
@@ -164,11 +170,13 @@ pub extern "C" fn linear_path(
         }
         *current_out = b' ';
         current_out = current_out.add(1);
-        current_out = match write_scaled(first_y, current_out, end) {
+        current_out = match write_delta(first_y, current_out, end) {
             Some(ptr) => ptr,
             None => return 0,
         };
 
+        let mut prev_x = first_x;
+        let mut prev_y = first_y;
         for _ in 1..points {
             if current_out >= end {
                 return 0;
@@ -179,7 +187,11 @@ pub extern "C" fn linear_path(
             coords_iter = coords_iter.add(1);
             let y = *coords_iter;
             coords_iter = coords_iter.add(1);
-            current_out = match write_scaled(x, current_out, end) {
+            let dx = x - prev_x;
+            let dy = y - prev_y;
+            prev_x = x;
+            prev_y = y;
+            current_out = match write_delta(dx, current_out, end) {
                 Some(ptr) => ptr,
                 None => return 0,
             };
@@ -188,7 +200,7 @@ pub extern "C" fn linear_path(
             }
             *current_out = b' ';
             current_out = current_out.add(1);
-            current_out = match write_scaled(y, current_out, end) {
+            current_out = match write_delta(dy, current_out, end) {
                 Some(ptr) => ptr,
                 None => return 0,
             };
