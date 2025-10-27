@@ -8,7 +8,7 @@ const uniq: Record<string, string> = {
 	hidden: "display",
 	flex: "flex-display",
 	"flex-col": "flex-direction",
-	stroke: "stroke", // ✅ Needed for [stroke:red] vs stroke-gray-100
+	stroke: "stroke",
 };
 
 const splitRegex = /[^\[\]:]+|\[[^\]]+\]/g;
@@ -50,4 +50,15 @@ export function tw(...args: (Socket | Record<string, Socket | boolean>)[]): stri
 	return order.map((id) => seen[id]).join(" ");
 }
 
-export const cx = tw;
+// cx without unique deduping??
+export const cx = (...args: (Socket | Record<string, Socket | boolean>)[]): string => {
+	return args
+		.flatMap((arg) => {
+			if (!arg) return [];
+			if (typeof arg === "string") return arg.match(/\S+/g) || [];
+			return Object.entries(arg)
+				.filter(([_, v]) => v)
+				.map(([k, _]) => k);
+		})
+		.join(" ");
+};

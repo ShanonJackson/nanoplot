@@ -45,7 +45,7 @@ export default function Page() {
 						<YAxis ticks={{ from: 0, to: 100, jumps: 6 }} />
 						<GridLines />
 						<Lines datasets={["TCP"]} />
-						<Lines.Mouse cross={{ x: true, y: true }} joints={true} datasets={["TCP"]} />
+						{/*<Lines.Mouse cross={{ x: true, y: true }} joints={true} datasets={["TCP"]} />*/}
 						<YAxis
 							dataset={"TCP"}
 							position={"right"}

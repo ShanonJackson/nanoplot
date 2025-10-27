@@ -40,8 +40,12 @@ export const Legend = ({
 
 	const render = (ctx: InternalGraphContext) => {
 		return ctx.data
-			.map((dp) => ({ ...dp, group: dp.group ?? "" }))
-			.sort((a, b) => a.group.localeCompare(b.group))
+			.sort((a, b) => {
+				if (!a.group && b.group) return 1;
+				if (a.group && !b.group) return -1;
+				if (!a.group && !b.group) return 0;
+				return a.group!.localeCompare(b.group!);
+			})
 			.map((datapoint, i, datapoints) => {
 				const { id, name, fill, stroke } = datapoint;
 				const disabled = pinned.length && !pinned.includes(String(id)) && !hovered.includes(String(id));

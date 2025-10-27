@@ -17,6 +17,19 @@ export const Line = ({ stroke, d, disabled, fill, className, points, ...rest }: 
 	const isGradientStroke = stroke?.includes("linear-gradient");
 	const isMaskStroke = stroke?.includes("mask");
 
+	const path = !isMaskStroke && (
+		<path
+			d={d}
+			stroke={isGradientStroke ? `url(#${strokeId})` : stroke}
+			fill={isGradientFill ? `url(#${fillId})` : fill}
+			vectorEffect={"non-scaling-stroke"}
+			strokeWidth={1.5}
+			className={className}
+			{...rest}
+		/>
+	);
+
+	if (!isGradientFill && !isGradientStroke && !isMaskStroke) return path;
 	return (
 		<>
 			{isGradientFill && !disabled && fill && <LinearGradient id={fillId} gradient={fill} />}
@@ -34,7 +47,7 @@ export const Line = ({ stroke, d, disabled, fill, className, points, ...rest }: 
 					stroke={isGradientStroke ? `url(#${strokeId})` : stroke}
 					fill={isGradientFill ? `url(#${fillId})` : fill}
 					vectorEffect={"non-scaling-stroke"}
-					strokeWidth={1.5}
+					strokeWidth={2}
 					className={className}
 					{...rest}
 				/>

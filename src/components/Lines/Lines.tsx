@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
 import { InternalGraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
-import { CurveUtils } from "../../utils/path/curve";
+import { CurveUtils, linear2 } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { LinesLoading } from "./components/LinesLoading";
 import { cx, tw } from "../../utils/cx/cx";
@@ -11,6 +11,7 @@ import { LinesTooltipZone } from "./components/LinesTooltipZone";
 import { LinesMouse } from "./components/LinesMouse";
 import { LinesJoints } from "./components/LinesJoints";
 import { LinesReference } from "./components/LinesReference";
+import { xy } from "colorjs.io/fn";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -21,14 +22,22 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	context?: InternalGraphContext;
 }
 
-const chunk = (a: { x: number; y: number }[], s: number) => {
-	const len = Math.ceil(a.length / s);
-	const r = new Array(len);
-	for (let i = 0, j = 0; i < a.length; i += s, j++) {
-		r[j] = a.slice(i, i + s);
+export function chunk(arr: Float32Array, s: number): Float32Array[] {
+	const len = arr.length;
+	const n = (len / s + 0.99999999) | 0; // ceil without FP call
+	const out = new Array(n);
+
+	// Reuse byte offsets instead of slice() — zero-copy views
+	let o = 0;
+	const BYTES = arr.BYTES_PER_ELEMENT;
+
+	for (let i = 0; i < n; i++) {
+		const size = Math.min(s, len - o);
+		out[i] = new Float32Array(arr.buffer, arr.byteOffset + o * BYTES, size);
+		o += size;
 	}
-	return r;
-};
+	return out;
+}
 
 export const Lines = (props: Props) => {
 	const { children, className, curve = "linear", joints, loading = false, datasets, context: ctx } = props;
@@ -71,7 +80,7 @@ export const Lines = (props: Props) => {
 				{lines.map(({ id, stroke, fill, coordinates: points }, i) => {
 					/* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
 					const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
-					const path = isChunkingCandidate ? "" : CurveUtils[curve](points);
+					const path = isChunkingCandidate ? "" : CurveUtils[curve](points as any);
 					const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 					const isInteractiveFill = hovered.includes(id) || (pinned.includes(id) && !disabled);
 					const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
@@ -85,12 +94,11 @@ export const Lines = (props: Props) => {
 								</linearGradient>
 							)}
 							{isChunkingCandidate ? (
-								chunk(points, 1000 /* chunk size determined by GPU benchmarking */).map((chunk, i) => {
-									const chunkedPath = CurveUtils[curve](chunk);
+								chunk(points, 2000).map((chunk, i) => {
 									return (
 										<Line
 											key={i}
-											d={chunkedPath}
+											d={linear2(chunk)}
 											stroke={stroke}
 											fill={"transparent"}
 											className={cx(
@@ -110,10 +118,7 @@ export const Lines = (props: Props) => {
 									/>
 									{isInteractiveFill && points[0] && (
 										<Line
-											d={
-												path +
-												`L ${points.at(-1)?.x ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0].x} ${viewbox.y} Z`
-											}
+											d={path + `L ${points.at(-2) ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0]} ${viewbox.y} Z`}
 											stroke={"transparent"}
 											fill={`linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
 											strokeOpacity={0}
@@ -122,9 +127,9 @@ export const Lines = (props: Props) => {
 									)}
 								</>
 							)}
-							{joints && (
-								<Lines.Joints context={context} border={typeof joints === "object" ? joints["border"] : undefined} />
-							)}
+							{/*{joints && (*/}
+							{/*	<Lines.Joints context={context} border={typeof joints === "object" ? joints["border"] : undefined} />*/}
+							{/*)}*/}
 						</React.Fragment>
 					);
 				})}

@@ -5,90 +5,314 @@
  */
 const toDP = (n: number, precision: number = 5) => Math.round(n * 10 ** precision) / 10 ** precision;
 const decoder = new TextDecoder();
+
+const MAX_POINTS = 200_000;
+const buffer = new Uint8Array(MAX_POINTS * 12 + 1);
 export const CurveUtils = {
 	linear: (coords: Array<{ x: number; y: number }>): string => {
 		if (coords.length === 0) return "";
-		const buffer = new Uint8Array(coords.length * 12 + 1);
-		let offset = 0;
-		let prevX = 0;
-		let prevY = 0;
+		const len = coords.length;
 
-		for (let i = 0; i < coords.length; i++) {
-			const { x, y } = coords[i];
-			buffer[offset++] = i === 0 ? 77 : 108; // 'M' for first, 'l' for others
+		let o = 0;
+		let px = 0,
+			py = 0;
 
-			const dx = x - prevX;
-			const dy = y - prevY;
+		for (let i = 0; i < len; i++) {
+			const cx = coords[i].x | 0; // keep monomorphic ints where possible
+			const cy = coords[i].y | 0;
 
-			// Process X coordinate
-			let n = dx;
+			if (i === 0) {
+				// 'M' abs move for first point
+				buffer[o++] = 77; // 'M'
+				// --- write X (absolute) ---
+				let n = cx;
+				if (n < 0) {
+					buffer[o++] = 45;
+					n = -n;
+				}
+				// scale & round to 2dp
+				let s = (n * 100 + 0.5) | 0;
+				let q = (s / 100) | 0; // int part
+				let r = s - q * 100; // frac part (no %)
+				// q is 0..10000 in your bounds
+
+				// integer digits
+				if (q < 10) {
+					buffer[o++] = 48 + q;
+				} else if (q < 100) {
+					// tens / ones without %
+					let t = (q / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (q - t * 10);
+				} else if (q < 1000) {
+					let h = (q / 100) | 0;
+					let rem = q - h * 100;
+					let t = (rem / 10) | 0;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem - t * 10);
+				} else {
+					let th = (q / 1000) | 0;
+					let rem1 = q - th * 1000;
+					let h = (rem1 / 100) | 0;
+					let rem2 = rem1 - h * 100;
+					let t = (rem2 / 10) | 0;
+					buffer[o++] = 48 + th;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem2 - t * 10);
+				}
+				if (r !== 0) {
+					buffer[o++] = 46; // '.'
+					let t = (r / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (r - t * 10);
+				}
+				buffer[o++] = 32; // ' '
+
+				// --- write Y (absolute) ---
+				n = cy;
+				if (n < 0) {
+					buffer[o++] = 45;
+					n = -n;
+				}
+				s = (n * 100 + 0.5) | 0;
+				q = (s / 100) | 0;
+				r = s - q * 100;
+
+				if (q < 10) {
+					buffer[o++] = 48 + q;
+				} else if (q < 100) {
+					let t = (q / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (q - t * 10);
+				} else if (q < 1000) {
+					let h = (q / 100) | 0;
+					let rem = q - h * 100;
+					let t = (rem / 10) | 0;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem - t * 10);
+				} else {
+					let th = (q / 1000) | 0;
+					let rem1 = q - th * 1000;
+					let h = (rem1 / 100) | 0;
+					let rem2 = rem1 - h * 100;
+					let t = (rem2 / 10) | 0;
+					buffer[o++] = 48 + th;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem2 - t * 10);
+				}
+				if (r !== 0) {
+					buffer[o++] = 46;
+					let t = (r / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (r - t * 10);
+				}
+
+				px = cx;
+				py = cy;
+				continue;
+			}
+
+			// From here on, relative segments. Prefer the shortest encoding:
+			let dx = (cx - px) | 0;
+			let dy = (cy - py) | 0;
+
+			// skip exact no-op segments
+			if ((dx | dy) === 0) {
+				px = cx;
+				py = cy;
+				continue;
+			}
+
+			// horizontal only
+			if (dy === 0) {
+				buffer[o++] = 104; // 'h'
+				let n = dx;
+				if (n < 0) {
+					buffer[o++] = 45;
+					n = -n;
+				}
+				let s = (n * 100 + 0.5) | 0;
+				let q = (s / 100) | 0;
+				let r = s - q * 100;
+
+				if (q < 10) {
+					buffer[o++] = 48 + q;
+				} else if (q < 100) {
+					let t = (q / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (q - t * 10);
+				} else if (q < 1000) {
+					let h = (q / 100) | 0;
+					let rem = q - h * 100;
+					let t = (rem / 10) | 0;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem - t * 10);
+				} else {
+					let th = (q / 1000) | 0;
+					let rem1 = q - th * 1000;
+					let h = (rem1 / 100) | 0;
+					let rem2 = rem1 - h * 100;
+					let t = (rem2 / 10) | 0;
+					buffer[o++] = 48 + th;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem2 - t * 10);
+				}
+				if (r !== 0) {
+					let t = (r / 10) | 0;
+					buffer[o++] = 46;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (r - t * 10);
+				}
+
+				px = cx;
+				py = cy;
+				continue;
+			}
+
+			// vertical only
+			if (dx === 0) {
+				buffer[o++] = 118; // 'v'
+				let n = dy;
+				if (n < 0) {
+					buffer[o++] = 45;
+					n = -n;
+				}
+				let s = (n * 100 + 0.5) | 0;
+				let q = (s / 100) | 0;
+				let r = s - q * 100;
+
+				if (q < 10) {
+					buffer[o++] = 48 + q;
+				} else if (q < 100) {
+					let t = (q / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (q - t * 10);
+				} else if (q < 1000) {
+					let h = (q / 100) | 0;
+					let rem = q - h * 100;
+					let t = (rem / 10) | 0;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem - t * 10);
+				} else {
+					let th = (q / 1000) | 0;
+					let rem1 = q - th * 1000;
+					let h = (rem1 / 100) | 0;
+					let rem2 = rem1 - h * 100;
+					let t = (rem2 / 10) | 0;
+					buffer[o++] = 48 + th;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem2 - t * 10);
+				}
+				if (r !== 0) {
+					buffer[o++] = 46;
+					let t = (r / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (r - t * 10);
+				}
+
+				px = cx;
+				py = cy;
+				continue;
+			}
+
+			// general relative line: 'l dx dy'
+			buffer[o++] = 108; // 'l'
+
+			// --- write dx ---
+			{
+				let n = dx;
+				if (n < 0) {
+					buffer[o++] = 45;
+					n = -n;
+				}
+				let s = (n * 100 + 0.5) | 0;
+				let q = (s / 100) | 0;
+				let r = s - q * 100;
+
+				if (q < 10) {
+					buffer[o++] = 48 + q;
+				} else if (q < 100) {
+					let t = (q / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (q - t * 10);
+				} else if (q < 1000) {
+					let h = (q / 100) | 0;
+					let rem = q - h * 100;
+					let t = (rem / 10) | 0;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem - t * 10);
+				} else {
+					let th = (q / 1000) | 0;
+					let rem1 = q - th * 1000;
+					let h = (rem1 / 100) | 0;
+					let rem2 = rem1 - h * 100;
+					let t = (rem2 / 10) | 0;
+					buffer[o++] = 48 + th;
+					buffer[o++] = 48 + h;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (rem2 - t * 10);
+				}
+				if (r !== 0) {
+					buffer[o++] = 46;
+					let t = (r / 10) | 0;
+					buffer[o++] = 48 + t;
+					buffer[o++] = 48 + (r - t * 10);
+				}
+				buffer[o++] = 32; // ' '
+			}
+			let n = dy;
 			if (n < 0) {
-				buffer[offset++] = 45; // '-'
+				buffer[o++] = 45;
 				n = -n;
 			}
-			const scaledX = (n * 100 + 0.5) | 0;
-			const intX = (scaledX / 100) | 0;
-			const fracX = scaledX % 100;
+			let s = (n * 100 + 0.5) | 0;
+			let q = (s / 100) | 0;
+			let r = s - q * 100;
 
-			// Optimize for single-digit case (0–9)
-			if (intX < 10) {
-				buffer[offset++] = 48 + intX;
-			} else if (intX < 100) {
-				buffer[offset++] = 48 + ((intX / 10) | 0);
-				buffer[offset++] = 48 + (intX % 10);
-			} else if (intX < 1000) {
-				buffer[offset++] = 48 + ((intX / 100) | 0);
-				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intX % 10);
+			if (q < 10) {
+				buffer[o++] = 48 + q;
+			} else if (q < 100) {
+				let t = (q / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (q - t * 10);
+			} else if (q < 1000) {
+				let h = (q / 100) | 0;
+				let rem = q - h * 100;
+				let t = (rem / 10) | 0;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem - t * 10);
 			} else {
-				buffer[offset++] = 48 + ((intX / 1000) | 0);
-				buffer[offset++] = 48 + (((intX % 1000) / 100) | 0);
-				buffer[offset++] = 48 + (((intX % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intX % 10);
+				let th = (q / 1000) | 0;
+				let rem1 = q - th * 1000;
+				let h = (rem1 / 100) | 0;
+				let rem2 = rem1 - h * 100;
+				let t = (rem2 / 10) | 0;
+				buffer[o++] = 48 + th;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem2 - t * 10);
 			}
-			if (fracX !== 0) {
-				buffer[offset++] = 46; // '.'
-				buffer[offset++] = 48 + ((fracX / 10) | 0);
-				buffer[offset++] = 48 + (fracX % 10);
-			}
-			buffer[offset++] = 32; // ' '
-
-			// Process Y coordinate
-			n = dy;
-			if (n < 0) {
-				buffer[offset++] = 45; // '-'
-				n = -n;
-			}
-			const scaledY = (n * 100 + 0.5) | 0;
-			const intY = (scaledY / 100) | 0;
-			const fracY = scaledY % 100;
-
-			// Optimize for single-digit case (0–9)
-			if (intY < 10) {
-				buffer[offset++] = 48 + intY;
-			} else if (intY < 100) {
-				buffer[offset++] = 48 + ((intY / 10) | 0);
-				buffer[offset++] = 48 + (intY % 10);
-			} else if (intY < 1000) {
-				buffer[offset++] = 48 + ((intY / 100) | 0);
-				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intY % 10);
-			} else {
-				buffer[offset++] = 48 + ((intY / 1000) | 0);
-				buffer[offset++] = 48 + (((intY % 1000) / 100) | 0);
-				buffer[offset++] = 48 + (((intY % 100) / 10) | 0);
-				buffer[offset++] = 48 + (intY % 10);
+			if (r !== 0) {
+				buffer[o++] = 46;
+				let t = (r / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (r - t * 10);
 			}
 
-			if (fracY !== 0) {
-				buffer[offset++] = 46; // '.'
-				buffer[offset++] = 48 + ((fracY / 10) | 0);
-				buffer[offset++] = 48 + (fracY % 10);
-			}
-			prevX = x;
-			prevY = y;
+			px = cx;
+			py = cy;
 		}
-		return decoder.decode(buffer.subarray(0, offset));
+		return decoder.decode(buffer.subarray(0, o));
 	},
 	natural: (coordinates: Array<{ x: number; y: number }>) => {
 		if (coordinates.length < 2) {
@@ -207,4 +431,312 @@ export const CurveUtils = {
 			)
 			.join(" ");
 	},
+};
+
+export const linear2 = (xys: Float32Array) => {
+	const pairs = (xys.length >> 1) | 0;
+	if (pairs === 0) return "";
+
+	let o = 0;
+
+	// --- first absolute move 'M x y' ---
+	let px = xys[0] | 0;
+	let py = xys[1] | 0;
+
+	buffer[o++] = 77; // 'M'
+
+	// write X (px), integer fast-path (0..9999, but handles negatives)
+	{
+		let n = px;
+		if (n < 0) {
+			buffer[o++] = 45; // '-'
+			n = -n;
+		}
+		// s/q/r kept to match original structure; r will be 0 for ints, so no decimals output
+		let s = (n * 100 + 0.5) | 0;
+		let q = (s / 100) | 0;
+		let r = s - q * 100;
+
+		if (q < 10) {
+			buffer[o++] = 48 + q;
+		} else if (q < 100) {
+			let t = (q / 10) | 0;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (q - t * 10);
+		} else if (q < 1000) {
+			let h = (q / 100) | 0;
+			let rem = q - h * 100;
+			let t = (rem / 10) | 0;
+			buffer[o++] = 48 + h;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (rem - t * 10);
+		} else {
+			let th = (q / 1000) | 0;
+			let rem1 = q - th * 1000;
+			let h = (rem1 / 100) | 0;
+			let rem2 = rem1 - h * 100;
+			let t = (rem2 / 10) | 0;
+			buffer[o++] = 48 + th;
+			buffer[o++] = 48 + h;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (rem2 - t * 10);
+		}
+		if (r !== 0) {
+			buffer[o++] = 46; // '.'
+			let t = (r / 10) | 0;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (r - t * 10);
+		}
+		buffer[o++] = 32; // ' '
+	}
+
+	// write Y (py)
+	{
+		let n = py;
+		if (n < 0) {
+			buffer[o++] = 45;
+			n = -n;
+		}
+		let s = (n * 100 + 0.5) | 0;
+		let q = (s / 100) | 0;
+		let r = s - q * 100;
+
+		if (q < 10) {
+			buffer[o++] = 48 + q;
+		} else if (q < 100) {
+			let t = (q / 10) | 0;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (q - t * 10);
+		} else if (q < 1000) {
+			let h = (q / 100) | 0;
+			let rem = q - h * 100;
+			let t = (rem / 10) | 0;
+			buffer[o++] = 48 + h;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (rem - t * 10);
+		} else {
+			let th = (q / 1000) | 0;
+			let rem1 = q - th * 1000;
+			let h = (rem1 / 100) | 0;
+			let rem2 = rem1 - h * 100;
+			let t = (rem2 / 10) | 0;
+			buffer[o++] = 48 + th;
+			buffer[o++] = 48 + h;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (rem2 - t * 10);
+		}
+		if (r !== 0) {
+			buffer[o++] = 46;
+			let t = (r / 10) | 0;
+			buffer[o++] = 48 + t;
+			buffer[o++] = 48 + (r - t * 10);
+		}
+	}
+
+	// --- subsequent points: relative 'h' / 'v' / 'l' ---
+	for (let i = 1; i < pairs; i++) {
+		const idx = i << 1;
+		const cx = xys[idx] | 0;
+		const cy = xys[idx + 1] | 0;
+
+		let dx = (cx - px) | 0;
+		let dy = (cy - py) | 0;
+
+		if ((dx | dy) === 0) {
+			px = cx;
+			py = cy;
+			continue;
+		}
+
+		// horizontal-only
+		if (dy === 0) {
+			buffer[o++] = 104; // 'h'
+			let n = dx;
+			if (n < 0) {
+				buffer[o++] = 45;
+				n = -n;
+			}
+			let s = (n * 100 + 0.5) | 0;
+			let q = (s / 100) | 0;
+			let r = s - q * 100;
+
+			if (q < 10) {
+				buffer[o++] = 48 + q;
+			} else if (q < 100) {
+				let t = (q / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (q - t * 10);
+			} else if (q < 1000) {
+				let h = (q / 100) | 0;
+				let rem = q - h * 100;
+				let t = (rem / 10) | 0;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem - t * 10);
+			} else {
+				let th = (q / 1000) | 0;
+				let rem1 = q - th * 1000;
+				let h = (rem1 / 100) | 0;
+				let rem2 = rem1 - h * 100;
+				let t = (rem2 / 10) | 0;
+				buffer[o++] = 48 + th;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem2 - t * 10);
+			}
+			if (r !== 0) {
+				let t = (r / 10) | 0;
+				buffer[o++] = 46;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (r - t * 10);
+			}
+
+			px = cx;
+			py = cy;
+			continue;
+		}
+
+		// vertical-only
+		if (dx === 0) {
+			buffer[o++] = 118; // 'v'
+			let n = dy;
+			if (n < 0) {
+				buffer[o++] = 45;
+				n = -n;
+			}
+			let s = (n * 100 + 0.5) | 0;
+			let q = (s / 100) | 0;
+			let r = s - q * 100;
+
+			if (q < 10) {
+				buffer[o++] = 48 + q;
+			} else if (q < 100) {
+				let t = (q / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (q - t * 10);
+			} else if (q < 1000) {
+				let h = (q / 100) | 0;
+				let rem = q - h * 100;
+				let t = (rem / 10) | 0;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem - t * 10);
+			} else {
+				let th = (q / 1000) | 0;
+				let rem1 = q - th * 1000;
+				let h = (rem1 / 100) | 0;
+				let rem2 = rem1 - h * 100;
+				let t = (rem2 / 10) | 0;
+				buffer[o++] = 48 + th;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem2 - t * 10);
+			}
+			if (r !== 0) {
+				buffer[o++] = 46;
+				let t = (r / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (r - t * 10);
+			}
+
+			px = cx;
+			py = cy;
+			continue;
+		}
+
+		// general relative line: 'l dx dy'
+		buffer[o++] = 108; // 'l'
+
+		// dx
+		{
+			let n = dx;
+			if (n < 0) {
+				buffer[o++] = 45;
+				n = -n;
+			}
+			let s = (n * 100 + 0.5) | 0;
+			let q = (s / 100) | 0;
+			let r = s - q * 100;
+
+			if (q < 10) {
+				buffer[o++] = 48 + q;
+			} else if (q < 100) {
+				let t = (q / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (q - t * 10);
+			} else if (q < 1000) {
+				let h = (q / 100) | 0;
+				let rem = q - h * 100;
+				let t = (rem / 10) | 0;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem - t * 10);
+			} else {
+				let th = (q / 1000) | 0;
+				let rem1 = q - th * 1000;
+				let h = (rem1 / 100) | 0;
+				let rem2 = rem1 - h * 100;
+				let t = (rem2 / 10) | 0;
+				buffer[o++] = 48 + th;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem2 - t * 10);
+			}
+			if (r !== 0) {
+				buffer[o++] = 46;
+				let t = (r / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (r - t * 10);
+			}
+			buffer[o++] = 32; // ' '
+		}
+
+		// dy
+		{
+			let n = dy;
+			if (n < 0) {
+				buffer[o++] = 45;
+				n = -n;
+			}
+			let s = (n * 100 + 0.5) | 0;
+			let q = (s / 100) | 0;
+			let r = s - q * 100;
+
+			if (q < 10) {
+				buffer[o++] = 48 + q;
+			} else if (q < 100) {
+				let t = (q / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (q - t * 10);
+			} else if (q < 1000) {
+				let h = (q / 100) | 0;
+				let rem = q - h * 100;
+				let t = (rem / 10) | 0;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem - t * 10);
+			} else {
+				let th = (q / 1000) | 0;
+				let rem1 = q - th * 1000;
+				let h = (rem1 / 100) | 0;
+				let rem2 = rem1 - h * 100;
+				let t = (rem2 / 10) | 0;
+				buffer[o++] = 48 + th;
+				buffer[o++] = 48 + h;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (rem2 - t * 10);
+			}
+			if (r !== 0) {
+				buffer[o++] = 46;
+				let t = (r / 10) | 0;
+				buffer[o++] = 48 + t;
+				buffer[o++] = 48 + (r - t * 10);
+			}
+		}
+
+		px = cx;
+		py = cy;
+	}
+
+	return decoder.decode(buffer.subarray(0, o));
 };
