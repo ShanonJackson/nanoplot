@@ -15,6 +15,15 @@ export const range = (
 	},
 	dimension: "x" | "y",
 ) => {
+	if (jumps !== "auto" && typeof jumps === "number" && typeof from === "number" && typeof to === "number") {
+		/* fast path, all known values  */
+		const viewb = dimension === "y" ? viewbox.y : viewbox.x;
+		return Array.from({ length: jumps }, (_, i) => ({
+			tick: scale(i, [0, jumps - 1], [from, to]),
+			coordinate: scale(i, [0, jumps - 1], [0, viewb]),
+		}));
+	}
+
 	if (!GraphUtils.isXYData(data) || data.length === 0) return [];
 	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
 
@@ -187,11 +196,13 @@ export const range = (
 
 		WHEN CATEGORICAL (type: categorical) is used, we shift the domain to the
 	 */
+	console.time("getDateDomain");
 	const domain = getDateDomain({
 		min: new Date(MIN),
 		max: new Date(MAX),
 		duration,
 	});
+	console.timeEnd("getDateDomain");
 	const minTime = new Date(MIN).getTime();
 	const maxTime = new Date(MAX).getTime();
 

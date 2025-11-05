@@ -85,13 +85,10 @@ export type GraphContext = {
 };
 
 export const useGraphColumn = () => {
-	const ctx = useGraph();
-	const columns = ctx.layout.columns.split(" ");
-	return {
-		column: columns.findIndex((col) => col.includes("[graph]")) + 1,
-		left: columns.findIndex((col) => col.includes("[graph]")),
-		right: columns.length - (columns.findIndex((col) => col.includes("[graph]")) + 1),
-	};
+	const cols = useGraph().layout.columns.split(" ");
+	let i = 0;
+	for (; i < cols.length; i++) if (cols[i].includes("[graph]")) break;
+	return { column: i + 1, left: i, right: cols.length - i - 1 };
 };
 
 export const GraphContextProvider = typeof window === "undefined" ? GraphContextServer : GraphContextClient;

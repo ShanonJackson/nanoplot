@@ -42,7 +42,6 @@ describe("src/utils/domain/utils/date-domain.ts", () => {
 			new Date(2023, 5, 1, 5, 0, 0),
 		]);
 	});
-
 	it("Should handle simple 1 month increments (P1M)", () => {
 		const range = getDateDomain({
 			min: new Date(2024, 0, 1, 12, 0, 0),

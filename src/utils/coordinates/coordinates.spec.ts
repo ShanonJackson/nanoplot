@@ -177,40 +177,40 @@ const MOCK_CONTEXT: InternalGraphContext = {
 	datasets: {},
 };
 describe("Coordinates Utils", () => {
-    it("xyCoordinatesForDataset returns independent arrays across calls (no mutation)", () => {
-        const viewbox = { x: 300, y: 300 } as const;
-        const domain = {
-            x: [
-                { tick: 0, coordinate: 0 },
-                { tick: 10, coordinate: 300 },
-            ],
-            y: [
-                { tick: new Date("2025-01-01T00:00:00Z"), coordinate: 300 },
-                { tick: new Date("2025-02-01T00:00:00Z"), coordinate: 0 },
-            ],
-        } as any;
+	it("xyCoordinatesForDataset returns independent arrays across calls (no mutation)", () => {
+		const viewbox = { x: 300, y: 300 } as const;
+		const domain = {
+			x: [
+				{ tick: 0, coordinate: 0 },
+				{ tick: 10, coordinate: 300 },
+			],
+			y: [
+				{ tick: new Date("2025-01-01T00:00:00Z"), coordinate: 300 },
+				{ tick: new Date("2025-02-01T00:00:00Z"), coordinate: 0 },
+			],
+		} as any;
 
-        const toXY = CoordinatesUtils.xyCoordinatesForDataset({ domain, viewbox });
+		const toXY = CoordinatesUtils.xyCoordinatesForDataset({ domain, viewbox });
 
-        const data1 = [
-            { x: 5, y: new Date("2025-01-16T00:00:00Z") },
-            { x: 7.5, y: new Date("2025-01-20T00:00:00Z") },
-        ];
-        const data2 = [
-            { x: 0, y: new Date("2025-01-01T00:00:00Z") },
-            { x: 10, y: new Date("2025-02-01T00:00:00Z") },
-            { x: 2.5, y: new Date("2025-01-05T00:00:00Z") },
-        ];
+		const data1 = [
+			{ x: 5, y: new Date("2025-01-16T00:00:00Z") },
+			{ x: 7.5, y: new Date("2025-01-20T00:00:00Z") },
+		];
+		const data2 = [
+			{ x: 0, y: new Date("2025-01-01T00:00:00Z") },
+			{ x: 10, y: new Date("2025-02-01T00:00:00Z") },
+			{ x: 2.5, y: new Date("2025-01-05T00:00:00Z") },
+		];
 
-        const a1 = toXY(data1);
-        expect(a1 instanceof Float32Array).toBe(true);
-        const a1Copy = new Float32Array(a1);
+		const a1 = toXY(data1);
+		expect(a1 instanceof Float32Array).toBe(true);
+		const a1Copy = new Float32Array(a1);
 
-        const a2 = toXY(data2);
-        expect(a2 instanceof Float32Array).toBe(true);
-        expect(a2).not.toBe(a1);
-        expect(Array.from(a1)).toEqual(Array.from(a1Copy));
-    });
+		const a2 = toXY(data2);
+		expect(a2 instanceof Float32Array).toBe(true);
+		expect(a2).not.toBe(a1);
+		expect(Array.from(a1)).toEqual(Array.from(a1Copy));
+	});
 	it("xyCoordinatesForDataset benchmark over 400 iterations (data.spec.json)", () => {
 		// Prepare dataset: convert x to Date to use time-domain
 		const dataset = (spec as any).data.map((line: any) => ({
@@ -237,7 +237,6 @@ describe("Coordinates Utils", () => {
 			const end = performance.now();
 			return end - start;
 		});
-
 		const average = times.reduce((a, b) => a + b, 0) / times.length;
 		const max = Math.max(...times);
 		const min = Math.min(...times);

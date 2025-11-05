@@ -1,20 +1,13 @@
-import React, { ReactNode } from "react";
-import { GraphContext } from "../../hooks/use-graph/use-graph";
+import * as React from "react";
+import { GraphContext } from "nanoplot/use-graph";
 
 export const ChildrenUtils = {
-	context: (children: ReactNode, initial: GraphContext): GraphContext => {
-		/* if the child has a static method .context(graphcontext, props) execute it and return the context */
-		return React.Children.toArray(children).reduce<GraphContext>((acc, child) => {
-			if (
-				typeof child !== "string" &&
-				React.isValidElement(child) &&
-				typeof child.type !== "string" &&
-				"context" in child.type &&
-				typeof child.type.context === "function"
-			) {
-				return child.type.context(acc, child.props);
-			}
-			return acc;
-		}, initial);
+	context(c: React.ReactNode, i: GraphContext): GraphContext {
+		for (const ch of React.Children.toArray(c)) {
+			if (!React.isValidElement(ch)) continue;
+			const fn = (ch.type as any)?.context;
+			if (typeof fn === "function") i = fn(i, ch.props);
+		}
+		return i;
 	},
 };

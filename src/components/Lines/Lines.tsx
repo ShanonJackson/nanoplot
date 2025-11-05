@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
 import { InternalGraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
-import { CurveUtils, linear2 } from "../../utils/path/curve";
+import { CurveUtils, linearRange } from "../../utils/path/curve";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
+import { ArrayUtils } from "../../utils/array";
 import { LinesLoading } from "./components/LinesLoading";
 import { cx, tw } from "../../utils/cx/cx";
 import { Line } from "./components/Line";
@@ -11,7 +12,6 @@ import { LinesTooltipZone } from "./components/LinesTooltipZone";
 import { LinesMouse } from "./components/LinesMouse";
 import { LinesJoints } from "./components/LinesJoints";
 import { LinesReference } from "./components/LinesReference";
-import { xy } from "colorjs.io/fn";
 
 interface Props extends React.SVGAttributes<SVGSVGElement> {
 	children?: ReactNode;
@@ -22,22 +22,19 @@ interface Props extends React.SVGAttributes<SVGSVGElement> {
 	context?: InternalGraphContext;
 }
 
-export function chunk(arr: Float32Array, s: number): Float32Array[] {
-	const len = arr.length;
-	const n = (len / s + 0.99999999) | 0; // ceil without FP call
-	const out = new Array(n);
-
-	// Reuse byte offsets instead of slice() — zero-copy views
-	let o = 0;
-	const BYTES = arr.BYTES_PER_ELEMENT;
-
-	for (let i = 0; i < n; i++) {
-		const size = Math.min(s, len - o);
-		out[i] = new Float32Array(arr.buffer, arr.byteOffset + o * BYTES, size);
-		o += size;
+const chunk = <T,>(array: T[], size: number): T[][] => {
+	const len = array.length;
+	const outLen = Math.ceil(len / size);
+	const out = new Array(outLen);
+	for (let i = 0, o = 0; o < outLen; o++, i += size) {
+		const chunk = new Array(Math.min(size, len - i));
+		for (let j = 0; j < chunk.length; j++) {
+			chunk[j] = array[i + j];
+		}
+		out[o] = chunk;
 	}
 	return out;
-}
+};
 
 export const Lines = (props: Props) => {
 	const { children, className, curve = "linear", joints, loading = false, datasets, context: ctx } = props;
@@ -53,12 +50,6 @@ export const Lines = (props: Props) => {
 
 	if (!GraphUtils.isXYData(data)) return null;
 	const xyForDataset = CoordinatesUtils.xyCoordinatesForDataset(context);
-	const lines = data.map((line) => {
-		return {
-			...line,
-			coordinates: xyForDataset(line.data),
-		};
-	});
 
 	if (loading) return <LinesLoading />;
 	return (
@@ -77,37 +68,43 @@ export const Lines = (props: Props) => {
 					className,
 				)}
 			>
-				{lines.map(({ id, stroke, fill, coordinates: points }, i) => {
+				{data.map(({ id, stroke, fill, data: dps }, i) => {
 					/* chunking is for high-performance rendering, when chunked GPU performance can improve by 3x+ at cost of allocating more DOM nodes */
-					const isChunkingCandidate = !stroke.includes("linear-gradient") && points.length > 5_000 && curve === "linear";
-					const path = isChunkingCandidate ? "" : CurveUtils[curve](points as any);
+					const isChunkingCandidate = !stroke.includes("linear-gradient") && dps.length > 5_000 && curve === "linear";
+					const coordinates = isChunkingCandidate ? new Float32Array() : xyForDataset(dps);
+					const path = isChunkingCandidate ? "" : CurveUtils[curve](coordinates!);
 					const disabled = pinned.length && !pinned.includes(id) && !hovered.includes(id);
 					const isInteractiveFill = hovered.includes(id) || (pinned.includes(id) && !disabled);
-					const identifier = id.replace(/[^a-zA-Z0-9]/g, "");
+					// identifier used only when interactive fill is active
 
 					return (
 						<React.Fragment key={i}>
 							{isInteractiveFill && !disabled && (
-								<linearGradient id={identifier} x1="0" y1="0" x2="0" y2="1">
+								<linearGradient id={id.replace(/[^a-zA-Z0-9]/g, "")} x1="0" y1="0" x2="0" y2="1">
 									<stop offset="5%" stopColor={stroke} stopOpacity={"0.5"} />
 									<stop offset="95%" stopColor={stroke} stopOpacity={"0"} />
 								</linearGradient>
 							)}
 							{isChunkingCandidate ? (
-								chunk(points, 2000).map((chunk, i) => {
+								(() => {
+									const xy = xyForDataset(dps);
+									const ranges = ArrayUtils.chunkIndices(dps.length, 2000);
 									return (
-										<Line
-											key={i}
-											d={linear2(chunk)}
+										<g
 											stroke={stroke}
-											fill={"transparent"}
+											fill={"none"}
 											className={cx(
 												"lines__stroke",
 												disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]",
 											)}
-										/>
+											strokeWidth={2}
+										>
+											{ranges.map(([s, e], ci) => (
+												<path key={ci} d={linearRange(xy, s, e)} vectorEffect={"non-scaling-stroke"} />
+											))}
+										</g>
 									);
-								})
+								})()
 							) : (
 								<>
 									<Line
@@ -116,9 +113,12 @@ export const Lines = (props: Props) => {
 										fill={"transparent"}
 										className={cx("lines__stroke", disabled && "stroke-black dark:stroke-white [stroke-opacity:0.1]")}
 									/>
-									{isInteractiveFill && points[0] && (
+									{isInteractiveFill && coordinates[0] && (
 										<Line
-											d={path + `L ${points.at(-2) ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${points[0]} ${viewbox.y} Z`}
+											d={
+												path +
+												`L ${coordinates.at(-2) ?? 0} ${viewbox.y} L 0 ${viewbox.y} L ${coordinates[0]} ${viewbox.y} Z`
+											}
 											stroke={"transparent"}
 											fill={`linear-gradient(to bottom, ${toRgb(stroke, 0.5)}, ${toRgb(stroke, 0)})`}
 											strokeOpacity={0}

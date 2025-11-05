@@ -25,11 +25,12 @@ type Props = {
 	className?: string;
 };
 
-const GraphComponent = ({ data = [], gap, children, interactions, datasets = {}, zoom, style, className }: Props) => {
+export const Graph = ({ data = [], gap, children, interactions, datasets = {}, zoom, style, className }: Props) => {
 	const id = useId();
 	const X_SCALE = 3000; /* 99% of components will work if this is changed; but some high-perf stuff assumes this is 3_000 */
 	const Y_SCALE = 3000; /* 99% of components will work if this is changed; but some high-perf stuff assumes this is 3_000 */
 	const isServerComponent = useIsServerComponent();
+	console.time("Graph:ChildrenUtils.context");
 	const ctx = ChildrenUtils.context(children, {
 		id,
 		zoom: { x: zoom?.x ?? [0, 100], y: zoom?.y ?? [0, 100] },
@@ -62,37 +63,50 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 			}),
 		),
 	});
+	console.timeEnd("Graph:ChildrenUtils.context");
 
-	const setDefaults = (dataset: GraphContext): InternalGraphContext => {
+	const setDefaults = (dataset: GraphContext, __isRoot = false): InternalGraphContext => {
+		if (__isRoot) console.time("Graph:setDefaults(root)");
+		if (__isRoot) console.time("Graph:DomainUtils.x.ticks");
 		const xDomain =
 			dataset.domain.x.length === 0
 				? DomainUtils.x.ticks({ data: dataset.data, viewbox: { x: X_SCALE, y: Y_SCALE } })
 				: dataset.domain.x;
+		if (__isRoot) console.timeEnd("Graph:DomainUtils.x.ticks");
+		if (__isRoot) console.time("Graph:DomainUtils.y.ticks");
 		const yDomain =
 			dataset.domain.y.length === 0
 				? DomainUtils.y.ticks({ data: dataset.data, viewbox: { x: X_SCALE, y: Y_SCALE } })
 				: dataset.domain.y;
+		if (__isRoot) console.timeEnd("Graph:DomainUtils.y.ticks");
 
 		const xDomainZoomed = (() => {
+			if (__isRoot) console.time("Graph:zoom:xDomain");
 			if (!zoom?.x) return xDomain;
 			const [before, after] = zoom.x;
 			const ZOOM_FACTOR = 100 / (after - before);
 			const PAN_FACTOR = X_SCALE * (before === 0 ? 0 : before / 100);
-			return xDomain.map(({ tick, coordinate }) => ({ tick, coordinate: coordinate * ZOOM_FACTOR - PAN_FACTOR * ZOOM_FACTOR }));
+			const out = xDomain.map(({ tick, coordinate }) => ({ tick, coordinate: coordinate * ZOOM_FACTOR - PAN_FACTOR * ZOOM_FACTOR }));
+			if (__isRoot) console.timeEnd("Graph:zoom:xDomain");
+			return out;
 		})();
 
 		const yDomainZoomed = (() => {
+			if (__isRoot) console.time("Graph:zoom:yDomain");
 			if (!zoom?.y) return yDomain;
 			const [before, after] = zoom.y;
 			const ZOOM_FACTOR = 100 / (after - before);
 			const INVERSE_PAN_FACTOR = Y_SCALE * -(after === 0 ? 0 : after / 100) + Y_SCALE;
-			return yDomain.map(({ tick, coordinate }) => ({
+			const out = yDomain.map(({ tick, coordinate }) => ({
 				tick,
 				coordinate: coordinate * ZOOM_FACTOR - INVERSE_PAN_FACTOR * ZOOM_FACTOR,
 			}));
+			if (__isRoot) console.timeEnd("Graph:zoom:yDomain");
+			return out;
 		})();
 
-		return {
+		if (__isRoot) console.time("Graph:series:normalize");
+		const out: InternalGraphContext = {
 			...dataset,
 			domain: {
 				x: xDomainZoomed,
@@ -123,10 +137,14 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 				}),
 			),
 		};
+		if (__isRoot) console.timeEnd("Graph:series:normalize");
+		if (__isRoot) console.timeEnd("Graph:setDefaults(root)");
+		return out;
 	};
 
-	const colorized = setDefaults(ctx);
-
+	console.time("Graph:setDefaults(total)");
+	const colorized = setDefaults(ctx, true);
+	console.timeEnd("Graph:setDefaults(total)");
 	return (
 		<div
 			id={id}
@@ -150,23 +168,17 @@ const GraphComponent = ({ data = [], gap, children, interactions, datasets = {},
 	);
 };
 
-export const Graph = Object.assign(GraphComponent, {
-	Row: ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-		const column = useGraphColumn();
+Graph.Row = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+	const column = useGraphColumn();
+	return (
+		<>
+			{column.left === 1 ? <div /> : new Array(column.left).fill(null).map((_, i) => <div key={i} />)}
+			<div {...rest}>{children}</div>
+			{column.right === 1 ? <div /> : new Array(column.right).fill(null).map((_, i) => <div key={i} />)}
+		</>
+	);
+};
 
-		return (
-			<>
-				{new Array(column.left).fill(null).map((_, i) => (
-					<div key={i} />
-				))}
-				<div {...rest}>{children}</div>
-				{new Array(column.right).fill(null).map((_, i) => (
-					<div key={i} />
-				))}
-			</>
-		);
-	},
-	Column: ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
-		return <div {...rest}>{children}</div>;
-	},
-});
+Graph.Column = ({ children, ...rest }: HTMLAttributes<HTMLDivElement>) => {
+	return <div {...rest}>{children}</div>;
+};

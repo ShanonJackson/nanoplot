@@ -75,73 +75,90 @@ export const getFloorDateFromDuration = (d: Date, duration: string) => {
 
 export const getDateDomain = ({ min, max, duration }: { min: Date; max: Date; duration: string }): Date[] => {
 	const dur = parseDuration(duration);
-	type Unit = keyof typeof dur;
-	const units: Unit[] = ["years", "months", "days", "hours", "minutes", "seconds"];
-	const largest = units.find((u) => dur[u] > 0);
-	if (!largest) throw new Error("Duration must have at least one non-zero component");
+	const units = ["years", "months", "days", "hours", "minutes", "seconds"] as const;
 
-	// Separate step and offset values
-	const step = dur[largest];
-	const offset = { ...dur };
-	delete offset[largest];
-
-	// Floor start date
-	const start = getFloorDateFromDuration(min, duration);
-	const result: Date[] = [];
-
-	if (largest === "years" || largest === "months") {
-		// Month/year arithmetic
-		const baseYear = start.getFullYear();
-		const baseMonth = start.getMonth();
-		const offsDay = offset.days || 0;
-		const offsHour = offset.hours || 0;
-		const offsMin = offset.minutes || 0;
-		const offsSec = offset.seconds || 0;
-
-		let stepCount = 0;
-		while (true) {
-			const totalMonths = baseMonth + step * stepCount + (largest === "years" ? 0 : 0);
-			const year = baseYear + (largest === "years" ? step * stepCount : Math.floor(totalMonths / 12));
-			const month = largest === "months" ? (baseMonth + step * stepCount) % 12 : baseMonth;
-			const date = new Date(
-				year,
-				month,
-				start.getDate() + offsDay,
-				start.getHours() + offsHour,
-				start.getMinutes() + offsMin,
-				start.getSeconds() + offsSec,
-			);
-			result.push(date);
-			if (date >= max) break;
-			stepCount++;
-		}
-	} else {
-		// Millisecond unit arithmetic
-		const msPerUnit: Record<Unit, number> = {
-			years: 0,
-			months: 0,
-			days: 864e5,
-			hours: 36e5,
-			minutes: 6e4,
-			seconds: 1e3,
-		};
-		const stepMs = step * msPerUnit[largest];
-		const offsetMs =
-			(offset.days || 0) * msPerUnit.days +
-			(offset.hours || 0) * msPerUnit.hours +
-			(offset.minutes || 0) * msPerUnit.minutes +
-			(offset.seconds || 0) * msPerUnit.seconds;
-
-		const startTs = start.getTime();
-		// compute number of ticks needed
-		const count = Math.ceil((max.getTime() - (startTs + offsetMs)) / stepMs);
-		for (let i = 0; i <= count; i++) {
-			const ts = startTs + i * stepMs + offsetMs;
-			result.push(new Date(ts));
+	// find largest unit
+	let unit: keyof typeof dur = "seconds";
+	for (let i = 0; i < 6; i++) {
+		const u = units[i];
+		if (dur[u]) {
+			unit = u;
+			break;
 		}
 	}
 
-	return result;
+	const step = dur[unit];
+	if (!step) throw new Error("invalid duration");
+
+	// precompute offset (no spread / delete)
+	const oY = dur.years && unit !== "years" ? dur.years : 0;
+	const oM = dur.months && unit !== "months" ? dur.months : 0;
+	const oD = dur.days && unit !== "days" ? dur.days : 0;
+	const oH = dur.hours && unit !== "hours" ? dur.hours : 0;
+	const oMin = dur.minutes && unit !== "minutes" ? dur.minutes : 0;
+	const oS = dur.seconds && unit !== "seconds" ? dur.seconds : 0;
+
+	const start = getFloorDateFromDuration(min, duration);
+	const res: Date[] = [];
+
+	if (unit === "years" || unit === "months") {
+		// baseline constants
+		const y0 = start.getFullYear();
+		const m0 = start.getMonth();
+		const d0 = start.getDate() + oD;
+		const h0 = start.getHours() + oH;
+		const mi0 = start.getMinutes() + oMin;
+		const s0 = start.getSeconds() + oS;
+
+		// fast numeric path
+		let n = 0;
+		let t = 0;
+		let y, m;
+		while (true) {
+			if (unit === "years") {
+				y = y0 + step * n;
+				m = m0 + oM;
+			} else {
+				const totalM = m0 + step * n + oM;
+				y = y0 + ((totalM / 12) | 0);
+				m = totalM % 12;
+			}
+			t = +new Date(y, m, d0, h0, mi0, s0);
+			res.push(new Date(t));
+			if (t >= +max) break;
+			n++;
+		}
+		return res;
+	}
+
+	// time-based arithmetic
+	const MS_D = 864e5,
+		MS_H = 36e5,
+		MS_M = 6e4,
+		MS_S = 1e3;
+	let stepMs = 0;
+	switch (unit) {
+		case "days":
+			stepMs = step * MS_D;
+			break;
+		case "hours":
+			stepMs = step * MS_H;
+			break;
+		case "minutes":
+			stepMs = step * MS_M;
+			break;
+		default:
+			stepMs = step * MS_S;
+	}
+
+	const offMs = oD * MS_D + oH * MS_H + oMin * MS_M + oS * MS_S;
+	const startT = start.getTime() + offMs;
+	const maxT = +max;
+	const count = ((maxT - startT) / stepMs + 1.000001) | 0;
+
+	const arr = new Array(count);
+	for (let i = 0; i < count; i++) arr[i] = new Date(startT + i * stepMs);
+	return arr;
 };
 
 export const getCeilDateFromDuration = (d: Date, duration: string): Date => {

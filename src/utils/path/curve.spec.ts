@@ -12,7 +12,7 @@ describe("CurveUtils", () => {
 		const times = Array.from({ length: 400 }, () => {
 			const start = performance.now();
 			// CurveUtils.linear2(data);
-			linear2(ddd);
+			CurveUtils.linear(ddd);
 			const end = performance.now();
 			return end - start;
 		});
