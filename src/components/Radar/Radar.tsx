@@ -50,7 +50,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 	};
 
 	return (
-		<>
+		<div className={"[grid-area:graph] [container-type:size] h-full w-full"}>
 			<svg className={cx("h-full w-full", className)} viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}>
 				<filter id={pointGlowId} filterUnits="userSpaceOnUse">
 					<feDropShadow
@@ -118,7 +118,9 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									key={index}
 									x={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * edges[index], 90).x}
 									y={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y + 135}
-									className={"radar__tick-label dark:fill-gray-400 [font-size-adjust:0.2]"}
+									className={
+										"radar__tick-label dark:fill-gray-400 [font-size:calc(28000px_/_tan(atan2(min(100cqw,100cqh),1px)))]"
+									}
 								>
 									{multiplier}
 								</text>
@@ -205,9 +207,8 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 								<text
 									x={labelX}
 									y={labelY}
-									fontSize={"50px"}
 									className={cx(
-										"radar__axis-label dark:fill-gray-400 [font-size-adjust:0.12]",
+										"radar__axis-label dark:fill-gray-400 [font-size:calc(41000px_/_tan(atan2(min(100cqw,100cqh),1px)))]",
 										side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
 										side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
 										side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",
@@ -242,6 +243,6 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 					);
 				})}
 			</svg>
-		</>
+		</div>
 	);
 };
