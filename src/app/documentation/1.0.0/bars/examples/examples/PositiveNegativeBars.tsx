@@ -29,7 +29,7 @@ export default function App() {
 							{ x: Temporal.Instant.from("2025-10-01T00:00:00Z"), y: -120_000 },
 							{ x: Temporal.Instant.from("2025-11-01T00:00:00Z"), y: -100_000 },
 							{ x: Temporal.Instant.from("2025-12-01T00:00:00Z"), y: -110_000 },
-						].map(({ x, y }) => ({ x: x.toLocaleString("en-US", { month: "short", timeZone: "UTC" }), y })),
+						],
 					},
 					{
 						name: "Revenue",
@@ -48,7 +48,7 @@ export default function App() {
 							{ x: Temporal.Instant.from("2025-10-01T00:00:00Z"), y: 1_480_000 },
 							{ x: Temporal.Instant.from("2025-11-01T00:00:00Z"), y: 1_380_000 },
 							{ x: Temporal.Instant.from("2025-12-01T00:00:00Z"), y: 1_280_000 },
-						].map(({ x, y }) => ({ x: x.toLocaleString("en-US", { month: "short", timeZone: "UTC" }), y })),
+						],
 					},
 				]}
 			>
