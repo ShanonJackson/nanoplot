@@ -90,15 +90,12 @@ export const VerticalBars = ({
 	const xValues = new Set(
 		bars.map((bar) => (typeof bar.data.x === "string" || typeof bar.data.x === "number" ? bar.data.x : toEpochMs(bar.data.x))),
 	);
-	console.log(xValues);
-
 	const dataset = Array.from(xValues)
 		.flatMap((x) => {
 			const coordinate = xForValue(x);
 			const barsForTick = bars.filter(
 				(bar) => (typeof bar.data.x === "string" || typeof bar.data.x === "number" ? bar.data.x : toEpochMs(bar.data.x)) === x,
 			);
-			console.log(barsForTick);
 			return Object.entries(ObjectUtils.groupBy(barsForTick, ({ group }) => group)).flatMap(([, barsForGroup], i, groups) => {
 				const x1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
 				return barsForGroup

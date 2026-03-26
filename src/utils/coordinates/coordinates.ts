@@ -6,8 +6,16 @@ const tickNum = (tick: unknown): number => (isTemporal(tick) ? toEpochMs(tick) :
 
 /** Resolve the fastest possible value→number conversion for a given axis tick type. */
 const resolveToNum = (tick: unknown): ((v: any) => number) => {
-	if (!isTemporal(tick)) return (v) => v as number;
-	if ("epochMilliseconds" in (tick as object)) return (v) => v.epochMilliseconds; /* Instant | ZonedDateTime */
+	if (!isTemporal(tick))
+		return (v) => {
+			if (typeof v === "number") return v;
+			return v as number;
+		};
+	if ("epochMilliseconds" in (tick as object))
+		return (v) => {
+			if (typeof v === "number") return v;
+			return v.epochMilliseconds;
+		}; /* Instant | ZonedDateTime */
 	return (v) => {
 		if (typeof v === "number") return v;
 		return toEpochMs(v);

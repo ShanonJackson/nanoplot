@@ -55,13 +55,14 @@ export default function App() {
 				<Legend position={"top"} alignment={"end"} />
 				<YAxis
 					display={(v) => {
+						if (typeof v === "string" || typeof v !== "number") return null;
 						return (
 							"$" +
 							new Intl.NumberFormat("en", {
 								notation: "compact",
 								compactDisplay: "short",
 								maximumFractionDigits: 2,
-							}).format(Number(v.data.y))
+							}).format(v)
 						);
 					}}
 				/>
@@ -78,7 +79,13 @@ export default function App() {
 						);
 					}}
 				/>
-				<XAxis />
+				<XAxis
+					ticks={{ type: "categorical" }}
+					display={(v) => {
+						if (typeof v === "string" || typeof v === "number") return null;
+						return v.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
+					}}
+				/>
 			</Graph>
 		</div>
 	);
