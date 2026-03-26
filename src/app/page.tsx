@@ -4,6 +4,10 @@ import { cx } from "../utils/cx/cx";
 import GettingStarted from "../app/documentation/1.0.0/getting-started/page";
 import { DocumentationHeader } from "../components/Documentation/DocumentationHeader/DocumentationHeader";
 import { DocumentationNavigation } from "../components/Documentation/DocumentationNavigation/DocumentationNavigation";
+import { Temporal } from "@js-temporal/polyfill";
+if (globalThis) {
+	(globalThis as any).Temporal = Temporal;
+}
 import "./globals.css";
 
 export const metadata: Metadata = {

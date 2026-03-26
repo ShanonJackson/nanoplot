@@ -14,12 +14,12 @@ export const LinesTimeslotExample = () => {
 				{
 					name: "Cars",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 					],
 				},
 			]}
@@ -28,8 +28,8 @@ export const LinesTimeslotExample = () => {
 			<GridLines border horizontal vertical />
 			<Lines />
 			<overlay.rect
-				x1={new Date(2024, 3, 1, 0, 0, 0, 0)}
-				x2={new Date(2024, 4, 1, 0, 0, 0, 0)}
+				x1={Temporal.Instant.from("2024-04-01T00:00:00Z")}
+				x2={Temporal.Instant.from("2024-05-01T00:00:00Z")}
 				y1={50}
 				y2={0}
 				className={"bg-green-400/70 text-black text-xs py-4 rounded"}
@@ -40,7 +40,7 @@ export const LinesTimeslotExample = () => {
 				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+					return x.toLocaleString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>
@@ -64,12 +64,12 @@ export const LinesTimeslotExample = () => {
 				{
 					name: "Josh - Hours gamed",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 					],
 				},
 			]}
@@ -78,8 +78,8 @@ export const LinesTimeslotExample = () => {
 			<GridLines border horizontal vertical />
 			<Lines />
 			<overlay.rect
-				x1={new Date(2024, 3, 1, 0, 0, 0, 0)}
-				x2={new Date(2024, 4, 1, 0, 0, 0, 0)}
+				x1={Temporal.Instant.from("2024-04-01T00:00:00Z")}
+				x2={Temporal.Instant.from("2024-05-01T00:00:00Z")}
 				y1={50}
 				y2={0}
 				className={"bg-green-400/70 text-black text-xs py-4 rounded"}
@@ -92,7 +92,7 @@ export const LinesTimeslotExample = () => {
 				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return \`\${x.getFullYear()}-\${x.getMonth() + 1}-\${x.getDate()}\`;
+					return x.toLocaleString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>

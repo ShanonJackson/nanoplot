@@ -10,19 +10,19 @@ export const LinesPredictionExample = () => {
 		{
 			name: "Website Users",
 			data: [
-				{ x: new Date(2019, 0, 1, 0, 0, 0, 0), y: 1186945 },
-				{ x: new Date(2020, 0, 1, 0, 0, 0, 0), y: 1827148 },
-				{ x: new Date(2021, 0, 1, 0, 0, 0, 0), y: 2591740 },
-				{ x: new Date(2022, 0, 1, 0, 0, 0, 0), y: 3393396 },
-				{ x: new Date(2023, 0, 1, 0, 0, 0, 0), y: 4252605 },
-				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 5249076 },
-				{ x: new Date(2025, 0, 1, 0, 0, 0, 0), y: 6029551 },
-				{ x: new Date(2026, 0, 1, 0, 0, 0, 0), y: 7143810 },
-				{ x: new Date(2027, 0, 1, 0, 0, 0, 0), y: 8524799 },
-				{ x: new Date(2028, 0, 1, 0, 0, 0, 0), y: 9919216 },
-				{ x: new Date(2029, 0, 1, 0, 0, 0, 0), y: 11196156 },
+				{ x: Temporal.Instant.from("2019-01-01T00:00:00Z"), y: 1186945 },
+				{ x: Temporal.Instant.from("2020-01-01T00:00:00Z"), y: 1827148 },
+				{ x: Temporal.Instant.from("2021-01-01T00:00:00Z"), y: 2591740 },
+				{ x: Temporal.Instant.from("2022-01-01T00:00:00Z"), y: 3393396 },
+				{ x: Temporal.Instant.from("2023-01-01T00:00:00Z"), y: 4252605 },
+				{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 5249076 },
+				{ x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 6029551 },
+				{ x: Temporal.Instant.from("2026-01-01T00:00:00Z"), y: 7143810 },
+				{ x: Temporal.Instant.from("2027-01-01T00:00:00Z"), y: 8524799 },
+				{ x: Temporal.Instant.from("2028-01-01T00:00:00Z"), y: 9919216 },
+				{ x: Temporal.Instant.from("2029-01-01T00:00:00Z"), y: 11196156 },
 			],
-			stroke: `linear-gradient(to right, rgb(51, 212, 255) 0%, rgb(51, 212, 255) ${new Date(2023, 0, 1, 0, 0, 0, 0).getTime()}, rgb(211, 211, 211) ${new Date(2023, 0, 1, 0, 0, 0, 0).getTime() + 1}, rgb(211, 211, 211))`,
+			stroke: `linear-gradient(to right, rgb(51, 212, 255) 0%, rgb(51, 212, 255) ${Temporal.Instant.from("2023-01-01T00:00:00Z").epochMilliseconds}, rgb(211, 211, 211) ${Temporal.Instant.from("2023-01-01T00:00:00Z").epochMilliseconds + 1}, rgb(211, 211, 211))`,
 		},
 	];
 	return (
@@ -35,7 +35,7 @@ export const LinesPredictionExample = () => {
 				ticks={{ jumps: "P1Y" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return `${x.getFullYear()}`;
+					return x.toLocaleString("en-US", { year: "numeric", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>
@@ -55,19 +55,19 @@ export const LinesPredictionExample = () => {
 		{
 			name: "Website Users",
 			data: [
-				{ x: new Date(2019, 0, 1, 0, 0, 0, 0), y: 1186945 },
-				{ x: new Date(2020, 0, 1, 0, 0, 0, 0), y: 1827148 },
-				{ x: new Date(2021, 0, 1, 0, 0, 0, 0), y: 2591740 },
-				{ x: new Date(2022, 0, 1, 0, 0, 0, 0), y: 3393396 },
-				{ x: new Date(2023, 0, 1, 0, 0, 0, 0), y: 4252605 },
-				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 5249076 },
-				{ x: new Date(2025, 0, 1, 0, 0, 0, 0), y: 6029551 },
-				{ x: new Date(2026, 0, 1, 0, 0, 0, 0), y: 7143810 },
-				{ x: new Date(2027, 0, 1, 0, 0, 0, 0), y: 8524799 },
-				{ x: new Date(2028, 0, 1, 0, 0, 0, 0), y: 9919216 },
-				{ x: new Date(2029, 0, 1, 0, 0, 0, 0), y: 11196156 },
+				{ x: Temporal.Instant.from("2019-01-01T00:00:00Z"), y: 1186945 },
+				{ x: Temporal.Instant.from("2020-01-01T00:00:00Z"), y: 1827148 },
+				{ x: Temporal.Instant.from("2021-01-01T00:00:00Z"), y: 2591740 },
+				{ x: Temporal.Instant.from("2022-01-01T00:00:00Z"), y: 3393396 },
+				{ x: Temporal.Instant.from("2023-01-01T00:00:00Z"), y: 4252605 },
+				{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 5249076 },
+				{ x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 6029551 },
+				{ x: Temporal.Instant.from("2026-01-01T00:00:00Z"), y: 7143810 },
+				{ x: Temporal.Instant.from("2027-01-01T00:00:00Z"), y: 8524799 },
+				{ x: Temporal.Instant.from("2028-01-01T00:00:00Z"), y: 9919216 },
+				{ x: Temporal.Instant.from("2029-01-01T00:00:00Z"), y: 11196156 },
 			],
-			stroke: \`linear-gradient(to right, rgb(51, 212, 255) 0%, rgb(51, 212, 255) \${new Date(2023, 0, 1, 0, 0, 0, 0).getTime()}, rgb(211, 211, 211) \${new Date(2023, 0, 1, 0, 0, 0, 0).getTime() + 1}, rgb(211, 211, 211))\`,
+			stroke: \`linear-gradient(to right, rgb(51, 212, 255) 0%, rgb(51, 212, 255) \${Temporal.Instant.from("2023-01-01T00:00:00Z").epochMilliseconds}, rgb(211, 211, 211) \${Temporal.Instant.from("2023-01-01T00:00:00Z").epochMilliseconds + 1}, rgb(211, 211, 211))\`,
 		},
 	];
 	return (
@@ -80,7 +80,7 @@ export const LinesPredictionExample = () => {
 				ticks={{ jumps: "P1Y" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return \`\${x.getFullYear()}\`;
+					return x.toLocaleString("en-US", { year: "numeric", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>

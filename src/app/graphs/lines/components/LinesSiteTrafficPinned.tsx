@@ -16,36 +16,36 @@ export const LinesSiteTrafficPinned = () => {
 					name: "New Users",
 					stroke: "#FF4B4B",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
-						{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
-						{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
-						{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 100 },
+						{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
+						{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
+						{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 75 },
 					],
 				},
 				{
 					name: "Registered Users",
 					stroke: "#33D4FF",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
-						{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
-						{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
-						{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
-						{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
-						{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 60 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 75 },
+						{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 60 },
+						{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 80 },
+						{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 85 },
+						{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 80 },
+						{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 82 },
 					],
 				},
 			]}
@@ -58,9 +58,8 @@ export const LinesSiteTrafficPinned = () => {
 			<XAxis
 				ticks={{ jumps: "P1M" }}
 				display={(x) => {
-					const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 					if (typeof x === "number" || typeof x === "string") return null;
-					return months[x.getMonth()];
+					return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>
@@ -86,36 +85,36 @@ export const LinesSiteTraffic = () => {
 					name: "New Users",
 					stroke: "#FF4B4B",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
-						{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
-						{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
-						{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 100 },
+						{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
+						{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
+						{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 75 },
 					],
 				},
 				{
 					name: "Registered Users",
 					stroke: "#33D4FF",
 					data: [
-						{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
-						{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
-						{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
-						{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
-						{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
-						{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
-						{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
-						{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
-						{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
-						{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+						{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 45 },
+						{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 60 },
+						{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
+						{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 75 },
+						{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 60 },
+						{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 55 },
+						{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 80 },
+						{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 85 },
+						{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 80 },
+						{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 82 },
 					],
 				},
 			]}
@@ -128,9 +127,8 @@ export const LinesSiteTraffic = () => {
 			<XAxis
 				ticks={{ from: "min - P1M", jumps: "P1M" }}
 				display={(x) => {
-					const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 					if (typeof x === "number" || typeof x === "string") return null;
-					return months[x.getMonth()];
+					return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>

@@ -1,14 +1,14 @@
 import React from "react";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
-import { MathUtils, scale } from "../../utils/math/math";
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { scale } from "../../utils/math/math";
+import { TemporalDate, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 
 interface OverlayRectProps extends React.HTMLAttributes<HTMLDivElement> {
-	x1: Date | number | string;
-	y1: Date | number | string;
-	x2: Date | number | string;
-	y2?: Date | number | string;
+	x1: TemporalDate | number | string;
+	y1: TemporalDate | number | string;
+	x2: TemporalDate | number | string;
+	y2?: TemporalDate | number | string;
 }
 
 export const OverlayRect: React.FC<OverlayRectProps> = ({ x1, y1, x2, y2 = y1, className, children, ...rest }) => {

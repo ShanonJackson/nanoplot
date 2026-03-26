@@ -44,9 +44,6 @@ export default function Page() {
 		<>
 			<GraphPanel className={"bg-[#191937] p-4"}>
 				<Graph
-					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
-					interactions={{ hovered, pinned }}
-					zoom={zoom}
 					data={[
 						{
 							name: "New Users",
@@ -59,7 +56,7 @@ export default function Page() {
 								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
 								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 100 },
+								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 95 },
 								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
 								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
 								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
@@ -75,44 +72,23 @@ export default function Page() {
 								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
 								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
 								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 60 },
-								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
-								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 82 },
-								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 50 },
+								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 75 },
+								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 60 },
+								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 55 },
+								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 80 },
+								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 85 },
+								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 80 },
+								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 82 },
 							],
 						},
 					]}
 				>
-					<ZoomSlider.X onChange={setZoom} />
-					<Legend
-						alignment={"end"}
-						position={"top"}
-						onClick={(dp) => {
-							setPinned((p) => {
-								if (p.includes(dp.id)) return p.filter((pin) => pin !== dp.id);
-								return [...p, dp.id];
-							});
-						}}
-						onMouseEnter={(dp) => {
-							setHovered((h) => {
-								if (h.includes(dp.id)) return h.filter((hov) => hov !== dp.id);
-								return [...h, dp.id];
-							});
-						}}
-						onMouseLeave={(dp) => {
-							setHovered((h) => h.filter((hov) => hov !== dp.id));
-						}}
-					/>
+					<Legend alignment={"end"} position={"top"} />
 					<YAxis />
-					<GridLines border vertical horizontal />
-					<Lines curve={"natural"} joints />
+					<GridLines border />
+					<Lines curve={"natural"} />
 					<Lines.Tooltip />
-					<ZoomSlider.Y onChange={setZoom} />
 					<XAxis
-						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {
 							if (typeof x === "number" || typeof x === "string") return null;
 							return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });

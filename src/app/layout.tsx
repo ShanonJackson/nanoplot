@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { Figtree } from "next/font/google";
-import { cx } from "../utils/cx/cx";
-import GettingStarted from "../app/documentation/1.0.0/getting-started/page";
 import "./globals.css";
-import { DocumentationHeader } from "../components/Documentation/DocumentationHeader/DocumentationHeader";
-import { DocumentationNavigation } from "../components/Documentation/DocumentationNavigation/DocumentationNavigation";
 
 const figtree = Figtree({
 	subsets: ["latin"], // Supports Latin characters

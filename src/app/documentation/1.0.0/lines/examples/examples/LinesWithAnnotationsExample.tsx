@@ -24,7 +24,7 @@ export default function App() {
 				{ x: 1747785600, y: 5196.531665265145, new_level: 23 },
 				{ x: 1747872000, y: 5230.115903859852, new_level: 23 },
 				{ x: 1747958400, y: 5297.261800936303, new_level: 23 },
-			].map(({ x, y, new_level }) => ({ x: new Date(x * 1000), y, new_level })),
+			].map(({ x, y, new_level }) => ({ x: Temporal.Instant.fromEpochSeconds(x), y, new_level })),
 		},
 	];
 	const eachUniqueNewLevel = data[0].data.filter((datapoint, i) => {
@@ -67,7 +67,7 @@ export default function App() {
 					ticks={{ from: "auto - P1D", to: "auto + P1D", jumps: "P3D" }}
 					display={(x) => {
 						if (typeof x === "number" || typeof x === "string") return null;
-						return \`\${x.getDate()} \${["Jan", "Feb", "Mar", "Apr", "May", "Jun"][x.getMonth()]}\`;
+						return x.toLocaleString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
 					}}
 				/>
 			</Graph>

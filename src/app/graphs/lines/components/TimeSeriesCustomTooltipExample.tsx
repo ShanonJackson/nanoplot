@@ -6,18 +6,19 @@ import { GridLines } from "nanoplot/GridLines";
 import "nanoplot/styles.css";
 import NumberFlow from "@number-flow/react";
 import { cx } from "../../../../utils/cx/cx";
+import { toEpochMs } from "../../../../utils/domain/utils/temporal";
 
 export const TimeSeriesCustomTooltipExample = () => {
 	const data = [
 		{
 			name: "Cars",
 			data: [
-				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-				{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-				{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-				{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-				{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-				{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+				{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+				{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+				{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+				{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+				{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+				{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 			],
 		},
 	];
@@ -28,7 +29,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 			<Lines />
 			<Lines.Tooltip
 				tooltip={(points, x) => {
-					if (!(x instanceof Date)) return null;
+					if (typeof x === "number" || typeof x === "string") return null;
 					const newData = data.map((line) => {
 						return {
 							...line,
@@ -40,7 +41,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 					});
 					const percents = newData.map((line) => {
 						return line.data.find((point) => {
-							return point.x.getTime() === x.getTime();
+							return point.x.epochMilliseconds === toEpochMs(x);
 						})?.percent;
 					});
 					return percents.map((percent, i) => {
@@ -79,7 +80,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`;
+					return x.toLocaleString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>
@@ -101,12 +102,12 @@ export const TimeSeriesCustomTooltipExample = () => {
 		{
 			name: "Cars",
 			data: [
-				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-				{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-				{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-				{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-				{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-				{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
+				{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+				{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+				{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+				{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+				{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+				{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 			],
 		},
 	];
@@ -117,7 +118,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 			<Lines />
 			<Lines.Tooltip
 				tooltip={(points, x) => {
-					if (!(x instanceof Date)) return null;
+					if (typeof x === "number" || typeof x === "string") return null;
 					const newData = data.map((line) => {
 						return {
 							...line,
@@ -129,7 +130,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 					});
 					const percents = newData.map((line) => {
 						return line.data.find((point) => {
-							return point.x.getTime() === x.getTime();
+							return point.x.epochMilliseconds === x.epochMilliseconds;
 						})?.percent;
 					});
 					return percents.map((percent, i) => {
@@ -171,7 +172,7 @@ export const TimeSeriesCustomTooltipExample = () => {
 				ticks={{ jumps: "P1M" }}
 				display={(x) => {
 					if (typeof x === "number" || typeof x === "string") return null;
-					return \`\${x.getFullYear()}-\${x.getMonth() + 1}-\${x.getDate()}\`;
+					return x.toLocaleString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
 				}}
 			/>
 		</Graph>
