@@ -1,12 +1,12 @@
 import { Rect } from "./Rect";
 import { cx } from "../../../utils/cx/cx";
-import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
 
 type Props = {
-	x: number | string | Date | "auto";
-	y: number | string | Date | "auto";
+	x: number | string | TemporalDate | "auto";
+	y: number | string | TemporalDate | "auto";
 	fill?: string;
 	stroke?: string;
 	/*

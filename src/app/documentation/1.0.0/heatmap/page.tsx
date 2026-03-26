@@ -7,6 +7,7 @@ import { DocumentationTable } from "../../../../components/Documentation/Documen
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
 import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
+import { TemporalDate } from "../../../../hooks/use-graph/use-graph";
 
 export default function Page() {
 	return (
@@ -137,8 +138,8 @@ export default function App() {
 				scalars: number[] | Array<{ tick: number; percent: number }>;
 				labels?:
 					| boolean
-					| ((value: string | number | Date) => string)
-					| { collision?: boolean; display: (value: string | number | Date) => string };
+					| ((value: string | number | TemporalDate) => string)
+					| { collision?: boolean; display: (value: string | number | TemporalDate) => string };
 			*/}
 			<DocumentationTable
 				columns={["Name", "Description", "Type", "Required", "Default"]}
@@ -167,7 +168,7 @@ export default function App() {
 							"Sets the labels for the gradient legend. Can be a boolean, a function, or an object with collision and display properties.",
 						Type: (
 							<>
-								<Code>boolean</Code> |<br /> <Code>(value: string | number | Date) =&gt; string</Code> |<br />{" "}
+								<Code>boolean</Code> |<br /> <Code>(value: string | number | TemporalDate) =&gt; string</Code> |<br />{" "}
 								<Code>{`{ collision?: boolean; display(value: string | number | Date): string }`}</Code>
 							</>
 						),

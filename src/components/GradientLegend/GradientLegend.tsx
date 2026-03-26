@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
-import { InternalGraphContext, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
-import { MathUtils, scale } from "../../utils/math/math";
+import React from "react";
+import { InternalGraphContext, TemporalDate, useGraph, useGraphColumn } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { GradientUtils } from "../../utils/gradient/gradient";
 
@@ -8,7 +7,7 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 	position: "top" | "bottom";
 	alignment?: "start" | "center" | "end";
 	gradient: `linear-gradient(${string})`;
-	labels?: boolean | ((value: string | number | Date) => string);
+	labels?: boolean | ((value: string | number | TemporalDate) => string);
 };
 
 export const GradientLegend = ({ position, alignment = "center", gradient, labels = true, ...rest }: Props) => {

@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { RefObject, useMemo, useRef } from "react";
-import { CartesianDataset, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
+import { CartesianDataset, TemporalDate, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -14,15 +14,16 @@ import { tw } from "../../../utils/cx/cx";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { Portal } from "../../Portal/Portal";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
+import { equals } from "../../../utils/equals/equals";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
 	tooltip?:
 		| ((
 				points: Array<Omit<CartesianDataset[number], "data"> & { data: CartesianDataset[number]["data"][number] }>,
-				x: number | string | Date,
+				x: number | string | TemporalDate,
 		  ) => React.ReactNode)
 		| {
-				title?: (x: number | string | Date) => React.ReactNode;
+				title?: (x: number | string | TemporalDate) => React.ReactNode;
 				display?: (point: CartesianDataset[number]["data"][number]) => React.ReactNode;
 		  };
 
@@ -54,14 +55,14 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 		/* Turn dataset into a dataset with a single point instead of line of points where that point === value near mouse */
 		return data
 			.flatMap((line, i) => {
-				const point = line.data.find((d) => +d.x === +closest);
+				const point = line.data.find((d) => equals(d.x, closest));
 				if (!point) return [];
 
 				const stroke = (() => {
 					if (line.stroke?.includes("linear-gradient")) {
 						return GradientUtils.gradientColorFromValue({
 							gradient: line.stroke,
-							point: point,
+							point,
 							dataset: line.data,
 							viewbox,
 							domain,
@@ -87,9 +88,9 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 		left: Math.round(
 			MathUtils.clamp(
 				mouse.px.x,
-				scale(xForValue(+closest), viewbox.x, width) + TOOLTIP_MARGIN,
+				scale(xForValue(closest), viewbox.x, width) + TOOLTIP_MARGIN,
 				isRightAligned
-					? scale(xForValue(+closest), viewbox.x, width) - TOOLTIP_MARGIN - tooltipWidth
+					? scale(xForValue(closest), viewbox.x, width) - TOOLTIP_MARGIN - tooltipWidth
 					: width - tooltipWidth - TOOLTIP_MARGIN,
 			),
 		),
@@ -132,8 +133,8 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 					preserveAspectRatio={"none"}
 				>
 					<line
-						x1={xForValue(+closest)}
-						x2={xForValue(+closest)}
+						x1={xForValue(closest)}
+						x2={xForValue(closest)}
 						y1={0}
 						y2={viewbox.y}
 						className={"stroke-black dark:stroke-white"}
@@ -193,7 +194,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 												maximumFractionDigits: 2,
 											});
 											if (tooltip?.display) return tooltip.display(data);
-											if (data.y instanceof Date) return data.y.toISOString();
+											if (typeof data.y !== "string" && typeof data.y !== "number") return data.y.toString();
 											if (typeof data.y === "string") return data.y;
 											return formatter.format(data.y);
 										})();

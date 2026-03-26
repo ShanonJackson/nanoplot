@@ -1,5 +1,5 @@
 import React, { MouseEvent, ReactNode, useId } from "react";
-import { InternalCartesianDataset, Simplify, useGraph } from "../../../hooks/use-graph/use-graph";
+import { InternalCartesianDataset, Simplify, TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
@@ -9,7 +9,7 @@ import { cx } from "../../../utils/cx/cx";
 import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
-import { LinearGradient } from "../../LinearGradient/LinearGradient";
+import { toEpochMs } from "../../../utils/domain/utils/temporal";
 
 type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
 type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
@@ -46,9 +46,9 @@ type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseL
 	 */
 	stroke?: (segment: Segment) => string;
 	/*
-	 * `{ interactions: { x: number | string | Date } }` can be used to highlight a specific bar segments matching the x value.
+	 * `{ interactions: { x: number | string | TemporalDate } }` can be used to highlight a specific bar segments matching the x value.
 	 */
-	interactions?: { x?: number | string | Date };
+	interactions?: { x?: number | string | TemporalDate };
 	onMouseEnter?: (rect: Segment, event: MouseEvent) => void;
 	onMouseLeave?: (event: MouseEvent) => void;
 };
@@ -87,12 +87,16 @@ export const VerticalBars = ({
 	);
 
 	const BAR_WIDTH = Math.floor(context.viewbox.x / context.domain.x.length / new Set(bars.map((bar) => bar.group)).size) * (size / 100); // this divided by number of unique groups?
-	const xValues = new Set(bars.map((bar) => (bar.data.x instanceof Date ? bar.data.x.getTime() : bar.data.x)));
+	const xValues = new Set(
+		bars.map((bar) => (typeof bar.data.x === "string" || typeof bar.data.x === "number" ? bar.data.x : toEpochMs(bar.data.x))),
+	);
 
 	const dataset = Array.from(xValues)
 		.flatMap((x) => {
 			const coordinate = xForValue(x);
-			const barsForTick = bars.filter((bar) => (bar.data.x instanceof Date ? bar.data.x.getTime() : bar.data.x) === x);
+			const barsForTick = bars.filter((bar) =>
+				typeof bar.data.x === "string" || typeof bar.data.x === "number" ? bar.data.x : toEpochMs(bar.data.x) === x,
+			);
 			return Object.entries(ObjectUtils.groupBy(barsForTick, ({ group }) => group)).flatMap(([, barsForGroup], i, groups) => {
 				const x1 = coordinate + BAR_WIDTH * i - (BAR_WIDTH * Object.keys(groups).length) / 2;
 				return barsForGroup

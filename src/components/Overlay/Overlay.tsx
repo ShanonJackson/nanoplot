@@ -2,15 +2,15 @@ import React, { ReactNode, Ref } from "react";
 import { OverlayRect } from "./OverlayRect";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { MathUtils, scale } from "../../utils/math/math";
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { TemporalDate, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 
 type HTMLElements = keyof React.JSX.IntrinsicElements;
 type Props = React.HTMLAttributes<HTMLDivElement> & {
 	ref?: Ref<HTMLDivElement>;
 	tag: HTMLElements;
-	x?: { coordinate: number } | { tick: number | Date | string };
-	y?: { coordinate: number } | { tick: number | Date | string };
+	x?: { coordinate: number } | { tick: number | TemporalDate | string };
+	y?: { coordinate: number } | { tick: number | TemporalDate | string };
 };
 
 export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {

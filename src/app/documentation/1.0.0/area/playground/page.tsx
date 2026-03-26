@@ -54,7 +54,7 @@ export default function Page() {
 								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
 								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
 								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
-							],
+							].map((xy) => ({ x: Temporal.Instant.fromEpochMilliseconds(xy.x.getTime()), y: xy.y })),
 						},
 						{
 							name: "Registered Users",
@@ -72,7 +72,7 @@ export default function Page() {
 								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
 								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
 								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
-							],
+							].map((xy) => ({ x: Temporal.Instant.fromEpochMilliseconds(xy.x.getTime()), y: xy.y })),
 						},
 					]}
 				>
@@ -95,9 +95,8 @@ export default function Page() {
 						{...xaxis}
 						ticks={{ jumps: "P1M" }}
 						display={(x) => {
-							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return months[x.getMonth()];
+							return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
 						}}
 					/>
 

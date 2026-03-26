@@ -3,3 +3,8 @@
 @tailwind utilities;
 @tailwind screens;
 
+@property --fit-len {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 1px;
+}

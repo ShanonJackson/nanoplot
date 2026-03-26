@@ -272,6 +272,7 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 													dx={isRightAligned ? 140 : -140}
 													className={cx(
 														"[font-size:calc(41000px_/_tan(atan2(min(100cqw,100cqh),1px)))]",
+														"[--fit-len:min(100cqw,100cqh)] [--fit-num:calc(10000*tan(atan2(var(--fit-len),10000px)))] [font-size:calc(41000px_/var(--fit-num))]",
 														isRightAligned ? "[text-anchor:start]" : "[text-anchor:end]",
 													)}
 												>

@@ -26,6 +26,7 @@
 		"@codesandbox/sandpack-themes": "^2.0.21",
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
 		"@happy-dom/global-registrator": "^15.11.7",
+		"@js-temporal/polyfill": "^0.5.1",
 		"@number-flow/react": "^0.5.5",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@testing-library/dom": "^10.4.0",
@@ -58,7 +59,7 @@
 		"sass": "^1.80.6",
 		"tailwindcss": "^3.4.17",
 		"tailwindcss-scoped-preflight": "^3.4.10",
-		"typescript": "5.8.3"
+		"typescript": "6.0.2"
 	},
 	"exports": {
 		"./styles.css": "./dist/index.css",

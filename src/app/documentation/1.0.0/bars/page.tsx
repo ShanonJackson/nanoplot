@@ -8,6 +8,7 @@ import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack
 import { DocumentationCode as Code } from "../../../../components/Documentation/DocumentationCode/DocumentationCode";
 import { JSX } from "react";
 import { DocumentationLayout } from "../../../../components/Documentation/DocumentationLayout/DocumentationLayout";
+import { TemporalDate } from "../../../../hooks/use-graph/use-graph";
 
 export default function Page() {
 	return (
@@ -30,7 +31,7 @@ export default function Page() {
 							Type: (
 								<>
 									<Code>boolean</Code>
-									<br />| <Code>(value: string | number | Date) ={">"} string</Code>
+									<br />| <Code>(value: string | number | TemporalDate) ={">"} string</Code>
 									<br />|
 									<Code>{`{position: "above" | "center"; collision?: boolean; display: (value: string | number | Date) => string;}`}</Code>
 								</>

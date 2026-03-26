@@ -119,7 +119,7 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									x={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius * edges[index], 90).x}
 									y={PathUtils.polarToCartesian(viewbox.x / 2, viewbox.y / 2, radius, 90).y + 135}
 									className={
-										"radar__tick-label dark:fill-gray-400 [font-size:calc(28000px_/_tan(atan2(min(100cqw,100cqh),1px)))]"
+										"radar__tick-label dark:fill-gray-400 [--fit-len:min(100cqw,100cqh)] [--fit-num:calc(10000*tan(atan2(var(--fit-len),10000px)))] [font-size:calc(28000px_/var(--fit-num))]"
 									}
 								>
 									{multiplier}
@@ -208,7 +208,8 @@ export const Radar = ({ scalars = [0, 20, 40, 60, 80, 100], labels = true, loadi
 									x={labelX}
 									y={labelY}
 									className={cx(
-										"radar__axis-label dark:fill-gray-400 [font-size:calc(41000px_/_tan(atan2(min(100cqw,100cqh),1px)))]",
+										"radar__axis-label dark:fill-gray-400 [font-size:calc(41000px_/var(--fit-num))]",
+										"[--fit-len:min(100cqw,100cqh)] [--fit-num:calc(10000*tan(atan2(var(--fit-len),10000px)))]",
 										side === "top" && "[dominant-baseline:middle] [text-anchor:middle]",
 										side === "top-right" && "[dominant-baseline:hanging] [text-anchor:start]",
 										side === "top-left" && "[dominant-baseline:hanging] [text-anchor:end]",

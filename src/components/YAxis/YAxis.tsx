@@ -1,7 +1,7 @@
 import React, { ComponentProps, ReactNode } from "react";
-import { InternalGraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, TemporalDate, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
-import { MathUtils, scale } from "../../utils/math/math";
+import { scale } from "../../utils/math/math";
 import { DomainUtils } from "../../utils/domain/domain";
 import { cx } from "../../utils/cx/cx";
 import { FromToJumps } from "../../models/domain/domain";
@@ -10,7 +10,7 @@ type Props = Omit<ComponentProps<"div">, "title"> & {
 	ticks?: FromToJumps;
 	title?: ReactNode;
 	teeth?: boolean;
-	display?: (tick: string | number | Date) => ReactNode;
+	display?: (tick: string | number | TemporalDate) => ReactNode;
 	description?: ReactNode;
 	position?: "left" | "right";
 	dataset?: string /* dataset property key */;

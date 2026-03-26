@@ -2,6 +2,8 @@ import { HTMLAttributes } from "react";
 import { GraphContextServer, useGraphServer } from "./use-server-graph";
 import { GraphContextClient, useGraphClient } from "./use-client-graph";
 
+export type TemporalDate = Temporal.Instant | Temporal.ZonedDateTime | Temporal.PlainDateTime | Temporal.PlainDate;
+
 export type CartesianDataset = Array<{
 	id?: string /* name is id, if undefined */;
 	name: string;
@@ -10,9 +12,9 @@ export type CartesianDataset = Array<{
 	stroke?: string;
 	fill?: string;
 	data: Array<{
-		x: number | Date | string;
-		y: number | Date | string;
-		z?: number | string | Date;
+		x: number | TemporalDate | string;
+		y: number | TemporalDate | string;
+		z?: number | string | TemporalDate;
 	}>;
 }>;
 
@@ -23,7 +25,7 @@ export type SegmentDataset = Array<{
 	group?: string;
 	stroke?: string;
 	fill?: string;
-	value: string | number | Date;
+	value: string | number | TemporalDate;
 }>;
 
 export type InternalSegmentDataset = Array<{
@@ -33,7 +35,7 @@ export type InternalSegmentDataset = Array<{
 	group?: string;
 	stroke: string /* takes default color if not set */;
 	fill: string /* takes default color if not set */;
-	value: string | number | Date;
+	value: string | number | TemporalDate;
 }>;
 
 export type InternalCartesianDataset = Array<{
@@ -44,9 +46,9 @@ export type InternalCartesianDataset = Array<{
 	stroke: string /* takes default color if not set */;
 	fill: string /* takes default color if not set */;
 	data: Array<{
-		x: number | Date | string;
-		y: number | Date | string;
-		z?: number | string | Date;
+		x: number | TemporalDate | string;
+		y: number | TemporalDate | string;
+		z?: number | string | TemporalDate;
 	}>;
 }>;
 
@@ -59,8 +61,8 @@ export type InternalGraphContext = {
 	layout: { rows: string; columns: string };
 	zoom: { x: [number, number]; y: [number, number] };
 	domain: {
-		x: Array<{ coordinate: number; tick: string | number | Date }>;
-		y: Array<{ coordinate: number; tick: string | number | Date }>;
+		x: Array<{ coordinate: number; tick: string | number | TemporalDate }>;
+		y: Array<{ coordinate: number; tick: string | number | TemporalDate }>;
 	};
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;
@@ -76,8 +78,8 @@ export type GraphContext = {
 	layout: { rows: string; columns: string };
 	zoom: { x: [number, number]; y: [number, number] };
 	domain: {
-		x: Array<{ coordinate: number; tick: string | number | Date }>;
-		y: Array<{ coordinate: number; tick: string | number | Date }>;
+		x: Array<{ coordinate: number; tick: string | number | TemporalDate }>;
+		y: Array<{ coordinate: number; tick: string | number | TemporalDate }>;
 	};
 	colors: string[];
 	interactions: { hovered: string[]; pinned: string[] } /* ids of hovered / pinned data points */;

@@ -1,13 +1,3 @@
-/*
-	{from: 0}
-	{from: 0, to: 100}
-	{from: 0, to: 100, jumps: 10}
-	{from: 0, to: 100, jumps: 10, format: (x) => x.toFixed(2)}
-	{from: "min", to: "max", jumps: 5}
-	{from: "min", to: "max + 10%", jumps: 5}
-	{from: "min", to: "max", jumps: "1 month"}
-	{from: "min - 1 month", to: "max + 1 month" jumps: "1 month"}
- */
 import { GraphContext } from "../../hooks/use-graph/use-graph";
 import { range } from "./utils/range";
 import { autoMin } from "./utils/auto-min";

@@ -1,3 +1,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@property --fit-len {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 1px;
+}

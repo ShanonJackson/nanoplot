@@ -8,7 +8,7 @@ import { Rect } from "./Rect";
 import { scale } from "../../../utils/math/math";
 import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
-import { LinearGradient } from "../../LinearGradient/LinearGradient";
+import { toEpochMs } from "../../../utils/domain/utils/temporal";
 
 type Segment = Simplify<Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }>;
 type Props = Omit<React.SVGAttributes<SVGSVGElement>, "onMouseEnter" | "onMouseLeave" | "fill" | "stroke"> & {
@@ -61,12 +61,16 @@ export const HorizontalBars = ({
 	);
 	const BAR_HEIGHT =
 		Math.floor(context.viewbox.y / context.domain.y.length / new Set(bars.map((bar) => bar.group ?? "no-group")).size) * (size / 100);
-	const yValues = new Set(bars.map((bar) => (bar.data.y instanceof Date ? bar.data.y.getTime() : bar.data.y)));
+	const yValues = new Set(
+		bars.map((bar) => (typeof bar.data.y === "string" || typeof bar.data.y === "number" ? bar.data.y : toEpochMs(bar.data.y))),
+	);
 
 	const dataset = Array.from(yValues)
 		.flatMap((y) => {
 			const coordinate = yForValue(y);
-			const barsForTick = bars.filter((bar) => (bar.data.y instanceof Date ? bar.data.y.getTime() : bar.data.y) === y);
+			const barsForTick = bars.filter(
+				(bar) => (typeof bar.data.y === "string" || typeof bar.data.y === "number" ? bar.data.y : toEpochMs(bar.data.y)) === y,
+			);
 			return Object.entries(ObjectUtils.groupBy(barsForTick, ({ group }) => group)).flatMap(([, barsForGroup], i, groups) => {
 				const y1 = coordinate + BAR_HEIGHT * i - (BAR_HEIGHT * Object.keys(groups).length) / 2;
 				return barsForGroup

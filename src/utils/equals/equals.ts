@@ -3,6 +3,15 @@ export const equals = <T>(a: T, b: T): boolean => {
 	if (a === b) return true; // fast path for reference equality
 	if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime(); // date comparison
 	if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) return false; // non-object or null check
+	if (
+		a instanceof Temporal.Instant ||
+		a instanceof Temporal.ZonedDateTime ||
+		a instanceof Temporal.PlainDateTime ||
+		a instanceof Temporal.PlainDate
+	) {
+		if (a.constructor !== b?.constructor) return false;
+		return (a as any).equals(b);
+	}
 	const keysA = Object.keys(a);
 	const keysB = Object.keys(b);
 	if (keysA.length !== keysB.length) return false; // different number of keys

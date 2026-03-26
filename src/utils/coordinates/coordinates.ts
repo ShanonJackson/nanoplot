@@ -1,4 +1,18 @@
-import { CartesianDataset, InternalGraphContext } from "../../hooks/use-graph/use-graph";
+import { CartesianDataset, InternalGraphContext, TemporalDate } from "../../hooks/use-graph/use-graph";
+import { isTemporal, toEpochMs } from "../domain/utils/temporal";
+
+/** Convert a tick (number, string, or Temporal) to a numeric value. */
+const tickNum = (tick: unknown): number => (isTemporal(tick) ? toEpochMs(tick) : +(tick as number));
+
+/** Resolve the fastest possible value→number conversion for a given axis tick type. */
+const resolveToNum = (tick: unknown): ((v: any) => number) => {
+	if (!isTemporal(tick)) return (v) => v as number;
+	if ("epochMilliseconds" in (tick as object)) return (v) => v.epochMilliseconds; /* Instant | ZonedDateTime */
+	return (v) => {
+		if (typeof v === "number") return v;
+		return toEpochMs(v);
+	}; /* PlainDateTime | PlainDate */
+};
 
 /* avoids doing work for same ref multiple times across multiple components, without effecting garbage collection */
 const cacheFor = new WeakMap<
@@ -11,7 +25,7 @@ export const CoordinatesUtils = {
 		const { domain, viewbox } = context;
 		/* Given a whole dataset get x/y coordinates for everything */
 		const xLength = domain.x.length;
-		const xTicks = domain.x.map((d) => +d.tick);
+		const xTicks = domain.x.map((d) => tickNum(d.tick));
 		const xCoordinates = domain.x.map((d) => d.coordinate);
 		const xMin = xTicks[0];
 		const xMax = xTicks[xLength - 1];
@@ -22,12 +36,12 @@ export const CoordinatesUtils = {
 		const xIsLinearScale = xIsJumpUniform && xIsCoordinatesUniform;
 		const xRrange = 1 / (xMax - xMin);
 		const xCrange = xCoordinates[xLength - 1] - xCoordinates[0];
-		const xIsDateTime = domain.x[0]?.tick instanceof Date;
+		const xIsTemporal = isTemporal(domain.x[0]?.tick);
 		const xIsNumericalScale = typeof domain.x[0]?.tick === "number";
 		const xIsCategoricalScale = typeof domain.x[0]?.tick === "string";
 
 		const yLength = domain.y.length;
-		const yTicks = domain.y.map((d) => +d.tick);
+		const yTicks = domain.y.map((d) => tickNum(d.tick));
 		const yCoordinates = domain.y.map((d) => d.coordinate);
 		const yMin = yTicks[0];
 		const yMax = yTicks[yLength - 1];
@@ -39,11 +53,11 @@ export const CoordinatesUtils = {
 		const yRrange = 1 / (yMax - yMin);
 		const yCrange = yCoordinates[yLength - 1] - yCoordinates[0];
 		const yIsNumericalScale = typeof domain.y[0]?.tick === "number";
-		const yIsDateTimeScale = domain.y[0]?.tick instanceof Date;
+		const yIsTemporal = isTemporal(domain.y[0]?.tick);
 		const yIsCategoricalScale = typeof domain.y[0]?.tick === "string";
 
-		const isXLinearOptimized = xIsLinearScale && (xIsDateTime || xIsNumericalScale);
-		const isYLinearOptimized = yIsLinearScale && (yIsNumericalScale || yIsDateTimeScale);
+		const isXLinearOptimized = xIsLinearScale && (xIsTemporal || xIsNumericalScale);
+		const isYLinearOptimized = yIsLinearScale && (yIsNumericalScale || yIsTemporal);
 		if (isXLinearOptimized && isYLinearOptimized) {
 			const xMinCoordinate = xCoordinates[0];
 			const yMinCoordinate = yCoordinates[0];
@@ -53,19 +67,17 @@ export const CoordinatesUtils = {
 			const xOffset = xMinCoordinate - xMin * xScale;
 			const yOffset = yMinCoordinate - yMin * yScale;
 
+			const xToNum = resolveToNum(domain.x[0]?.tick);
+			const yToNum = resolveToNum(domain.y[0]?.tick);
+
 			return (data: CartesianDataset[number]["data"]) => {
 				if (cache.get(data)) return cache.get(data)!;
 				const len = data.length;
-				let output: Array<{ x: number; y: number }> = new Array(len);
+				const output: Array<{ x: number; y: number }> = new Array(len);
 				for (let i = 0; i < len; i++) {
 					const xy = data[i];
-					const vx = (
-						xy.x instanceof Date ? xy.x.getTime() : xy.x
-					) as number; /* .getTime() on date's required; Performance improvement */
-					const vy = (
-						xy.y instanceof Date ? xy.y.getTime() : xy.y
-					) as number; /* .getTime() on date's required; Performance improvement */
-
+					const vx = xIsTemporal ? xToNum(xy.x) : (xy.x as number);
+					const vy = yIsTemporal ? yToNum(xy.y) : (xy.y as number);
 					output[i] = {
 						x: vx * xScale + xOffset,
 						y: vy * yScale + yOffset,
@@ -76,18 +88,19 @@ export const CoordinatesUtils = {
 			};
 		}
 
+		const xToNum = resolveToNum(domain.x[0]?.tick);
+		const yToNum = resolveToNum(domain.y[0]?.tick);
+
 		return (data: CartesianDataset[number]["data"]) => {
 			return data.map((xy) => {
 				let x1;
-				if (xIsLinearScale && (xIsDateTime || xIsNumericalScale)) {
-					const v = (
-						xy.x instanceof Date ? xy.x.getTime() : xy.x
-					) as number; /* .getTime() on date's required; Performance improvement */
+				if (xIsLinearScale && (xIsTemporal || xIsNumericalScale)) {
+					const v = xIsTemporal ? xToNum(xy.x) : (xy.x as number);
 					x1 = xCoordinates[0] + (v - xMin) * xRrange * xCrange;
 				} else if (xIsCategoricalScale) {
 					x1 = domain.x.find((d) => d.tick === xy.x)?.coordinate ?? 0;
 				} else {
-					const numValue = +xy.x;
+					const numValue = xIsTemporal ? xToNum(xy.x) : +(xy.x as number);
 					if (numValue < xMin) return { x: 0, y: 0 };
 					if (numValue > xMax) return { x: viewbox.x, y: 0 };
 					let left = 0;
@@ -109,15 +122,13 @@ export const CoordinatesUtils = {
 
 				let y1;
 
-				if (yIsLinearScale && (yIsNumericalScale || yIsDateTimeScale)) {
-					const v = (
-						xy.y instanceof Date ? xy.y.getTime() : xy.y
-					) as number; /* .getTime() on date's required; Performance improvement */
+				if (yIsLinearScale && (yIsNumericalScale || yIsTemporal)) {
+					const v = yIsTemporal ? yToNum(xy.y) : (xy.y as number);
 					y1 = yCoordinates[0] + (v - yMin) * yRrange * yCrange;
 				} else if (yIsCategoricalScale) {
 					y1 = domain.y.find((d) => d.tick === xy.y)?.coordinate ?? 0;
 				} else {
-					const numValue = +xy.y;
+					const numValue = yIsTemporal ? yToNum(xy.y) : +(xy.y as number);
 					if (numValue > yMax) return { x: 0, y: 0 };
 					if (numValue < yMin) return { x: 0, y: viewbox.y };
 					let left = 0;
@@ -149,7 +160,7 @@ export const CoordinatesUtils = {
 		domain: { x: InternalGraphContext["domain"]["x"] };
 	}) => {
 		const length = domain.x.length;
-		const xTicks = domain.x.map((d) => +d.tick);
+		const xTicks = domain.x.map((d) => tickNum(d.tick));
 		const coordinates = domain.x.map((d) => d.coordinate);
 		const min = xTicks[0];
 		const max = xTicks[length - 1];
@@ -160,24 +171,23 @@ export const CoordinatesUtils = {
 		const isLinearScale = isJumpUniform && isCoordinatesUniform;
 		const rrange = 1 / (max - min);
 		const crange = coordinates[length - 1] - coordinates[0];
-		const isDateTime = domain.x[0]?.tick instanceof Date;
+		const isTemp = isTemporal(domain.x[0]?.tick);
 		const isNumericalScale = typeof domain.x[0]?.tick === "number";
 		const isCategoricalScale = typeof domain.x[0]?.tick === "string";
-		if (isLinearScale && (isDateTime || isNumericalScale)) {
-			return (value: number | string | Date) => {
-				const v = (
-					value instanceof Date ? value.getTime() : value
-				) as number; /* .getTime() on date's required; Performance improvement */
+		const toNum = resolveToNum(domain.x[0]?.tick);
+		if (isLinearScale && (isTemp || isNumericalScale)) {
+			return (value: number | string | TemporalDate) => {
+				const v = isTemp ? toNum(value) : (value as number);
 				return coordinates[0] + (v - min) * rrange * crange;
 			};
 		}
 		if (isCategoricalScale) {
-			return (value: number | string | Date) => {
+			return (value: number | string | TemporalDate) => {
 				return domain.x.find((d) => d.tick === value)?.coordinate ?? 0;
 			};
 		}
-		return (value: number | string | Date) => {
-			const numValue = +value;
+		return (value: number | string | TemporalDate) => {
+			const numValue = isTemp ? toNum(value) : +(value as number);
 			if (numValue < min) return 0;
 			if (numValue > max) return viewbox.x;
 			let left = 0;
@@ -203,7 +213,7 @@ export const CoordinatesUtils = {
 		domain: { y: InternalGraphContext["domain"]["y"] };
 	}) => {
 		const length = domain.y.length;
-		const yTicks = domain.y.map((d) => +d.tick);
+		const yTicks = domain.y.map((d) => tickNum(d.tick));
 		const coordinates = domain.y.map((d) => d.coordinate);
 		const min = yTicks[0];
 		const max = yTicks[length - 1];
@@ -215,23 +225,22 @@ export const CoordinatesUtils = {
 		const rrange = 1 / (max - min);
 		const crange = coordinates[length - 1] - coordinates[0];
 		const isNumericalScale = typeof domain.y[0]?.tick === "number";
-		const isDateTimeScale = domain.y[0]?.tick instanceof Date;
+		const isTemp = isTemporal(domain.y[0]?.tick);
 		const isCategoricalScale = typeof domain.y[0]?.tick === "string";
-		if (isLinearScale && (isNumericalScale || isDateTimeScale)) {
-			return (value: number | string | Date) => {
-				const v = (
-					value instanceof Date ? value.getTime() : value
-				) as number; /* .getTime() on date's required; Performance improvement */
+		const toNum = resolveToNum(domain.y[0]?.tick);
+		if (isLinearScale && (isNumericalScale || isTemp)) {
+			return (value: number | string | TemporalDate) => {
+				const v = isTemp ? toNum(value) : (value as number);
 				return coordinates[0] + (v - min) * rrange * crange;
 			};
 		}
 		if (isCategoricalScale) {
-			return (value: number | string | Date) => {
+			return (value: number | string | TemporalDate) => {
 				return domain.y.find((d) => d.tick === value)?.coordinate ?? 0;
 			};
 		}
-		return (value: number | string | Date) => {
-			const numValue = value instanceof Date ? value.getTime() : +value; /* .getTime() on date's required; Performance improvement */
+		return (value: number | string | TemporalDate) => {
+			const numValue = isTemp ? toNum(value) : +(value as number);
 			if (numValue > max) return 0;
 			if (numValue < min) return viewbox.y;
 			let left = 0;
@@ -253,114 +262,5 @@ export const CoordinatesUtils = {
 	},
 };
 
-export const xCoordinateFor = ({
-	domain,
-	viewbox,
-}: {
-	viewbox: InternalGraphContext["viewbox"];
-	domain: { x: InternalGraphContext["domain"]["x"] };
-}) => {
-	const length = domain.x.length;
-	const xTicks = domain.x.map((d) => +d.tick);
-	const coordinates = domain.x.map((d) => d.coordinate);
-	const min = xTicks[0];
-	const max = xTicks[length - 1];
-	const isJumpUniform = xTicks.every((tick, i, arr) => i === 0 || tick - arr[i - 1] === arr[1] - arr[0]);
-	const isCoordinatesUniform = coordinates.every(
-		(coord, i, arr) => i === 0 || Math.round(coord - arr[i - 1]) === Math.round(arr[1] - arr[0]),
-	);
-	const isLinearScale = isJumpUniform && isCoordinatesUniform;
-	const rrange = 1 / (max - min);
-	const crange = coordinates[length - 1] - coordinates[0];
-	const isDateTime = domain.x[0]?.tick instanceof Date;
-	const isNumericalScale = typeof domain.x[0]?.tick === "number";
-	const isCategoricalScale = typeof domain.x[0]?.tick === "string";
-	if (isLinearScale && (isDateTime || isNumericalScale)) {
-		return (value: number | string | Date) => {
-			const v = (
-				value instanceof Date ? value.getTime() : value
-			) as number; /* .getTime() on date's required; Performance improvement */
-			return coordinates[0] + (v - min) * rrange * crange;
-		};
-	}
-	if (isCategoricalScale) {
-		return (value: number | string | Date) => {
-			return domain.x.find((d) => d.tick === value)?.coordinate ?? 0;
-		};
-	}
-	return (value: number | string | Date) => {
-		const numValue = +value;
-		if (numValue <= min) return 0;
-		if (numValue >= max) return viewbox.x;
-		let left = 0;
-		let right = length - 1;
-		while (left < right) {
-			const mid = (left + right) >> 1;
-			if (xTicks[mid] < numValue) left = mid + 1;
-			else right = mid;
-		}
-		const lowIdx = Math.max(left - 1, 0);
-		const highIdx = Math.min(left, length - 1);
-		return xTicks[lowIdx] === xTicks[highIdx]
-			? coordinates[lowIdx]
-			: coordinates[lowIdx] +
-					((numValue - xTicks[lowIdx]) / (xTicks[highIdx] - xTicks[lowIdx])) * (coordinates[highIdx] - coordinates[lowIdx]);
-	};
-};
-
-export const yCoordinateFor = ({
-	domain,
-	viewbox,
-}: {
-	viewbox: InternalGraphContext["viewbox"];
-	domain: { y: InternalGraphContext["domain"]["y"] };
-}) => {
-	const length = domain.y.length;
-	const yTicks = domain.y.map((d) => +d.tick);
-	const coordinates = domain.y.map((d) => d.coordinate);
-	const min = yTicks[0];
-	const max = yTicks[length - 1];
-	const isJumpUniform = yTicks.every((tick, i, arr) => i === 0 || tick - arr[i - 1] === arr[1] - arr[0]);
-	const isCoordinatesUniform = coordinates.every(
-		(coord, i, arr) => i === 0 || Math.round(coord - arr[i - 1]) === Math.round(arr[1] - arr[0]),
-	);
-	const isLinearScale = isJumpUniform && isCoordinatesUniform;
-	const rrange = 1 / (max - min);
-	const crange = coordinates[length - 1] - coordinates[0];
-	const isNumericalScale = typeof domain.y[0]?.tick === "number";
-	const isDateTimeScale = domain.y[0]?.tick instanceof Date;
-	const isCategoricalScale = typeof domain.y[0]?.tick === "string";
-	if (isLinearScale && (isNumericalScale || isDateTimeScale)) {
-		return (value: number | string | Date) => {
-			const v = (
-				value instanceof Date ? value.getTime() : value
-			) as number; /* .getTime() on date's required; Performance improvement */
-			return coordinates[0] + (v - min) * rrange * crange;
-		};
-	}
-	if (isCategoricalScale) {
-		return (value: number | string | Date) => {
-			return domain.y.find((d) => d.tick === value)?.coordinate ?? 0;
-		};
-	}
-	return (value: number | string | Date) => {
-		const numValue = +value;
-		if (numValue >= max) return 0;
-		if (numValue <= min) return viewbox.y;
-		let left = 0;
-		let right = length - 1;
-		while (left < right) {
-			const mid = (left + right) >> 1;
-			if (yTicks[mid] < numValue) left = mid + 1;
-			else right = mid;
-		}
-		const lowIdx = Math.max(left - 1, 0);
-		const highIdx = Math.min(left, length - 1);
-		const highTick = yTicks[highIdx];
-		const lowCoord = coordinates[lowIdx];
-		const highCoord = coordinates[highIdx];
-		return yTicks[lowIdx] === highTick
-			? lowCoord
-			: lowCoord + ((numValue - yTicks[lowIdx]) / (highTick - yTicks[lowIdx])) * (highCoord - lowCoord);
-	};
-};
+export const xCoordinateFor = CoordinatesUtils.xCoordinateFor;
+export const yCoordinateFor = CoordinatesUtils.yCoordinateFor;

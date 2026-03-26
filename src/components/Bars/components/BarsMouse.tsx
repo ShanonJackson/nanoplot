@@ -2,7 +2,7 @@
 
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { MouseEvent, useRef } from "react";
-import { useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
+import { TemporalDate, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { tw } from "../../../utils/cx/cx";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
 			coordinates: SVGPoint;
 			px: { x: number; y: number };
 			closest: {
-				datapoint: { x: Date | string | number; y: Date | string | number };
-				tick: { x: string | number | Date; y: string | number | Date };
+				datapoint: { x: TemporalDate | string | number; y: TemporalDate | string | number };
+				tick: { x: string | number | TemporalDate; y: string | number | TemporalDate };
 			};
 		},
 		e: MouseEvent<SVGSVGElement>,

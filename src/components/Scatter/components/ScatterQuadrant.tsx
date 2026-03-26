@@ -1,12 +1,12 @@
-import { useGraph } from "../../../hooks/use-graph/use-graph";
+import { TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { Rect } from "../../Bars/components/Rect";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 
 type Props = {
-	x: number | Date | string;
-	y: number | Date | string;
-	x1: number | Date | string;
-	y1: number | Date | string;
+	x: number | TemporalDate | string;
+	y: number | TemporalDate | string;
+	x1: number | TemporalDate | string;
+	y1: number | TemporalDate | string;
 	fill: string | `linear_gradient(${string})`;
 };
 

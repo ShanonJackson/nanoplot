@@ -13,7 +13,6 @@ import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControl
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { GraphPanel } from "../../../components/Panels/GraphPanel";
 import { Graph } from "../../../components/Graph/Graph";
-import { format } from "../../../utils/date/date-format";
 import { SandpackShowcase } from "../../../components/Documentation/SandpackShowcase/SandpackShowcase";
 
 type Mouse = Parameters<NonNullable<ComponentProps<(typeof Bars)["Mouse"]>["onMove"]>>[0];
@@ -27,19 +26,6 @@ export default function Page() {
 	const [mouse, setMouse] = useState<Mouse>();
 	return (
 		<>
-			<SandpackShowcase language={"tsx"} title={"Showcase"}>
-				{`export default function App() {
-			    return (<div>helasdsadlo world</div>)
-			   }`}
-			</SandpackShowcase>
-			<ControlPanel>
-				<h1 className={"text-2xl pb-2"}>Bars</h1>
-				<BarsControlGroup state={bars} onChange={setBars} />
-				<LegendControlGroup state={legend} onChange={setLegend} />
-				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
-				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
-			</ControlPanel>
 			<GraphPanel>
 				<Graph
 					data={[
@@ -52,7 +38,7 @@ export default function Page() {
 								{ x: "Feb", y: 20_000 },
 								{ x: "Mar", y: 45_000 },
 								{ x: "Apr", y: 20_000 },
-							].map((d, i) => ({ x: new Date(2025, i, 1), y: d.y })),
+							].map((d, i) => ({ x: Temporal.PlainDate.from({ year: 2025, month: i + 1, day: 1 }), y: d.y })),
 						},
 						{
 							name: "Female",
@@ -63,32 +49,23 @@ export default function Page() {
 								{ x: "Feb", y: 10_000 },
 								{ x: "Mar", y: 15_000 },
 								{ x: "Apr", y: 30_000 },
-							].map((d, i) => ({ x: new Date(2025, i, 1), y: d.y })),
+							].map((d, i) => ({ x: Temporal.PlainDate.from({ year: 2025, month: i + 1, day: 1 }), y: d.y })),
 						},
 						{
 							name: "abcdefg",
 							fill: "red",
 							data: [
-								{ x: new Date(2025, 6, 1), y: 30_000 },
-								{ x: new Date(2025, 0, 1), y: 30_000 },
-								{ x: new Date(2025, 1, 1), y: 30_000 },
+								{ x: Temporal.PlainDate.from({ year: 2025, month: 6, day: 1 }), y: 30_000 },
+								{ x: Temporal.PlainDate.from({ year: 2025, month: 1, day: 1 }), y: 30_000 },
+								{ x: Temporal.PlainDate.from({ year: 2025, month: 2, day: 1 }), y: 30_000 },
 							],
 						},
-					].map((dp) => {
-						return {
-							...dp,
-							data: dp.data.map((d) => {
-								return { x: d.y, y: d.x };
-							}),
-						};
-					})}
+					]}
 					gap={{ top: 20, left: 15, right: 36, bottom: 15 }}
 				>
 					{legend.position === "top" && <Legend {...legend} />}
 					{legend.position === "left" && <Legend {...legend} />}
 					<YAxis
-						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
-						display={(x) => (x instanceof Date ? format(x) : null)}
 						teeth
 						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
 						description={
@@ -107,10 +84,20 @@ export default function Page() {
 							className={""}
 						/>
 					) : null}
-					<Bars {...bars} horizontal={true} interactions={{ y: mouse?.closest.tick.y }} />
+					<Bars {...bars} horizontal={false} />
 					<Bars.Mouse onMove={(mouse) => setMouse(mouse)} onLeave={() => setMouse(undefined)} />
 					{legend.position === "right" && <Legend {...legend} />}
-					<XAxis teeth {...xaxis} title={"HELLO WORLD TITLE"} description={"HELLOWRLD DESC"} />
+					<XAxis
+						teeth
+						{...xaxis}
+						title={"HELLO WORLD TITLE"}
+						description={"HELLOWRLD DESC"}
+						ticks={{ from: "auto - P1M", to: "auto + P1M", jumps: "P1M", type: "categorical" }}
+						display={(x) => {
+							if (typeof x === "number" || typeof x === "string") return null;
+							return "hello world";
+						}}
+					/>
 					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>

@@ -1,5 +1,5 @@
 import { toRgb } from "../color/to-rgb";
-import { CartesianDataset, InternalGraphContext } from "../../hooks/use-graph/use-graph";
+import { CartesianDataset, InternalGraphContext, TemporalDate } from "../../hooks/use-graph/use-graph";
 import { MathUtils, scale } from "../math/math";
 import { CoordinatesUtils } from "../coordinates/coordinates";
 
@@ -21,7 +21,7 @@ export const GradientUtils = {
 		domain,
 	}: {
 		gradient: string;
-		point: { x: number | string | Date; y: number | string | Date };
+		point: { x: number | string | TemporalDate; y: number | string | TemporalDate };
 		dataset: CartesianDataset[number]["data"];
 		viewbox: InternalGraphContext["viewbox"];
 		domain: InternalGraphContext["domain"];

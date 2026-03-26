@@ -1,4 +1,4 @@
-import { InternalGraphContext } from "../../../hooks/use-graph/use-graph";
+import { InternalGraphContext, TemporalDate } from "../../../hooks/use-graph/use-graph";
 import * as React from "react";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { GradientUtils } from "../../../utils/gradient/gradient";
@@ -7,7 +7,7 @@ import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { cx } from "../../../utils/cx/cx";
 
 type Props = {
-	at?: { x: string | number | Date };
+	at?: { x: string | number | TemporalDate };
 	border?: string;
 	strokeWidth?: number;
 	context: InternalGraphContext;

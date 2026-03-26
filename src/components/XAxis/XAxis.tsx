@@ -1,5 +1,5 @@
 import React, { ComponentProps, ReactNode } from "react";
-import { InternalGraphContext, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
+import { InternalGraphContext, TemporalDate, useDataset, useGraph } from "../../hooks/use-graph/use-graph";
 import { Graph } from "../Graph/Graph";
 import { DomainUtils } from "../../utils/domain/domain";
 import { scale } from "../../utils/math/math";
@@ -12,13 +12,12 @@ type Props = Omit<ComponentProps<"div">, "title"> & {
 	teeth?: boolean;
 	description?: ReactNode;
 	dataset?: string;
-	display?: (tick: number | string | Date) => ReactNode;
+	display?: (tick: number | string | TemporalDate) => ReactNode;
 };
 
 export const XAxis = ({ display, title, ticks, description, dataset, teeth, ...rest }: Props) => {
 	const { domain, viewbox } = useDataset(dataset);
 	const formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-
 	const labels = domain.x.map(({ tick, coordinate }) => {
 		const label = (() => {
 			if (display) return display(tick);

@@ -43,7 +43,7 @@ export default function Page() {
 						gap={5}
 						onMouseEnter={(segment) => setHovered(segment)}
 						onMouseLeave={() => setHovered(undefined)}
-						radius={40}
+						radius={30}
 						labels={true}
 					>
 						<>

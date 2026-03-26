@@ -1,8 +1,9 @@
 import { RefObject, useEffect, useMemo, useState } from "react";
 import { scale } from "../utils/math/math";
-import { useGraph } from "./use-graph/use-graph";
+import { TemporalDate, useGraph } from "./use-graph/use-graph";
 import { GraphUtils } from "../utils/graph/graph";
 import { useGraphRef } from "./use-graph/use-graph-ref";
+import { isTemporal, toEpochMs, getTemporalKind, getTimeZone, fromEpochMs } from "../utils/domain/utils/temporal";
 
 export function useMouseCoordinates(
 	ref: RefObject<SVGSVGElement | null>,
@@ -11,8 +12,8 @@ export function useMouseCoordinates(
 	coordinates: SVGPoint;
 	px: { x: number; y: number; clientX: number; clientY: number };
 	closest: {
-		datapoint: { x: Date | string | number; y: Date | string | number };
-		tick: { x: string | number | Date; y: string | number | Date };
+		datapoint: { x: number | string | TemporalDate; y: number | string | TemporalDate };
+		tick: { x: number | string | TemporalDate; y: number | string | TemporalDate };
 	};
 };
 
@@ -23,8 +24,8 @@ export function useMouseCoordinates(
 	coordinates: SVGPoint;
 	px: { x: number; y: number; clientX: number; clientY: number };
 	closest: {
-		datapoint: { x: Date | string | number; y: Date | string | number };
-		tick: { x: string | number | Date; y: string | number | Date };
+		datapoint: { x: number | string | TemporalDate; y: number | string | TemporalDate };
+		tick: { x: number | string | TemporalDate; y: number | string | TemporalDate };
 	};
 };
 export function useMouseCoordinates(
@@ -34,8 +35,8 @@ export function useMouseCoordinates(
 	coordinates: SVGPoint;
 	px: { x: number; y: number; clientX: number; clientY: number };
 	closest: {
-		datapoint: { x: Date | string | number; y: Date | string | number };
-		tick: { x: string | number | Date; y: string | number | Date };
+		datapoint: { x: number | string | TemporalDate; y: number | string | TemporalDate };
+		tick: { x: number | string | TemporalDate; y: number | string | TemporalDate };
 	};
 };
 export function useMouseCoordinates(
@@ -47,10 +48,10 @@ export function useMouseCoordinates(
 	const [point, setPoint] = useState<SVGPoint>();
 	const [xy, setXY] = useState<{ x: number; y: number }>();
 	const [clientXY, setClientXY] = useState<{ clientX: number; clientY: number }>();
-	const [closestX, setClosestX] = useState<number | string | Date>();
-	const [closestY, setClosestY] = useState<number | string | Date>();
-	const [closestXTick, setClosestXTick] = useState<string | number | Date>();
-	const [closestYTick, setClosestYTick] = useState<string | number | Date>();
+	const [closestX, setClosestX] = useState<number | string | TemporalDate>();
+	const [closestY, setClosestY] = useState<number | string | TemporalDate>();
+	const [closestXTick, setClosestXTick] = useState<number | string | TemporalDate>();
+	const [closestYTick, setClosestYTick] = useState<number | string | TemporalDate>();
 	const { data, viewbox, domain } = useGraph();
 
 	const isLazyCalculate = closest?.x || closest?.y ? (closest?.lazy ? inside : true) : false;
@@ -61,14 +62,31 @@ export function useMouseCoordinates(
 		if (!svg || !graph) return;
 		const controller = new AbortController();
 
+		const xTick0 = domain.x[0]?.tick;
+		const xIsTemp = isTemporal(xTick0);
 		const xTicks = domain.x.map(({ tick, coordinate }) => ({
-			tick: tick instanceof Date ? tick.getTime() : (tick as number),
+			tick: typeof tick === "number" || typeof tick === "string" ? (tick as number) : toEpochMs(tick),
 			coordinate,
 		}));
+		const xFromNum: (v: number) => number | TemporalDate = xIsTemp
+			? (
+					(kind, tz) => (v: number) =>
+						fromEpochMs(v, kind, tz)
+				)(getTemporalKind(xTick0!), getTimeZone(xTick0!))
+			: (v) => v;
+
+		const yTick0 = domain.y[0]?.tick;
+		const yIsTemp = isTemporal(yTick0);
 		const yTicks = domain.y.map(({ tick, coordinate }) => ({
-			tick: tick instanceof Date ? tick.getTime() : (tick as number),
-			coordinate: coordinate,
+			tick: typeof tick === "number" || typeof tick === "string" ? (tick as number) : toEpochMs(tick),
+			coordinate,
 		}));
+		const yFromNum: (v: number) => number | TemporalDate = yIsTemp
+			? (
+					(kind, tz) => (v: number) =>
+						fromEpochMs(v, kind, tz)
+				)(getTemporalKind(yTick0!), getTimeZone(yTick0!))
+			: (v) => v;
 
 		graph.addEventListener(
 			"mousemove",
@@ -99,10 +117,10 @@ export function useMouseCoordinates(
 					const proportion = t0.coordinate === t1.coordinate ? 0 : (svgX - t0.coordinate) / (t1.coordinate - t0.coordinate);
 					const closest = proportion > 0.5 ? t1.tick : t0.tick;
 					const interpolatedX = t0.tick + proportion * (t1.tick - t0.tick);
-					const isDateTimeAxis = domain.x[0]?.tick instanceof Date;
+					/* resolve back to original Temporal type (or number) */
 					return {
-						tick: isDateTimeAxis ? new Date(closest) : closest,
-						datapoint: isDateTimeAxis ? new Date(findClosestValue(interpolatedX, xValues)) : interpolatedX,
+						tick: xFromNum(closest),
+						datapoint: xFromNum(findClosestValue(interpolatedX, xValues)),
 					};
 				})();
 
@@ -117,10 +135,10 @@ export function useMouseCoordinates(
 					const proportion = t0.coordinate === t1.coordinate ? 0 : (svgY - t0.coordinate) / (t1.coordinate - t0.coordinate);
 					const closest = proportion > 0.5 ? t1.tick : t0.tick;
 					const interpolatedY = t0.tick + proportion * (t1.tick - t0.tick);
-					const isDateTimeAxis = domain.y[0]?.tick instanceof Date;
+					/* resolve back to original Temporal type (or number) */
 					return {
-						tick: isDateTimeAxis ? new Date(closest) : closest,
-						datapoint: isDateTimeAxis ? new Date(findClosestValue(interpolatedY, yValues)) : interpolatedY,
+						tick: yFromNum(closest),
+						datapoint: yFromNum(findClosestValue(interpolatedY, yValues)),
 					};
 				})();
 
@@ -142,14 +160,14 @@ export function useMouseCoordinates(
 	const xValues = useMemo(() => {
 		if (!GraphUtils.isXYData(data) || !isLazyCalculate || !closest?.x) return [];
 		return data
-			.flatMap(({ data: series }) => series.map(({ x }) => (x instanceof Date ? x.getTime() : (x as number))))
+			.flatMap(({ data: series }) => series.map(({ x }) => (isTemporal(x) ? toEpochMs(x) : (x as number))))
 			.sort((a, b) => a - b);
 	}, [closest?.x ? data : undefined, isLazyCalculate]);
 
 	const yValues = useMemo(() => {
 		if (!GraphUtils.isXYData(data) || !isLazyCalculate || !closest?.y) return [];
 		return data
-			.flatMap(({ data: series }) => series.map(({ y }) => (y instanceof Date ? y.getTime() : (y as number))))
+			.flatMap(({ data: series }) => series.map(({ y }) => (isTemporal(y) ? toEpochMs(y) : (y as number))))
 			.sort((a, b) => a - b);
 	}, [closest?.y ? data : undefined, isLazyCalculate]);
 

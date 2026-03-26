@@ -1,9 +1,10 @@
-import { GraphContext } from "../../../hooks/use-graph/use-graph";
+import { GraphContext, TemporalDate } from "../../../hooks/use-graph/use-graph";
 import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
 import { scale } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
-import { getDateDomain, getDurationFromMinMax } from "./date-domain";
+import { isTemporal, toEpochMs, getTemporalKind, getTimeZone, fromEpochMs, TemporalKind } from "./temporal";
+import { getDurationFromMinMax, getTemporalDomain } from "./temporal-domain";
 import { getRangeForSet } from "./auto-minmax";
 
 export const range = (
@@ -16,12 +17,13 @@ export const range = (
 	dimension: "x" | "y",
 ) => {
 	if (!GraphUtils.isXYData(data) || data.length === 0) return [];
-	const isDateTime = data[0]?.data?.[0]?.[dimension] instanceof Date;
+	const firstValue = data[0]?.data?.[0]?.[dimension];
+	const isTemp = isTemporal(firstValue);
 
 	const inverse = dimension === "y" ? "x" : "y";
 	const viewb = dimension === "y" ? viewbox.y : viewbox.x;
 
-	if (typeof data[0]?.data?.[0]?.[dimension] === "string" /* Categorical */) {
+	if (typeof firstValue === "string" /* Categorical */) {
 		const xValues = Array.from(new Set(data.flatMap((line) => line.data.map((d) => d[dimension])))).reverse();
 		const tickWidth = viewb / xValues.length;
 		return xValues.map((tick, i) => ({
@@ -30,29 +32,30 @@ export const range = (
 		}));
 	}
 
-	/* get min/max of dataset in stack safe AND performant way. i.e Math.min(...values) will stack overflow >129_000 or so */
+	const kind: TemporalKind = isTemp ? getTemporalKind(firstValue) : "Instant";
+	const timeZone: string = isTemp ? getTimeZone(firstValue) : "UTC";
+
+	/* get min/max of dataset in stack safe AND performant way */
 	let datasetMin = typeof from === "number" ? from : Infinity;
 	let datasetMax = typeof to === "number" ? to : -Infinity;
 
 	if (dimension === "x" && (typeof from !== "number" || typeof to !== "number")) {
-		/* these are split for JIT performance */
 		for (let i = 0; i < data.length; i++) {
 			const lineData = data[i].data;
 			for (let j = 0; j < lineData.length; j++) {
 				const value = lineData[j].x;
-				const v = isDateTime ? (value as Date).getTime() : (value as number);
+				const v = isTemp ? toEpochMs(value as TemporalDate) : (value as number);
 				if (v < datasetMin) datasetMin = v;
 				if (v > datasetMax) datasetMax = v;
 			}
 		}
 	}
 	if (dimension === "y" && (typeof from !== "number" || typeof to !== "number")) {
-		/* these are split for JIT performance */
 		for (let i = 0; i < data.length; i++) {
 			const lineData = data[i].data;
 			for (let j = 0; j < lineData.length; j++) {
 				const value = lineData[j].y;
-				const v = isDateTime ? (value as Date).getTime() : (value as number);
+				const v = isTemp ? toEpochMs(value as TemporalDate) : (value as number);
 				if (v < datasetMin) datasetMin = v;
 				if (v > datasetMax) datasetMax = v;
 			}
@@ -61,20 +64,14 @@ export const range = (
 
 	const min = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return datasetMin;
-		/*
-			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
-			This is the case for stacked-bars.
-			groupBy group; then group by x
-			Math.min(Sum y)
-		*/
+		if (!grouped || isTemp) return datasetMin;
 		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((min1, [, v]) => {
 			const dataset = ObjectUtils.groupBy(v?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
 			const minForDataset = Object.entries(dataset).reduce((min2, [, values2]) => {
 				return Math.min(
 					min2,
 					(values2 ?? []).reduce((total, dp) => {
-						if (+dp[dimension] > 0) return total; // only sum negative values togeather for min.
+						if (+dp[dimension] > 0) return total;
 						return total + +[dp[dimension]];
 					}, 0),
 				);
@@ -85,21 +82,14 @@ export const range = (
 
 	const max = (() => {
 		const grouped = data.some((d) => Boolean(d.group));
-		if (!grouped || isDateTime) return datasetMax;
-
-		/*
-			If it's grouped we need to sum the 'y' values for everyone in the same group for the same 'x'
-			This is the case for stacked-bars.
-			groupBy group; then group by x
-			Math.max(Sum y)
-		*/
+		if (!grouped || isTemp) return datasetMax;
 		return Object.entries(ObjectUtils.groupBy(data, ({ group }, index) => group ?? `|i${index}`)).reduce((max1, [, v]) => {
 			const dataset = ObjectUtils.groupBy(v?.flatMap(({ data }) => data) ?? [], (dp) => dp[inverse].toString());
 			const maxForDataset = Object.entries(dataset).reduce((max2, [, values2]) => {
 				return Math.max(
 					max2,
 					(values2 ?? []).reduce((total, dp) => {
-						if (+dp[dimension] < 0) return total; // only sum positive values togeather for min.
+						if (+dp[dimension] < 0) return total;
 						return total + +[dp[dimension]];
 					}, 0),
 				);
@@ -111,28 +101,17 @@ export const range = (
 	if (min === max) return [{ tick: min, coordinate: viewb / 2 }];
 
 	const duration = (() => {
-		/* ISO 8601 Duration Format - https://en.wikipedia.org/wiki/ISO_8601#Durations */
-		if (!isDateTime) return "";
-		if (jumps === "auto" || typeof jumps === "number") {
-			return getDurationFromMinMax(min, max);
-		}
+		if (!isTemp) return "";
+		if (jumps === "auto" || typeof jumps === "number") return getDurationFromMinMax(min, max);
 		return jumps;
 	})();
 	const {
 		min: MIN,
 		max: MAX,
 		jumps: RECOMMENDED_JUMPS,
-	} = getRangeForSet({
-		min,
-		max,
-		duration,
-		isDateTime,
-		from,
-		to,
-	});
+	} = getRangeForSet({ min, max, duration, isTemporal: isTemp, from, to, kind, timeZone });
 	if (MIN === MAX) return [{ tick: MIN, coordinate: viewb / 2 }];
-
-	if (typeof jumps === "number" || (jumps === "auto" && !isDateTime)) {
+	if (typeof jumps === "number" || (jumps === "auto" && !isTemp)) {
 		const mx = Number(MAX);
 		const mn = Number(MIN);
 		const JUMPS = (() => {
@@ -142,10 +121,8 @@ export const range = (
 				const digits = Math.max(0, Math.round(distance).toString().replace("-", "").length - 2);
 				const jump =
 					[
-						parseInt("1" + "0".repeat(digits + 1)) /* i.e for max of 50_000 min of 0 */,
-						parseInt(
-							"2" + "5" + "0".repeat(Math.max(0, digits - 1)),
-						) /* If distance is 1_000_000 this would check if it's divisible by 250_000 */,
+						parseInt("1" + "0".repeat(digits + 1)),
+						parseInt("2" + "5" + "0".repeat(Math.max(0, digits - 1))),
 						parseInt("2" + "0".repeat(digits)),
 						parseInt("5" + "0".repeat(digits)),
 						parseInt("3" + "0".repeat(digits)),
@@ -159,12 +136,8 @@ export const range = (
 						10,
 						11,
 					]
-						.map((jump) => {
-							return distance / jump;
-						})
-						.find((jump) => {
-							return distance % jump === 0 && jump <= 11 && jump >= 5;
-						}) ?? 9;
+						.map((jump) => distance / jump)
+						.find((jump) => distance % jump === 0 && jump <= 11 && jump >= 5) ?? 9;
 				return jump + 1;
 			}
 			return jumps;
@@ -174,35 +147,22 @@ export const range = (
 			coordinate: scale(i, [0, JUMPS - 1], [0, viewb]),
 		}));
 	}
+	/* Temporal Domain */
+	if (typeof MIN === "number" || typeof MAX === "number") return []; /* not possible */
+	const domain = getTemporalDomain({ min: MIN, max: MAX, duration });
 
-	/*
-		Datetime Domain.
-		min === "auto" -> start the graph from the first datapoint in the dataset. (touching the side of graph)
-		min === "min" -> start the graph from the floored date.
-		min === "min - P1M" -> start the graph from the floored date - 1 month.
-		max === "auto" -> end the graph at the last datapoint in the dataset (touching the side of graph)
-		max === "max" -> end the graph at the ceiling date.
-		max === "max + P1M" -> end the graph at the ceiling date + 1 month.
-
-
-		WHEN CATEGORICAL (type: categorical) is used, we shift the domain to the
-	 */
-	const domain = getDateDomain({
-		min: new Date(MIN),
-		max: new Date(MAX),
-		duration,
-	});
-	const minTime = new Date(MIN).getTime();
-	const maxTime = new Date(MAX).getTime();
+	const minTime = toEpochMs(MIN);
+	const maxTime = toEpochMs(MAX);
 
 	if (type === "categorical") {
-		return domain.map((tick, i, arr) => {
-			return { tick, coordinate: (viewbox[dimension] / arr.length) * (i + 0.5) };
-		});
+		return domain.map((tick, i, arr) => ({
+			tick,
+			coordinate: (viewbox[dimension] / arr.length) * (i + 0.5),
+		}));
 	}
 
 	return domain.map((tick) => ({
 		tick,
-		coordinate: ((tick.getTime() - minTime) / (maxTime - minTime)) * viewb /* math scale inline for perf. */,
+		coordinate: ((toEpochMs(tick) - minTime) / (maxTime - minTime)) * viewb,
 	}));
 };

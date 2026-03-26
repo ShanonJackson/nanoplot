@@ -1,39 +1,37 @@
 import { FromToJumps } from "../../../models/domain/domain";
-import { addDurationToDate, getCeilDateFromDuration, getFloorDateFromDuration, removeDurationFromDate } from "./date-domain";
+import { TemporalKind, fromEpochMs, toEpochMs, toZdt, toKind } from "./temporal";
+import { getCeilTemporalFromDuration, getFloorTemporalFromDuration } from "./temporal-domain";
 import { DomainUtils } from "../domain";
+import { TemporalDate } from "../../../hooks/use-graph/use-graph";
 
 const NICE_STEPS = [1, 2, 2.5, 5, 10] as const;
 const DESIRED_STEPS = 11;
 const MIN_TICKS = 4;
-const MAX_GAP_RATIO = 0.375; // maximum 37.5% gap at ends COMBINED
-const MAX_INDIVIDUAL_GAP = 0.2; // maximum 20% gap at either end of the range
+const MAX_GAP_RATIO = 0.375;
+const MAX_INDIVIDUAL_GAP = 0.2;
 
 export const getRangeForSet = ({
 	min,
 	max,
 	from = "auto",
 	to = "auto",
-	isDateTime,
+	isTemporal: isTemp,
 	duration,
+	kind,
+	timeZone,
 }: {
 	from: FromToJumps["from"];
 	to: FromToJumps["to"];
 	duration: string;
-	isDateTime: boolean;
+	isTemporal: boolean;
 	min: number;
 	max: number;
-}): { min: number | Date; max: number | Date; jumps?: number } => {
-	/*
-	 * If "from/to" are both "auto" and it's not date domain we need to calculate both at same time in order to get the best looking axes.
-	 *      - Also; Favor taking less jumps, and favor taking jumps that don't result in a gap of >20% at either the start of end of the range.
-	 *
-	 * If "from" is unknown and "to" is auto then calculate "min" first then "max"
-	 * If "to" is known and "from" is auto then calculate "max" first then "min"
-	 */
-	if (from === "auto" && to === "auto" && !isDateTime) {
+	kind: TemporalKind;
+	timeZone: string;
+}): { min: number | TemporalDate; max: number | TemporalDate; jumps?: number } => {
+	if (from === "auto" && to === "auto" && !isTemp) {
 		const zeroedMin = min >= 0 ? 0 : min;
 
-		// if (max <= zeroedMin) return { min: zeroedMin, max: to }; don't think this is possible. removing it.
 		const rawStep = (max - zeroedMin) / DESIRED_STEPS;
 		const exp = Math.floor(Math.log10(rawStep));
 		const possibleSteps: number[] = [];
@@ -83,41 +81,38 @@ export const getRangeForSet = ({
 		};
 	}
 
-	if (from !== "auto" /* i have a known from */) {
-		//* I have a known 'to' but not a known from.
-		const MIN = minFor({ min, max, from, isDateTime, duration });
-		const MAX = maxFor({ min: +MIN, max, to, isDateTime, duration });
-		return {
-			min: MIN,
-			max: MAX,
-		};
+	if (from !== "auto") {
+		const MIN = minFor({ min, max, from, isTemporal: isTemp, duration, kind, timeZone });
+		const MAX = maxFor({ min: typeof MIN === "number" ? MIN : toEpochMs(MIN), max, to, isTemporal: isTemp, duration, kind, timeZone });
+		return { min: MIN, max: MAX };
 	}
 
-	// i have a known from and a known to.
-	const MAX = maxFor({ min, max, to, isDateTime, duration });
-	const MIN = minFor({ min, max, from, isDateTime, duration });
-	return {
-		min: MIN,
-		max: MAX,
-	};
+	const MAX = maxFor({ min, max, to, isTemporal: isTemp, duration, kind, timeZone });
+	const MIN = minFor({ min, max, from, isTemporal: isTemp, duration, kind, timeZone });
+	return { min: MIN, max: MAX };
 };
 
 const minFor = ({
 	min,
 	max,
 	from = "auto",
-	isDateTime,
+	isTemporal: isTemp,
 	duration,
+	kind,
+	timeZone,
 }: {
 	min: number;
 	max: number;
 	from: NonNullable<FromToJumps["from"]>;
-	isDateTime: boolean;
+	isTemporal: boolean;
 	duration: string;
+	kind: TemporalKind;
+	timeZone: string;
 }) => {
 	if (from === "min" || from === "auto") {
-		if (isDateTime) {
-			return from === "auto" ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
+		if (isTemp) {
+			const v = fromEpochMs(min, kind, timeZone);
+			return from === "auto" ? v : getFloorTemporalFromDuration(v, duration);
 		}
 		return from === "min" ? min : DomainUtils.autoMinFor({ min, max });
 	}
@@ -127,20 +122,16 @@ const minFor = ({
 	const isPercentage = from.includes("%");
 	const value = +from.replace(/[^0-9]/g, "");
 	const modifyDuration = from.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0];
-	if (operator === "+") {
-		if (modifyDuration) {
-			const dte = isAuto ? new Date(min) : getCeilDateFromDuration(new Date(min), duration);
-			return addDurationToDate(dte, modifyDuration);
-		}
-		return isPercentage ? min + (min * value) / 100 : min + value;
+	if (operator === "+" && modifyDuration) {
+		const base = isAuto ? fromEpochMs(min, kind, timeZone) : getCeilTemporalFromDuration(fromEpochMs(min, kind, timeZone), duration);
+		return toKind(toZdt(base, timeZone).add(Temporal.Duration.from(modifyDuration)), kind);
 	}
-	if (operator === "-") {
-		if (modifyDuration) {
-			const dte = isAuto ? new Date(min) : getFloorDateFromDuration(new Date(min), duration);
-			return removeDurationFromDate(dte, modifyDuration);
-		}
-		return isPercentage ? min - (min * value) / 100 : min - value;
+	if (operator === "-" && modifyDuration) {
+		const base = isAuto ? fromEpochMs(min, kind, timeZone) : getFloorTemporalFromDuration(fromEpochMs(min, kind, timeZone), duration);
+		return toKind(toZdt(base, timeZone).subtract(Temporal.Duration.from(modifyDuration)), kind);
 	}
+	if (operator === "+") return isPercentage ? min + (min * value) / 100 : min + value;
+	if (operator === "-") return isPercentage ? min - (min * value) / 100 : min - value;
 	return min;
 };
 
@@ -148,18 +139,23 @@ const maxFor = ({
 	min,
 	max,
 	to = "auto",
-	isDateTime,
+	isTemporal: isTemp,
 	duration,
+	kind,
+	timeZone,
 }: {
 	min: number;
 	max: number;
 	to: NonNullable<FromToJumps["to"]>;
-	isDateTime: boolean;
+	isTemporal: boolean;
 	duration: string;
+	kind: TemporalKind;
+	timeZone: string;
 }) => {
 	if (to === "max" || to === "auto") {
-		if (isDateTime) {
-			return to === "auto" ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
+		if (isTemp) {
+			const v = fromEpochMs(max, kind, timeZone);
+			return to === "auto" ? v : getCeilTemporalFromDuration(v, duration);
 		}
 		return to === "max" ? max : DomainUtils.autoMaxFor({ max, min });
 	}
@@ -169,19 +165,15 @@ const maxFor = ({
 	const isPercentage = to.includes("%");
 	const value = +to.replace(/[^0-9]/g, "");
 	const modifyDuration = to.match(/P(?:\d+[YMD])*(?:T\d+[HMS]*)?/)?.[0];
-	if (operator === "+") {
-		if (modifyDuration) {
-			const dte = isAuto ? new Date(max) : getCeilDateFromDuration(new Date(max), duration);
-			return addDurationToDate(dte, modifyDuration);
-		}
-		return isPercentage ? max + (max * value) / 100 : max + value;
+	if (operator === "+" && modifyDuration) {
+		const base = isAuto ? fromEpochMs(max, kind, timeZone) : getCeilTemporalFromDuration(fromEpochMs(max, kind, timeZone), duration);
+		return toKind(toZdt(base, timeZone).add(Temporal.Duration.from(modifyDuration)), kind);
 	}
-	if (operator === "-") {
-		if (modifyDuration) {
-			const dte = isAuto ? new Date(max) : getFloorDateFromDuration(new Date(max), duration);
-			return removeDurationFromDate(dte, modifyDuration);
-		}
-		return isPercentage ? max - (max * value) / 100 : max - value;
+	if (operator === "-" && modifyDuration) {
+		const base = isAuto ? fromEpochMs(max, kind, timeZone) : getFloorTemporalFromDuration(fromEpochMs(max, kind, timeZone), duration);
+		return toKind(toZdt(base, timeZone).subtract(Temporal.Duration.from(modifyDuration)), kind);
 	}
+	if (operator === "+") return isPercentage ? max + (max * value) / 100 : max + value;
+	if (operator === "-") return isPercentage ? max - (max * value) / 100 : max - value;
 	return max;
 };

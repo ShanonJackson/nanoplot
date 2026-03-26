@@ -1,4 +1,5 @@
 "use client";
+
 import { ComponentProps, useState } from "react";
 import { Lines } from "../../../components/Lines/Lines";
 import { GridLines } from "../../../components/GridLines/GridLines";
@@ -38,29 +39,9 @@ export default function Page() {
 	const [hovered, setHovered] = useState<string[]>([]);
 	const [pinned, setPinned] = useState<string[]>([]);
 	const [zoom, setZoom] = useState<{ x: [number, number]; y: [number, number] }>({ x: [0, 100], y: [0, 100] });
-	const data = [
-		{
-			name: "Cars",
-			data: [
-				{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-				{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-				{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-				{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-				{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-				{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-			],
-		},
-	];
+
 	return (
 		<>
-			<ControlPanel>
-				<h1 className={"text-2xl pb-2"}>Line Graph</h1>
-				<LinesControlGroup state={line} onChange={setLine} />
-				<LegendControlGroup state={legend} onChange={setLegend} />
-				<GridLinesControlGroup state={gridline} onChange={setGridline} />
-				<XAxisControlGroup state={xaxis} onChange={setXAxis} />
-				<YAxisControlGroup state={yaxis} onChange={setYAxis} />
-			</ControlPanel>
 			<GraphPanel className={"bg-[#191937] p-4"}>
 				<Graph
 					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
@@ -71,36 +52,36 @@ export default function Page() {
 							name: "New Users",
 							stroke: "#FF4B4B",
 							data: [
-								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 20 },
-								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 25 },
-								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 50 },
-								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 45 },
-								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 35 },
-								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 100 },
-								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 85 },
-								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 72 },
-								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 75 },
+								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
+								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
+								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
+								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
+								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
+								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
+								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
+								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 100 },
+								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
+								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
+								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
+								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 75 },
 							],
 						},
 						{
 							name: "Registered Users",
 							stroke: "#33D4FF",
 							data: [
-								{ x: new Date(2024, 0, 1, 0, 0, 0, 0), y: 45 },
-								{ x: new Date(2024, 1, 1, 0, 0, 0, 0), y: 60 },
-								{ x: new Date(2024, 2, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 3, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 4, 1, 0, 0, 0, 0), y: 70 },
-								{ x: new Date(2024, 5, 1, 0, 0, 0, 0), y: 75 },
-								{ x: new Date(2024, 6, 1, 0, 0, 0, 0), y: 60 },
-								{ x: new Date(2024, 7, 1, 0, 0, 0, 0), y: 55 },
-								{ x: new Date(2024, 8, 1, 0, 0, 0, 0), y: 80 },
-								{ x: new Date(2024, 9, 1, 0, 0, 0, 0), y: 85 },
-								{ x: new Date(2024, 10, 1, 0, 0, 0, 0), y: 80 },
-								{ x: new Date(2024, 11, 1, 0, 0, 0, 0), y: 82 },
+								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 45 },
+								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 60 },
+								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
+								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
+								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
+								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 60 },
+								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
+								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 80 },
+								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
+								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 80 },
+								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 82 },
+								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 50 },
 							],
 						},
 					]}
@@ -133,9 +114,8 @@ export default function Page() {
 					<XAxis
 						ticks={{ from: "min", to: "max", jumps: "P2M" }}
 						display={(x) => {
-							const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 							if (typeof x === "number" || typeof x === "string") return null;
-							return months[x.getMonth()];
+							return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
 						}}
 					/>
 				</Graph>

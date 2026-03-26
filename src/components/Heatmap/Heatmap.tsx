@@ -1,4 +1,4 @@
-import { useGraph } from "../../hooks/use-graph/use-graph";
+import { TemporalDate, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
 import { Rect } from "../Bars/components/Rect";
 import { GraphUtils } from "../../utils/graph/graph";
@@ -15,8 +15,8 @@ type Props = React.HTMLAttributes<SVGSVGElement> & {
 	scalars: number[] | Array<{ tick: number; percent: number }>;
 	labels?:
 		| boolean
-		| ((value: string | number | Date) => string)
-		| { collision?: boolean; display: (value: string | number | Date) => string };
+		| ((value: string | number | TemporalDate) => string)
+		| { collision?: boolean; display: (value: string | number | TemporalDate) => string };
 };
 
 export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }: Props) => {

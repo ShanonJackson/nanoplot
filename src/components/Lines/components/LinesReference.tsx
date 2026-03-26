@@ -1,9 +1,10 @@
 import { overlay } from "../../Overlay/Overlay";
 import { ComponentProps, JSX } from "react";
+import { TemporalDate } from "../../../hooks/use-graph/use-graph";
 
 type Props = ComponentProps<"div"> & {
-	x: number | string | Date;
-	y: number | string | Date;
+	x: number | string | TemporalDate;
+	y: number | string | TemporalDate;
 };
 
 export const LinesReference = ({ x, y, ...rest }: Props) => {
