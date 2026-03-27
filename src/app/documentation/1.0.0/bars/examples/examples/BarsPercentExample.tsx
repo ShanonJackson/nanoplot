@@ -65,7 +65,7 @@ export default function App() {
 			>
 				<YAxis ticks={{ to: 100 }} display={(y) => \`\${y}%\`} />
 				<GridLines />
-				<Bars labels={(y) => Math.round(y) + "%"} />
+				<Bars labels={(bar) => Math.round(bar.data.y) + "%"} />
 				<XAxis />
 			</Graph>
 		</div>

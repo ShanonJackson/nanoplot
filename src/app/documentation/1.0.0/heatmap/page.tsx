@@ -119,7 +119,8 @@ export default function App() {
 					gradient={gradient}
 					scalars={scalars}
 					labels={(value) => {
-						return new Intl.NumberFormat("en", { notation: "compact", compactDisplay: "short" }).format(Number(value));
+						if(value === 0 || value === 100) return value;
+						return null;
 					}}
 				/>
 				<YAxis />

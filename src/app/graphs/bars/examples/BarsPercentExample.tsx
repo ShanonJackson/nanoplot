@@ -64,7 +64,7 @@ export const BarsPercentExample = () => {
 		>
 			<YAxis display={(y) => `${y}%`} />
 			<GridLines border horizontal />
-			<Bars labels={(y) => `${y}%`} />
+			<Bars labels={(dp) => `${dp.data.y}%`} />
 			<XAxis />
 		</Graph>
 	);
