@@ -28,66 +28,93 @@ const MOCK_CONTEXT: InternalGraphContext = {
 };
 
 describe("src/utils/gradient", () => {
-	// it("Should return correct color for a hex gradient", () => {
-	// 	//  GradientUtils.parse({ gradient, viewbox, domain })
-	// 	const gradient = "mask:linear-gradient(to right, rgb(255, 0, 0) 400, rgb(0, 0, 255) 400.1, rgb(0, 0, 255) 1500)";
-	// 	// 50% should yield a mid-gray: rgba(128, 128, 128, 1)
-	//
-	// 	const color = GradientUtils.parse({
-	// 		gradient,
-	// 		...MOCK_CONTEXT,
-	// 	});
-	// });
-	//
-	// it("Should work with shorthand hex stops", () => {
-	// 	const gradient = "linear-gradient(to right, #000 0%, #fff 100%)";
-	// 	// At 25%, interpolation yields roughly 25% of white: rgba(64, 64, 64, 1)
-	// 	const color = GradientUtils.colorFrom(gradient, 25);
-	// 	expect(color).toBe("rgba(64, 64, 64, 1.00)");
-	// });
-	//
-	// it("Should work with rgb stops", () => {
-	// 	const gradient = "linear-gradient(to right, rgb(0, 0, 255) 0%, rgb(0, 255, 0) 100%)";
-	// 	// At 50%, interpolation between blue and green yields: rgba(0, 128, 128, 1)
-	// 	const color = GradientUtils.colorFrom(gradient, 50);
-	// 	expect(color).toBe("rgba(0, 128, 128, 1.00)");
-	// });
-	//
-	// it("Should work with hsl stops", () => {
-	// 	const gradient = "linear-gradient(to right, hsl(0, 100%, 50%) 0%, hsl(120, 100%, 50%) 100%)";
-	// 	// hsl(0,100%,50%) = rgb(255,0,0) and hsl(120,100%,50%) = rgb(0,255,0)
-	// 	// 50% interpolation yields: rgba(128, 128, 0, 1)
-	// 	const color = GradientUtils.colorFrom(gradient, 50);
-	// 	expect(color).toBe("rgba(128, 128, 0, 1.00)");
-	// });
-	//
-	// it("Should interpolate missing positions", () => {
-	// 	const gradient = "linear-gradient(to right, #000 0%, #555, #fff 100%)";
-	// 	const color = GradientUtils.colorFrom(gradient, 50);
-	// 	expect(color).toBe("rgba(85, 85, 85, 1.00)");
-	// });
-	//
-	// it("Should return the last color when percent is above 100", () => {
-	// 	const gradient = "linear-gradient(to right, #123 0%, #456 50%, #789 100%)";
-	// 	// When percent is beyond the gradient range, the last stop color is used.
-	// 	// #789 expands to "rgb(119, 136, 153)"
-	// 	const color = GradientUtils.colorFrom(gradient, 150);
-	// 	expect(color).toBe("rgb(119, 136, 153)"); // last stop color as rgb
-	// });
-	//
-	// it("Should turn unsupported colors to rgb(0,0,0)", () => {
-	// 	expect(GradientUtils.colorFrom("invalid", 50)).toBe("rgb(0, 0, 0)");
-	// });
-	//
-	// it("Should give you a color between red/blue at 50%", () => {
-	// 	const gradient = "linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(0, 0, 255) 100%)";
-	// 	const color = GradientUtils.colorFrom(gradient, 50);
-	// 	expect(color).toBe("rgba(128, 0, 128, 1.00)");
-	// });
-	//
-	// it("Should give you a color between red/blue at 25%", () => {
-	// 	const gradient = "linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(0, 0, 255) 100%)";
-	// 	const color = GradientUtils.colorFrom(gradient, 25);
-	// 	expect(color).toBe("rgba(191, 0, 64, 1.00)");
-	// });
+	describe("BUG: gradientColorFromValue returns wrong color for mask gradient with percent stops", () => {
+		// Y axis domain: 0..120, viewbox 1000x1000
+		// Gradient: below 40% = red, above 40% = green
+		// 40% of the axis (0..120) = y value 48
+		// So y=20 should be RED, y=75 should be GREEN
+		const GRAPH_CONTEXT = {
+			viewbox: { x: 1_000, y: 1_000 },
+			domain: {
+				x: Array.from({ length: 12 }, (_, i) => ({
+					coordinate: (i / 11) * 1000,
+					tick: i,
+				})),
+				y: [
+					{ coordinate: 1_000, tick: 0 },
+					{ coordinate: 833, tick: 20 },
+					{ coordinate: 667, tick: 40 },
+					{ coordinate: 500, tick: 60 },
+					{ coordinate: 333, tick: 80 },
+					{ coordinate: 167, tick: 100 },
+					{ coordinate: 0, tick: 120 },
+				],
+			},
+		};
+
+		const gradient = "mask:linear-gradient(to top, #d93025 40%, rgb(52, 168, 83) 40.001%, rgb(52, 168, 83))";
+		const dataset = [
+			{ x: 0, y: 20 },
+			{ x: 1, y: 25 },
+			{ x: 2, y: 50 },
+			{ x: 3, y: 45 },
+			{ x: 4, y: 35 },
+			{ x: 5, y: 55 },
+			{ x: 6, y: 55 },
+			{ x: 7, y: 102 },
+			{ x: 8, y: 85 },
+			{ x: 9, y: 70 },
+			{ x: 10, y: 72 },
+			{ x: 11, y: 75 },
+		];
+
+		it("BUG: parse() produces NaN .value for stops without explicit offset", () => {
+			const { stops } = GradientUtils.parse({ gradient, ...GRAPH_CONTEXT });
+			const values = stops.map((s) => s.value);
+			// The last stop "rgb(52, 168, 83)" has no explicit offset
+			// parseFloat(undefined) = NaN, which leaks through `?? 0` (nullish coalescing doesn't catch NaN)
+			const hasNaN = values.some((v) => Number.isNaN(v));
+			expect(hasNaN).toBe(true); // Demonstrates the bug: NaN is present
+		});
+
+		it("colorFrom with point returns red for y=20", () => {
+			const color = GradientUtils.colorFrom({
+				gradient,
+				point: { x: 0, y: 20 },
+				...GRAPH_CONTEXT,
+			});
+			expect(color).toContain("217");
+		});
+
+		it("colorFrom with point returns green for y=75", () => {
+			const color = GradientUtils.colorFrom({
+				gradient,
+				point: { x: 11, y: 75 },
+				...GRAPH_CONTEXT,
+			});
+			expect(color).toContain("52");
+		});
+
+		it("gradientColorFromValue returns red for y=20", () => {
+			const color = GradientUtils.gradientColorFromValue({
+				gradient,
+				point: { x: 0, y: 20 },
+				dataset,
+				...GRAPH_CONTEXT,
+			});
+			// y=20 is below the 40% mark of the 0..120 axis, so should be red
+			expect(color).toContain("217");
+		});
+
+		it("gradientColorFromValue returns green for y=75", () => {
+			const color = GradientUtils.gradientColorFromValue({
+				gradient,
+				point: { x: 11, y: 75 },
+				dataset,
+				...GRAPH_CONTEXT,
+			});
+			// y=75 is above the 40% mark, so should be green
+			expect(color).toContain("52");
+		});
+	});
 });

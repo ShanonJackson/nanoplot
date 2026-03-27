@@ -40,7 +40,7 @@ export const GradientUtils = {
 			const percent = scale(yForValue(point.y), gradient.includes("mask:") ? viewbox.y : [yMax, yMin], 100);
 			return GradientUtils.colorFrom({
 				gradient,
-				value: direction === "to top" ? 100 - percent : percent,
+				value: percent,
 				domain,
 				viewbox,
 			});
@@ -48,7 +48,7 @@ export const GradientUtils = {
 		const xMin = xForValue(Math.min(...dataset.map(({ x }) => +x)));
 		const xMax = xForValue(Math.max(...dataset.map(({ x }) => +x)));
 		const percent = scale(xForValue(point.x), gradient.includes("mask:") ? viewbox.x : [xMin, xMax], 100);
-		return GradientUtils.colorFrom({ gradient, value: direction == "to left" ? 100 - percent : percent, domain, viewbox });
+		return GradientUtils.colorFrom({ gradient, value: percent, domain, viewbox });
 	},
 	direction: (gradient: string): string => {
 		const [, direction] = /linear-gradient\((?:(to\s[a-zA-Z\s]+|\d+deg|\d+rad|\d+turn)\s*,\s*)?/.exec(gradient) ?? [
@@ -145,18 +145,26 @@ export const GradientUtils = {
 	colorFrom: ({
 		gradient,
 		value,
+		point,
 		viewbox,
 		domain,
 	}: {
-		value: number;
 		gradient: string;
+		value?: number;
+		point?: { x: number | string | TemporalDate; y: number | string | TemporalDate };
 		viewbox: InternalGraphContext["viewbox"];
 		domain: InternalGraphContext["domain"];
 	}): string => {
 		const { stops } = GradientUtils.parse({ gradient, viewbox, domain });
-		const min = Math.min(...stops.map((s) => s.value ?? 0));
-		const max = Math.max(...stops.map((s) => s.value ?? 0));
-		const percent = scale(value, [min, max], 100);
+		const direction = GradientUtils.direction(gradient);
+		const isVertical = direction === "to bottom" || direction === "to top";
+		const raw = (() => {
+			if (!point) return value!;
+			const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
+			const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
+			return isVertical ? scale(yForValue(point.y), viewbox.y, 100) : scale(xForValue(point.x), viewbox.x, 100);
+		})();
+		const percent = direction === "to top" || direction === "to left" ? 100 - raw : raw;
 
 		// Ensure first and last stops have defined positions.
 		stops[0].offset = stops[0].offset ?? 0;

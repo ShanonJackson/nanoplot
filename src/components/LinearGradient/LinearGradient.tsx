@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { GradientUtils } from "../../utils/gradient/gradient";
 import { useGraph } from "../../hooks/use-graph/use-graph";
 

@@ -46,8 +46,8 @@ export default function Page() {
 				<Graph
 					data={[
 						{
-							name: "New Users",
-							stroke: "#FF4B4B",
+							name: "Money Made",
+							stroke: "mask:linear-gradient(to top, #d93025 40%, rgb(52, 168, 83) 40.001%, rgb(52, 168, 83))",
 							data: [
 								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 20 },
 								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
@@ -56,39 +56,22 @@ export default function Page() {
 								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
 								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
 								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 95 },
+								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 102 },
 								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
 								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
 								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
 								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 75 },
 							],
 						},
-						{
-							name: "Registered Users",
-							stroke: "#33D4FF",
-							data: [
-								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 45 },
-								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 60 },
-								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 75 },
-								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 60 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 85 },
-								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 82 },
-							],
-						},
 					]}
 				>
 					<Legend alignment={"end"} position={"top"} />
 					<YAxis />
-					<GridLines border />
-					<Lines curve={"natural"} />
+					<GridLines horizontal vertical border />
+					<Lines curve={"natural"} joints={true} />
 					<Lines.Tooltip />
 					<XAxis
+						ticks={{ jumps: "P1M" }}
 						display={(x) => {
 							if (typeof x === "number" || typeof x === "string") return null;
 							return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });

@@ -182,11 +182,6 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 								</div>
 								<div className={"px-2.5"}>
 									{ordered.map(({ name, data, stroke, fill }, i) => {
-										const direction = GradientUtils.direction(stroke);
-										const percent =
-											direction === "to bottom"
-												? scale(yForValue(data.y), viewbox.y, 100)
-												: scale(xForValue(data.x), viewbox.x, 100);
 										const bg = fill ?? stroke;
 										const label = (() => {
 											const formatter = new Intl.NumberFormat("en-US", {
@@ -203,7 +198,12 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 												<div
 													style={{
 														background: bg?.includes("linear-gradient")
-															? GradientUtils.colorFrom({ gradient: bg, value: percent, viewbox, domain })
+															? GradientUtils.colorFrom({
+																	gradient: bg,
+																	point: data,
+																	viewbox,
+																	domain,
+																})
 															: bg,
 													}}
 													className="bg-current h-[14px] w-[14px] rounded-full mr-1"

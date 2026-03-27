@@ -4,11 +4,17 @@ export type TemporalKind = "Instant" | "ZonedDateTime" | "PlainDateTime" | "Plai
 export const UNITS = ["years", "months", "days", "hours", "minutes", "seconds"] as const;
 export type DurUnit = (typeof UNITS)[number];
 
+const tag = (v: unknown): string | undefined => (v as any)?.[Symbol.toStringTag];
+
 export const isTemporal = (v: unknown): v is TemporalDate =>
 	v instanceof Temporal.Instant ||
 	v instanceof Temporal.ZonedDateTime ||
 	v instanceof Temporal.PlainDateTime ||
-	v instanceof Temporal.PlainDate;
+	v instanceof Temporal.PlainDate ||
+	tag(v) === "Temporal.Instant" ||
+	tag(v) === "Temporal.ZonedDateTime" ||
+	tag(v) === "Temporal.PlainDateTime" ||
+	tag(v) === "Temporal.PlainDate";
 
 export const toEpochMs = (v: TemporalDate): number => {
 	if ("epochMilliseconds" in v) return v.epochMilliseconds; /* Instant | ZonedDateTime */
