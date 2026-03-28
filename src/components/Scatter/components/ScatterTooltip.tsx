@@ -1,26 +1,28 @@
 "use client";
 
 import { GraphUtils } from "../../../utils/graph/graph";
-import { MathUtils, scale } from "../../../utils/math/math";
-import React, { ReactNode, useId, useMemo, useRef, useState } from "react";
+import { scale } from "../../../utils/math/math";
+import React, { CSSProperties, ReactNode, useId, useMemo, useRef, useState } from "react";
 import { CartesianDataset, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { Portal } from "../../Portal/Portal";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
 import { Tooltip } from "../../Tooltip/Tooltip";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
-import { cx, tw } from "../../../utils/cx/cx";
-import { useGraphRef } from "../../../hooks/use-graph/use-graph-ref";
+import { tw } from "../../../utils/cx/cx";
 
 type Point = Omit<CartesianDataset[number], "data"> & {
 	data: CartesianDataset[number]["data"][number];
 	coordinates: { x: number; y: number };
 };
+
 type Props = {
 	tooltip: (point: Point) => ReactNode;
+	className?: string | ((closest: Point) => string);
+	style?: CSSProperties | ((closest: Point) => CSSProperties);
 };
 
-const ScatterTooltipComponent = ({ tooltip }: Props) => {
+const ScatterTooltipComponent = ({ tooltip, className, style }: Props) => {
 	const ref = useRef<SVGSVGElement>(null);
 	const rect = useBoundingBox(ref) ?? { width: 0, height: 0, left: 0, top: 0 };
 	const shadowId = useId();
@@ -121,6 +123,8 @@ const ScatterTooltipComponent = ({ tooltip }: Props) => {
 							}}
 							bounds={ref}
 							border={"rgb(45, 45, 45)"}
+							className={typeof className === "string" ? className : closest && className?.(closest)}
+							style={typeof style === "object" ? style : closest && style?.(closest)}
 						>
 							{closest && tooltip(closest)}
 						</Tooltip>

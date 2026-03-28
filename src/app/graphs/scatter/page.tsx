@@ -12,19 +12,38 @@ import { GridLinesControlGroup } from "../../../components/ControlGroup/GridLine
 import { XAxisControlGroup } from "../../../components/ControlGroup/XAxisControlGroup/XAxisControlGroup";
 import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControGroup/YAxisControlGroup";
 import { Legend } from "../../../components/Legend/Legend";
-import { useMounted } from "../../../hooks/use-mounted";
 import { Tooltip } from "../../../components/Tooltip/Tooltip";
+import robloxData from "./data.json";
+
+const SUPPLY_BREAK = 150;
+const DEMAND_BREAK = 3000;
+const TOTAL_SUPPLY = robloxData.reduce((sum, d) => sum + d.supply, 0);
+
+function quadrantColor(supply: number, demand: number) {
+	if (demand >= DEMAND_BREAK) return supply >= SUPPLY_BREAK ? "rgb(2, 165, 215)" : "rgb(5, 180, 98)";
+	return supply >= SUPPLY_BREAK ? "rgb(161, 102, 233)" : "rgb(255, 92, 74)";
+}
+
+function demandLabel(demand: number) {
+	if (demand >= 7000) return "EXCEPTIONAL";
+	if (demand >= 5000) return "HIGH";
+	if (demand >= 3000) return "GOOD";
+	if (demand >= 1500) return "MODERATE";
+	return "LOW";
+}
+
+function fmt(n: number) {
+	return n.toLocaleString();
+}
 
 export default function Page() {
-	const mounted = useMounted();
 	const [scatter, setScatter] = useState<ComponentProps<typeof Scatter>>({});
 	const [gridline, setGridline] = useState<ComponentProps<typeof GridLines>>({ border: true, horizontal: false, vertical: false });
-	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Hours Studied" });
-	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Test Grades" });
+	const [xaxis, setXAxis] = useState<ComponentProps<typeof XAxis>>({ title: "Number of Titles (Supply)" });
+	const [yaxis, setYAxis] = useState<ComponentProps<typeof YAxis>>({ title: "Avg Player Count (Demand)" });
 	const [legend, setLegend] = useState<ComponentProps<typeof Legend>>({ position: "top", alignment: "end" });
 	const [targetSide, setTargetSide] = useState<"top" | "bottom" | "left" | "right">("right");
 	const [tooltipSide, setTooltipSide] = useState<"top" | "bottom" | "left" | "right">("left");
-	if (!mounted) return null; /* random() can produce hydration diff error, simplest fix as this needs to be use client anyway */
 	return (
 		<>
 			<ControlPanel>
@@ -36,54 +55,77 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
-					data={[
-						{
-							name: "Hours studed vs Grades",
-							data: MOCK_DATA.map((dp) => ({ y: dp.test_score, x: dp.hours_studied })),
-						},
-					]}
+					data={robloxData.map((d) => ({
+						name: d.genre,
+						fill: quadrantColor(d.supply, d.avgDemand),
+						data: [{ x: d.supply, y: d.avgDemand }],
+					}))}
 				>
-					<Legend position={"top"} alignment={"end"} />
+					<Scatter.Quadrant x1={0} x2={150} y1={3000} y2={9000} fill={"rgba(5, 180, 98, 0.25)"} />
+					<Scatter.Quadrant x1={150} x2={1100} y1={3000} y2={9000} fill={"rgba(2, 165, 215, 0.25)"} />
+					<Scatter.Quadrant x1={150} x2={1100} y1={0} y2={3000} fill={"rgba(161, 102, 233, 0.25)"} />
+					<Scatter.Quadrant x1={0} x2={150} y1={0} y2={3000} fill={"rgba(255, 92, 74, 0.25)"} />
 					<YAxis />
 					<GridLines />
 					<Scatter />
-					<Scatter.Tooltip tooltip={(point) => `${point.data.x} ${point.data.y}`} />
+					<Scatter.Tooltip
+						style={(point) => ({
+							background: `linear-gradient(180.43deg, rgb(0, 0, 0) 0.74%, ${point.fill ?? "white"} 124.74%)`,
+							minWidth: 230,
+						})}
+						tooltip={(point) => {
+							const entry = robloxData.find((d) => d.genre === point.name)!;
+							const color = point.fill ?? "white";
+							return (
+								<div style={{}}>
+									<div
+										style={{
+											fontWeight: 700,
+											fontSize: 14,
+											paddingBottom: 8,
+											borderBottom: "1px solid rgba(255,255,255,0.15)",
+										}}
+									>
+										{point.name}
+									</div>
+									<div
+										style={{
+											display: "flex",
+											gap: 28,
+											padding: "8px 0",
+											borderBottom: "1px solid rgba(255,255,255,0.15)",
+										}}
+									>
+										<div>
+											<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 2 }}>Demand</div>
+											<div style={{ fontWeight: 700, fontSize: 18 }}>{fmt(entry.avgDemand)}</div>
+											<div style={{ fontWeight: 600, fontSize: 11 }}>{demandLabel(entry.avgDemand)}</div>
+										</div>
+										<div>
+											<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 2 }}>Supply</div>
+											<div style={{ fontWeight: 700, fontSize: 18 }}>
+												{((entry.supply / TOTAL_SUPPLY) * 100).toFixed(1)}%
+											</div>
+											<div style={{ fontSize: 11 }}>{fmt(entry.supply)} TITLES</div>
+										</div>
+									</div>
+									<div style={{ paddingTop: 8 }}>
+										<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 4 }}>Top Title</div>
+										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+											<div style={{ fontWeight: 600, fontSize: 13 }}>{entry.topTitle}</div>
+											<div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+												<div style={{ fontWeight: 700, fontSize: 14 }}>{fmt(entry.topTitleDemand)}</div>
+												<div style={{ fontSize: 10, opacity: 0.8 }}>PLAYERS</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							);
+						}}
+					/>
 					<XAxis />
 				</Graph>
 			</GraphPanel>
-			<div>
-				<div>target side</div>
-				{(["top", "bottom", "left", "right"] as const).map((side, i) => (
-					<button onClick={() => setTargetSide(side)} key={i}>
-						{side}
-					</button>
-				))}
-				<div>tooltip side</div>
-				{(["top", "bottom", "left", "right"] as const).map((side, i) => (
-					<button onClick={() => setTooltipSide(side)} key={i}>
-						{side}
-					</button>
-				))}
-				<Tooltip
-					active={true}
-					position={{
-						target: { side: targetSide, alignment: "center" },
-						tooltip: { side: tooltipSide, alignment: "center" },
-					}}
-					collision={false}
-					trigger={(ref) => <div style={{ height: 50, width: 50, background: "red" }} ref={ref} />}
-				>
-					HELLO WORLD
-				</Tooltip>
-			</div>
 		</>
 	);
 }
-
-const random = (min: number, max: number) => Math.random() * (max - min) + min;
-const MOCK_DATA = new Array(1000).fill(null).map(() => {
-	return {
-		hours_studied: random(0, 50),
-		test_score: random(0, 100),
-	};
-});

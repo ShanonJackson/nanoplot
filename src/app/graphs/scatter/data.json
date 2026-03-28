@@ -1,0 +1,19 @@
+[
+  { "genre": "Simulation", "supply": 987, "avgDemand": 3004, "topTitle": "Steal a Brainrot", "topTitleDemand": 375262 },
+  { "genre": "Survival", "supply": 346, "avgDemand": 4381, "topTitle": "99 Nights in the Forest", "topTitleDemand": 355721 },
+  { "genre": "Obby & Platformer", "supply": 316, "avgDemand": 930, "topTitle": "BARRY'S PRISON RUN! (OBBY)", "topTitleDemand": 18130 },
+  { "genre": "Action", "supply": 299, "avgDemand": 3490, "topTitle": "Jujutsu Shenanigans", "topTitleDemand": 327149 },
+  { "genre": "Roleplay & Avatar Sim", "supply": 218, "avgDemand": 7595, "topTitle": "Brookhaven RP", "topTitleDemand": 605138 },
+  { "genre": "Party & Casual", "supply": 171, "avgDemand": 1887, "topTitle": "Knockout!", "topTitleDemand": 77803 },
+  { "genre": "Adventure", "supply": 160, "avgDemand": 1315, "topTitle": "Dead Rails [Beta]", "topTitleDemand": 28105 },
+  { "genre": "Shooter", "supply": 123, "avgDemand": 5295, "topTitle": "RIVALS", "topTitleDemand": 401763 },
+  { "genre": "RPG", "supply": 121, "avgDemand": 7347, "topTitle": "Blox Fruits", "topTitleDemand": 340996 },
+  { "genre": "Strategy", "supply": 89, "avgDemand": 2381, "topTitle": "Anime Vanguards", "topTitleDemand": 30974 },
+  { "genre": "Sports & Racing", "supply": 70, "avgDemand": 2603, "topTitle": "Volleyball Legends", "topTitleDemand": 68991 },
+  { "genre": "Social", "supply": 55, "avgDemand": 1625, "topTitle": "PLS DONATE", "topTitleDemand": 20299 },
+  { "genre": "Puzzle", "supply": 40, "avgDemand": 1183, "topTitle": "A Grabpack test", "topTitleDemand": 18078 },
+  { "genre": "Entertainment", "supply": 26, "avgDemand": 1104, "topTitle": "My Movie", "topTitleDemand": 10955 },
+  { "genre": "Shopping", "supply": 16, "avgDemand": 8014, "topTitle": "Catalog Avatar Creator", "topTitleDemand": 98846 },
+  { "genre": "Education", "supply": 4, "avgDemand": 563, "topTitle": "Spelling Bee", "topTitleDemand": 848 },
+  { "genre": "Utility & Other", "supply": 2, "avgDemand": 807, "topTitle": "Movie Maker 4", "topTitleDemand": 1218 }
+]
