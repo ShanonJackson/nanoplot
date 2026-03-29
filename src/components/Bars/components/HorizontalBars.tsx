@@ -144,9 +144,9 @@ export const HorizontalBars = ({
 					const breakpoint = [2, 4, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().length);
 
 					return (
-						<overlay.div
+						<div
 							key={i}
-							className={"bars__label @container-[size] absolute text-center"}
+							className={"bars__label [grid-area:graph] @container-[size] absolute text-center"}
 							style={{
 								width,
 								height: height + "%",
@@ -175,7 +175,7 @@ export const HorizontalBars = ({
 									{label.toString()}
 								</span>
 							</div>
-						</overlay.div>
+						</div>
 					);
 				})}
 		</>

@@ -1,26 +1,33 @@
 "use client";
 
-import { MathUtils, scale } from "../../../utils/math/math";
-import { useGraph } from "../../../hooks/use-graph/use-graph";
-import { overlay } from "../../Overlay/Overlay";
+import { scale } from "../../../utils/math/math";
+import { InternalCartesianDataset, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { useMounted } from "../../../hooks/use-mounted";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
+import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 
-type Props = {};
+type Props = {
+	display?:
+		| boolean
+		| ((dp: Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }) => void);
+	marker?: (dp: Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }) => void;
+};
 
 const LABEL_X_MARGIN = 8; /* 8px */
-const ScatterLabelsComponent = () => {
-	const ref = useRef<SVGSVGElement>(null);
+const ScatterLabelsComponent = ({ display, marker }: Props) => {
+	const [ref, setRef] = useStatefulRef<SVGSVGElement>();
 	const { id, data, viewbox, domain } = useGraph();
 	const mounted = useMounted();
 	const { height: graphHeight, width: graphWidth } = ref.current?.getBoundingClientRect() ?? {
 		height: 0,
 		width: 0,
 	};
+
 	if (!mounted) return null;
+	/* below here document access is safe */
 	const graph = document.getElementById(id);
 	if (!graph) return null;
 	const ctx = new OffscreenCanvas(256, 256).getContext("2d");
@@ -32,16 +39,16 @@ const ScatterLabelsComponent = () => {
 	return (
 		<>
 			<svg
-				ref={ref}
+				ref={setRef}
 				viewBox={`0 0 ${viewbox.x} ${viewbox.y}`}
 				className={"[grid-area:graph] h-full w-full -z-10"}
 				preserveAspectRatio={"none"}
 			/>
 			{data
-				.flatMap((d) => d.data.map(({ x, y }) => ({ x: xForValue(x), y: yForValue(y), name: d.name, color: d.stroke })))
+				.flatMap((d) => d.data.map(({ x, y }) => ({ x: xForValue(x), y: yForValue(y), ...d, data: { x, y } })))
 				.sort((a, b) => +a.x - +b.x)
-				.map(({ x: x1, y: y1, name, color }, i, points) => {
-					const labelWidth = ctx.measureText(String(name)).width;
+				.map(({ x: x1, y: y1, ...dp }, i, points) => {
+					const labelWidth = ctx.measureText(String(dp.name)).width;
 					const collides = (() => {
 						const xCoordinate = +x1 + scale(labelWidth, graphWidth, viewbox.x) + LABEL_X_MARGIN;
 						if (xCoordinate > viewbox.x) return true;
@@ -53,22 +60,26 @@ const ScatterLabelsComponent = () => {
 							return false;
 						});
 					})();
+
 					if (collides) return null;
 					const left = scale(x1, viewbox.x, 100);
 					const top = scale(y1, viewbox.y, 100);
 					if (left > 100 || left < 0 || top < 0 || top > 97) return null;
 					return (
-						<overlay.div
-							className={"absolute"}
+						<div
+							key={i}
+							className={"[grid-area:graph] absolute"}
+							data-scatter-label-id={dp.id}
 							style={{
 								left: `calc(${left}% + ${LABEL_X_MARGIN}px)`,
 								top: top + "%",
-								color,
+								color: dp.stroke,
 								transform: `translate(0, -50%)`,
+								whiteSpace: "nowrap",
 							}}
 						>
-							{name}
-						</overlay.div>
+							{dp.name}
+						</div>
 					);
 				})}
 		</>

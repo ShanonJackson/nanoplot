@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ComponentProps, ReactNode } from "react";
 import { GraphUtils } from "../../utils/graph/graph";
 import { InternalGraphContext, useDatasets, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { CurveUtils } from "../../utils/path/curve";
@@ -133,7 +133,18 @@ export const Lines = (props: Props) => {
 		</>
 	);
 };
-
+Lines.Line = (props: ComponentProps<typeof Line>) => {
+	const context = useGraph();
+	return (
+		<svg
+			className={"[grid-area:graph] h-full w-full"}
+			viewBox={`0 0 ${context.viewbox.x} ${context.viewbox.y}`}
+			preserveAspectRatio={"none"}
+		>
+			<Line {...props} />
+		</svg>
+	);
+};
 Lines.Tooltip = LinesTooltipZone;
 Lines.Mouse = LinesMouse;
 Lines.Joints = LinesJoints;

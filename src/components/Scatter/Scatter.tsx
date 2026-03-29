@@ -1,10 +1,10 @@
-import React from "react";
+import React, { JSX, ReactNode } from "react";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../utils/graph/graph";
 import { ScatterLoading } from "./components/ScatterLoading";
 import { PathUtils } from "../../utils/path/path";
 import { ScatterTooltip } from "./components/ScatterTooltip";
-import { useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
+import { InternalCartesianDataset, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { ScatterLabels } from "./components/ScatterLabels";
 import { ObjectUtils } from "../../utils/object/object";
 import { ScatterQuadrant } from "./components/ScatterQuadrant";
@@ -14,6 +14,10 @@ type Props = {
 	trendline?: boolean;
 	loading?: boolean;
 	className?: string;
+	marker?: (dp: Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }) => ReactNode;
+	labels?:
+		| boolean
+		| ((dp: Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }) => ReactNode);
 };
 
 const chunk = <T extends unknown>(array: T[], size: number): T[][] => {
@@ -24,7 +28,7 @@ const chunk = <T extends unknown>(array: T[], size: number): T[][] => {
 	return chunked;
 };
 
-export const Scatter = ({ loading, trendline, className }: Props) => {
+export const Scatter = ({ loading, trendline, className, marker }: Props) => {
 	const context = useGraph();
 	const isZooming = useIsZooming();
 	const { x, y } = context.viewbox;
@@ -39,15 +43,28 @@ export const Scatter = ({ loading, trendline, className }: Props) => {
 		return d.data.map(({ x, y }) => ({
 			x: xForValue(x),
 			y: yForValue(y),
-			stroke: d.stroke ?? context.colors[i] ?? context.colors.at(-1),
+			...d,
+			data: { x, y },
 		}));
 	});
 	const colors = ObjectUtils.groupBy(points, (p) => p.stroke);
 
+	if (marker && points) {
+		return (
+			<>
+				{points.map((dp, i) => {
+					return <React.Fragment key={i}>{marker(dp)}</React.Fragment>;
+				})}
+			</>
+		);
+	}
 	return (
 		<svg
 			viewBox={`0 0 ${x} ${y}`}
-			className={tw("[grid-area:graph] h-full w-full absolute overflow-visible", isZooming && "block overflow-hidden")}
+			className={tw(
+				"[grid-area:graph] [container-type:size] h-full w-full absolute overflow-visible ",
+				isZooming && "block overflow-hidden",
+			)}
 			preserveAspectRatio={"none"}
 		>
 			{Object.entries(colors).flatMap(([color, points], i) => {

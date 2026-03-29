@@ -75,9 +75,9 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 					const breakpoint = [2, 4, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().length);
 
 					return (
-						<overlay.div
+						<div
 							key={i}
-							className={"heatmap__labels @container-[size] absolute text-center"}
+							className={"heatmap__labels [grid-area:graph] @container-[size] absolute text-center"}
 							style={{
 								width,
 								height: height + "%",
@@ -103,7 +103,7 @@ export const Heatmap = ({ labels = true, scalars, gradient, className, ...rest }
 									{label}
 								</span>
 							</div>
-						</overlay.div>
+						</div>
 					);
 				})}
 		</>

@@ -14,13 +14,19 @@ import { YAxisControlGroup } from "../../../components/ControlGroup/YAxisControG
 import { Legend } from "../../../components/Legend/Legend";
 import { Tooltip } from "../../../components/Tooltip/Tooltip";
 import robloxData from "./data.json";
+import { overlay } from "../../../components/Overlay/Overlay";
+import { Lines } from "../../../components/Lines/Lines";
 
 const SUPPLY_BREAK = 150;
 const DEMAND_BREAK = 3000;
 const TOTAL_SUPPLY = robloxData.reduce((sum, d) => sum + d.supply, 0);
 
-function quadrantColor(supply: number, demand: number) {
+function getColor(supply: number, demand: number) {
 	if (demand >= DEMAND_BREAK) return supply >= SUPPLY_BREAK ? "rgb(2, 165, 215)" : "rgb(5, 180, 98)";
+	return supply >= SUPPLY_BREAK ? "rgb(161, 102, 233)" : "rgb(255, 92, 74)";
+}
+function getMarker(supply: number, demand: number) {
+	if (demand >= DEMAND_BREAK) return supply >= SUPPLY_BREAK ? <overlay.triangle x={supply} y={demand} /> : "rgb(5, 180, 98)";
 	return supply >= SUPPLY_BREAK ? "rgb(161, 102, 233)" : "rgb(255, 92, 74)";
 }
 
@@ -57,65 +63,80 @@ export default function Page() {
 				<Graph
 					data={robloxData.map((d) => ({
 						name: d.genre,
-						fill: quadrantColor(d.supply, d.avgDemand),
+						fill: getColor(d.supply, d.avgDemand),
 						data: [{ x: d.supply, y: d.avgDemand }],
 					}))}
 				>
-					<Scatter.Quadrant x1={0} x2={150} y1={3000} y2={9000} fill={"rgba(5, 180, 98, 0.25)"} />
-					<Scatter.Quadrant x1={150} x2={1100} y1={3000} y2={9000} fill={"rgba(2, 165, 215, 0.25)"} />
-					<Scatter.Quadrant x1={150} x2={1100} y1={0} y2={3000} fill={"rgba(161, 102, 233, 0.25)"} />
-					<Scatter.Quadrant x1={0} x2={150} y1={0} y2={3000} fill={"rgba(255, 92, 74, 0.25)"} />
+					<Scatter.Quadrant x1={0} x2={150} y1={3000} y2={9000} fill={"rgba(5, 180, 98, 0.15)"} />
+					<Scatter.Quadrant x1={150} x2={1100} y1={3000} y2={9000} fill={"rgba(2, 165, 215, 0.15)"} />
+					<Scatter.Quadrant x1={150} x2={1100} y1={0} y2={3000} fill={"rgba(161, 102, 233, 0.15)"} />
+					<Scatter.Quadrant x1={0} x2={150} y1={0} y2={3000} fill={"rgba(255, 92, 74, 0.15)"} />
 					<YAxis />
 					<GridLines />
-					<Scatter />
+					<Scatter
+						marker={({ data: { x, y } }) => {
+							if (typeof x !== "number" || typeof y !== "number") return null;
+							if (y >= DEMAND_BREAK)
+								return x >= SUPPLY_BREAK ? (
+									<overlay.circle x={x} y={y} fill={"rgb(2, 165, 215)"} stroke={"rgb(2, 165, 215)"} />
+								) : (
+									<overlay.triangle x={x} y={y} fill={"rgb(5, 180, 98)"} stroke={"rgb(5, 180, 98)"} />
+								);
+							return x >= SUPPLY_BREAK ? (
+								<overlay.diamond x={x} y={y} stroke={"rgb(161, 102, 233)"} fill={"rgb(161, 102, 233)"} />
+							) : (
+								<overlay.cross x={x} y={y} stroke={"rgb(255, 92, 74)"} fill={"rgb(255, 92, 74)"} />
+							);
+						}}
+					/>
+					<Scatter.Labels />
+					<Lines.Line
+						points={[
+							{ x: 0, y: DEMAND_BREAK },
+							{ x: 1000, y: DEMAND_BREAK },
+						]}
+						stroke={"white"}
+						strokeDasharray={"8,8"}
+						filter={"0px 0px 40px rgba(255, 255, 255, 0.5)"}
+					/>
+					<Lines.Line
+						points={[
+							{ x: SUPPLY_BREAK, y: 0 },
+							{ x: SUPPLY_BREAK, y: 9000 },
+						]}
+						stroke={"white"}
+						strokeDasharray={"8,8"}
+						filter={"0px 0px 40px rgba(255, 255, 255, 0.5)"}
+					/>
 					<Scatter.Tooltip
 						style={(point) => ({
 							background: `linear-gradient(180.43deg, rgb(0, 0, 0) 0.74%, ${point.fill ?? "white"} 124.74%)`,
-							minWidth: 230,
 						})}
 						tooltip={(point) => {
 							const entry = robloxData.find((d) => d.genre === point.name)!;
-							const color = point.fill ?? "white";
 							return (
-								<div style={{}}>
-									<div
-										style={{
-											fontWeight: 700,
-											fontSize: 14,
-											paddingBottom: 8,
-											borderBottom: "1px solid rgba(255,255,255,0.15)",
-										}}
-									>
-										{point.name}
-									</div>
-									<div
-										style={{
-											display: "flex",
-											gap: 28,
-											padding: "8px 0",
-											borderBottom: "1px solid rgba(255,255,255,0.15)",
-										}}
-									>
+								<div className="min-w-[200px]">
+									<div className="font-bold text-sm pb-2 border-b border-white/15">{point.name}</div>
+									<div className="flex justify-between py-2 border-b border-white/15">
 										<div>
-											<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 2 }}>Demand</div>
-											<div style={{ fontWeight: 700, fontSize: 18 }}>{fmt(entry.avgDemand)}</div>
-											<div style={{ fontWeight: 600, fontSize: 11 }}>{demandLabel(entry.avgDemand)}</div>
+											<div className="opacity-60 text-[11px] mb-0.5">Demand</div>
+											<div className="font-bold text-lg">{fmt(entry.avgDemand)}</div>
+											<div className="font-semibold text-[11px]">{demandLabel(entry.avgDemand)}</div>
 										</div>
+										<div className="w-px bg-white/15 self-stretch -my-2" />
 										<div>
-											<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 2 }}>Supply</div>
-											<div style={{ fontWeight: 700, fontSize: 18 }}>
-												{((entry.supply / TOTAL_SUPPLY) * 100).toFixed(1)}%
-											</div>
-											<div style={{ fontSize: 11 }}>{fmt(entry.supply)} TITLES</div>
+											<div className="opacity-60 text-[11px] mb-0.5">Supply</div>
+											<div className="font-bold text-lg">{((entry.supply / TOTAL_SUPPLY) * 100).toFixed(1)}%</div>
+											<div className="text-[11px]">{fmt(entry.supply)} TITLES</div>
 										</div>
 									</div>
-									<div style={{ paddingTop: 8 }}>
-										<div style={{ opacity: 0.6, fontSize: 11, marginBottom: 4 }}>Top Title</div>
-										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-											<div style={{ fontWeight: 600, fontSize: 13 }}>{entry.topTitle}</div>
-											<div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
-												<div style={{ fontWeight: 700, fontSize: 14 }}>{fmt(entry.topTitleDemand)}</div>
-												<div style={{ fontSize: 10, opacity: 0.8 }}>PLAYERS</div>
+									<div className="pt-2">
+										<div className="opacity-60 text-[11px] mb-1">Top Title</div>
+										<div className="flex justify-between items-center gap-3">
+											<div className="font-semibold text-[13px]">{entry.topTitle}</div>
+											<div className="text-right whitespace-nowrap">
+												<div className="font-bold text-sm">{fmt(entry.topTitleDemand)}</div>
+												<div className="text-[10px] opacity-80">PLAYERS</div>
 											</div>
 										</div>
 									</div>
@@ -126,6 +147,31 @@ export default function Page() {
 					<XAxis />
 				</Graph>
 			</GraphPanel>
+			<div className="mt-[200px]">
+				<div>target side</div>
+				{(["top", "bottom", "left", "right"] as const).map((side, i) => (
+					<button onClick={() => setTargetSide(side)} key={i}>
+						{side}
+					</button>
+				))}
+				<div>tooltip side</div>
+				{(["top", "bottom", "left", "right"] as const).map((side, i) => (
+					<button onClick={() => setTooltipSide(side)} key={i}>
+						{side}
+					</button>
+				))}
+				<Tooltip
+					active={true}
+					position={{
+						target: { side: targetSide, alignment: "center" },
+						tooltip: { side: tooltipSide, alignment: "center" },
+					}}
+					collision={false}
+					trigger={(ref) => <div className="h-[50px] w-[50px] bg-[red]" ref={ref} />}
+				>
+					HELLO WORLD
+				</Tooltip>
+			</div>
 		</>
 	);
 }

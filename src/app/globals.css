@@ -8,3 +8,27 @@
     inherits: false;
     initial-value: 1px;
 }
+
+@property --fit-w {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 1px;
+}
+
+@property --fit-h {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 1px;
+}
+
+@property --sx {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 1;
+}
+
+@property --sy {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 1;
+}

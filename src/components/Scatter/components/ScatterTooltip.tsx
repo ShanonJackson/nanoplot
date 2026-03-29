@@ -26,7 +26,7 @@ const ScatterTooltipComponent = ({ tooltip, className, style }: Props) => {
 	const ref = useRef<SVGSVGElement>(null);
 	const rect = useBoundingBox(ref) ?? { width: 0, height: 0, left: 0, top: 0 };
 	const shadowId = useId();
-	const { data, viewbox, domain } = useGraph();
+	const { id, data, viewbox, domain } = useGraph();
 	const [closest, setClosest] = useState<Point>();
 	const isZooming = useIsZooming();
 
@@ -56,6 +56,21 @@ const ScatterTooltipComponent = ({ tooltip, className, style }: Props) => {
 				)}
 				preserveAspectRatio={"none"}
 				onMouseMove={(e) => {
+					/*
+						data-* not my favourite solution; The problem here is the elegance lost if you try to avoid this,
+						The person who renders the <Scatter.Labels/> (and thus has direct access the box model/ref) would have
+						to become the person who renders the tooltip with an API like <Scatter labels={true} tooltip={() => ..}/>
+						instead of <Scatter/> <Scatter.Labels/> <Scatter.Tooltip/>
+					 */
+					const label = Array.from(document.querySelectorAll(`#${id} [data-scatter-label-id]`)).find((ele) => {
+						const box = ele.getBoundingClientRect();
+						return e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom;
+					});
+					if (label) {
+						const point = points.find((c) => c.id === label.getAttribute("data-scatter-label-id"));
+						return setClosest(point);
+					}
+					// ----
 					const {
 						left: graphLeft,
 						top: graphTop,
@@ -72,7 +87,7 @@ const ScatterTooltipComponent = ({ tooltip, className, style }: Props) => {
 					const radiusX = scale(20, graphWidth, viewbox.x);
 					const radiusY = scale(20, graphHeight, viewbox.y);
 					const isMouseOntop = Math.abs(x1 - closest.coordinates.x) < radiusX && Math.abs(y1 - closest.coordinates.y) < radiusY;
-					setClosest((c) => (isMouseOntop ? closest : undefined));
+					setClosest(() => (isMouseOntop ? closest : undefined));
 				}}
 				onMouseLeave={() => setClosest(undefined)}
 			>
@@ -85,38 +100,24 @@ const ScatterTooltipComponent = ({ tooltip, className, style }: Props) => {
 					>
 						<filter id={shadowId} filterUnits="userSpaceOnUse">
 							<feGaussianBlur in="SourceAlpha" stdDeviation="35 100" result="blur" />
-							<feFlood floodColor={closest?.stroke ?? "white"} floodOpacity="0" result="color">
-								<animate attributeName="flood-opacity" from="0" to="1" dur="5s" fill="freeze" />
-							</feFlood>
-							<feComposite in="color" in2="blur" operator="in" result="coloredBlur" />
-							<feMerge>
-								<feMergeNode in="coloredBlur" />
-								<feMergeNode in="SourceGraphic" />
-							</feMerge>
+							<feFlood floodColor={closest?.stroke ?? "white"} floodOpacity="1" result="color" />
+							<feComposite in="color" in2="blur" operator="in" />
 						</filter>
-						{closest && (
-							<path
-								d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} h 0.001`}
-								strokeWidth={12}
-								stroke={"white"}
-								strokeLinecap={"round"}
-								strokeLinejoin={"round"}
-								filter={`url(#${shadowId})`}
-								vectorEffect={"non-scaling-stroke"}
-							/>
-						)}
 						<Tooltip
 							active={true}
 							trigger={(rf) => {
+								if (!closest) return null;
 								return (
 									<path
 										d={`M ${closest?.coordinates.x} ${closest?.coordinates.y} h 0.001`}
 										strokeWidth={10}
-										stroke={closest?.stroke}
+										stroke={closest?.stroke ?? "white"}
+										fill={closest?.stroke ?? "white"}
 										strokeLinecap={"round"}
 										strokeLinejoin={"round"}
-										filter={`url(#${shadowId})`}
 										vectorEffect={"non-scaling-stroke"}
+										filter={`url(#${shadowId})`}
+										className={"scatter__points"}
 										ref={rf}
 									/>
 								);

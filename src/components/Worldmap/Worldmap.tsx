@@ -53,13 +53,11 @@ export const Worldmap = ({ translate, gradient, className, onMouseEnter, onMouse
 							stroke={"transparent"}
 							strokeWidth={0.5}
 							data-iso={iso /* this is used for Worldmap.Tooltip to get the box model for a country */}
-							style={
-								{
-									"--worldmap-fill-light": filled ?? "#dddddd",
-									"--worldmap-fill-dark": filled ?? "#2c2c2c",
-									"--worldmap-stroke": stroked,
-								} as CSSProperties
-							}
+							style={{
+								"--worldmap-fill-light": filled ?? "#dddddd",
+								"--worldmap-fill-dark": filled ?? "#2c2c2c",
+								"--worldmap-stroke": stroked,
+							}}
 							className={cx(
 								`worldmap__country fill-[var(--worldmap-fill-light)] dark:fill-[var(--worldmap-fill-dark)]`,
 								isInDataset && "hover:stroke-[var(--worldmap-stroke)]",

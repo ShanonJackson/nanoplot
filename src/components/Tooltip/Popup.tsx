@@ -11,16 +11,32 @@ type Props = ComponentProps<"div"> & {
 	children?: ReactNode;
 };
 
-/*
-	For those coming to modify.
-	This implementation supports the following functionality:
-	- Linear gradient borders.
-	- Linear gradient background (that is not clipped by the triangle [which in some implementations would be a pseudo element).
-	- Border-radius corners (which can't possible if using clip-path to achieve linear gradient background).
+const AH = 8; // arrow height
+const AW = 10; // arrow half-width
+const BW = 1; // border width
 
-	Because of the above, this implementation achieves it with a single div but alot of css.
+function clipShape(side: string, radius: number, p: string, inset: number): string {
+	const r = Math.max(0, radius - inset);
+	const i = inset;
+	const ri = r + i;
+	const ahi = AH + i;
+	const ahri = AH + r + i;
+	const awi = AW - i;
 
- */
+	switch (side) {
+		case "bottom":
+			return `shape(from ${ri}px ${i}px, hline to calc(100% - ${ri}px), curve to calc(100% - ${i}px) ${ri}px with calc(100% - ${i}px) ${i}px, vline to calc(100% - ${ahri}px), curve to calc(100% - ${ri}px) calc(100% - ${ahi}px) with calc(100% - ${i}px) calc(100% - ${ahi}px), hline to calc(${p} + ${awi}px), line to ${p} calc(100% - ${i}px), line to calc(${p} - ${awi}px) calc(100% - ${ahi}px), hline to ${ri}px, curve to ${i}px calc(100% - ${ahri}px) with ${i}px calc(100% - ${ahi}px), vline to ${ri}px, curve to ${ri}px ${i}px with ${i}px ${i}px, close)`;
+		case "top":
+			return `shape(from ${ri}px ${ahi}px, hline to calc(${p} - ${awi}px), line to ${p} ${i}px, line to calc(${p} + ${awi}px) ${ahi}px, hline to calc(100% - ${ri}px), curve to calc(100% - ${i}px) ${ahri}px with calc(100% - ${i}px) ${ahi}px, vline to calc(100% - ${ri}px), curve to calc(100% - ${ri}px) calc(100% - ${i}px) with calc(100% - ${i}px) calc(100% - ${i}px), hline to ${ri}px, curve to ${i}px calc(100% - ${ri}px) with ${i}px calc(100% - ${i}px), vline to ${ahri}px, curve to ${ri}px ${ahi}px with ${i}px ${ahi}px, close)`;
+		case "right":
+			return `shape(from ${ri}px ${i}px, hline to calc(100% - ${ahri}px), curve to calc(100% - ${ahi}px) ${ri}px with calc(100% - ${ahi}px) ${i}px, vline to calc(${p} - ${awi}px), line to calc(100% - ${i}px) ${p}, line to calc(100% - ${ahi}px) calc(${p} + ${awi}px), vline to calc(100% - ${ri}px), curve to calc(100% - ${ahri}px) calc(100% - ${i}px) with calc(100% - ${ahi}px) calc(100% - ${i}px), hline to ${ri}px, curve to ${i}px calc(100% - ${ri}px) with ${i}px calc(100% - ${i}px), vline to ${ri}px, curve to ${ri}px ${i}px with ${i}px ${i}px, close)`;
+		case "left":
+			return `shape(from ${ahri}px ${i}px, hline to calc(100% - ${ri}px), curve to calc(100% - ${i}px) ${ri}px with calc(100% - ${i}px) ${i}px, vline to calc(100% - ${ri}px), curve to calc(100% - ${ri}px) calc(100% - ${i}px) with calc(100% - ${i}px) calc(100% - ${i}px), hline to ${ahri}px, curve to ${ahi}px calc(100% - ${ri}px) with ${ahi}px calc(100% - ${i}px), vline to calc(${p} + ${awi}px), line to ${i}px ${p}, line to ${ahi}px calc(${p} - ${awi}px), vline to ${ri}px, curve to ${ahri}px ${i}px with ${ahi}px ${i}px, close)`;
+		default:
+			return `shape(from ${ri}px ${i}px, hline to calc(100% - ${ri}px), curve to calc(100% - ${i}px) ${ri}px with calc(100% - ${i}px) ${i}px, vline to calc(100% - ${ri}px), curve to calc(100% - ${ri}px) calc(100% - ${i}px) with calc(100% - ${i}px) calc(100% - ${i}px), hline to ${ri}px, curve to ${i}px calc(100% - ${ri}px) with ${i}px calc(100% - ${i}px), vline to ${ri}px, curve to ${ri}px ${i}px with ${i}px ${i}px, close)`;
+	}
+}
+
 export const Popup = forwardRef<HTMLDivElement, Props>(
 	(
 		{
@@ -34,7 +50,7 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 		},
 		ref,
 	) => {
-		const trianglePosition = (() => {
+		const p = (() => {
 			if (triangle) return triangle.x * 100 + "%";
 			return {
 				["left"]: "10%",
@@ -45,52 +61,45 @@ export const Popup = forwardRef<HTMLDivElement, Props>(
 			}[alignment];
 		})();
 
+		const { background: styleBg, ...restStyle } = (props.style ?? {}) as CSSProperties & { background?: string };
+		const bg = background ?? styleBg ?? "black";
+
 		return (
 			<div
 				{...props}
-				className={tw(
-					"popup",
-					"relative isolate pseudo-bg-inherit w-max text-white p-[12px] [border:var(--b)_solid_#0000] [background:padding-box_linear-gradient(black),border-box_rgb(45,45,45)] z-0",
-					"before:content-['_'] before:absolute before:z-[-1] before:[background-size:0_0,_100%_100%]",
-					"after:content-['_'] after:absolute after:z-[-1] after:[border:inherit] after:[background-size:100%_100%,0_0]",
-					side === "top" &&
-						"[background-size:100%_calc(100%+var(--h))] [background-position:bottom] [border-radius:min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_var(--r)_var(--r)/var(--r)]",
-					side === "top" &&
-						"before:[inset:calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] before:[clip-path:polygon(min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(var(--h)+var(--b)),min(100%,var(--p)+var(--h)*tan(var(--a)/2))_var(--h),var(--p)_0,max(0%,var(--p)-var(--h)*tan(var(--a)/2))_var(--h),max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(var(--h)+var(--b)))]",
-					side === "top" &&
-						"after:[inset:calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] after:[clip-path:polygon(min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4))_calc(var(--h)+var(--b)),var(--p)_calc(var(--b)/sin(var(--a)/2)),max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4))_calc(var(--h)+var(--b)),50%_50%)]",
-					side === "bottom" &&
-						"[background-size:100%_calc(100%+var(--h))] [border-radius:var(--r)_var(--r)_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))/var(--r)]",
-					side === "bottom" &&
-						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] before:[clip-path:polygon(min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(100%-var(--h)-var(--b)),min(100%,var(--p)+var(--h)*tan(var(--a)/2))_calc(100%-var(--h)),var(--p)_100%,max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(100%-var(--h)),max(0%,var(--p)-var(--h)*tan(var(--a)/2))_calc(100%-var(--h)-var(--b)))]",
-					side === "bottom" &&
-						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] after:[clip-path:polygon(min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4))_calc(100%-var(--h)-var(--b)),var(--p)_calc(100%-var(--b)/sin(var(--a)/2)),max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4))_calc(100%-var(--h)-var(--b)),50%_50%)]",
-					side === "left" &&
-						"[background-size:calc(100%+var(--h))_100%] [background-position:right] [border-radius:var(--r)/min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_var(--r)_var(--r)_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))]",
-					side === "left" &&
-						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] before:[clip-path:polygon(calc(var(--h)+var(--b))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),var(--h)_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),0_var(--p),var(--h)_max(0%,var(--p)-var(--h)*tan(var(--a)/2)),calc(var(--h)+var(--b))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)))]",
-					side === "left" &&
-						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b))_calc(-1*var(--b)-var(--h))] after:[clip-path:polygon(calc(var(--h)+var(--b))_min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4)),calc(var(--b)/sin(var(--a)/2))_var(--p),calc(var(--h)+var(--b))_max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4)),50%_50%)]",
-					side === "right" &&
-						"[background-size:calc(100%+var(--h))_100%] [border-radius:var(--r)/var(--r)_min(var(--r),var(--p)-var(--h)*tan(var(--a)/2))_min(var(--r),100%-var(--p)-var(--h)*tan(var(--a)/2))_var(--r)]",
-					side === "right" &&
-						"before:[inset:calc(-1*var(--b))_calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] before:[clip-path:polygon(calc(100%-var(--h)-var(--b))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),calc(100%-var(--h))_min(100%,var(--p)+var(--h)*tan(var(--a)/2)),100%_var(--p),calc(100%-var(--h))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)),calc(100%-var(--h)-var(--b))_max(0%,var(--p)-var(--h)*tan(var(--a)/2)))]",
-					side === "right" &&
-						"after:[inset:calc(-1*var(--b))_calc(-1*var(--b)-var(--h))_calc(-1*var(--b))_calc(-1*var(--b))] after:[clip-path:polygon(calc(100%-var(--h)-var(--b))_min(100%-var(--b),var(--p)+var(--h)*tan(var(--a)/2)-var(--b)*tan(45deg-var(--a)/4)),calc(100%-var(--b)/sin(var(--a)/2))_var(--p),calc(100%-var(--h)-var(--b))_max(var(--b),var(--p)-var(--h)*tan(var(--a)/2)+var(--b)*tan(45deg-var(--a)/4)),50%_50%)]",
-					props.className,
-				)}
-				style={
-					{
-						...props.style,
-						"--h": "8px",
-						"--a": "90deg",
-						"--r": `${radius}px`,
-						"--b": "1px",
-						"--p": trianglePosition,
-					} as CSSProperties
-				}
 				ref={ref}
+				className={tw("popup-next relative isolate w-max text-white", props.className)}
+				style={{
+					...restStyle,
+					background: "transparent",
+					paddingTop: 12 + BW + (side === "top" ? AH : 0),
+					paddingRight: 12 + BW + (side === "right" ? AH : 0),
+					paddingBottom: 12 + BW + (side === "bottom" ? AH : 0),
+					paddingLeft: 12 + BW + (side === "left" ? AH : 0),
+				}}
 			>
+				<span
+					aria-hidden
+					style={{
+						position: "absolute",
+						inset: 0,
+						zIndex: -2,
+						pointerEvents: "none",
+						background: border ?? "rgb(45, 45, 45)",
+						clipPath: clipShape(side, radius, p, 0),
+					}}
+				/>
+				<span
+					aria-hidden
+					style={{
+						position: "absolute",
+						inset: 0,
+						zIndex: -1,
+						pointerEvents: "none",
+						background: bg,
+						clipPath: clipShape(side, radius, p, BW),
+					}}
+				/>
 				{children}
 			</div>
 		);

@@ -1,4 +1,4 @@
-import React, { MouseEvent, ReactNode, useId } from "react";
+import React, { MouseEvent, ReactNode } from "react";
 import { InternalCartesianDataset, Simplify, TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { BarsVerticalLoading } from "./BarsVerticalLoading";
@@ -7,7 +7,6 @@ import { ObjectUtils } from "../../../utils/object/object";
 import { Rect } from "./Rect";
 import { cx } from "../../../utils/cx/cx";
 import { scale } from "../../../utils/math/math";
-import { overlay } from "../../Overlay/Overlay";
 import { ColorUtils } from "../../../utils/color/color";
 import { toEpochMs } from "../../../utils/domain/utils/temporal";
 
@@ -188,9 +187,9 @@ export const VerticalBars = ({
 					})();
 					const breakpoint = [2, 4, 5, 6, 8, 10, 15, 20].find((bp) => bp >= label.toString().replace(".", "").length);
 					return (
-						<overlay.div
+						<div
 							key={i}
-							className={"bars__label @container-[size] absolute text-center"}
+							className={"bars__label [grid-area:graph] @container-[size] absolute text-center"}
 							style={{
 								width,
 								height: Math.abs(height - (position === "above" ? 100 : 0)) + "%",
@@ -220,7 +219,7 @@ export const VerticalBars = ({
 									{label.toString()}
 								</span>
 							</div>
-						</overlay.div>
+						</div>
 					);
 				})}
 		</>

@@ -1,9 +1,13 @@
-import React, { ReactNode, Ref } from "react";
+import React, { ComponentPropsWithRef, ReactNode, Ref } from "react";
 import { OverlayRect } from "./OverlayRect";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
-import { MathUtils, scale } from "../../utils/math/math";
+import { scale } from "../../utils/math/math";
 import { TemporalDate, useGraph } from "../../hooks/use-graph/use-graph";
 import { cx } from "../../utils/cx/cx";
+import { OverlayTriangle } from "./OverlayTriangle";
+import { OverlayCross } from "./OverlayCross";
+import { OverlayDiamond } from "./OverlayDiamond";
+import { OverlayCircle } from "./OverlayCircle";
 
 type HTMLElements = keyof React.JSX.IntrinsicElements;
 type Props = React.HTMLAttributes<HTMLDivElement> & {
@@ -13,14 +17,27 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 	y?: { coordinate: number } | { tick: number | TemporalDate | string };
 };
 
-export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
-	if (tag === "rect") {
-		return <OverlayRect {...(rest as any)}>{children}</OverlayRect>;
+const Components = {
+	rect: OverlayRect,
+	triangle: OverlayTriangle,
+	cross: OverlayCross,
+	diamond: OverlayDiamond,
+	circle: OverlayCircle,
+};
+
+export const Overlay = ({ children, tag: Tag, ref, x, y, ...rest }: Props) => {
+	if (Tag in Components) {
+		const Component = Components[Tag as keyof typeof Components];
+		return (
+			<Component {...(rest as any)} x={x} y={y}>
+				{children}
+			</Component>
+		);
 	}
+
 	const { domain, viewbox } = useGraph();
 	const xForValue = CoordinatesUtils.xCoordinateFor({ domain, viewbox });
 	const yForValue = CoordinatesUtils.yCoordinateFor({ domain, viewbox });
-
 	const x1 = (() => {
 		if (!x) return undefined;
 		if ("coordinate" in x) return scale(x.coordinate, viewbox.x, 100) + "%";
@@ -33,39 +50,48 @@ export const Overlay = ({ children, tag, ref, x, y, ...rest }: Props) => {
 		if ("tick" in y) return scale(yForValue(y.tick), viewbox.y, 100) + "%";
 		return undefined;
 	})();
-
+	const TTag = Tag as any;
 	return (
-		<div
+		<TTag
 			{...rest}
 			className={cx("[grid-area:graph]", rest.className)}
 			ref={ref}
 			style={x1 && y1 ? { position: "absolute", left: x1, top: y1, ...rest.style } : rest.style}
 		>
 			{children}
-		</div>
+		</TTag>
 	);
 };
 
+type OverlayProxy = {
+	[K in HTMLElements]: (props: Omit<ComponentPropsWithRef<K>, "x" | "y"> & { x: Props["x"]; y: Props["y"] }) => ReactNode;
+} & {
+	rect: typeof OverlayRect;
+	triangle: typeof OverlayTriangle;
+	diamond: typeof OverlayDiamond;
+	cross: typeof OverlayCross;
+	circle: typeof OverlayCircle;
+};
+
 let cache: Partial<Record<HTMLElements, ({ children, ...rest }: Omit<Props, "tag">) => any>> = {};
-export const overlay = new Proxy<Record<HTMLElements, (props: Omit<Props, "tag">) => ReactNode> & { rect: typeof OverlayRect }>(
-	Overlay as never,
-	{
-		get: function (_, prop: HTMLElements) {
-			if (cache[prop]) return cache[prop];
-			/* 
+export const overlay: OverlayProxy = new Proxy<
+	Record<HTMLElements, (props: Omit<Props, "tag">) => ReactNode> & { rect: typeof OverlayRect }
+>(Overlay as never, {
+	get: function (_, prop: HTMLElements) {
+		if (cache[prop]) return cache[prop];
+		/* 
 				Ensures this component identity is only created once, this is important because react's remount logic
 				will check element.type === lastrender.type, if this is not the same, it will remount the component.
 				because overlay.div will run this function every time 'component' will recieve a new function identity
 			*/
-			const component = ({ children, ...rest }: Omit<Props, "tag">) => {
-				return (
-					<Overlay {...rest} tag={prop}>
-						{children}
-					</Overlay>
-				);
-			};
-			cache[prop] = component;
-			return component;
-		},
+		const component = ({ children, ...rest }: Omit<Props, "tag">) => {
+			return (
+				<Overlay {...rest} tag={prop}>
+					{children}
+				</Overlay>
+			);
+		};
+		cache[prop] = component;
+		return component;
 	},
-);
+}) as any;
