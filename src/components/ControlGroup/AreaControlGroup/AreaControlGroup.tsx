@@ -21,7 +21,7 @@ export const AreaControlGroup: FC<Props> = ({ state, onChange }) => {
 			>
 				<EnumControl
 					options={Object.keys(CurveUtils)}
-					value={state.curve ?? "linear"}
+					value={state.curve ?? ("linear" as const)}
 					description={"Curves lines to make them smooth or sharp."}
 					onChange={(value) => onChange({ ...state, curve: value })}
 				/>

@@ -5,7 +5,7 @@ type Props<T extends string> = {
 	options: Array<T>;
 	value: T | undefined;
 	description: string;
-	onChange: (position: T) => void;
+	onChange: (position: NoInfer<T>) => void;
 };
 
 export const EnumControl = <T extends string>({ description, options, value, onChange }: Props<T>) => {

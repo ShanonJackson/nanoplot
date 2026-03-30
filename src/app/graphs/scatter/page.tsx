@@ -25,10 +25,6 @@ function getColor(supply: number, demand: number) {
 	if (demand >= DEMAND_BREAK) return supply >= SUPPLY_BREAK ? "rgb(2, 165, 215)" : "rgb(5, 180, 98)";
 	return supply >= SUPPLY_BREAK ? "rgb(161, 102, 233)" : "rgb(255, 92, 74)";
 }
-function getMarker(supply: number, demand: number) {
-	if (demand >= DEMAND_BREAK) return supply >= SUPPLY_BREAK ? <overlay.triangle x={supply} y={demand} /> : "rgb(5, 180, 98)";
-	return supply >= SUPPLY_BREAK ? "rgb(161, 102, 233)" : "rgb(255, 92, 74)";
-}
 
 function demandLabel(demand: number) {
 	if (demand >= 7000) return "EXCEPTIONAL";
@@ -131,8 +127,8 @@ export default function Page() {
 										</div>
 									</div>
 									<div className="pt-2">
-										<div className="opacity-60 text-[11px] mb-1">Top Title</div>
-										<div className="flex justify-between items-center gap-3">
+										<div className="opacity-60 text-[11px]">Top Title</div>
+										<div className="flex justify-between items-center gap-2">
 											<div className="font-semibold text-[13px]">{entry.topTitle}</div>
 											<div className="text-right whitespace-nowrap">
 												<div className="font-bold text-sm">{fmt(entry.topTitleDemand)}</div>
