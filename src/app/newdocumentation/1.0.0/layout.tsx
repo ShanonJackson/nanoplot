@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { cx } from "../../../utils/cx/cx";
 import "../../globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { NewDocumentationNavigation } from "../components/Navigation";
 
 export const metadata: Metadata = {
 	title: "Nanoplot - Documentation",
@@ -18,7 +19,7 @@ export default async function NewDocLayout({
 	const theme = await cookies().then((c) => c.get("theme")?.value ?? "dark");
 
 	return (
-		<body
+		<div
 			data-theme={theme}
 			className={cx(
 				theme,
@@ -27,7 +28,13 @@ export default async function NewDocLayout({
 		>
 			<Analytics />
 			<DocumentationHeader />
-			{children}
-		</body>
+			<div className={"flex"}>
+				<NewDocumentationNavigation />
+				<div className={"w-full relative"}>
+					<div className="lg:hidden h-12" />
+					{children}
+				</div>
+			</div>
+		</div>
 	);
 }

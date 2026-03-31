@@ -15,7 +15,6 @@ const TOC: Array<{ id: string; label: string; indent?: boolean }> = [
 	{ id: "scatter-labels", label: "Scatter.Labels", indent: true },
 	{ id: "scatter-quadrant", label: "Scatter.Quadrant", indent: true },
 	{ id: "examples", label: "Examples" },
-	{ id: "example-trendline", label: "Trendline", indent: true },
 	{ id: "example-tooltip", label: "Custom Tooltip", indent: true },
 	{ id: "example-multi", label: "Multi-Series", indent: true },
 	{ id: "styling", label: "Styling" },
@@ -370,7 +369,7 @@ export default function Page() {
 						</div>
 						<p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl">
 							Scatter plots visualize individual data points to highlight relationships, distributions, and correlations
-							between variables. Supports trendlines, custom markers, tooltips, labels, and quadrant regions.
+							between variables. Supports custom markers, tooltips, labels, and quadrant regions.
 						</p>
 						<div className="flex items-center gap-4 mt-6">
 							<div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
@@ -420,7 +419,6 @@ export default function Page() {
 					</p>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
 						{[
-							{ icon: "trend", title: "Trendlines", desc: "Built-in linear regression trendline overlay" },
 							{ icon: "marker", title: "Custom Markers", desc: "Replace default circles with any SVG shape" },
 							{ icon: "tooltip", title: "Tooltips", desc: "Hover-activated tooltips with 30px detection radius" },
 							{ icon: "quadrant", title: "Quadrants", desc: "Background regions with gradient fill support" },
@@ -507,10 +505,7 @@ export default function MyScatter() {
 						name="<Scatter />"
 						description="Renders the data points as SVG path elements. Points are chunked into groups of 3,000 for optimal SVG performance."
 					>
-						<PropRow name="trendline" type="boolean" defaultValue="false">
-							Renders a dashed linear regression trendline over the data points.
-						</PropRow>
-						<PropRow name="loading" type="boolean" defaultValue="false">
+							<PropRow name="loading" type="boolean" defaultValue="false">
 							Shows an animated skeleton placeholder while data is loading.
 						</PropRow>
 						<PropRow name="className" type="string" defaultValue="-">
@@ -586,15 +581,6 @@ export default function MyScatter() {
 					{/* ─── Examples ─── */}
 					<SectionHeading id="examples">Examples</SectionHeading>
 
-					{/* Trendline */}
-					<div className="mt-8" id="example-trendline" style={{ scrollMarginTop: "6rem" }}>
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Trendline</h3>
-						<p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-							Enable a dashed linear regression line by passing the <InlineCode>trendline</InlineCode> prop.
-						</p>
-						<TabbedExample code={trendlineExample} height={480} />
-					</div>
-
 					{/* Custom Tooltip */}
 					<div className="mt-14" id="example-tooltip" style={{ scrollMarginTop: "6rem" }}>
 						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Custom Tooltip</h3>
@@ -635,7 +621,6 @@ export default function MyScatter() {
 							<tbody>
 								{[
 									{ cls: "scatter__points", desc: "The SVG path elements that render each data point" },
-									{ cls: "scatter__trendline", desc: "The dashed trendline path (when enabled)" },
 									{ cls: "scatter__skeleton", desc: "Loading skeleton container" },
 									{ cls: "scatter__skeleton-dots", desc: "Individual dots in the loading skeleton" },
 									{ cls: "scatter-tooltip", desc: "The tooltip overlay SVG container" },
@@ -654,11 +639,6 @@ export default function MyScatter() {
 					<CodeBlock title="custom-styling.css">{`.scatter__points {
   stroke-width: 8;     /* smaller or larger points */
   opacity: 0.8;        /* semi-transparent points */
-}
-
-.scatter__trendline {
-  stroke: #3b82f6;     /* custom trendline color */
-  stroke-dasharray: 8,4;
 }`}</CodeBlock>
 
 					{/* Spacing at bottom */}
@@ -701,46 +681,13 @@ export default function App() {
         <Legend position="top" alignment="end" />
         <YAxis title="Test Score" />
         <GridLines border horizontal vertical />
-        <Scatter trendline />
+        <Scatter />
         <Scatter.Tooltip
           tooltip={(point) =>
             \`Hours: \${point.data.x.toFixed(1)} | Score: \${point.data.y.toFixed(1)}\`
           }
         />
         <XAxis title="Hours Studied" />
-      </Graph>
-    </div>
-  );
-}
-`;
-
-const trendlineExample = `
-import { Graph } from "nanoplot/Graph";
-import { Scatter } from "nanoplot/Scatter";
-import { YAxis } from "nanoplot/YAxis";
-import { XAxis } from "nanoplot/XAxis";
-import { GridLines } from "nanoplot/GridLines";
-import "nanoplot/styles.css";
-
-const random = (min, max) => Math.random() * (max - min) + min;
-const DATA = new Array(200).fill(null).map(() => {
-  const x = random(0, 100);
-  return { x, y: x * 0.7 + random(-15, 15) };
-});
-
-export default function App() {
-  return (
-    <div className="h-[70vh] w-full p-4 px-10">
-      <Graph
-        data={[{
-          name: "Correlated data",
-          data: DATA,
-        }]}
-      >
-        <YAxis />
-        <GridLines border horizontal />
-        <Scatter trendline />
-        <XAxis />
       </Graph>
     </div>
   );

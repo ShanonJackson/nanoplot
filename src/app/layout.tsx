@@ -20,7 +20,7 @@ export default async function RootLayout({
 }>) {
 	return (
 		<html lang="en" className={figtree.className}>
-			{children}
+			<body>{children}</body>
 		</html>
 	);
 }

@@ -11,7 +11,6 @@ import { ScatterQuadrant } from "./components/ScatterQuadrant";
 import { tw } from "../../utils/cx/cx";
 
 type Props = {
-	trendline?: boolean;
 	loading?: boolean;
 	className?: string;
 	marker?: (dp: Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] }) => ReactNode;
@@ -28,7 +27,7 @@ const chunk = <T extends unknown>(array: T[], size: number): T[][] => {
 	return chunked;
 };
 
-export const Scatter = ({ loading, trendline, className, marker }: Props) => {
+export const Scatter = ({ loading, className, marker }: Props) => {
 	const context = useGraph();
 	const isZooming = useIsZooming();
 	const { x, y } = context.viewbox;
@@ -83,14 +82,6 @@ export const Scatter = ({ loading, trendline, className, marker }: Props) => {
 					);
 				});
 			})}
-			{trendline && (
-				<path
-					strokeWidth={3}
-					strokeDasharray={"4,4"}
-					className={"scatter__trendline stroke-black dark:stroke-white [vector-effect:non-scaling-stroke]"}
-					d={PathUtils.trend(points, context.viewbox)}
-				/>
-			)}
 		</svg>
 	);
 };
