@@ -103,7 +103,7 @@ export const Pie = ({ glow, donut, labels, radius, gap = 0, total, loading, clas
 	return (
 		<>
 			{donut !== undefined && children && (
-				<overlay.div className="pie__children absolute inset-0 flex items-center justify-center">{children}</overlay.div>
+				<div className="pie__children [grid-area:graph] absolute inset-0 flex items-center justify-center">{children}</div>
 			)}
 			{total !== undefined && (
 				<svg viewBox={`0 0 ${viewbox.x} ${viewbox.y}`} className={cx("pie__track h-full w-full [grid-area:graph]", className)}>

@@ -30,8 +30,8 @@ export default async function NewDocLayout({
 			<DocumentationHeader />
 			<div className={"flex"}>
 				<NewDocumentationNavigation />
-				<div className={"w-full relative"}>
-					<div className="lg:hidden h-12" />
+				<div className={"flex-1 min-w-0 relative"}>
+					<div className="md:hidden h-12" />
 					{children}
 				</div>
 			</div>

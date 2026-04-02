@@ -1,8 +1,7 @@
-import React, { JSX, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { CoordinatesUtils } from "../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../utils/graph/graph";
 import { ScatterLoading } from "./components/ScatterLoading";
-import { PathUtils } from "../../utils/path/path";
 import { ScatterTooltip } from "./components/ScatterTooltip";
 import { InternalCartesianDataset, useGraph, useIsZooming } from "../../hooks/use-graph/use-graph";
 import { ScatterLabels } from "./components/ScatterLabels";
@@ -61,21 +60,22 @@ export const Scatter = ({ loading, className, marker }: Props) => {
 		<svg
 			viewBox={`0 0 ${x} ${y}`}
 			className={tw(
-				"[grid-area:graph] [container-type:size] h-full w-full absolute overflow-visible ",
+				"[grid-area:graph] h-full w-full absolute overflow-visible",
 				isZooming && "block overflow-hidden",
+				points.length > 20_000 && !isZooming && "[shape-rendering:optimizeSpeed]",
 			)}
 			preserveAspectRatio={"none"}
 		>
 			{Object.entries(colors).flatMap(([color, points], i) => {
-				return chunk(points ?? [], 3000).map((points, ii) => {
+				return chunk(points ?? [], 1000).map((points, ii) => {
 					return (
 						<path
 							key={i + "|" + ii}
-							d={points?.map(({ x, y }) => `M ${x} ${y} h 0.001`).join(" ")}
+							d={points?.map(({ x, y }) => `M ${x.toFixed(1)} ${y.toFixed(1)} Z`).join(" ")}
 							strokeWidth={10}
 							stroke={color}
 							strokeLinecap={"round"}
-							strokeLinejoin={"round"}
+							fill={"none"}
 							vectorEffect={"non-scaling-stroke"}
 							className={"scatter__points"}
 						/>

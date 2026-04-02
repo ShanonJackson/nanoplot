@@ -7,8 +7,9 @@ import { usePathname } from "next/navigation";
 
 type NavItem = {
 	label: string;
-	href: string;
+	href?: string;
 	icon: ReactNode;
+	children?: { label: string; href: string }[];
 };
 
 type NavSection = {
@@ -37,16 +38,19 @@ const SECTIONS: NavSection[] = [
 		items: [
 			{
 				label: "Lines",
-				href: "/newdocumentation/1.0.0/lines",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/lines" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/lines/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/lines/examples" },
+				],
 			},
 			{
 				label: "Scatter",
-				href: "/newdocumentation/1.0.0/scatter",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<circle cx="7.5" cy="7.5" r="1.5" />
@@ -55,10 +59,14 @@ const SECTIONS: NavSection[] = [
 						<circle cx="16" cy="8" r="1.5" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/scatter" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/scatter/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/scatter/examples" },
+				],
 			},
 			{
 				label: "Bars",
-				href: "/newdocumentation/1.0.0/bars",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<rect x="3" y="12" width="4" height="9" rx="1" />
@@ -66,40 +74,56 @@ const SECTIONS: NavSection[] = [
 						<rect x="17" y="2" width="4" height="19" rx="1" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/bars" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/bars/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/bars/examples" },
+				],
 			},
 			{
 				label: "Pie",
-				href: "/newdocumentation/1.0.0/pie",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
 						<path d="M22 12A10 10 0 0 0 12 2v10z" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/pie" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/pie/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/pie/examples" },
+				],
 			},
 			{
 				label: "Area",
-				href: "/newdocumentation/1.0.0/area",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<path d="M2 20l5-14 5 8 5-6 5 12" />
 						<path d="M2 20h20" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/area" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/area/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/area/examples" },
+				],
 			},
 			{
 				label: "Radar",
-				href: "/newdocumentation/1.0.0/radar",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<path d="M12 2L2 19.5h20L12 2z" />
 						<path d="M12 8l-5 9.5h10L12 8z" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/radar" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/radar/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/radar/examples" },
+				],
 			},
 			{
 				label: "Heatmap",
-				href: "/newdocumentation/1.0.0/heatmap",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<rect x="3" y="3" width="7" height="7" rx="1" />
@@ -108,10 +132,14 @@ const SECTIONS: NavSection[] = [
 						<rect x="14" y="14" width="7" height="7" rx="1" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/heatmap" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/heatmap/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/heatmap/examples" },
+				],
 			},
 			{
 				label: "Worldmap",
-				href: "/newdocumentation/1.0.0/worldmap",
 				icon: (
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<circle cx="12" cy="12" r="10" />
@@ -119,6 +147,11 @@ const SECTIONS: NavSection[] = [
 						<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
 					</svg>
 				),
+				children: [
+					{ label: "Overview", href: "/newdocumentation/1.0.0/worldmap" },
+					{ label: "Playground", href: "/newdocumentation/1.0.0/worldmap/playground" },
+					{ label: "Examples", href: "/newdocumentation/1.0.0/worldmap/examples" },
+				],
 			},
 		],
 	},
@@ -185,23 +218,86 @@ const SECTIONS: NavSection[] = [
 
 function NavLink({ item, onClick }: { item: NavItem; onClick?: () => void }) {
 	const pathname = usePathname();
-	const isActive = pathname === item.href;
+	const isActive = item.href ? pathname === item.href : false;
+	const isChildActive = item.children?.some((c) => pathname === c.href) ?? false;
+	const [expanded, setExpanded] = useState(isChildActive);
+
+	useEffect(() => {
+		if (isChildActive) setExpanded(true);
+	}, [isChildActive]);
+
+	const isExpandable = !item.href && item.children;
+	const showChildren = isExpandable ? expanded : isActive || isChildActive;
+
+	const sharedClasses = `group flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 w-full`;
+	const activeClasses = isChildActive && isExpandable
+		? "text-blue-600 dark:text-blue-400"
+		: isActive
+			? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+			: "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.05] hover:text-gray-900 dark:hover:text-gray-200";
+	const iconClasses = (isActive || (isChildActive && isExpandable))
+		? "text-blue-500 dark:text-blue-400"
+		: "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300";
 
 	return (
-		<Link
-			href={item.href}
-			onClick={onClick}
-			className={`group flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
-				isActive
-					? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-					: "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.05] hover:text-gray-900 dark:hover:text-gray-200"
-			}`}
-		>
-			<span className={`shrink-0 transition-colors ${isActive ? "text-blue-500 dark:text-blue-400" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`}>
-				{item.icon}
-			</span>
-			{item.label}
-		</Link>
+		<>
+			{isExpandable ? (
+				<button
+					onClick={() => setExpanded((v) => !v)}
+					className={`${sharedClasses} ${activeClasses}`}
+				>
+					<span className={`shrink-0 transition-colors ${iconClasses}`}>
+						{item.icon}
+					</span>
+					<span className="flex-1 text-left">{item.label}</span>
+					<svg
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						className={`shrink-0 text-gray-400 dark:text-gray-500 transition-transform duration-150 ${expanded ? "rotate-90" : ""}`}
+					>
+						<polyline points="9 18 15 12 9 6" />
+					</svg>
+				</button>
+			) : (
+				<Link
+					href={item.href!}
+					onClick={onClick}
+					className={`${sharedClasses} ${activeClasses}`}
+				>
+					<span className={`shrink-0 transition-colors ${iconClasses}`}>
+						{item.icon}
+					</span>
+					{item.label}
+				</Link>
+			)}
+			{item.children && showChildren && (
+				<div className="ml-7 pl-3 border-l border-black/[0.04] dark:border-white/[0.04] flex flex-col gap-0.5">
+					{item.children.map((child) => {
+						const childActive = pathname === child.href;
+						return (
+							<Link
+								key={child.href}
+								href={child.href}
+								onClick={onClick}
+								className={`block px-3 py-1.5 rounded-md text-[12px] font-medium transition-all duration-150 ${
+									childActive
+										? "text-blue-600 dark:text-blue-400 bg-blue-500/10"
+										: "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/[0.05]"
+								}`}
+							>
+								{child.label}
+							</Link>
+						);
+					})}
+				</div>
+			)}
+		</>
 	);
 }
 
@@ -215,7 +311,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 					</div>
 					<div className="flex flex-col gap-0.5">
 						{section.items.map((item) => (
-							<NavLink key={item.href} item={item} onClick={onNavigate} />
+							<NavLink key={item.href ?? item.label} item={item} onClick={onNavigate} />
 						))}
 					</div>
 				</div>
@@ -259,13 +355,41 @@ export function NewDocumentationNavigation() {
 
 	return (
 		<>
+			<style>{`
+				.nav-scroll {
+					scrollbar-width: thin;
+					scrollbar-color: transparent transparent;
+				}
+				.nav-scroll:hover {
+					scrollbar-color: rgba(0,0,0,.15) transparent;
+				}
+				:is(.dark) .nav-scroll:hover {
+					scrollbar-color: rgba(255,255,255,.12) transparent;
+				}
+				.nav-scroll::-webkit-scrollbar {
+					width: 6px;
+				}
+				.nav-scroll::-webkit-scrollbar-track {
+					background: transparent;
+				}
+				.nav-scroll::-webkit-scrollbar-thumb {
+					background: transparent;
+					border-radius: 3px;
+				}
+				.nav-scroll:hover::-webkit-scrollbar-thumb {
+					background: rgba(0,0,0,.15);
+				}
+				:is(.dark) .nav-scroll:hover::-webkit-scrollbar-thumb {
+					background: rgba(255,255,255,.12);
+				}
+			`}</style>
 			{/* Desktop sidebar */}
-			<aside className="hidden lg:block w-60 shrink-0 border-r border-gray-200 dark:border-white/[0.08] sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto bg-gray-50/50 dark:bg-white/[0.02]">
+			<aside className="max-md:!hidden w-60 shrink-0 border-r border-black/[0.04] dark:border-white/[0.04] sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto bg-gray-50/50 dark:bg-white/[0.02] nav-scroll">
 				<SidebarContent />
 			</aside>
 
 			{/* Mobile hamburger bar — visible below lg */}
-			<div className="lg:hidden absolute top-0 left-0 right-0 flex items-center h-12 px-4 border-b border-gray-200 dark:border-white/[0.08] bg-[hsl(0deg,0%,100%)] dark:bg-[#0a0a0f] z-30">
+			<div className="md:hidden absolute top-0 left-0 right-0 flex items-center h-12 px-4 border-b border-black/[0.04] dark:border-white/[0.04] bg-[hsl(0deg,0%,100%)] dark:bg-[#0a0a0f] z-30">
 				<button
 					onClick={() => setDrawerOpen(true)}
 					className="p-2 -ml-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-colors"
@@ -284,11 +408,11 @@ export function NewDocumentationNavigation() {
 			{mounted && drawerOpen && (
 				<>
 					<div
-						className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+						className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
 						onClick={() => setDrawerOpen(false)}
 					/>
-					<div className="fixed top-0 left-0 z-50 h-full w-72 bg-white dark:bg-[#0c0c14] border-r border-gray-200 dark:border-white/[0.08] lg:hidden">
-						<div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-white/[0.08]">
+					<div className="fixed top-0 left-0 z-50 h-full w-72 bg-white dark:bg-[#0c0c14] border-r border-black/[0.04] dark:border-white/[0.04] md:hidden">
+						<div className="flex items-center justify-between h-16 px-4 border-b border-black/[0.04] dark:border-white/[0.04]">
 							<div className="flex items-center gap-2.5">
 								<div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center">
 									<span className="text-white text-sm font-bold">N</span>

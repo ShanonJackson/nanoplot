@@ -156,10 +156,10 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 						})}
 				</svg>
 				{ordered && (
-					<overlay.div
+					<div
 						{...rest}
 						ref={setTooltipRef}
-						className={tw("lines-tooltip__tooltip absolute pointer-events-none", rest.className)}
+						className={tw("lines-tooltip__tooltip [grid-area:graph] absolute pointer-events-none", rest.className)}
 						style={{ left: left + rect.left, top: top + rect.top }}
 					>
 						{typeof tooltip === "function" ? (
@@ -218,7 +218,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 								</div>
 							</div>
 						)}
-					</overlay.div>
+					</div>
 				)}
 			</Portal>
 		</>

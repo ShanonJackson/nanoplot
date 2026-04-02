@@ -7,7 +7,7 @@ import { useMounted } from "../../../hooks/use-mounted";
 import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 type Datapoint = Omit<InternalCartesianDataset[number], "data"> & { data: InternalCartesianDataset[number]["data"][number] };
 type Props = {

@@ -4,12 +4,21 @@ import { ClientContext, GraphContextClient } from "../../hooks/use-graph/use-cli
 import { useStatefulRef } from "../../hooks/use-stateful-ref";
 import { InternalGraphContext } from "../../hooks/use-graph/use-graph";
 
-const isISODateString = (value: unknown): value is string => {
-	return typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && !isNaN(Date.parse(value));
-};
+const ISO_DATE_PREFIX = /^\d{4}-\d{2}-\d{2}/;
+
+function toTemporal(value: string) {
+	if (!ISO_DATE_PREFIX.test(value)) return value;
+	if (value.includes("[")) return Temporal.ZonedDateTime.from(value);
+	if (/T.*[Z+\-]/.test(value) && !value.includes("[")) return Temporal.Instant.from(value);
+	if (value.includes("T")) return Temporal.PlainDateTime.from(value);
+	if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return Temporal.PlainDate.from(value);
+	return value;
+}
+
+const TEMPORAL_KEYS = new Set(["x", "y", "tick"]);
 const contextFromParse = (json: string): InternalGraphContext => {
 	function reviver(key: string, value: unknown) {
-		if ((key === "x" || key === "tick") && isISODateString(value)) return new Date(value);
+		if (TEMPORAL_KEYS.has(key) && typeof value === "string") return toTemporal(value);
 		return value;
 	}
 	return JSON.parse(json, reviver);

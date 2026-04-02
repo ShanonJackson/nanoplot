@@ -1,3 +1,4 @@
+import React from "react";
 import { TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { Rect } from "../../Bars/components/Rect";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
