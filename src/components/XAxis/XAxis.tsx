@@ -128,7 +128,7 @@ export const XAxis = ({ display, title, ticks, description, dataset, teeth, ...r
 XAxis.context = (ctx: InternalGraphContext, props: Props): InternalGraphContext => {
 	const dset = props.dataset ? (ctx.datasets[props.dataset] ?? ctx) : ctx;
 	const domain = DomainUtils.x.ticks({ ...dset, viewbox: ctx.viewbox }, props.ticks);
-
+	console.log({ domain });
 	return {
 		...ctx,
 		layout: {
