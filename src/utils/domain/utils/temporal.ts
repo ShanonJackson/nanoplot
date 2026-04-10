@@ -22,6 +22,33 @@ export const toEpochMs = (v: TemporalDate): number => {
 	return v.toZonedDateTime({ timeZone: "UTC", plainTime: new Temporal.PlainTime() }).epochMilliseconds;
 };
 
+export const toUniqueTemporalValues = (values: TemporalDate[]): TemporalDate[] => {
+	const result = [];
+	const buckets = new Map();
+
+	for (const value of values) {
+		const ctor = value?.constructor;
+
+		const bucket = buckets.get(ctor) ?? [];
+		let duplicate = false;
+
+		for (const seen of bucket) {
+			if (value.equals(seen)) {
+				duplicate = true;
+				break;
+			}
+		}
+
+		if (!duplicate) {
+			bucket.push(value);
+			buckets.set(ctor, bucket);
+			result.push(value);
+		}
+	}
+
+	return result;
+};
+
 export const getTemporalKind = (v: TemporalDate): TemporalKind => {
 	if (v instanceof Temporal.Instant) return "Instant";
 	if (v instanceof Temporal.ZonedDateTime) return "ZonedDateTime";

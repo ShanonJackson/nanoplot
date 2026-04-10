@@ -8,7 +8,7 @@ const decoder = new TextDecoder();
 export const CurveUtils = {
 	linear: (coords: Array<{ x: number; y: number }>): string => {
 		if (coords.length === 0) return "";
-		const buffer = new Uint8Array(coords.length * 12 + 1);
+		const buffer = new Uint8Array(coords.length * 18 + 1);
 		let offset = 0;
 		let prevX = 0;
 		let prevY = 0;

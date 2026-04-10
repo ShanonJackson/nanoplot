@@ -8,7 +8,9 @@ describe("CurveUtils", () => {
 		// .linear is a super hotpath for high performance rendering.
 		const times = Array.from({ length: 400 }, () => {
 			const start = performance.now();
+
 			CurveUtils.linear(data);
+
 			const end = performance.now();
 			return end - start;
 		});

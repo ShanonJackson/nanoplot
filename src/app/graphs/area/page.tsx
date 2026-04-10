@@ -34,75 +34,37 @@ export default function Page() {
 			</ControlPanel>
 			<GraphPanel>
 				<Graph
-					gap={{ right: 35, left: 10, top: 20, bottom: 10 }}
 					data={[
 						{
-							name: "New Users",
-							stroke: "#FF4B4B",
-							fill: `linear-gradient(rgba(255, 75, 75, 0.5) 5%, rgba(255, 75, 75, 0) 95%)`,
-							group: "users",
+							name: "Downtown",
 							data: [
-								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 90 },
-								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 25 },
-								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 50 },
-								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 45 },
-								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 35 },
-								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 100 },
-								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 85 },
-								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 72 },
-								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 75 },
+								{ x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 40 },
+								{ x: Temporal.Instant.from("2025-01-03T00:00:00Z"), y: 52 },
+								{ x: Temporal.Instant.from("2025-01-05T00:00:00Z"), y: 36 },
+								{ x: Temporal.Instant.from("2025-01-07T00:00:00Z"), y: 22 },
+								{ x: Temporal.Instant.from("2025-01-09T00:00:00Z"), y: 63 },
+								{ x: Temporal.Instant.from("2025-01-11T00:00:00Z"), y: 40 },
+								{ x: Temporal.Instant.from("2025-01-13T00:00:00Z"), y: 37 },
+								{ x: Temporal.Instant.from("2025-01-15T00:00:00Z"), y: 37 },
+								{ x: Temporal.Instant.from("2025-01-17T00:00:00Z"), y: 43 },
+								{ x: Temporal.Instant.from("2025-01-19T00:00:00Z"), y: 54 },
+								{ x: Temporal.Instant.from("2025-01-21T00:00:00Z"), y: 35 },
+								{ x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 25 },
 							],
-						},
-						{
-							name: "Registered Users",
-							stroke: "#33D4FF",
-							fill: `linear-gradient(${toRgb("#33D4FF", 0.5)} 5%, ${toRgb("#33D4FF", 0)} 95%)`,
-							group: "users",
-							data: [
-								{ x: Temporal.Instant.from("2024-01-01T00:00:00Z"), y: 45 },
-								{ x: Temporal.Instant.from("2024-02-01T00:00:00Z"), y: 60 },
-								{ x: Temporal.Instant.from("2024-03-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-04-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-05-01T00:00:00Z"), y: 70 },
-								{ x: Temporal.Instant.from("2024-06-01T00:00:00Z"), y: 75 },
-								{ x: Temporal.Instant.from("2024-07-01T00:00:00Z"), y: 60 },
-								{ x: Temporal.Instant.from("2024-08-01T00:00:00Z"), y: 55 },
-								{ x: Temporal.Instant.from("2024-09-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-10-01T00:00:00Z"), y: 85 },
-								{ x: Temporal.Instant.from("2024-11-01T00:00:00Z"), y: 80 },
-								{ x: Temporal.Instant.from("2024-12-01T00:00:00Z"), y: 82 },
-							],
+							fill: "rgba(227, 178, 209, 1)",
 						},
 					]}
 				>
-					{legend.position === "top" && <Legend {...legend} />}
-					{legend.position === "left" && <Legend {...legend} />}
-					<YAxis
-						{...yaxis}
-						title={yaxis.title?.toString() && <div dangerouslySetInnerHTML={{ __html: yaxis.title?.toString() ?? "" }} />}
-						description={
-							yaxis.description?.toString() && (
-								<div dangerouslySetInnerHTML={{ __html: yaxis.description?.toString() ?? "" }} />
-							)
-						}
-					/>
-					<GridLines {...gridline} />
-					<Area {...area} />
-					<Area.Tooltip />
-					{legend.position === "right" && <Legend {...legend} />}
+					<Legend position={"top"} alignment={"start"} />
+					<Area />
+					<Area.Tooltip className={"bg-white dark:!bg-black"} />
 					<XAxis
-						{...xaxis}
-						ticks={{ jumps: "P1M" }}
+						ticks={{ jumps: "P2D" }}
 						display={(x) => {
 							if (typeof x === "number" || typeof x === "string") return null;
-							return x.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+							return x.toLocaleString("en-US", { day: "numeric", timeZone: "UTC" });
 						}}
 					/>
-
-					{legend.position === "bottom" && <Legend {...legend} />}
 				</Graph>
 			</GraphPanel>
 		</>

@@ -1,5 +1,6 @@
 import { toEpochMs, toZdt, toKind, getTemporalKind, getTimeZone, largestUnit } from "./temporal";
 import { TemporalDate } from "../../../hooks/use-graph/use-graph";
+import { FromToJumps } from "../../../models/domain/domain";
 
 /**
  * Floor a Temporal value down to the nearest duration boundary.

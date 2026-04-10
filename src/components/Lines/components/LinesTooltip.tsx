@@ -1,17 +1,15 @@
 "use client";
 import * as React from "react";
-import { RefObject, useMemo, useRef } from "react";
-import { CartesianDataset, TemporalDate, useGraph, useIsZooming } from "../../../hooks/use-graph/use-graph";
+import { RefObject } from "react";
+import { CartesianDataset, TemporalDate, useGraph } from "../../../hooks/use-graph/use-graph";
 import { useStatefulRef } from "../../../hooks/use-stateful-ref";
 import { useMouseCoordinates } from "../../../hooks/use-mouse-coordinates";
 import { CoordinatesUtils } from "../../../utils/coordinates/coordinates";
 import { GraphUtils } from "../../../utils/graph/graph";
 import { MathUtils, scale } from "../../../utils/math/math";
-import { overlay } from "../../Overlay/Overlay";
 import { ObjectUtils } from "../../../utils/object/object";
 import { GradientUtils } from "../../../utils/gradient/gradient";
 import { tw } from "../../../utils/cx/cx";
-import { HydrateContext } from "../../HydrateContext/HydrateContext";
 import { Portal } from "../../Portal/Portal";
 import { useBoundingBox } from "../../../hooks/use-bounding-box";
 import { equals } from "../../../utils/equals/equals";
@@ -36,7 +34,7 @@ export const LinesTooltip = ({ tooltip, joints = true, zoneRef: ref, ...rest }: 
 	const rect = useBoundingBox(ref) ?? { width: 0, height: 0, left: 0, top: 0 };
 	const [tooltipRef, setTooltipRef] = useStatefulRef<HTMLDivElement>();
 	const mouse = useMouseCoordinates(ref, { x: true, y: false });
-	const closest = mouse?.closest?.tick.x;
+	const closest = mouse?.closest?.datapoint.x;
 	const {
 		data,
 		domain,

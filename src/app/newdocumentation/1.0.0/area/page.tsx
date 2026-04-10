@@ -2,7 +2,16 @@
 import * as React from "react";
 import { useState, useEffect, ReactNode } from "react";
 import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
-import { Badge, InlineCode, CodeBlock, PropRow, SectionHeading, SubComponentSection, TabbedExample, TableOfContents } from "../../components/Overview";
+import {
+	Badge,
+	InlineCode,
+	CodeBlock,
+	PropRow,
+	SectionHeading,
+	SubComponentSection,
+	TabbedExample,
+	TableOfContents,
+} from "../../components/Overview";
 
 /* ─────────────────────────── TABLE OF CONTENTS ─────────────────────────── */
 
@@ -121,8 +130,8 @@ export default function Page() {
 					{/* ─── Quick Start ─── */}
 					<SectionHeading id="quick-start">Quick Start</SectionHeading>
 					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-						Import and use the Area component inside a <InlineCode>{"<Graph />"}</InlineCode> wrapper. Provide your data as
-						an array of series, each containing an array of <InlineCode>{`{ x, y }`}</InlineCode> points.
+						Import and use the Area component inside a <InlineCode>{"<Graph />"}</InlineCode> wrapper. Provide your data as an
+						array of series, each containing an array of <InlineCode>{`{ x, y }`}</InlineCode> points.
 					</p>
 					<CodeBlock title="basic-area.tsx">{`import { Graph } from "nanoplot/Graph";
 import { Area } from "nanoplot/Area";
@@ -179,8 +188,8 @@ export default function MyArea() {
 					{/* ─── API Reference ─── */}
 					<SectionHeading id="api-reference">API Reference</SectionHeading>
 					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-						Area is a compound component with two parts. The main <InlineCode>{"<Area />"}</InlineCode> renders the filled
-						area, while the sub-component adds tooltips for interactivity.
+						Area is a compound component with two parts. The main <InlineCode>{"<Area />"}</InlineCode> renders the filled area,
+						while the sub-component adds tooltips for interactivity.
 					</p>
 
 					{/* Area Props */}
@@ -189,9 +198,13 @@ export default function MyArea() {
 						name="<Area />"
 						description="Renders the filled area under a curve on the graph. Supports multiple interpolation modes for different curve types."
 					>
-						<PropRow name="curve" type="'linear' | 'natural' | 'monotoneX' | 'stepBefore' | 'stepAfter'" defaultValue="'linear'">
-							Curve interpolation type. Controls how points are connected: linear connects with straight lines, natural uses cubic
-							splines, and step variants create step-like transitions.
+						<PropRow
+							name="curve"
+							type="'linear' | 'natural' | 'monotoneX' | 'stepBefore' | 'stepAfter'"
+							defaultValue="'linear'"
+						>
+							Curve interpolation type. Controls how points are connected: linear connects with straight lines, natural uses
+							cubic splines, and step variants create step-like transitions.
 						</PropRow>
 						<PropRow name="children" type="ReactNode">
 							Custom SVG elements to render within the area chart container.
@@ -410,40 +423,6 @@ export default () => {
               { x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 25 },
             ],
             fill: 'rgba(227, 178, 209, 1)',
-          },
-          {
-            name: "North Region",
-            data: [
-              { x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 30 },
-              { x: Temporal.Instant.from("2025-01-03T00:00:00Z"), y: 21 },
-              { x: Temporal.Instant.from("2025-01-05T00:00:00Z"), y: 22 },
-              { x: Temporal.Instant.from("2025-01-07T00:00:00Z"), y: 14 },
-              { x: Temporal.Instant.from("2025-01-09T00:00:00Z"), y: 36 },
-              { x: Temporal.Instant.from("2025-01-11T00:00:00Z"), y: 47 },
-              { x: Temporal.Instant.from("2025-01-13T00:00:00Z"), y: 14 },
-              { x: Temporal.Instant.from("2025-01-15T00:00:00Z"), y: 32 },
-              { x: Temporal.Instant.from("2025-01-17T00:00:00Z"), y: 25 },
-              { x: Temporal.Instant.from("2025-01-19T00:00:00Z"), y: 34 },
-              { x: Temporal.Instant.from("2025-01-21T00:00:00Z"), y: 31 },
-              { x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 14 },
-            ],
-            fill: 'rgba(181, 81, 157, 0.75)',
-          },
-          {
-            name: "Central City",
-            data: [
-              { x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 24 },
-              { x: Temporal.Instant.from("2025-01-05T00:00:00Z"), y: 50 },
-              { x: Temporal.Instant.from("2025-01-09T00:00:00Z"), y: 22 },
-              { x: Temporal.Instant.from("2025-01-11T00:00:00Z"), y: 54 },
-              { x: Temporal.Instant.from("2025-01-13T00:00:00Z"), y: 20 },
-              { x: Temporal.Instant.from("2025-01-15T00:00:00Z"), y: 37 },
-              { x: Temporal.Instant.from("2025-01-17T00:00:00Z"), y: 16 },
-              { x: Temporal.Instant.from("2025-01-19T00:00:00Z"), y: 34 },
-              { x: Temporal.Instant.from("2025-01-21T00:00:00Z"), y: 35 },
-              { x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 14 },
-            ],
-            fill: 'rgba(83, 29, 204, 0.6)',
           },
         ]}
       >

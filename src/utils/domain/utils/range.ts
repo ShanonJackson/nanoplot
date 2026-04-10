@@ -3,7 +3,7 @@ import { FromToJumps } from "../../../models/domain/domain";
 import { GraphUtils } from "../../graph/graph";
 import { scale } from "../../math/math";
 import { ObjectUtils } from "../../object/object";
-import { isTemporal, toEpochMs, getTemporalKind, getTimeZone, fromEpochMs, TemporalKind } from "./temporal";
+import { isTemporal, toEpochMs, getTemporalKind, getTimeZone, TemporalKind, toUniqueTemporalValues } from "./temporal";
 import { getDurationFromMinMax, getTemporalDomain } from "./temporal-domain";
 import { getRangeForSet } from "./auto-minmax";
 
@@ -149,7 +149,17 @@ export const range = (
 	}
 	/* Temporal Domain */
 	if (typeof MIN === "number" || typeof MAX === "number") return []; /* not possible */
-	const domain = getTemporalDomain({ min: MIN, max: MAX, duration });
+
+	/* uniqueXValues is just a suggestion here, if duration is auto AND it's likely they only have <= 11 unique x values
+	 * then we can just use those, where may result in intervals of time like, Mar 1st 1pm, March 3rd 3pm, .. etc. (log scale) which is FINE and
+	 * may be intentional by them, when they give us 'auto' they're telling us "do your best to pick"
+	 * */
+	const isElevenUniqueValuesLikely = data[0]?.data.length < 50;
+	const uniqueXValues = isElevenUniqueValuesLikely
+		? toUniqueTemporalValues(data.flatMap((dp) => dp.data.map((xy) => xy[dimension] as TemporalDate)))
+		: [];
+
+	const domain = uniqueXValues.length && uniqueXValues.length <= 11 ? uniqueXValues : getTemporalDomain({ min: MIN, max: MAX, duration });
 
 	const minTime = toEpochMs(MIN);
 	const maxTime = toEpochMs(MAX);
@@ -160,7 +170,6 @@ export const range = (
 			coordinate: (viewbox[dimension] / arr.length) * (i + 0.5),
 		}));
 	}
-
 	return domain.map((tick) => ({
 		tick,
 		coordinate: ((toEpochMs(tick) - minTime) / (maxTime - minTime)) * viewb,

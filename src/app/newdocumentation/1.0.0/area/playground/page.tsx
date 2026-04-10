@@ -8,6 +8,8 @@ import { XAxis } from "../../../../../components/XAxis/XAxis";
 import { YAxis } from "../../../../../components/YAxis/YAxis";
 import { Legend } from "../../../../../components/Legend/Legend";
 import { ControlSection, Toggle, Chips, TextInput, PlaygroundLayout } from "../../../components/Playground";
+import { Temporal as T } from "@js-temporal/polyfill";
+if (globalThis) (globalThis as any).Temporal = T;
 import "nanoplot/styles.css";
 
 /* ─────────────────────────── DATA ─────────────────────────── */
@@ -148,7 +150,7 @@ export default function PlaygroundPage() {
 				<Area {...area} />
 				<Area.Tooltip className={"bg-white dark:!bg-black"} />
 				{legend.position === "right" && <Legend {...legend} />}
-				<XAxis {...xaxis} ticks={{ jumps: "P1M" }} />
+				<XAxis {...xaxis} />
 				{legend.position === "bottom" && <Legend {...legend} />}
 			</Graph>
 		</div>
