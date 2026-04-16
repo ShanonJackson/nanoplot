@@ -424,6 +424,40 @@ export default () => {
             ],
             fill: 'rgba(227, 178, 209, 1)',
           },
+          {
+            name: "North Region",
+            data: [
+              { x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 30 },
+              { x: Temporal.Instant.from("2025-01-03T00:00:00Z"), y: 21 },
+              { x: Temporal.Instant.from("2025-01-05T00:00:00Z"), y: 22 },
+              { x: Temporal.Instant.from("2025-01-07T00:00:00Z"), y: 14 },
+              { x: Temporal.Instant.from("2025-01-09T00:00:00Z"), y: 36 },
+              { x: Temporal.Instant.from("2025-01-11T00:00:00Z"), y: 47 },
+              { x: Temporal.Instant.from("2025-01-13T00:00:00Z"), y: 14 },
+              { x: Temporal.Instant.from("2025-01-15T00:00:00Z"), y: 32 },
+              { x: Temporal.Instant.from("2025-01-17T00:00:00Z"), y: 25 },
+              { x: Temporal.Instant.from("2025-01-19T00:00:00Z"), y: 34 },
+              { x: Temporal.Instant.from("2025-01-21T00:00:00Z"), y: 31 },
+              { x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 14 },
+            ],
+            fill: 'rgba(181, 81, 157, 0.75)',
+          },
+          {
+            name: "Central City",
+            data: [
+              { x: Temporal.Instant.from("2025-01-01T00:00:00Z"), y: 24 },
+              { x: Temporal.Instant.from("2025-01-05T00:00:00Z"), y: 50 },
+              { x: Temporal.Instant.from("2025-01-09T00:00:00Z"), y: 22 },
+              { x: Temporal.Instant.from("2025-01-11T00:00:00Z"), y: 54 },
+              { x: Temporal.Instant.from("2025-01-13T00:00:00Z"), y: 20 },
+              { x: Temporal.Instant.from("2025-01-15T00:00:00Z"), y: 37 },
+              { x: Temporal.Instant.from("2025-01-17T00:00:00Z"), y: 16 },
+              { x: Temporal.Instant.from("2025-01-19T00:00:00Z"), y: 34 },
+              { x: Temporal.Instant.from("2025-01-21T00:00:00Z"), y: 35 },
+              { x: Temporal.Instant.from("2025-01-23T00:00:00Z"), y: 14 },
+            ],
+            fill: 'rgba(83, 29, 204, 0.6)',
+          },
         ]}
       >
         <Legend position={"top"} alignment={"start"} />
