@@ -1,8 +1,7 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect, ReactNode } from "react";
-import { Sandpack } from "../../../../components/Documentation/Sandpack/Sandpack";
-import { Badge, InlineCode, CodeBlock, PropRow, SectionHeading, SubComponentSection, TabbedExample, TableOfContents } from "../../components/Overview";
+import { useState, ReactNode } from "react";
+import { Badge, InlineCode, CodeBlock, SectionHeading, TabbedExample, TableOfContents } from "../../components/Overview";
 
 /* ─────────────────────────── TABLE OF CONTENTS ─────────────────────────── */
 
@@ -19,119 +18,420 @@ const TOC: Array<{ id: string; label: string; indent?: boolean }> = [
 	{ id: "example-tooltip", label: "Custom Tooltip", indent: true },
 	{ id: "example-multi", label: "Multi-Series", indent: true },
 	{ id: "styling", label: "Styling" },
+	{ id: "next-steps", label: "Next Steps" },
 ];
 
+/* ─────────────────────────── LOCAL COMPONENTS (PROTOTYPE) ─────────────────────────── */
+
+/** A wide wrapper — demos fill the available main column (which isn't constrained
+ *  to max-w-3xl like the text). The extra class hook is here in case we need it. */
+function WideBreakout({ children, className = "" }: { children: ReactNode; className?: string }) {
+	return <div className={`relative w-full ${className}`}>{children}</div>;
+}
+
+/** Type pill — colorizes parts of a TS type string so props are easier to scan. */
+function TypePill({ type }: { type: string }) {
+	// Split by common delimiters but keep them, so we can color each token.
+	const tokens = type.split(/(\s*\|\s*|\s*=>\s*|[<>(),\[\]{}])/).filter(Boolean);
+	const colorFor = (t: string) => {
+		const trimmed = t.trim();
+		if (["string", "number", "boolean", "ReactNode", "CSSProperties"].includes(trimmed))
+			return "text-sky-600 dark:text-sky-400";
+		if (["true", "false", "null", "undefined"].includes(trimmed))
+			return "text-amber-600 dark:text-amber-400";
+		if (/^["'`].*["'`]$/.test(trimmed)) return "text-emerald-600 dark:text-emerald-400";
+		if (trimmed === "|") return "text-gray-400 dark:text-gray-500";
+		if (trimmed === "=>") return "text-violet-500 dark:text-violet-400";
+		if (/^[A-Z]/.test(trimmed)) return "text-fuchsia-600 dark:text-fuchsia-400";
+		return "text-gray-500 dark:text-gray-400";
+	};
+	return (
+		<span className="inline-flex flex-wrap items-center font-mono text-[12px] leading-5 px-2 py-0.5 rounded-md bg-gray-50 dark:bg-white/[0.03] border border-gray-200/70 dark:border-white/[0.06]">
+			{tokens.map((t, i) => (
+				<span key={i} className={colorFor(t)}>
+					{t}
+				</span>
+			))}
+		</span>
+	);
+}
+
+/** Enhanced PropRow with colored type + hover state */
+function EnhancedPropRow({
+	name,
+	type,
+	required,
+	defaultValue,
+	children,
+}: {
+	name: string;
+	type: string;
+	required?: boolean;
+	defaultValue?: string;
+	children: ReactNode;
+}) {
+	return (
+		<div className="group relative border-b border-gray-100 dark:border-white/[0.05] last:border-0 transition-colors hover:bg-gray-50/70 dark:hover:bg-white/[0.015] -mx-5 px-5">
+			<div className="py-5">
+				<div className="flex items-center gap-2 flex-wrap mb-2">
+					<code className="px-2 py-0.5 rounded-md text-[13px] font-mono font-semibold bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-500/10 dark:to-rose-500/10 text-pink-600 dark:text-pink-300 border border-pink-200/60 dark:border-pink-500/20">
+						{name}
+					</code>
+					<Badge variant={required ? "required" : "optional"}>{required ? "Required" : "Optional"}</Badge>
+					{defaultValue && (
+						<span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1">
+							Default:
+							<code className="px-1.5 py-0.5 rounded text-[11px] font-mono bg-gray-100 dark:bg-white/[0.04] text-gray-600 dark:text-gray-400 border border-gray-200/70 dark:border-white/10">
+								{defaultValue}
+							</code>
+						</span>
+					)}
+				</div>
+				<div className="mb-2">
+					<TypePill type={type} />
+				</div>
+				<p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{children}</p>
+			</div>
+		</div>
+	);
+}
+
+/** Enhanced subcomponent section wrapper */
+function EnhancedSubSection({
+	id,
+	name,
+	description,
+	children,
+	accent = "blue",
+}: {
+	id: string;
+	name: string;
+	description: string;
+	children: ReactNode;
+	accent?: "blue" | "violet" | "emerald" | "amber";
+}) {
+	const accentMap: Record<string, { text: string; dot: string }> = {
+		blue: { text: "text-blue-600 dark:text-blue-400", dot: "bg-blue-500" },
+		violet: { text: "text-violet-600 dark:text-violet-400", dot: "bg-violet-500" },
+		emerald: { text: "text-emerald-600 dark:text-emerald-400", dot: "bg-emerald-500" },
+		amber: { text: "text-amber-600 dark:text-amber-400", dot: "bg-amber-500" },
+	};
+	const a = accentMap[accent];
+
+	return (
+		<div className="mt-12">
+			<a href={`#${id}`} className="group block no-underline">
+				<h3
+					id={id}
+					className="text-lg font-semibold text-gray-900 dark:text-white mb-3 scroll-mt-24 flex items-center gap-2.5"
+				>
+					<span className={`h-1.5 w-1.5 rounded-full ${a.dot} shadow-[0_0_10px_currentColor] opacity-80`} />
+					<span className={`font-mono ${a.text}`}>{name}</span>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						className="opacity-0 group-hover:opacity-40 transition-opacity text-gray-500"
+					>
+						<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+						<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+					</svg>
+				</h3>
+			</a>
+			<p className="text-sm text-gray-600 dark:text-gray-400 mb-5 leading-relaxed">{description}</p>
+			<div className="relative rounded-2xl border border-gray-200/70 dark:border-white/[0.08] bg-white dark:bg-white/[0.015] overflow-hidden shadow-sm">
+				<div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gradient-to-r from-gray-50/80 to-white/80 dark:from-white/[0.015] dark:to-white/[0.025]">
+					<span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
+						Props
+					</span>
+					<span className="text-[11px] text-gray-400 dark:text-gray-500">
+						{React.Children.count(children)} {React.Children.count(children) === 1 ? "prop" : "props"}
+					</span>
+				</div>
+				<div>{children}</div>
+			</div>
+		</div>
+	);
+}
+
+/** Resizable + expandable demo wrapper. The demo breaks out wider than the content column. */
+function FeaturedDemo({
+	code,
+	title,
+	description,
+	height = 640,
+}: {
+	code: string;
+	title?: string;
+	description?: string;
+	height?: number;
+}) {
+	const [expanded, setExpanded] = useState(false);
+	const currentHeight = expanded ? Math.max(height, 820) : height;
+
+	return (
+		<WideBreakout className="my-4">
+			<div
+				className={`relative rounded-2xl border border-gray-200/70 dark:border-white/[0.08] overflow-hidden bg-white dark:bg-white/[0.015] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_30px_rgba(15,23,42,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_20px_60px_rgba(0,0,0,0.35)] transition-all ${
+					expanded ? "ring-1 ring-blue-500/30" : ""
+				}`}
+			>
+				{/* soft gradient border glow */}
+				<div
+					aria-hidden
+					className="pointer-events-none absolute -inset-px rounded-2xl opacity-60 dark:opacity-40"
+					style={{
+						background:
+							"radial-gradient(1200px 240px at 20% -10%, rgba(59,130,246,0.15), transparent 60%), radial-gradient(900px 220px at 110% 110%, rgba(168,85,247,0.12), transparent 60%)",
+					}}
+				/>
+				{(title || description) && (
+					<div className="relative flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4 px-5 py-4 border-b border-gray-200/70 dark:border-white/[0.06] bg-gradient-to-r from-white/80 via-white/60 to-transparent dark:from-white/[0.02] dark:via-white/[0.015] dark:to-transparent">
+						<div className="flex items-center gap-2 shrink-0">
+							<span className="relative flex h-2 w-2">
+								<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+								<span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+							</span>
+							<span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
+								Live
+							</span>
+							{title && (
+								<>
+									<span className="text-gray-300 dark:text-white/20">•</span>
+									<span className="text-sm font-semibold text-gray-900 dark:text-white">{title}</span>
+								</>
+							)}
+						</div>
+						{description && (
+							<span className="text-[13px] text-gray-500 dark:text-gray-400 truncate">{description}</span>
+						)}
+						<div className="sm:ml-auto flex items-center gap-2">
+							<button
+								onClick={() => setExpanded((e) => !e)}
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.08] transition-colors border border-gray-200/70 dark:border-white/[0.06]"
+								title={expanded ? "Collapse" : "Expand"}
+							>
+								{expanded ? (
+									<>
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14h6v6" /><path d="M20 10h-6V4" /><path d="M14 10l7-7" /><path d="M3 21l7-7" /></svg>
+										Collapse
+									</>
+								) : (
+									<>
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+										Expand
+									</>
+								)}
+							</button>
+						</div>
+					</div>
+				)}
+				<div className="relative">
+					<TabbedExample code={code} height={currentHeight} />
+				</div>
+			</div>
+		</WideBreakout>
+	);
+}
 
 /* ─────────────────────────── PAGE ─────────────────────────── */
 
 export default function Page() {
 	return (
-		<div className="max-w-7xl mx-auto px-6 md:px-8 pb-24">
-			<div className="flex gap-12">
-				{/* Main content */}
-				<main className="min-w-0 flex-1 max-w-3xl">
-					{/* ─── Hero ─── */}
-					<div className="pt-12 pb-10 border-b border-gray-200/70 dark:border-white/[0.06]">
-						<div className="flex items-center gap-3 mb-4">
-							<div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="20"
-									height="20"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="white"
-									strokeWidth="2.5"
-									strokeLinecap="round"
-								>
-									<circle cx="7.5" cy="7.5" r="1" />
-									<circle cx="18" cy="18" r="1" />
-									<circle cx="11" cy="15" r="1" />
-									<circle cx="16" cy="8" r="1" />
-									<circle cx="5" cy="12" r="1" />
-									<circle cx="13" cy="5" r="1" />
-								</svg>
-							</div>
-							<div>
-								<div className="flex items-center gap-2">
-									<h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Scatter</h1>
-									<Badge>Component</Badge>
+		<div className="relative">
+			{/* decorative background — very subtle mesh */}
+			<div
+				aria-hidden
+				className="pointer-events-none absolute inset-0 overflow-hidden"
+			>
+				<div
+					className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[920px] rounded-full blur-3xl opacity-60 dark:opacity-40"
+					style={{
+						background:
+							"radial-gradient(circle at 30% 40%, rgba(59,130,246,0.15), transparent 55%), radial-gradient(circle at 70% 60%, rgba(168,85,247,0.12), transparent 55%)",
+					}}
+				/>
+			</div>
+
+			<div className="relative max-w-[88rem] mx-auto px-6 md:px-10 pb-24">
+				<div className="flex gap-10 xl:gap-14">
+					{/* Main content */}
+					<main className="min-w-0 flex-1">
+						{/* ─── Hero ─── */}
+						<section className="pt-12 pb-12">
+							<div className="max-w-3xl">
+								{/* breadcrumb / category */}
+								<div className="flex items-center gap-2 text-[12px] mb-5">
+									<span className="text-gray-400 dark:text-gray-500">Docs</span>
+									<span className="text-gray-300 dark:text-white/20">/</span>
+									<span className="text-gray-400 dark:text-gray-500">Charts</span>
+									<span className="text-gray-300 dark:text-white/20">/</span>
+									<span className="font-medium text-gray-900 dark:text-white">Scatter</span>
 								</div>
-							</div>
-						</div>
-						<p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl">
-							Scatter plots visualize individual data points to highlight relationships, distributions, and correlations
-							between variables. Supports custom markers, tooltips, labels, and quadrant regions.
-						</p>
-						<div className="flex items-center gap-4 mt-6">
-							<div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-								</svg>
-								<code className="text-xs font-mono">nanoplot/Scatter</code>
-							</div>
-							<span className="text-gray-300 dark:text-gray-600">|</span>
-							<div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-									<line x1="3" y1="9" x2="21" y2="9" />
-									<line x1="9" y1="21" x2="9" y2="9" />
-								</svg>
-								<span className="text-xs">Compound Component</span>
-							</div>
-						</div>
-					</div>
 
-					{/* ─── Overview ─── */}
-					<SectionHeading id="overview">Overview</SectionHeading>
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-						The <InlineCode>{"<Scatter />"}</InlineCode> component renders data points as circles on a cartesian plane. It is
-						designed to work inside a <InlineCode>{"<Graph />"}</InlineCode> context and supports several companion
-						sub-components for enhanced interactivity.
-					</p>
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-						{[
-							{ icon: "marker", title: "Custom Markers", desc: "Replace default circles with any SVG shape" },
-							{ icon: "tooltip", title: "Tooltips", desc: "Hover-activated tooltips with 30px detection radius" },
-							{ icon: "quadrant", title: "Quadrants", desc: "Background regions with gradient fill support" },
-						].map((f) => (
-							<div
-								key={f.title}
-								className="rounded-xl border border-gray-200/70 dark:border-white/[0.06] bg-gray-50/50 dark:bg-white/[0.02] p-4 transition-colors hover:border-blue-300 dark:hover:border-blue-500/30"
-							>
-								<div className="font-semibold text-sm text-gray-900 dark:text-white mb-1">{f.title}</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{f.desc}</div>
-							</div>
-						))}
-					</div>
+								<div className="flex items-start gap-4 mb-5">
+									<div
+										className="relative h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
+										style={{
+											boxShadow:
+												"0 10px 30px -10px rgba(59,130,246,0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
+										}}
+									>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="26"
+											height="26"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="white"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+										>
+											<circle cx="7.5" cy="7.5" r="1.2" />
+											<circle cx="18" cy="18" r="1.2" />
+											<circle cx="11" cy="15" r="1.2" />
+											<circle cx="16" cy="8" r="1.2" />
+											<circle cx="5" cy="12" r="1.2" />
+											<circle cx="13" cy="5" r="1.2" />
+										</svg>
+										<div
+											aria-hidden
+											className="absolute -inset-2 rounded-3xl blur-xl opacity-50"
+											style={{ background: "linear-gradient(135deg, #3b82f6, #8b5cf6)" }}
+										/>
+									</div>
+									<div className="min-w-0">
+										<div className="flex items-center gap-2 flex-wrap">
+											<h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+												Scatter
+											</h1>
+											<Badge>Component</Badge>
+											<span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+												<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" /></svg>
+												Stable
+											</span>
+										</div>
+										<div className="mt-1 text-[13px] text-gray-500 dark:text-gray-400">
+											v1.0.0 · SVG · Tree-shakeable
+										</div>
+									</div>
+								</div>
 
-					{/* ─── Quick Start ─── */}
-					<SectionHeading id="quick-start">Quick Start</SectionHeading>
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-						Import and use the Scatter component inside a <InlineCode>{"<Graph />"}</InlineCode> wrapper. Provide your data as
-						an array of series, each containing an array of <InlineCode>{`{ x, y }`}</InlineCode> points.
-					</p>
-					<CodeBlock title="basic-scatter.tsx">{`import { Graph } from "nanoplot/Graph";
+								<p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+									Visualize individual data points to highlight relationships, distributions, and correlations between
+									variables. Supports custom markers, rich tooltips, collision-aware labels, and gradient quadrant
+									regions.
+								</p>
+							</div>
+
+							{/* Stats strip */}
+							<div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl">
+								{[
+									{ label: "Import", value: "nanoplot/Scatter", mono: true },
+									{ label: "Sub-components", value: "4", mono: false },
+									{ label: "Bundle", value: "~3.1 kB", mono: false },
+									{ label: "Renderer", value: "SVG", mono: false },
+								].map((s) => (
+									<div
+										key={s.label}
+										className="rounded-xl border border-gray-200/70 dark:border-white/[0.06] bg-white/60 dark:bg-white/[0.015] backdrop-blur px-3.5 py-3"
+									>
+										<div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400 dark:text-gray-500">
+											{s.label}
+										</div>
+										<div
+											className={`mt-0.5 text-[13px] text-gray-900 dark:text-white truncate ${
+												s.mono ? "font-mono" : "font-semibold"
+											}`}
+											title={s.value}
+										>
+											{s.value}
+										</div>
+									</div>
+								))}
+							</div>
+						</section>
+
+						{/* ─── Overview ─── */}
+						<section>
+							<SectionHeading id="overview">Overview</SectionHeading>
+							<div className="max-w-3xl">
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 text-[15px]">
+									The <InlineCode>{"<Scatter />"}</InlineCode> component renders data points as circles on a cartesian
+									plane. It is designed to work inside a <InlineCode>{"<Graph />"}</InlineCode> context and supports
+									several companion sub-components for enhanced interactivity.
+								</p>
+							</div>
+
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-5xl">
+								{[
+									{
+										title: "Custom Markers",
+										desc: "Replace default circles with any SVG shape — triangles, diamonds, or render props.",
+										color: "from-blue-500 to-cyan-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="18" r="2" /><path d="M12 4l4 7h-8z" /><rect x="15" y="14" width="5" height="5" rx="1" transform="rotate(45 17.5 16.5)" /></svg>
+										),
+									},
+									{
+										title: "Rich Tooltips",
+										desc: "Hover-activated tooltips with 30px detection and portal-based rendering.",
+										color: "from-violet-500 to-fuchsia-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+										),
+									},
+									{
+										title: "Smart Labels",
+										desc: "Collision-aware text labels that automatically hide overlapping or out-of-bounds text.",
+										color: "from-emerald-500 to-teal-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V4h18v3" /><path d="M12 4v16" /><path d="M8 20h8" /></svg>
+										),
+									},
+									{
+										title: "Quadrants",
+										desc: "Background regions with solid or gradient fills — perfect for zone highlighting.",
+										color: "from-amber-500 to-orange-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="12" y1="3" x2="12" y2="21" /><line x1="3" y1="12" x2="21" y2="12" /></svg>
+										),
+									},
+								].map((f) => (
+									<div
+										key={f.title}
+										className="group relative rounded-2xl border border-gray-200/70 dark:border-white/[0.06] bg-white/60 dark:bg-white/[0.015] backdrop-blur p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-gray-300 dark:hover:border-white/[0.12]"
+									>
+										<div
+											className={`inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${f.color} text-white mb-3 shadow-sm`}
+										>
+											<span className="h-4 w-4">{f.icon}</span>
+										</div>
+										<div className="font-semibold text-[14px] text-gray-900 dark:text-white mb-1">
+											{f.title}
+										</div>
+										<div className="text-[12px] text-gray-500 dark:text-gray-400 leading-relaxed">{f.desc}</div>
+									</div>
+								))}
+							</div>
+						</section>
+
+						{/* ─── Quick Start ─── */}
+						<section>
+							<SectionHeading id="quick-start">Quick Start</SectionHeading>
+							<div className="max-w-3xl">
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4 text-[15px]">
+									Import and use the Scatter component inside a <InlineCode>{"<Graph />"}</InlineCode> wrapper. Provide
+									your data as an array of series, each containing an array of{" "}
+									<InlineCode>{`{ x, y }`}</InlineCode> points.
+								</p>
+								<CodeBlock title="basic-scatter.tsx">{`import { Graph } from "nanoplot/Graph";
 import { Scatter } from "nanoplot/Scatter";
 import { YAxis } from "nanoplot/YAxis";
 import { XAxis } from "nanoplot/XAxis";
@@ -159,11 +459,11 @@ export default function MyScatter() {
   );
 }`}</CodeBlock>
 
-					{/* ─── Data Shape ─── */}
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-2 mt-8">
-						The <InlineCode>data</InlineCode> prop on <InlineCode>{"<Graph />"}</InlineCode> expects the following shape:
-					</p>
-					<CodeBlock title="types">{`type CartesianDataset = Array<{
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-2 mt-8 text-[15px]">
+									The <InlineCode>data</InlineCode> prop on <InlineCode>{"<Graph />"}</InlineCode> expects the following
+									shape:
+								</p>
+								<CodeBlock title="types.ts">{`type CartesianDataset = Array<{
   name: string;          // Series label (used in legend + labels)
   id?: string;           // Unique identifier
   description?: string;  // Optional description
@@ -176,169 +476,294 @@ export default function MyScatter() {
     z?: number | string; // Optional third dimension
   }>;
 }>;`}</CodeBlock>
+							</div>
+						</section>
 
-					{/* ─── Interactive Demo ─── */}
-					<SectionHeading id="interactive-demo">Interactive Demo</SectionHeading>
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-						Edit the code below to experiment with the Scatter component in real-time.
-					</p>
-					<TabbedExample code={interactiveDemo} height={480} />
+						{/* ─── Interactive Demo — WIDE ─── */}
+						<section>
+							<SectionHeading id="interactive-demo">Interactive Demo</SectionHeading>
+							<div className="max-w-3xl">
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-5 text-[15px]">
+									Edit the code on the right to experiment in real-time. The demo below combines custom markers,
+									quadrants, reference lines, and rich tooltips — a showcase of what{" "}
+									<InlineCode>Scatter</InlineCode> can do in production.
+								</p>
+							</div>
+							<FeaturedDemo
+								code={interactiveDemo}
+								title="Roblox Genre Analysis"
+								description="Supply vs. demand across 17 Roblox game genres"
+								height={680}
+							/>
+						</section>
 
-					{/* ─── API Reference ─── */}
-					<SectionHeading id="api-reference">API Reference</SectionHeading>
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-						Scatter is a compound component with four parts. The main <InlineCode>{"<Scatter />"}</InlineCode> renders the
-						points, while sub-components add tooltips, labels, and quadrant regions.
-					</p>
+						{/* ─── API Reference ─── */}
+						<section>
+							<SectionHeading id="api-reference">API Reference</SectionHeading>
+							<div className="max-w-3xl">
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 text-[15px]">
+									Scatter is a compound component with four parts. The main <InlineCode>{"<Scatter />"}</InlineCode>{" "}
+									renders the points, while sub-components add tooltips, labels, and quadrant regions.
+								</p>
+							</div>
 
-					{/* Scatter Props */}
-					<SubComponentSection
-						id="scatter-props"
-						name="<Scatter />"
-						description="Renders the data points as SVG path elements. Points are chunked into groups of 3,000 for optimal SVG performance."
-					>
-							<PropRow name="loading" type="boolean" defaultValue="false">
-							Shows an animated skeleton placeholder while data is loading.
-						</PropRow>
-						<PropRow name="className" type="string" defaultValue="-">
-							Applies a custom CSS class to the scatter SVG container.
-						</PropRow>
-						<PropRow name="marker" type="(dp: DataPoint) => ReactNode">
-							Custom render function for each data point. When provided, replaces the default circle rendering. The callback
-							receives the data point with its series metadata and coordinate values.
-						</PropRow>
-						<PropRow name="labels" type="boolean | (dp: DataPoint) => ReactNode">
-							Enable or customize labels rendered next to each point. Pass <InlineCode>true</InlineCode> for default labels
-							(series name), or a function for custom content.
-						</PropRow>
-					</SubComponentSection>
+							<div className="max-w-4xl">
+								<EnhancedSubSection
+									id="scatter-props"
+									name="<Scatter />"
+									description="Renders the data points as SVG path elements. Points are chunked into groups of 3,000 for optimal SVG performance."
+									accent="blue"
+								>
+									<EnhancedPropRow name="loading" type="boolean" defaultValue="false">
+										Shows an animated skeleton placeholder while data is loading.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="className" type="string" defaultValue="—">
+										Applies a custom CSS class to the scatter SVG container.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="marker" type="(dp: DataPoint) => ReactNode">
+										Custom render function for each data point. When provided, replaces the default circle rendering.
+										The callback receives the data point with its series metadata and coordinate values.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="labels" type="boolean | (dp: DataPoint) => ReactNode">
+										Enable or customize labels rendered next to each point. Pass <InlineCode>true</InlineCode> for
+										default labels (series name), or a function for custom content.
+									</EnhancedPropRow>
+								</EnhancedSubSection>
 
-					{/* Scatter.Tooltip */}
-					<SubComponentSection
-						id="scatter-tooltip"
-						name="<Scatter.Tooltip />"
-						description="Adds hover-activated tooltips to data points. Detects the closest point within a 30px radius and renders a portal-based tooltip with a glow effect."
-					>
-						<PropRow name="tooltip" type="(point: Point) => ReactNode" required>
-							Render function for tooltip content. Receives the closest data point with its series metadata, raw data values,
-							and computed coordinates.
-						</PropRow>
-						<PropRow name="className" type="string | (point: Point) => string">
-							CSS class for the tooltip container. Can be a static string or a function that receives the hovered point for
-							dynamic styling.
-						</PropRow>
-						<PropRow name="style" type="CSSProperties | (point: Point) => CSSProperties">
-							Inline styles for the tooltip. Supports dynamic styling via a function — useful for color-coding tooltips based
-							on the data point.
-						</PropRow>
-					</SubComponentSection>
+								<EnhancedSubSection
+									id="scatter-tooltip"
+									name="<Scatter.Tooltip />"
+									description="Adds hover-activated tooltips to data points. Detects the closest point within a 30px radius and renders a portal-based tooltip with a glow effect."
+									accent="violet"
+								>
+									<EnhancedPropRow name="tooltip" type="(point: Point) => ReactNode" required>
+										Render function for tooltip content. Receives the closest data point with its series metadata, raw
+										data values, and computed coordinates.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="className" type="string | (point: Point) => string">
+										CSS class for the tooltip container. Can be a static string or a function that receives the hovered
+										point for dynamic styling.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="style" type="CSSProperties | (point: Point) => CSSProperties">
+										Inline styles for the tooltip. Supports dynamic styling via a function — useful for color-coding
+										tooltips based on the data point.
+									</EnhancedPropRow>
+								</EnhancedSubSection>
 
-					{/* Scatter.Labels */}
-					<SubComponentSection
-						id="scatter-labels"
-						name="<Scatter.Labels />"
-						description="Renders text labels next to each data point with built-in collision detection. Labels that would overlap or overflow the graph boundaries are automatically hidden."
-					>
-						<PropRow name="display" type="((dp) => string) | { collision: boolean; label: (dp) => string | ReactNode }">
-							Controls what each label displays. Pass a function for simple string labels with collision detection. For more
-							control, pass an object with <InlineCode>collision</InlineCode> and <InlineCode>label</InlineCode> properties.
-							When <InlineCode>{"collision: false"}</InlineCode>, the label function may return JSX.
-						</PropRow>
-					</SubComponentSection>
+								<EnhancedSubSection
+									id="scatter-labels"
+									name="<Scatter.Labels />"
+									description="Renders text labels next to each data point with built-in collision detection. Labels that would overlap or overflow the graph boundaries are automatically hidden."
+									accent="emerald"
+								>
+									<EnhancedPropRow
+										name="display"
+										type="((dp) => string) | { collision: boolean; label: (dp) => string | ReactNode }"
+									>
+										Controls what each label displays. Pass a function for simple string labels with collision
+										detection. For more control, pass an object with <InlineCode>collision</InlineCode> and{" "}
+										<InlineCode>label</InlineCode> properties. When <InlineCode>{"collision: false"}</InlineCode>, the
+										label function may return JSX.
+									</EnhancedPropRow>
+								</EnhancedSubSection>
 
-					{/* Scatter.Quadrant */}
-					<SubComponentSection
-						id="scatter-quadrant"
-						name="<Scatter.Quadrant />"
-						description="Renders a colored rectangular region on the graph background. Useful for highlighting zones or categories within the scatter plot."
-					>
-						<PropRow name="x1" type="number | TemporalDate | string" required>
-							The starting x-coordinate of the quadrant region.
-						</PropRow>
-						<PropRow name="y1" type="number | TemporalDate | string" required>
-							The starting y-coordinate of the quadrant region.
-						</PropRow>
-						<PropRow name="x2" type="number | TemporalDate | string" required>
-							The ending x-coordinate of the quadrant region.
-						</PropRow>
-						<PropRow name="y2" type="number | TemporalDate | string" required>
-							The ending y-coordinate of the quadrant region.
-						</PropRow>
-						<PropRow name="fill" type={`string | "linear_gradient(...)"`} required>
-							Fill color for the quadrant. Accepts any CSS color string or a special{" "}
-							<InlineCode>linear_gradient()</InlineCode> syntax for gradient fills.
-						</PropRow>
-					</SubComponentSection>
+								<EnhancedSubSection
+									id="scatter-quadrant"
+									name="<Scatter.Quadrant />"
+									description="Renders a colored rectangular region on the graph background. Useful for highlighting zones or categories within the scatter plot."
+									accent="amber"
+								>
+									<EnhancedPropRow name="x1" type="number | TemporalDate | string" required>
+										The starting x-coordinate of the quadrant region.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="y1" type="number | TemporalDate | string" required>
+										The starting y-coordinate of the quadrant region.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="x2" type="number | TemporalDate | string" required>
+										The ending x-coordinate of the quadrant region.
+									</EnhancedPropRow>
+									<EnhancedPropRow name="y2" type="number | TemporalDate | string" required>
+										The ending y-coordinate of the quadrant region.
+									</EnhancedPropRow>
+									<EnhancedPropRow name='fill' type='string | "linear_gradient(...)"' required>
+										Fill color for the quadrant. Accepts any CSS color string or a special{" "}
+										<InlineCode>linear_gradient()</InlineCode> syntax for gradient fills.
+									</EnhancedPropRow>
+								</EnhancedSubSection>
+							</div>
+						</section>
 
-					{/* ─── Examples ─── */}
-					<SectionHeading id="examples">Examples</SectionHeading>
+						{/* ─── Examples ─── */}
+						<section>
+							<SectionHeading id="examples">Examples</SectionHeading>
 
-					{/* Custom Tooltip */}
-					<div className="mt-14" id="example-tooltip" style={{ scrollMarginTop: "6rem" }}>
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Custom Tooltip</h3>
-						<p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-							Use <InlineCode>{"<Scatter.Tooltip />"}</InlineCode> with a render function to create rich, interactive
-							tooltips. The <InlineCode>style</InlineCode> prop accepts a function for dynamic styling per point.
-						</p>
-						<TabbedExample code={tooltipExample} height={480} />
-					</div>
+							<div className="mt-4" id="example-tooltip" style={{ scrollMarginTop: "6rem" }}>
+								<div className="max-w-3xl">
+									<div className="flex items-center gap-2 mb-2">
+										<h3 className="text-xl font-semibold text-gray-900 dark:text-white">Custom Tooltip</h3>
+										<span className="text-[11px] text-gray-400 dark:text-gray-500 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.04]">
+											100 points
+										</span>
+									</div>
+									<p className="text-sm text-gray-600 dark:text-gray-400 mb-5 leading-relaxed">
+										Use <InlineCode>{"<Scatter.Tooltip />"}</InlineCode> with a render function to create rich,
+										interactive tooltips. The <InlineCode>style</InlineCode> prop accepts a function for dynamic styling
+										per point.
+									</p>
+								</div>
+								<FeaturedDemo
+									code={tooltipExample}
+									title="Custom Tooltip"
+									description="Gradient-styled tooltip with per-point values"
+									height={560}
+								/>
+							</div>
 
-					{/* Multi-Series */}
-					<div className="mt-14" id="example-multi" style={{ scrollMarginTop: "6rem" }}>
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Multi-Series</h3>
-						<p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-							Pass multiple series in the <InlineCode>data</InlineCode> array with distinct <InlineCode>stroke</InlineCode>{" "}
-							colors. Each series gets its own legend entry and colored points.
-						</p>
-						<TabbedExample code={multiSeriesExample} height={480} />
-					</div>
+							<div className="mt-16" id="example-multi" style={{ scrollMarginTop: "6rem" }}>
+								<div className="max-w-3xl">
+									<div className="flex items-center gap-2 mb-2">
+										<h3 className="text-xl font-semibold text-gray-900 dark:text-white">Multi-Series</h3>
+										<span className="text-[11px] text-gray-400 dark:text-gray-500 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.04]">
+											3 series · 240 points
+										</span>
+									</div>
+									<p className="text-sm text-gray-600 dark:text-gray-400 mb-5 leading-relaxed">
+										Pass multiple series in the <InlineCode>data</InlineCode> array with distinct{" "}
+										<InlineCode>stroke</InlineCode> colors. Each series gets its own legend entry and colored points.
+									</p>
+								</div>
+								<FeaturedDemo
+									code={multiSeriesExample}
+									title="Multi-Series"
+									description="Three product cohorts side-by-side"
+									height={560}
+								/>
+							</div>
+						</section>
 
-					{/* ─── Styling ─── */}
-					<SectionHeading id="styling">Styling</SectionHeading>
-					<p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-						Target these CSS class names to customize the appearance of specific Scatter elements.
-					</p>
-					<div className="rounded-xl border border-gray-200/70 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] overflow-hidden">
-						<table className="w-full text-sm">
-							<thead>
-								<tr className="border-b border-gray-100 dark:border-white/[0.05] bg-gray-50/50 dark:bg-white/[0.02]">
-									<th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-										Class
-									</th>
-									<th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-										Element
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{[
-									{ cls: "scatter__points", desc: "The SVG path elements that render each data point" },
-									{ cls: "scatter__skeleton", desc: "Loading skeleton container" },
-									{ cls: "scatter__skeleton-dots", desc: "Individual dots in the loading skeleton" },
-									{ cls: "scatter-tooltip", desc: "The tooltip overlay SVG container" },
-								].map((row, i) => (
-									<tr key={i} className="border-b border-gray-100 dark:border-white/[0.05] last:border-0">
-										<td className="px-5 py-3">
-											<InlineCode>{row.cls}</InlineCode>
-										</td>
-										<td className="px-5 py-3 text-gray-600 dark:text-gray-400">{row.desc}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+						{/* ─── Styling ─── */}
+						<section>
+							<SectionHeading id="styling">Styling</SectionHeading>
+							<div className="max-w-3xl">
+								<p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 text-[15px]">
+									Target these CSS class names to customize the appearance of specific Scatter elements.
+								</p>
+							</div>
+							<div className="max-w-4xl rounded-2xl border border-gray-200/70 dark:border-white/[0.08] bg-white dark:bg-white/[0.015] overflow-hidden shadow-sm">
+								<table className="w-full text-sm">
+									<thead>
+										<tr className="border-b border-gray-100 dark:border-white/[0.05] bg-gradient-to-r from-gray-50/80 to-white/80 dark:from-white/[0.02] dark:to-white/[0.015]">
+											<th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400 w-64">
+												Class
+											</th>
+											<th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">
+												Element
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{[
+											{ cls: "scatter__points", desc: "The SVG path elements that render each data point" },
+											{ cls: "scatter__skeleton", desc: "Loading skeleton container" },
+											{ cls: "scatter__skeleton-dots", desc: "Individual dots in the loading skeleton" },
+											{ cls: "scatter-tooltip", desc: "The tooltip overlay SVG container" },
+										].map((row, i) => (
+											<tr
+												key={i}
+												className="border-b border-gray-100 dark:border-white/[0.05] last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/[0.015] transition-colors"
+											>
+												<td className="px-5 py-3.5">
+													<InlineCode>{row.cls}</InlineCode>
+												</td>
+												<td className="px-5 py-3.5 text-gray-600 dark:text-gray-400">{row.desc}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
 
-					<CodeBlock title="custom-styling.css">{`.scatter__points {
+							<div className="max-w-4xl mt-6">
+								<CodeBlock title="custom-styling.css">{`.scatter__points {
   stroke-width: 8;     /* smaller or larger points */
   opacity: 0.8;        /* semi-transparent points */
 }`}</CodeBlock>
+							</div>
+						</section>
 
-					{/* Spacing at bottom */}
-					<div className="h-24" />
-				</main>
+						{/* ─── Next Steps ─── */}
+						<section>
+							<SectionHeading id="next-steps">Next Steps</SectionHeading>
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl">
+								{[
+									{
+										href: "/newdocumentation/1.0.0/scatter/playground",
+										title: "Playground",
+										desc: "Experiment with every Scatter prop visually.",
+										color: "from-blue-500 to-cyan-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+										),
+									},
+									{
+										href: "/newdocumentation/1.0.0/scatter/examples",
+										title: "More Examples",
+										desc: "Real-world recipes and advanced patterns.",
+										color: "from-violet-500 to-fuchsia-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
+										),
+									},
+									{
+										href: "/newdocumentation/1.0.0/lines",
+										title: "Lines",
+										desc: "Pair scatter with line series for richer plots.",
+										color: "from-emerald-500 to-teal-500",
+										icon: (
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>
+										),
+									},
+								].map((n) => (
+									<a
+										key={n.href}
+										href={n.href}
+										className="group relative rounded-2xl border border-gray-200/70 dark:border-white/[0.06] bg-white/60 dark:bg-white/[0.015] backdrop-blur p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-gray-300 dark:hover:border-white/[0.12]"
+									>
+										<div
+											className={`inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${n.color} text-white mb-3 shadow-sm`}
+										>
+											<span className="h-4 w-4">{n.icon}</span>
+										</div>
+										<div className="font-semibold text-[14px] text-gray-900 dark:text-white mb-1 flex items-center gap-1.5">
+											{n.title}
+											<svg
+												className="opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-gray-400"
+												xmlns="http://www.w3.org/2000/svg"
+												width="14"
+												height="14"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<line x1="5" y1="12" x2="19" y2="12" />
+												<polyline points="12 5 19 12 12 19" />
+											</svg>
+										</div>
+										<div className="text-[12px] text-gray-500 dark:text-gray-400 leading-relaxed">{n.desc}</div>
+									</a>
+								))}
+							</div>
+						</section>
 
-				{/* Table of Contents sidebar */}
-				<TableOfContents items={TOC} />
+						{/* Spacing at bottom */}
+						<div className="h-24" />
+					</main>
+
+					{/* Table of Contents sidebar */}
+					<TableOfContents items={TOC} />
+				</div>
 			</div>
 		</div>
 	);
